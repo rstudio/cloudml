@@ -1,33 +1,37 @@
 library(tensorflow)
 tf$logging$set_verbosity(tf$logging$INFO)
 
+`%||%` <- function(x, y) if (is.null(x)) y else x
+
 # Extract often-used layer components
-layers <- tf$contrib$layers
-learn  <- tf$contrib$learn
+layers         <- tf$contrib$layers
+learn          <- tf$contrib$learn
 input_fn_utils <- tf$contrib$learn$python$learn$utils$input_fn_utils
 
-real_valued_column <- layers$real_valued_column
-sparse_column_with_keys <- layers$sparse_column_with_keys
-sparse_column_with_hash_bucket <- layers$sparse_column_with_hash_bucket
-bucketized_column <- layers$bucketized_column
-crossed_column <- layers$crossed_column
-embedding_column <- layers$embedding_column
-
-CSV_COLUMNS = c(
+CSV_COLUMNS <- c(
   "age", "workclass", "fnlwgt", "education", "education_num",
   "marital_status", "occupation", "relationship", "race", "gender",
   "capital_gain", "capital_loss", "hours_per_week", "native_country",
   "income_bracket"
 )
 
-LABEL_COLUMN = "income_bracket"
+LABEL_COLUMN <- "income_bracket"
 
-DEFAULTS = list(0, "", 0, "", 0, "", "", "", "", "", 0, 0, 0, "", "")
+DEFAULTS <- lapply(
+  list(0, "", 0, "", 0, "", "", "", "", "", 0, 0, 0, "", ""),
+  list
+)
 
-INPUT_COLUMNS = list(
+INPUT_COLUMNS <- list(
 
-  gender = sparse_column_with_keys("gender", keys = c("female", "male")),
-  race = sparse_column_with_keys("race", keys = c(
+  gender = layers$sparse_column_with_keys(
+    column_name = "gender",
+    keys = c("female", "male")
+  ),
+
+  race = layers$sparse_column_with_keys(
+    column_name = "race",
+    keys = c(
       "Amer-Indian-Eskimo",
       "Asian-Pac-Islander",
       "Black",
@@ -36,19 +40,19 @@ INPUT_COLUMNS = list(
     )
   ),
 
-  education      = sparse_column_with_hash_bucket("education", 1000L),
-  marital_status = sparse_column_with_hash_bucket("marital_status", 100L),
-  relationship   = sparse_column_with_hash_bucket("relationship", 100L),
-  workclass      = sparse_column_with_hash_bucket("workclass", 100L),
-  occupation     = sparse_column_with_hash_bucket("occupation", 1000L),
-  native_country = sparse_column_with_hash_bucket("native_country", 1000L),
+  education      = layers$sparse_column_with_hash_bucket("education", 1000L),
+  marital_status = layers$sparse_column_with_hash_bucket("marital_status", 100L),
+  relationship   = layers$sparse_column_with_hash_bucket("relationship", 100L),
+  workclass      = layers$sparse_column_with_hash_bucket("workclass", 100L),
+  occupation     = layers$sparse_column_with_hash_bucket("occupation", 1000L),
+  native_country = layers$sparse_column_with_hash_bucket("native_country", 1000L),
 
   # Continuous base columns.
-  age            = real_valued_column("age"),
-  education_num  = real_valued_column("education_num"),
-  capital_gain   = real_valued_column("capital_gain"),
-  capital_loss   = real_valued_column("capital_loss"),
-  hours_per_week = real_valued_column("hours_per_week")
+  age            = layers$real_valued_column("age"),
+  education_num  = layers$real_valued_column("education_num"),
+  capital_gain   = layers$real_valued_column("capital_gain"),
+  capital_loss   = layers$real_valued_column("capital_loss"),
+  hours_per_week = layers$real_valued_column("hours_per_week")
 )
 
 build_estimator <- function(model_dir,
@@ -65,17 +69,17 @@ build_estimator <- function(model_dir,
 
   wide_columns <- list(
 
-    crossed_column(
+    layers$crossed_column(
       list(education, occupation),
       hash_bucket_size = 1E4L
     ),
 
-    crossed_column(
+    layers$crossed_column(
       list(age_buckets, race, occupation),
       hash_bucket_size = 1E6L
     ),
 
-    crossed_column(
+    layers$crossed_column(
       list(native_country, occupation),
       hash_bucket_size = 1E4L
     ),
@@ -91,14 +95,14 @@ build_estimator <- function(model_dir,
   )
 
   deep_columns <- list(
-    embedding_column(workclass, dimension = embedding_size),
-    embedding_column(education, dimension = embedding_size),
-    embedding_column(marital_status, dimension = embedding_size),
-    embedding_column(gender, dimension = embedding_size),
-    embedding_column(relationship, dimension = embedding_size),
-    embedding_column(race, dimension = embedding_size),
-    embedding_column(native_country, dimension = embedding_size),
-    embedding_column(occupation, dimension = embedding_size),
+    layers$embedding_column(workclass, dimension = embedding_size),
+    layers$embedding_column(education, dimension = embedding_size),
+    layers$embedding_column(marital_status, dimension = embedding_size),
+    layers$embedding_column(gender, dimension = embedding_size),
+    layers$embedding_column(relationship, dimension = embedding_size),
+    layers$embedding_column(race, dimension = embedding_size),
+    layers$embedding_column(native_country, dimension = embedding_size),
+    layers$embedding_column(occupation, dimension = embedding_size),
     age,
     education_num,
     capital_gain,
@@ -165,8 +169,8 @@ generate_input_fn <- function(filename,
     )
 
     reader <- tf$TextLineReader()
-    status <- reader$read_up_to(filename_queue, num_records = batch_size)
-    value_column <- tf$expand_dims(stats$value, -1L)
+    tensors <- reader$read_up_to(filename_queue, num_records = batch_size)
+    value_column <- tf$expand_dims(tensors$values, -1L)
 
     columns <- tf$decode_csv(value_column, record_defaults = DEFAULTS)
     names(columns) <- CSV_COLUMNS

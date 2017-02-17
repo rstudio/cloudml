@@ -19,3 +19,17 @@ NULL
 .onDetach <- function(libpath) {
 
 }
+
+gcloud <- function() {
+
+  candidates <- list(
+    function() Sys.which("gcloud"),
+    function() "~/google-cloud-sdk/bin/gcloud"
+  )
+
+  for (candidate in candidates)
+    if (file.exists(candidate()))
+      return(normalizePath(candidate()))
+
+  stop("failed to find 'gcloud' binary")
+}
