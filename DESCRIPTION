@@ -1,0 +1,13 @@
+Package: cloudml
+Title: R Interface to the Google Cloud Machine Learning Platform
+Version: 0.0.1
+Authors@R: c(
+    person("JJ", "Allaire", email = "jj@rstudio.com", role = c("aut", "cre")),
+    person("Kevin", "Ushey", email = "kevin@rstudio.com", role = c("aut"))
+    )
+Description: An R Interface to the Google Cloud Machine Learning Platform.
+Depends: R (>= 3.3.2)
+License: MIT + file LICENSE
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 6.0.1
