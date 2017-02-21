@@ -1,7 +1,13 @@
+#' Train a Model Locally
+#'
+#' @template roxlate-application
+#' @template roxlate-entrypoint
+#' @template roxlate-arguments
+#'
 #' @export
-cloudml_run <- function(application = getwd(),
-                        entrypoint = file.path(application, "app.R"),
-                        task.arguments = list())
+cloudml_local_train <- function(application = getwd(),
+                                entrypoint = file.path(application, "app.R"),
+                                arguments = list())
 {
   application <- normalizePath(application)
   entrypoint  <- normalizePath(entrypoint)
@@ -31,9 +37,9 @@ cloudml_run <- function(application = getwd(),
      ("--"))
 
   # Add task arguments (if applicable)
-  if (length(task.arguments))
-    for (task.argument in task.arguments)
-      args(task.argument)
+  if (length(arguments))
+    for (argument in arguments)
+      args(argument)
 
   arguments <- args()
   system2(gcloud(), arguments)

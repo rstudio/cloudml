@@ -35,3 +35,22 @@ ensure_file <- function(path) {
 
   invisible(path)
 }
+
+
+user_setting <- function(option, default = NULL) {
+
+  # check environment variable of associated name
+  env_name <- gsub(".", "_", toupper(option), fixed = TRUE)
+  env_val <- Sys.getenv(env_name, unset = NA)
+  if (!is.na(env_val))
+    return(env_val)
+
+  # check R option
+  opt_val <- getOption(option)
+  if (!is.null(opt_val))
+    return(opt_val)
+
+  # no setting available; return default
+  default
+
+}
