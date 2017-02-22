@@ -54,3 +54,7 @@ user_setting <- function(option, default = NULL) {
   default
 
 }
+
+random_string <- function(prefix = "") {
+  basename(tempfile(prefix))
+}

@@ -19,7 +19,7 @@ generate_experiment_fn <- function(train_file,
                                    eval_batch_size = 40L,
                                    embedding_size = 8L,
                                    hidden_units = NULL,
-                                   job_dir = NULL,
+                                   checkpoint_dir = NULL,
                                    ...)
 {
   experiment_fn <- function(output_dir) {
@@ -38,7 +38,7 @@ generate_experiment_fn <- function(train_file,
     learn$Experiment(
 
       build_estimator(
-        job_dir,
+        checkpoint_dir,
         embedding_size = embedding_size,
         hidden_units = hidden_units
       ),
@@ -137,7 +137,7 @@ invisible({
   )
 
   parser$add_argument(
-    "--job-dir",
+    "--checkpoint-dir",
     help = "GCS location to write checkpoints and export models.",
     required = TRUE
   )
@@ -165,6 +165,6 @@ cat("Arguments:", sep = "\n")
 print(arguments)
 
 # Run the training job.
-job_dir <- arguments$job_dir
+checkpoint_dir <- arguments$checkpoint_dir
 experiment_fn <- do.call(generate_experiment_fn, arguments)
-learn_runner$run(experiment_fn, job_dir)
+learn_runner$run(experiment_fn, checkpoint_dir)

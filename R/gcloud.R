@@ -32,3 +32,7 @@ gsutil <- function() {
 
   stop("failed to find 'gsutil' binary")
 }
+
+staging_bucket <- function() {
+  user_setting("gcloud.bucket", "")
+}

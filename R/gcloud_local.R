@@ -6,24 +6,13 @@
 #'
 #' @export
 cloudml_local_train <- function(application = getwd(),
-                                entrypoint = file.path(application, "app.R"),
                                 arguments = list())
 {
   application <- normalizePath(application)
-  entrypoint  <- normalizePath(entrypoint)
+  deployment_dir <- generate_deployment_dir(application)
 
-  # Move to application directory
-  owd <- setwd(application)
+  owd <- setwd(deployment_dir)
   on.exit(setwd(owd), add = TRUE)
-
-  # Populate gcloud deployment directory.
-  ensure_directory("cloudml")
-  ensure_file("cloudml/__init__.py")
-  file.copy(
-    system.file("python/deploy.py", package = "cloudml"),
-    "cloudml/deploy.py",
-    overwrite = TRUE
-  )
 
   # Add gcloud-specific arguments
   args <-
@@ -32,11 +21,10 @@ cloudml_local_train <- function(application = getwd(),
      ("ml")
      ("local")
      ("train")
-     ("--package-path cloudml")
-     ("--module-name cloudml.deploy")
+     ("--package-path %s", basename(application))
+     ("--module-name %s.deploy", basename(application))
      ("--"))
 
-  # Add task arguments (if applicable)
   if (length(arguments))
     for (argument in arguments)
       args(argument)
