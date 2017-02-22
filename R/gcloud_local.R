@@ -1,7 +1,6 @@
 #' Train a Model Locally
 #'
 #' @template roxlate-application
-#' @template roxlate-entrypoint
 #' @template roxlate-arguments
 #'
 #' @export
@@ -31,4 +30,17 @@ cloudml_local_train <- function(application = getwd(),
 
   arguments <- args()
   system2(gcloud(), arguments)
+}
+
+#' Predict a Model Locally
+#'
+#' @template roxlate-application
+#' @template roxlate-entrypoint
+#' @template roxlate-arguments
+#'
+#' @export
+gcloud_local_predict <- function(application = getwd(),
+                                 arguments = list())
+{
+  # TODO
 }
