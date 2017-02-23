@@ -7,21 +7,18 @@
 cloudml_local_train <- function(application = getwd(),
                                 arguments = list())
 {
-  application <- normalizePath(application)
-  deployment_dir <- generate_deployment_dir(application)
-
-  owd <- setwd(deployment_dir)
+  owd <- setwd(dirname(application))
   on.exit(setwd(owd), add = TRUE)
 
-  # Add gcloud-specific arguments
+  # generate arguments for gcloud call
   args <-
     (Arguments()
      ("beta")
      ("ml")
      ("local")
      ("train")
-     ("--package-path %s", basename(application))
-     ("--module-name %s.deploy", basename(application))
+     ("--package-path=%s", basename(application))
+     ("--module-name=%s.deploy", basename(application))
      ("--"))
 
   if (length(arguments))
@@ -34,13 +31,34 @@ cloudml_local_train <- function(application = getwd(),
 
 #' Predict a Model Locally
 #'
-#' @template roxlate-application
-#' @template roxlate-entrypoint
-#' @template roxlate-arguments
+#' @param model.dir The model directory.
+#' @param json.instances Path to a JSON file, defining data
+#'   to be used for prediction.
+#' @param text.instances Path to a text file, defining data
+#'   to be used for prediction.
 #'
 #' @export
-gcloud_local_predict <- function(application = getwd(),
-                                 arguments = list())
+cloudml_local_predict <- function(model.dir = getwd(),
+                                 json.instances = NULL,
+                                 text.instances = NULL)
 {
-  # TODO
+  model.dir <- normalizePath(model.dir)
+
+  # Add gcloud-specific arguments
+  args <-
+    (Arguments()
+     ("beta")
+     ("ml")
+     ("local")
+     ("predict")
+     ("--model-dir=%s", model.dir))
+
+  if (!is.null(json.instances))
+    args("--json-instances=%s", json.instances)
+  else if (!is.null(text.instances))
+    args("--text-instances=%s", text.instances)
+  else
+    stop("one of 'json.instances' or 'text.instances' must be supplied")
+
+  system2(gcloud(), args())
 }

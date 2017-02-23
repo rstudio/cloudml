@@ -12,12 +12,23 @@ cloudml_jobs_submit_training <- function(application = getwd(),
                                          staging.bucket = staging_bucket(),
                                          arguments = list())
 {
-  application <- normalizePath(application)
-  deployment_dir <- generate_deployment_dir(application)
-
-  owd <- setwd(deployment_dir)
+  # ensure application initialized
+  initialize_application(application)
+  owd <- setwd(dirname(application))
   on.exit(setwd(owd), add = TRUE)
 
+  # generate setup script
+  if (!file.exists("setup.py")) {
+    file.copy(
+      system.file("cloudml/setup.py", package = "cloudml"),
+      "setup.py",
+      overwrite = TRUE
+    )
+    setup.py <- normalizePath("setup.py")
+    on.exit(unlink(setup.py), add = TRUE)
+  }
+
+  # generate deployment script
   args <-
     (Arguments()
      ("beta")
@@ -26,10 +37,10 @@ cloudml_jobs_submit_training <- function(application = getwd(),
      ("submit")
      ("training")
      (job.name)
-     ("--package-path %s", basename(application))
-     ("--module-name %s.deploy", basename(application))
-     ("--job-dir %s", job.dir)
-     ("--region %s", region)
+     ("--package-path=%s", basename(application))
+     ("--module-name=%s.deploy", basename(application))
+     ("--job-dir=%s", job.dir)
+     ("--region=%s", region)
      ("--"))
 
   if (length(arguments))

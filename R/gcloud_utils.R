@@ -1,27 +1,22 @@
-# copies an application to a directory of the same name in
-# the R session's temporary directory, and then deploys that
-generate_deployment_dir <- function(application) {
+# initialize an application such that it can be easily
+# deployed on gcloud
+initialize_application <- function(application) {
   application <- normalizePath(application, winslash = "/")
 
-  # generate deployment directory
-  deploy_dir <- tempfile("cloudml-deployment-")
-  ensure_directory(deploy_dir)
+  # copy 'deploy.py' script to top-level directory
+  file.copy(
+    system.file("cloudml/deploy.py", package = "cloudml"),
+    file.path(application, "deploy.py"),
+    overwrite = TRUE
+  )
 
-  app_dir <- file.path(deploy_dir, basename(application))
-  system(paste("cp -R", shQuote(application), shQuote(app_dir)))
+  # ensure all sub-directories contain an '__init__.py'
+  # script, so that they're all included in tarball
+  dirs <- list.dirs(application)
+  lapply(dirs, function(dir) {
+    init.py <- file.path(dir, "__init__.py")
+    ensure_file(file.path(dir, "__init__.py"))
+  })
 
-  owd <- setwd(deploy_dir)
-  on.exit(setwd(owd), add = TRUE)
-
-  # overlay files needed to deploy as though this were a
-  # Python package
-  resource_dir <- system.file("cloudml", package = "cloudml")
-  resource_paths <- list.files(resource_dir, recursive = TRUE)
-
-  sources <- file.path(resource_dir, resource_paths)
-  targets <- file.path(deploy_dir, sub("cloudml", basename(application), resource_paths))
-  file.copy(sources, targets, overwrite = TRUE)
-
-  # return newly generated deployment directory
-  deploy_dir
+  TRUE
 }
