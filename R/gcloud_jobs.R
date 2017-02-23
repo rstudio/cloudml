@@ -8,6 +8,7 @@
 cloudml_jobs_submit_training <- function(application = getwd(),
                                          job.name = random_string("gcloud-job-"),
                                          job.dir = job.name,
+                                         runtime.version = "1.0",
                                          region = "us-central1",
                                          staging.bucket = staging_bucket(),
                                          arguments = list())
@@ -41,6 +42,7 @@ cloudml_jobs_submit_training <- function(application = getwd(),
      ("--module-name=%s.deploy", basename(application))
      ("--job-dir=%s", job.dir)
      ("--region=%s", region)
+     ("--runtime-version=%s", runtime.version)
      ("--"))
 
   if (length(arguments))

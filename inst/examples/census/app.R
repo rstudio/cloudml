@@ -1,7 +1,3 @@
-# TODO: This is a hack to ensure that TensorFlow v1.0.0 is installed,
-# rather than TensorFlow v0.11.0rc2.
-system("pip install --upgrade tensorflow")
-
 library(tensorflow)
 
 printf <- function(...) cat(sprintf(...), sep = "\n")
@@ -11,6 +7,7 @@ printf("---")
 printf("Using R 'tensorflow' package version: %s", packageVersion("tensorflow"))
 printf("Using TensorFlow version:             %s", tf$`__version__`)
 printf("R Version:                            %s", getRversion())
+printf("Command line arguments:               %s", paste(commandArgs(TRUE), collapse = " "))
 printf("---")
 printf("")
 
@@ -33,7 +30,7 @@ generate_experiment_fn <- function(train_file,
                                    eval_batch_size = 40L,
                                    embedding_size = 8L,
                                    hidden_units = NULL,
-                                   checkpoint_dir = NULL,
+                                   job_dir = NULL,
                                    ...)
 {
   experiment_fn <- function(output_dir) {
@@ -52,7 +49,7 @@ generate_experiment_fn <- function(train_file,
     learn$Experiment(
 
       build_estimator(
-        checkpoint_dir,
+        job_dir,
         embedding_size = embedding_size,
         hidden_units = hidden_units
       ),
@@ -147,8 +144,10 @@ invisible({
     type = function(x) as.integer(x)
   )
 
+  # NOTE: this argument _must_ be defined for Google Cloud deployments as
+  # this command-line argument will be appended by the deployment script
   parser$add_argument(
-    "--checkpoint-dir",
+    "--job_dir",
     help = "GCS location to write checkpoints and export models.",
     required = TRUE
   )
@@ -173,6 +172,6 @@ args <- parser$parse_args(commandArgs(TRUE))
 arguments <- args$`__dict__`
 
 # Run the training job.
-checkpoint_dir <- arguments$checkpoint_dir
+job_dir <- arguments$job_dir
 experiment_fn <- do.call(generate_experiment_fn, arguments)
-learn_runner$run(experiment_fn, checkpoint_dir)
+learn_runner$run(experiment_fn, job_dir)
