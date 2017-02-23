@@ -1,4 +1,18 @@
+# TODO: This is a hack to ensure that TensorFlow v1.0.0 is installed,
+# rather than TensorFlow v0.11.0rc2.
+system("pip install --upgrade tensorflow")
+
 library(tensorflow)
+
+printf <- function(...) cat(sprintf(...), sep = "\n")
+
+printf("")
+printf("---")
+printf("Using R 'tensorflow' package version: %s", packageVersion("tensorflow"))
+printf("Using TensorFlow version:             %s", tf$`__version__`)
+printf("R Version:                            %s", getRversion())
+printf("---")
+printf("")
 
 source("modules/model.R")
 
@@ -67,9 +81,6 @@ generate_experiment_fn <- function(train_file,
 
   experiment_fn
 }
-
-cat("Command Line:", sep = "\n")
-print(commandArgs(trailingOnly = TRUE))
 
 parser <- argparse$ArgumentParser()
 
@@ -160,9 +171,6 @@ invisible({
 
 args <- parser$parse_args(commandArgs(TRUE))
 arguments <- args$`__dict__`
-
-cat("Arguments:", sep = "\n")
-print(arguments)
 
 # Run the training job.
 checkpoint_dir <- arguments$checkpoint_dir

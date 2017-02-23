@@ -29,8 +29,8 @@ process = subprocess.Popen(
 
 stdout, stderr = process.communicate()
 
-print stdout
-print stderr
+if stdout is not None: print stdout
+if stderr is not None: print stderr
 
 if process.returncode != 0:
   fmt = "Command %s failed: exit code %s"
