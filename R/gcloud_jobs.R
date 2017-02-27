@@ -31,7 +31,7 @@ cloudml_jobs_submit_training <- function(application = getwd(),
 
   # generate deployment script
   args <-
-    (Arguments()
+    (ShellArgumentsBuilder()
      ("beta")
      ("ml")
      ("jobs")

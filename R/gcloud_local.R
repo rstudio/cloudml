@@ -12,7 +12,7 @@ cloudml_local_train <- function(application = getwd(),
 
   # generate arguments for gcloud call
   args <-
-    (Arguments()
+    (ShellArgumentsBuilder()
      ("beta")
      ("ml")
      ("local")
@@ -46,7 +46,7 @@ cloudml_local_predict <- function(model.dir = getwd(),
 
   # Add gcloud-specific arguments
   args <-
-    (Arguments()
+    (ShellArgumentsBuilder()
      ("beta")
      ("ml")
      ("local")

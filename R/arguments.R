@@ -1,5 +1,9 @@
 # Helper for building command line arguments.
-Arguments <- function() {
+shell_quote <- function(text) {
+  paste("\"", gsub("\"", "\\\\\"", text), "\"", sep = "")
+}
+
+ShellArgumentsBuilder <- function() {
 
   arguments_ <- character()
 
@@ -9,9 +13,10 @@ Arguments <- function() {
     if (length(dots) == 0)
       return(arguments_)
 
-    arguments_ <<- c(arguments_, sprintf(...))
+    arguments_ <<- c(arguments_, shell_quote(sprintf(...)))
     invisible(self)
   }
 
   self
 }
+
