@@ -1,32 +1,37 @@
 #' Train a Model Locally
 #'
+#' Train a model locally, using the \code{gcloud} command line
+#' utility. This can be used as a testing bed for TensorFlow
+#' applications which you want to later run on Google Cloud,
+#' submitted using [cloudml_jobs_submit_training()].
+#'
 #' @template roxlate-application
-#' @template roxlate-arguments
+#' @template roxlate-entrypoint
+#' @template roxlate-config
 #'
 #' @export
 cloudml_local_train <- function(application = getwd(),
-                                arguments = list())
+                                entrypoint  = "train.R",
+                                config      = "default")
 {
+  # ensure application initialized
+  initialize_application(application)
   owd <- setwd(dirname(application))
   on.exit(setwd(owd), add = TRUE)
 
   # generate arguments for gcloud call
-  args <-
-    (ShellArgumentsBuilder()
-     ("beta")
-     ("ml")
-     ("local")
-     ("train")
-     ("--package-path=%s", basename(application))
-     ("--module-name=%s.deploy", basename(application))
-     ("--"))
+  arguments <- (ShellArgumentsBuilder()
+                ("beta")
+                ("ml")
+                ("local")
+                ("train")
+                ("--package-path=%s", basename(application))
+                ("--module-name=%s.deploy", basename(application))
+                ("--")
+                (entrypoint)
+                (config))
 
-  if (length(arguments))
-    for (argument in arguments)
-      args(argument)
-
-  arguments <- args()
-  system2(gcloud(), arguments)
+  system2(gcloud(), arguments())
 }
 
 #' Predict a Model Locally
@@ -37,10 +42,10 @@ cloudml_local_train <- function(application = getwd(),
 #' @param text.instances Path to a text file, defining data
 #'   to be used for prediction.
 #'
-#' @export
+#' TODO
 cloudml_local_predict <- function(model.dir = getwd(),
-                                 json.instances = NULL,
-                                 text.instances = NULL)
+                                  json.instances = NULL,
+                                  text.instances = NULL)
 {
   model.dir <- normalizePath(model.dir)
 

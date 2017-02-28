@@ -26,6 +26,7 @@ install.packages("devtools")
 options(download.file.method = "wget")
 install.packages("RCurl")
 devtools::install_github("rstudio/tensorflow")
+devtools::install_github("rstudio/config")
 """
 
 CUSTOM_COMMANDS = [
@@ -85,7 +86,7 @@ setup(
     author_email     = "kevin@rstudio.com",
     install_requires = REQUIRED_PACKAGES,
     packages         = find_packages(),
-    package_data     = {"": ["*.r", "*.R"]},
+    package_data     = {"": ["*.r", "*.R", "config.yml"]},
     description      = "RStudio Integration",
     requires         = [],
     cmdclass         = { "install": CustomCommands }

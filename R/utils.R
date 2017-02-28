@@ -58,3 +58,11 @@ user_setting <- function(option, default = NULL) {
 random_string <- function(prefix = "") {
   basename(tempfile(prefix))
 }
+
+cloudml_random_job_name <- function(application, config) {
+  application <- normalizePath(application, mustWork = TRUE)
+  time <- Sys.time()
+  ymd <- format(time, "%Y%m%d")
+  prefix <- sprintf("%s_%s_%s_%i_", basename(application), config, ymd, as.integer(time))
+  basename(tempfile(prefix))
+}
