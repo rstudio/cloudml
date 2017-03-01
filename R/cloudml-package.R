@@ -7,6 +7,3 @@
 #' @import config
 #'
 "_PACKAGE"
-
-
-.globals <- new.env(parent = emptyenv())
