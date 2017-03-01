@@ -15,7 +15,7 @@ on.exit(setwd(owd))
 source("train.R")
 
 # submit as local job with gcloud API
-cloudml_local_train(census_dir)
+cloudml::train_local(census_dir)
 
 # submit as remote job with gcloud API
-cloudml_jobs_submit_training(census_dir)
+cloudml::train_cloud(census_dir)

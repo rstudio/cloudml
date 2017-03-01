@@ -3,16 +3,16 @@
 #' Train a model locally, using the \code{gcloud} command line
 #' utility. This can be used as a testing bed for TensorFlow
 #' applications which you want to later run on Google Cloud,
-#' submitted using [cloudml_jobs_submit_training()].
+#' submitted using [train_cloud()].
 #'
 #' @template roxlate-application
 #' @template roxlate-entrypoint
 #' @template roxlate-config
 #'
 #' @export
-cloudml_local_train <- function(application = getwd(),
-                                entrypoint  = "train.R",
-                                config      = "default")
+train_local <- function(application = getwd(),
+                        entrypoint  = "train.R",
+                        config      = "default")
 {
   # ensure application initialized
   initialize_application(application)
@@ -43,9 +43,9 @@ cloudml_local_train <- function(application = getwd(),
 #'   to be used for prediction.
 #'
 #' TODO
-cloudml_local_predict <- function(model.dir = getwd(),
-                                  json.instances = NULL,
-                                  text.instances = NULL)
+predict_local <- function(model.dir = getwd(),
+                          json.instances = NULL,
+                          text.instances = NULL)
 {
   model.dir <- normalizePath(model.dir)
 

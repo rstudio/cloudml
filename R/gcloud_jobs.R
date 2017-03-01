@@ -36,15 +36,15 @@
 #'   block until the TensorFlow job has run to completion.
 #'
 #' @export
-cloudml_jobs_submit_training <- function(application     = getwd(),
-                                         entrypoint      = "train.R",
-                                         config          = "gcloud",
-                                         job.name        = NULL,
-                                         job.dir         = NULL,
-                                         staging.bucket  = NULL,
-                                         runtime.version = "1.0",
-                                         region          = "us-central1",
-                                         async           = TRUE)
+train_cloud <- function(application     = getwd(),
+                        entrypoint      = "train.R",
+                        config          = "gcloud",
+                        job.name        = NULL,
+                        job.dir         = NULL,
+                        staging.bucket  = NULL,
+                        runtime.version = "1.0",
+                        region          = "us-central1",
+                        async           = TRUE)
 {
   # initialize parameters that depend on config.yml
   config_path <- file.path(application, "config.yml")
