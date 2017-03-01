@@ -5,6 +5,8 @@
 # when not running on gcloud
 config_filter <- function(extra_config) {
 
+  force(extra_config)
+
   function(config) {
 
     # add any command line values passed to the R script into the extra_config
