@@ -20,9 +20,6 @@ if not os.path.exists(entrypoint):
 # Move to the application directory.
 os.chdir(os.path.dirname(path))
 
-print "Running application with entrypoint: %s" % (entrypoint, )
-print "Using working directory: %s" % (path, )
-
 # Run 'Rscript' with this entrypoint. Forward command line arguments.
 commands = ["Rscript", entrypoint]
 [commands.append(argument) for argument in sys.argv[1:]]
