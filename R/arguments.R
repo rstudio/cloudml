@@ -9,7 +9,7 @@ ShellArgumentsBuilder <- function() {
 
   self <- function(...) {
 
-    dots <- list(...)
+    dots <- unlist(list(...))
     if (length(dots) == 0)
       return(arguments_)
 

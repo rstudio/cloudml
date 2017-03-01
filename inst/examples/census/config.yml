@@ -1,23 +1,25 @@
 default:
-  train:
-    job_dir                  : jobs
-    staging_bucket           : staging
-    eval_file                : "gs://rstudio-cloudml-demo-ml/census/data/adult.test"
-    train_file               : "gs://rstudio-cloudml-demo-ml/census/data/adult.data"
-    estimator_embedding_size : 8
-    estimator_hidden_units   : [100, 70, 50, 25]
-    eval_num_epochs          : 10
-    eval_batch_size          : 40
-    eval_delay_secs          : 10
-    eval_steps               : 100
-    train_num_epochs         : 10
-    train_batch_size         : 40
-    train_steps              : 10
+
+  # Paths to inputs, outputs
+  eval_file                : "gs://rstudio-cloudml-demo-ml/census/data/adult.test"
+  train_file               : "gs://rstudio-cloudml-demo-ml/census/data/adult.data"
+  job_dir                  : jobs # TODO: config filter should supply this?
+
+  # Parameters for training routines
+  estimator_embedding_size : 8
+  estimator_hidden_units   : [100, 70, 50, 25]
+  eval_num_epochs          : 10
+  eval_batch_size          : 40
+  eval_delay_secs          : 10
+  eval_steps               : 100
+  train_num_epochs         : 10
+  train_batch_size         : 40
+  train_steps              : 10
 
 gcloud:
-  train:
-    job_dir                  : "gs://rstudio-cloudml-demo-ml/census/jobs"
-    staging_bucket           : "gs://rstudio-cloudml-demo-ml"
-    eval_file                : "gs://rstudio-cloudml-demo-ml/census/data/adult.test"
-    train_file               : "gs://rstudio-cloudml-demo-ml/census/data/adult.data"
 
+  # Paths to inputs, outputs
+  eval_file                : "gs://rstudio-cloudml-demo-ml/census/data/adult.test"
+  train_file               : "gs://rstudio-cloudml-demo-ml/census/data/adult.data"
+  job_dir                  : "gs://rstudio-cloudml-demo-ml/census/jobs"
+  staging_bucket           : "gs://rstudio-cloudml-demo-ml"

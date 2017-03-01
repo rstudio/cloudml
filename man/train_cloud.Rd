@@ -4,40 +4,17 @@
 \alias{train_cloud}
 \title{Google Cloud -- Submit a Training Job}
 \usage{
-train_cloud(application = getwd(), entrypoint = "train.R",
-  config = "gcloud", job.name = NULL, job.dir = NULL,
-  staging.bucket = NULL, runtime.version = "1.0", region = "us-central1",
-  async = TRUE)
+train_cloud(application = getwd(), config = "gcloud", async = TRUE, ...)
 }
 \arguments{
 \item{application}{The path to a TensorFlow application.}
 
-\item{entrypoint}{The \R script which acts as an entrypoint to your
-TensorFlow application.}
-
 \item{config}{The name of the configuration to be used.}
 
-\item{job.name}{The name to assign to the submitted job.}
-
-\item{job.dir}{A Google Cloud Storage path in which to
-store training outputs and other data needed for
-training.
-
-If packages must be uploaded and \code{--staging-bucket} is
-not provided, this path will be used instead.}
-
-\item{staging.bucket}{Bucket in which to stage training archives.
-
-Required only if a file upload is necessary (that is,
-other flags include local paths) and no other flags
-implicitly specify an upload path.}
-
-\item{runtime.version}{The Google Cloud ML runtime version for this job.}
-
-\item{region}{The region of the machine learning training job to submit.}
-
-\item{async}{Run the job asynchronously? When \code{FALSE}, this call will
+\item{async}{Run the job asynchronously? When `FALSE`, this call will
 block until the TensorFlow job has run to completion.}
+
+\item{...}{Optional arguments. TODO: describe in more detail.}
 }
 \description{
 Upload a TensorFlow application to Google Cloud, and use that application

@@ -4,16 +4,14 @@
 \alias{train_local}
 \title{Train a Model Locally}
 \usage{
-train_local(application = getwd(), entrypoint = "train.R",
-  config = "default")
+train_local(application = getwd(), config = "default", ...)
 }
 \arguments{
 \item{application}{The path to a TensorFlow application.}
 
-\item{entrypoint}{The \R script which acts as an entrypoint to your
-TensorFlow application.}
-
 \item{config}{The name of the configuration to be used.}
+
+\item{...}{Optional arguments. TODO: describe in more detail.}
 }
 \description{
 Train a model locally, using the \code{gcloud} command line
