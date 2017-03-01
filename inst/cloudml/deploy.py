@@ -8,6 +8,7 @@ entrypoint = sys.argv[1]
 config     = sys.argv[2]
 
 # Set up environment.
+os.environ["GCLOUD_EXECUTION_ENVIRONMENT"] = "1"
 os.environ["R_CONFIG_ACTIVE"] = config
 
 # Construct absolute path to entrypoint.

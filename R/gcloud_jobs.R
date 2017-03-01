@@ -95,10 +95,7 @@ train_cloud <- function(application     = getwd(),
   # loaded when running associated entrypoint
 
   # submit job through command line
-  with_gcloud_environment({
-    system2(gcloud(), arguments())
-  })
-
+  system2(gcloud(), arguments())
 }
 
 cloudml_jobs_cancel <- "TODO"
