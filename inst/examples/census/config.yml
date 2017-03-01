@@ -1,6 +1,4 @@
 default:
-  job_dir        : "gs://rstudio-cloudml-demo-ml/census/jobs"
-  staging_bucket : "gs://rstudio-cloudml-demo-ml"
   train:
     job_dir                  : jobs
     staging_bucket           : staging
@@ -18,6 +16,8 @@ default:
 
 gcloud:
   train:
+    job_dir                  : "gs://rstudio-cloudml-demo-ml/census/jobs"
+    staging_bucket           : "gs://rstudio-cloudml-demo-ml"
     estimator_embedding_size : 8
     estimator_hidden_units   : [100, 70, 50, 25]
     eval_file                : "gs://rstudio-cloudml-demo-ml/census/data/adult.test"
