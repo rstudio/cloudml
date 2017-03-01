@@ -10,12 +10,28 @@ Sys.setenv(
 )
 
 # read config overlay if available
-config <- list()
+overlay <- list()
 if (file.exists("cloudml/config.rds"))
-  config <- readRDS("cloudml/config.rds")
+  overlay <- readRDS("cloudml/config.rds")
 
 # generate filter to overlay this with config
-filter <- cloudml:::config_filter(config)
+# TODO: receive from 'cloudml' package once it's public
+filter <- function(config) {
+
+  # TODO: parsing of command line arguments
+
+  # merge config with overlay
+  config <- config::merge(config, overlay)
+
+  # TODO: resolve gs:// URLs
+
+  # set defaults for missing parameters
+  config[["job_dir"]] <- config[["job_dir"]] %||% "jobs"
+
+  # return the filtered config
+  config
+}
+
 uuid <- config::add_filter(filter)
 
 # source entrypoint

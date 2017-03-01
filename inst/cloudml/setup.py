@@ -25,7 +25,6 @@ options(repos = c(CRAN = "http://cran.rstudio.com"))
 options(download.file.method = "wget")
 install.packages(c("devtools", "RCurl"))
 devtools::install_github("rstudio/tensorflow")
-devtools::install_github("rstudio/cloudml")
 """
 
 CUSTOM_COMMANDS = [
