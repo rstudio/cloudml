@@ -31,11 +31,11 @@ process = subprocess.Popen(
   stderr = subprocess.STDOUT
 )
 
-stdout, stderr = process.communicate()
+# Stream output from subprocess to console.
+for line in iter(process.stdout.readline, ""):
+  sys.stdout.write(line)
 
-if stdout is not None: print stdout
-if stderr is not None: print stderr
-
+# Detect a non-zero exit code.
 if process.returncode != 0:
   fmt = "Command %s failed: exit code %s"
   print fmt % (commands, process.returncode)
