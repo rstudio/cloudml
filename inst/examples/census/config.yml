@@ -1,8 +1,9 @@
 default:
 
   # Paths to inputs, outputs
-  eval_file                : "gs://rstudio-cloudml-demo-ml/census/data/adult.test"
-  train_file               : "gs://rstudio-cloudml-demo-ml/census/data/adult.data"
+  # TODO: authentication credentials to enable gs:// buckets?
+  eval_file                : data/adult.test
+  train_file               : data/adult.data
   job_dir                  : jobs # TODO: config filter should supply this?
 
   # Parameters for training routines
