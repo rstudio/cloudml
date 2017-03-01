@@ -14,16 +14,17 @@ train_local <- function(application = getwd(),
                         config      = "default",
                         ...)
 {
-  # ensure application initialized
-  initialize_application(application)
-  owd <- setwd(dirname(application))
-  on.exit(setwd(owd), add = TRUE)
+  application <- scope_deployment(application)
 
   # resolve entrypoint
   dots <- list(...)
   entrypoint <- dots[["entrypoint"]] %||%
     config::get("train_entrypoint", config = config) %||%
     "train.R"
+
+  # move to application's parent directory
+  owd <- setwd(dirname(application))
+  on.exit(setwd(owd), add = TRUE)
 
   # generate arguments for gcloud call
   arguments <- (ShellArgumentsBuilder()

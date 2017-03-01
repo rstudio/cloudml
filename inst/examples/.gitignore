@@ -1,6 +1,8 @@
-**/__init__.pyc?
-**/output
-**/setup.py
+**/__init__.py
+**/__init__.pyc
 **/data
 **/gs_data
 **/jobs
+**/output
+**/deploy.py
+**/setup.py

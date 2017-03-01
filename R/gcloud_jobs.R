@@ -14,10 +14,7 @@ train_cloud <- function(application = getwd(),
                         async       = TRUE,
                         ...)
 {
-  # ensure application initialized
-  initialize_application(application)
-  owd <- setwd(dirname(application))
-  on.exit(setwd(owd), add = TRUE)
+  application <- scope_deployment(application)
 
   # resolve entrypoint
   dots <- list(...)
@@ -46,6 +43,10 @@ train_cloud <- function(application = getwd(),
   runtime_version <- dots[["runtime_version"]] %||%
     config::get("runtime_version", config = config) %||%
     "1.0"
+
+  # move to application's parent directory
+  owd <- setwd(dirname(application))
+  on.exit(setwd(owd), add = TRUE)
 
   # generate setup script (used to build the application as a Python
   # package remotely)

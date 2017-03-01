@@ -1,6 +1,6 @@
 # initialize an application such that it can be easily
 # deployed on gcloud
-initialize_application <- function(application) {
+initialize_application <- function(application = getwd()) {
   application <- normalizePath(application, winslash = "/")
 
   # copy 'deploy.py' script to top-level directory
@@ -19,4 +19,34 @@ initialize_application <- function(application) {
   })
 
   TRUE
+}
+
+scope_deployment <- function(application = getwd()) {
+  application <- normalizePath(application, winslash = "/")
+
+  # initialize application (tracking what new files were generated)
+  old <- list.files(application, all.files = TRUE, full.names = TRUE, recursive = TRUE)
+  initialize_application(application)
+  new <- list.files(application, all.files = TRUE, full.names = TRUE, recursive = TRUE)
+
+  # clean up the newly generated files and move back
+  # to callers directory when the parent function exits
+  transient <- setdiff(new, old)
+  defer({
+    unlink(transient, recursive = TRUE)
+
+    # also clean up any '__init__.pyc' files
+    pyc <- list.files(
+      "__init__.pyc$",
+      application,
+      all.files = TRUE,
+      full.names = TRUE,
+      recursive = TRUE
+    )
+
+    unlink(pyc)
+  }, envir = parent.frame())
+
+  # return normalized application path
+  application
 }

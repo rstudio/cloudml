@@ -69,3 +69,17 @@ random_job_name <- function(application = getwd(), config = "default") {
     as.integer(Sys.time())
   )
 }
+
+defer <- function(expr, envir = parent.frame()) {
+
+  # Create a call that must be evaluated in the parent frame (as
+  # that's where functions and symbols need to be resolved)
+  call <- substitute(
+    evalq(expr, envir = envir),
+    list(expr = substitute(expr), envir = parent.frame())
+  )
+
+  # Use 'do.call' with 'on.exit' to attach the evaluation to
+  # the exit handlrs of the selected frame
+  do.call(base::on.exit, list(substitute(call), add = TRUE), envir = envir)
+}
