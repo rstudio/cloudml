@@ -6,7 +6,7 @@ Authors@R: c(
     person("Kevin", "Ushey", email = "kevin@rstudio.com", role = c("aut"))
     )
 Description: An R Interface to the Google Cloud Machine Learning Platform.
-Depends: R (>= 3.3.2)
+Depends: R (>= 3.1.0)
 Imports: withr, config
 License: MIT + file LICENSE
 Encoding: UTF-8
