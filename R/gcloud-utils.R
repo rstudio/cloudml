@@ -15,9 +15,18 @@ initialize_application <- function(application = getwd()) {
 
   # ensure sub-directories contain an '__init__.py'
   # script, so that they're all included in tarball
-  # (ignore 'data' directories by default)
   dirs <- list.dirs(application)
-  dirs <- grep("/(?:jobs|data|gs_data)", dirs, invert = TRUE, perl = TRUE)
+
+  # ignore data directories in the bundle by default
+  # TODO: make the pattern here user-configurable?
+  dirs <- grep(
+    "/(?:jobs|data|gs_data)",
+    dirs,
+    invert = TRUE,
+    perl = TRUE,
+    value = TRUE
+  )
+
   lapply(dirs, function(dir) {
     ensure_file(file.path(dir, "__init__.py"))
   })
