@@ -44,7 +44,8 @@ train_cloud <- function(application     = getwd(),
                         staging.bucket  = NULL,
                         runtime.version = "1.0",
                         region          = "us-central1",
-                        async           = TRUE)
+                        async           = TRUE,
+                        ...)
 {
   # initialize parameters that depend on config.yml
   config_path <- file.path(application, "config.yml")
@@ -72,6 +73,14 @@ train_cloud <- function(application     = getwd(),
     on.exit(unlink(setup.py), add = TRUE)
   }
 
+  # generate _cloudml.R
+  extra_config <- deparse(list(...), nlines = 1L)
+  add_filter <- paste0("config::add_filter(", extra_config, ")")
+  source_entrypoint <- paste0("source('", entrypoint, "')")
+  cloudml_script <- file.path(application, "_cloudml.R")
+  cat(add_filter, source_entrypoint, file = cloudml_script, sep="\n")
+  on.exit(unlink(cloudml_script), add = TRUE)
+
   # generate deployment script
   arguments <- (ShellArgumentsBuilder()
                 ("beta")
@@ -88,11 +97,8 @@ train_cloud <- function(application     = getwd(),
                 (if (async) "--async")
                 ("--runtime-version=%s", runtime.version)
                 ("--")
-                (entrypoint)
+                (basename(cloudml_script))
                 (config))
-
-  # TODO: serialize 'dynamic.config' to a special place and ensure it's
-  # loaded when running associated entrypoint
 
   # submit job through command line
   system2(gcloud(), arguments())
