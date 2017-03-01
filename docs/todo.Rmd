@@ -1,0 +1,45 @@
+
+## JJ
+
+- Add hook to config package to allow for setting and removing a filter
+
+- Automatically call gs_data on all embedded GS URLs
+
+- Generate the app.R file that includes the config hooks (do this in train_cloud)
+
+
+## Kevin
+
+- For example sake, have some config overrides in the gcloud config
+
+- job_dir and staging_bucket shouldn't go in the config file by default (they are 
+  still settable just not in our example)
+
+- How to handle the project directory for packaging (copy, symlink, cleanup, etc.)
+    - Never upload gs_data
+    - Don't want to upload the job or staging dir (how can we ensure this?)
+    - Should we even exppose by default the job_dir and staging dir in the config file
+    - Cleanup __init__.py, etc. after we create the python package (on.exit)
+    
+- train_local and train_cloud should have a ... which forwards into config overrides
+
+- config overrides will be done via a config package filter, which will be set
+  in a preamble to source("train.R") within a generated e.g. app.R file.
+  
+- Get rid of the "train" sub-key
+
+- Provide some down-sampled local versions of data and have them referenced via e.g.
+  gs://rstudio-cloudml-demo-ml/census/data/local.adult.test
+  
+- Pull out `hyperparameters` from config and write a new YAML file with:
+    trainingInput:
+       hyperparmeters:
+  Then pass that to gcloud with --config hyperparmeters.yml
+  
+- Then in our app.R generated file where we set the config pacakge hook we 
+  propagate the command line options/hyperparamters back into the config list
+  
+
+       
+       
+

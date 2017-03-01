@@ -6,3 +6,5 @@
 ^inst/examples/census/data/
 ^internal/
 ^man-roxygen/
+^docs/
+
