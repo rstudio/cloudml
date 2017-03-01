@@ -40,6 +40,19 @@
   propagate the command line options/hyperparamters back into the config list
   
 
+## Next
+
+- Prediction API
+
+- Job status/control functions
+
+- Dataviz and/or Shiny app front-end
+
+- What is returned by cloudml (minimially view it in stdout, for prediction structured data)
+
+
+
+
        
        
 
