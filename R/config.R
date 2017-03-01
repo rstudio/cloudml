@@ -30,6 +30,9 @@ config_filter <- function(extra_config) {
     }
     config <- lapply(config, resolve_gs_data)
 
+    # set defaults for missing parameters
+    config[["job_dir"]] <- config[["job_dir"]] %||% "jobs"
+
     # return the filtered config
     config
   }

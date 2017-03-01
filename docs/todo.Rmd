@@ -9,8 +9,6 @@
 
 ## Kevin
 
-- For example sake, have some config overrides in the gcloud config
-
 - job_dir and staging_bucket shouldn't go in the config file by default (they are 
   still settable just not in our example)
 

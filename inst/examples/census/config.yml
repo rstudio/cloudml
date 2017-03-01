@@ -4,7 +4,6 @@ default:
   # TODO: authentication credentials to enable gs:// buckets?
   eval_file                : data/adult.test
   train_file               : data/adult.data
-  job_dir                  : jobs # TODO: config filter should supply this?
 
   # Parameters for training routines
   estimator_embedding_size : 8

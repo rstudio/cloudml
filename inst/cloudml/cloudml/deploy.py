@@ -27,6 +27,9 @@ process = subprocess.Popen(
 for line in iter(process.stdout.readline, ""):
   sys.stdout.write(line)
 
+# Finalize the process.
+stdout, stderr = process.communicate()
+
 # Detect a non-zero exit code.
 if process.returncode != 0:
   fmt = "Command %s failed: exit code %s"
