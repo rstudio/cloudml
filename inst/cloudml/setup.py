@@ -22,11 +22,9 @@ from setuptools.command.install import install
 PACKAGE_INSTALL_R_SCRIPT_PATH = "/tmp/install-packages.R"
 PACKAGE_INSTALL_R_SCRIPT = """
 options(repos = c(CRAN = "http://cran.rstudio.com"))
-install.packages("devtools")
 options(download.file.method = "wget")
-install.packages("RCurl")
+install.packages(c("devtools", "config", "RCurl"))
 devtools::install_github("rstudio/tensorflow")
-devtools::install_github("rstudio/config")
 """
 
 CUSTOM_COMMANDS = [
