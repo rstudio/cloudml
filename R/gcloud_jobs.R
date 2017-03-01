@@ -49,8 +49,12 @@ train_cloud <- function(application     = getwd(),
   # initialize parameters that depend on config.yml
   config_path <- file.path(application, "config.yml")
   job.name <- job.name %||% cloudml_random_job_name(application, config)
-  job.dir <- job.dir %||% config::get("job_dir", config, config_path)
-  staging.bucket <- staging.bucket %||% config::get("staging_bucket", config, config_path)
+
+  if (is.null(job.dir))
+    job.dir <- resolve_config("job_dir", "train", config, config_path)
+
+  if (is.null(staging.bucket))
+    staging.bucket <- resolve_config("staging_bucket", "train", config, config_path)
 
   # ensure application initialized
   initialize_application(application)
