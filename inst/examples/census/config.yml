@@ -2,8 +2,8 @@ default:
   train:
     job_dir                  : jobs
     staging_bucket           : staging
-    eval_file                : data/adult.test
-    train_file               : data/adult.data
+    eval_file                : "gs://rstudio-cloudml-demo-ml/census/data/adult.test"
+    train_file               : "gs://rstudio-cloudml-demo-ml/census/data/adult.data"
     estimator_embedding_size : 8
     estimator_hidden_units   : [100, 70, 50, 25]
     eval_num_epochs          : 10

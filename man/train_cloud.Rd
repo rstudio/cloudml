@@ -5,9 +5,9 @@
 \title{Google Cloud -- Submit a Training Job}
 \usage{
 train_cloud(application = getwd(), entrypoint = "train.R",
-  config = "gcloud", job.name = NULL, job.dir = config::get("job_dir",
-  config), staging.bucket = config::get("staging_bucket", config),
-  runtime.version = "1.0", region = "us-central1", async = TRUE)
+  config = "gcloud", job.name = NULL, job.dir = NULL,
+  staging.bucket = NULL, runtime.version = "1.0", region = "us-central1",
+  async = TRUE)
 }
 \arguments{
 \item{application}{The path to a TensorFlow application.}

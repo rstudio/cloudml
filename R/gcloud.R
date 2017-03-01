@@ -62,3 +62,54 @@ gsutil <- function() {
 staging_bucket <- function() {
   user_setting("gcloud.bucket", "")
 }
+
+
+#' Copy a file from Google Storage to the local system
+#'
+#' @param uri Google storage URI (e.g. `gs://[BUCKET_NAME]/[FILENAME.CSV]`)
+#' @param destination Path to copy file to on the local filesystem
+#' @param overwrite Overwrite an existing file of the same name
+#'
+#' @export
+gs_copy <- function(uri, destination, overwrite = FALSE) {
+  gsutil <- gsutil()
+  if (!file.exists(destination) || overwrite) {
+    dir.create(dirname(destination), recursive = TRUE, showWarnings = FALSE)
+    system(paste(gsutil, "cp", shQuote(uri), shQuote(destination)))
+  }
+  destination
+}
+
+
+#' Get a path to a data file within Google Storage
+#'
+#' When running on Google Cloud the path is returned unchanged. When running in
+#' other contexts the file is copied to the local system and a path to the local
+#' file is returned. If a plain filesystem path is passed then it is also
+#' returned unchanged.
+#'
+#' @inheritParams gs_copy
+#'
+#' @return Path to data file (may be local or remote depending on the execution
+#'   context).
+#'
+#' @export
+gs_data <- function(uri) {
+  if (is_gcloud() || !is_gs_uri(uri))
+    uri
+  else
+    gs_copy(uri, substring(uri, nchar("gs://") + 1))
+}
+
+
+
+is_gcloud <- function() {
+  config::is_active("gcloud")
+}
+
+is_gs_uri <- function(file) {
+  grepl("^gs://.+$", file)
+}
+
+
+

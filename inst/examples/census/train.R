@@ -1,6 +1,7 @@
 library(tensorflow)
+library(cloudml)
 
-source("modules/model.R")
+source("model.R")
 
 # Define some aliases for commonly-used modules
 learn                    <- tf$contrib$learn
@@ -12,20 +13,8 @@ saved_model_export_utils <- learn$python$learn$utils$saved_model_export_utils
 config <- config::get("train")
 
 # Download data for local configurations if not available
-active_config <- Sys.getenv("R_CONFIG_ACTIVE", unset = "default")
-if (active_config %in% c("default", "local")) {
-  gsutil <- cloudml::gsutil()
-
-  if (!file.exists(config$train_file)) {
-    dir.create(dirname(config$train_file), recursive = TRUE, showWarnings = FALSE)
-    system(paste(gsutil, "cp gs://tf-ml-workshop/widendeep/adult.data", config$train_file))
-  }
-
-  if (!file.exists(config$eval_file)) {
-    dir.create(dirname(config$eval_file), recursive = TRUE, showWarnings = FALSE)
-    system(paste(gsutil, "cp gs://tf-ml-workshop/widendeep/adult.test", config$eval_file))
-  }
-}
+config$train_file <- gs_data(config$train_file)
+config$eval_file <- gs_data(config$eval_file)
 
 # Define experiment function
 experiment_fn <- function(output_dir) {
