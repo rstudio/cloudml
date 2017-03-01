@@ -24,3 +24,7 @@ gcloud:
   train_file               : "gs://rstudio-cloudml-demo-ml/census/data/adult.data"
   job_dir                  : "gs://rstudio-cloudml-demo-ml/census/jobs"
   staging_bucket           : "gs://rstudio-cloudml-demo-ml"
+
+  # Overrides for parameters
+  eval_num_epochs          : 100
+  train_num_epochs         : 100
