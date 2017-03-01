@@ -1,11 +1,18 @@
-# Deploy an R application to 'cloudml'.
+# Deploy an R application to Google Cloud, using the 'cloudml' package.
 import subprocess
 import sys
 import os
 
-# Determine path to entrypoint.
+# Extract command line arguments.
+entrypoint = sys.argv[1]
+config     = sys.argv[2]
+
+# Set up environment.
+os.environ["R_CONFIG_ACTIVE"] = config
+
+# Construct absolute path to entrypoint.
 path, filename = os.path.split(os.path.realpath(__file__))
-entrypoint = os.path.realpath(path + "/app.R")
+entrypoint = os.path.realpath(path + "/" + entrypoint)
 if not os.path.exists(entrypoint):
   raise IOError("Entrypoint '" + entrypoint + "' does not exist.")
 
@@ -15,10 +22,8 @@ os.chdir(path)
 print "Running application with entrypoint: %s" % (entrypoint, )
 print "Using working directory: %s" % (path, )
 
-# Construct command to be called, and append command line arguments.
+# Run 'Rscript' with this entrypoint.
 commands = ["Rscript", entrypoint]
-for x in sys.argv[1:]:
-  commands.append(x)
 
 process = subprocess.Popen(
   commands,

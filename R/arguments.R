@@ -13,6 +13,9 @@ ShellArgumentsBuilder <- function() {
     if (length(dots) == 0)
       return(arguments_)
 
+    if (length(dots) == 1 && is.null(dots[[1]]))
+      return(invisible(self))
+
     arguments_ <<- c(arguments_, shell_quote(sprintf(...)))
     invisible(self)
   }

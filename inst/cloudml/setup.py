@@ -22,9 +22,8 @@ from setuptools.command.install import install
 PACKAGE_INSTALL_R_SCRIPT_PATH = "/tmp/install-packages.R"
 PACKAGE_INSTALL_R_SCRIPT = """
 options(repos = c(CRAN = "http://cran.rstudio.com"))
-install.packages("devtools")
 options(download.file.method = "wget")
-install.packages("RCurl")
+install.packages(c("devtools", "config", "RCurl"))
 devtools::install_github("rstudio/tensorflow")
 """
 
@@ -85,7 +84,7 @@ setup(
     author_email     = "kevin@rstudio.com",
     install_requires = REQUIRED_PACKAGES,
     packages         = find_packages(),
-    package_data     = {"": ["*.r", "*.R"]},
+    package_data     = {"": ["*.r", "*.R", "config.yml"]},
     description      = "RStudio Integration",
     requires         = [],
     cmdclass         = { "install": CustomCommands }
