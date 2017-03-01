@@ -33,7 +33,7 @@ train_local <- function(application = getwd(),
                 ("local")
                 ("train")
                 ("--package-path=%s", basename(application))
-                ("--module-name=%s.deploy", basename(application))
+                ("--module-name=%s.cloudml.deploy", basename(application))
                 ("--")
                 (entrypoint)
                 (config))

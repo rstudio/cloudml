@@ -3,11 +3,14 @@
 initialize_application <- function(application = getwd()) {
   application <- normalizePath(application, winslash = "/")
 
-  # copy 'deploy.py' script to top-level directory
-  file.copy(
-    system.file("cloudml/deploy.py", package = "cloudml"),
-    file.path(application, "deploy.py"),
-    overwrite = TRUE
+  # copy 'cloudml' deployment helpers to application
+  cloudml_path <- file.path(application, "cloudml")
+  if (file.exists(cloudml_path))
+    unlink(cloudml_path, recursive = TRUE)
+
+  copy_directory(
+    system.file("cloudml/cloudml", package = "cloudml"),
+    cloudml_path
   )
 
   # ensure all sub-directories contain an '__init__.py'

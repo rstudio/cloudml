@@ -13,12 +13,12 @@ os.environ["R_CONFIG_ACTIVE"] = config
 
 # Construct absolute path to entrypoint.
 path, filename = os.path.split(os.path.realpath(__file__))
-entrypoint = os.path.realpath(path + "/" + entrypoint)
+entrypoint = os.path.realpath(path + "/../" + entrypoint)
 if not os.path.exists(entrypoint):
   raise IOError("Entrypoint '" + entrypoint + "' does not exist.")
 
 # Move to directory for entrypoint.
-os.chdir(path)
+os.chdir(os.path.dirname(entrypoint))
 
 print "Running application with entrypoint: %s" % (entrypoint, )
 print "Using working directory: %s" % (path, )

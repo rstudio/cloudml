@@ -1,8 +1,31 @@
+`%||%` <- function(x, y) if (is.null(x)) y else x
+
 stopf <- function(fmt, ..., call. = TRUE, domain = NULL) {
   stop(simpleError(
     sprintf(fmt, ...),
     if (call.) sys.call(sys.parent())
   ))
+}
+
+# TODO: Windows
+copy_directory <- function(source, target, overwrite = TRUE) {
+
+  if (!file.exists(source))
+    stopf("no directory at path '%s'", source)
+
+  if (file.exists(target)) {
+    if (!overwrite)
+      stopf("a file already exists at path '%s'", target)
+    unlink(target, recursive = TRUE)
+  }
+
+  system(paste(
+    "cp -R",
+    shQuote(source),
+    shQuote(target)
+  ))
+
+  isTRUE(file.info(target)$isdir)
 }
 
 ensure_directory <- function(path) {

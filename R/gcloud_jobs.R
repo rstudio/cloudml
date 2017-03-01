@@ -62,13 +62,13 @@ train_cloud <- function(application = getwd(),
     on.exit(unlink(setup.py), add = TRUE)
   }
 
-  # generate _cloudml.R
-  extra_config <- deparse(list(...), nlines = 1L)
-  add_filter <- paste0("config::add_filter(", extra_config, ")")
-  source_entrypoint <- paste0("source('", entrypoint, "')")
-  cloudml_script <- file.path(application, "_cloudml.R")
-  cat(add_filter, source_entrypoint, file = cloudml_script, sep="\n")
-  on.exit(unlink(cloudml_script), add = TRUE)
+  # TODO: serialize '...'
+  # extra_config <- deparse(list(...), nlines = 1L)
+  # add_filter <- paste0("config::add_filter(", extra_config, ")")
+  # source_entrypoint <- paste0("source('", entrypoint, "')")
+  # cloudml_script <- file.path(application, "_cloudml.R")
+  # cat(add_filter, source_entrypoint, file = cloudml_script, sep="\n")
+  # on.exit(unlink(cloudml_script), add = TRUE)
 
   # generate deployment script
   arguments <- (ShellArgumentsBuilder()
@@ -79,14 +79,14 @@ train_cloud <- function(application = getwd(),
                 ("training")
                 (job_name)
                 ("--package-path=%s", basename(application))
-                ("--module-name=%s.deploy", basename(application))
+                ("--module-name=%s.cloudml.deploy", basename(application))
                 (if (!is.null(job_dir)) c("--job-dir=%s", job_dir))
                 (if (!is.null(staging_bucket)) c("--staging-bucket=%s", staging_bucket))
                 ("--region=%s", region)
                 (if (async) "--async")
                 ("--runtime-version=%s", runtime_version)
                 ("--")
-                (basename(cloudml_script))
+                (entrypoint)
                 (config))
 
   # submit job through command line
