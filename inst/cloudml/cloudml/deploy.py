@@ -11,20 +11,21 @@ config     = sys.argv[2]
 os.environ["GCLOUD_EXECUTION_ENVIRONMENT"] = "1"
 os.environ["R_CONFIG_ACTIVE"] = config
 
-# Construct absolute path to entrypoint.
+# Construct absolute path to 'deploy.R'.
 path, filename = os.path.split(os.path.realpath(__file__))
-entrypoint = os.path.realpath(path + "/../" + entrypoint)
+entrypoint = os.path.realpath(os.path.join(path, "deploy.R"))
 if not os.path.exists(entrypoint):
   raise IOError("Entrypoint '" + entrypoint + "' does not exist.")
 
-# Move to directory for entrypoint.
-os.chdir(os.path.dirname(entrypoint))
+# Move to the application directory.
+os.chdir(os.path.dirname(path))
 
 print "Running application with entrypoint: %s" % (entrypoint, )
 print "Using working directory: %s" % (path, )
 
-# Run 'Rscript' with this entrypoint.
+# Run 'Rscript' with this entrypoint. Forward command line arguments.
 commands = ["Rscript", entrypoint]
+[commands.append(argument) for argument in sys.argv[1:]]
 
 process = subprocess.Popen(
   commands,
