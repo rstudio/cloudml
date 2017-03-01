@@ -113,7 +113,7 @@ with_gcloud_environment <- function(expr) {
 
 
 is_gs_uri <- function(file) {
-  grepl("^gs://.+$", file)
+  is.character(file) && grepl("^gs://.+$", file)
 }
 
 

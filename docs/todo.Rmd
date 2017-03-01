@@ -1,7 +1,6 @@
 
 ## JJ
 
-- Add hook to config package to allow for setting and removing a filter
 
 - Automatically call gs_data on all embedded GS URLs
 

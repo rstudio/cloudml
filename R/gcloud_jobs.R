@@ -3,6 +3,8 @@
 #' Upload a TensorFlow application to Google Cloud, and use that application
 #' to train a model.
 #'
+#' @param ... Additional configuration values for this training run
+#'
 #' @template roxlate-application
 #' @template roxlate-config
 #' @template roxlate-async
@@ -60,6 +62,14 @@ train_cloud <- function(application = getwd(),
     on.exit(unlink(setup.py), add = TRUE)
   }
 
+  # generate _cloudml.R
+  extra_config <- deparse(list(...), nlines = 1L)
+  add_filter <- paste0("config::add_filter(", extra_config, ")")
+  source_entrypoint <- paste0("source('", entrypoint, "')")
+  cloudml_script <- file.path(application, "_cloudml.R")
+  cat(add_filter, source_entrypoint, file = cloudml_script, sep="\n")
+  on.exit(unlink(cloudml_script), add = TRUE)
+
   # generate deployment script
   arguments <- (ShellArgumentsBuilder()
                 ("beta")
@@ -76,10 +86,8 @@ train_cloud <- function(application = getwd(),
                 (if (async) "--async")
                 ("--runtime-version=%s", runtime_version)
                 ("--")
-                (entrypoint)
+                (basename(cloudml_script))
                 (config))
-
-  # TODO: serialize dots and use remotely
 
   # submit job through command line
   system2(gcloud(), arguments())

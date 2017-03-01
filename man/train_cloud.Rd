@@ -14,6 +14,8 @@ train_cloud(application = getwd(), config = "gcloud", async = TRUE, ...)
 \item{async}{Run the job asynchronously? When `FALSE`, this call will
 block until the TensorFlow job has run to completion.}
 
+\item{...}{Additional configuration values for this training run}
+
 \item{...}{Optional arguments. TODO: describe in more detail.}
 }
 \description{
