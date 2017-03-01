@@ -43,8 +43,6 @@ train_local <- function(application = getwd(),
                 (entrypoint)
                 (config))
 
-  # TODO: serialize dots and use remotely
-
   system2(gcloud(), arguments())
 }
 
