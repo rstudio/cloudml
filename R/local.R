@@ -26,6 +26,11 @@ train_local <- function(application = getwd(),
   owd <- setwd(dirname(application))
   on.exit(setwd(owd), add = TRUE)
 
+  # serialize '...' as extra arguments to be merged
+  # with the config file
+  dots <- list(...)
+  saveRDS(file.path(application, "cloudml/config.rds"))
+
   # generate arguments for gcloud call
   arguments <- (ShellArgumentsBuilder()
                 ("beta")
