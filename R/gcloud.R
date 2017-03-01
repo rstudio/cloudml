@@ -59,11 +59,6 @@ gsutil <- function() {
   stop("failed to find 'gsutil' binary")
 }
 
-staging_bucket <- function() {
-  user_setting("gcloud.bucket", "")
-}
-
-
 #' Copy a file from Google Storage to the local system
 #'
 #' @param uri Google storage URI (e.g. `gs://[BUCKET_NAME]/[FILENAME.CSV]`)
