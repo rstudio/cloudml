@@ -13,11 +13,12 @@ initialize_application <- function(application = getwd()) {
     cloudml_path
   )
 
-  # ensure all sub-directories contain an '__init__.py'
+  # ensure sub-directories contain an '__init__.py'
   # script, so that they're all included in tarball
+  # (ignore 'data' directories by default)
   dirs <- list.dirs(application)
+  dirs <- grep("/(?:jobs|data|gs_data)", dirs, invert = TRUE, perl = TRUE)
   lapply(dirs, function(dir) {
-    init.py <- file.path(dir, "__init__.py")
     ensure_file(file.path(dir, "__init__.py"))
   })
 
