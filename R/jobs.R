@@ -62,13 +62,10 @@ train_cloud <- function(application = getwd(),
     on.exit(unlink(setup.py), add = TRUE)
   }
 
-  # TODO: serialize '...'
-  # extra_config <- deparse(list(...), nlines = 1L)
-  # add_filter <- paste0("config::add_filter(", extra_config, ")")
-  # source_entrypoint <- paste0("source('", entrypoint, "')")
-  # cloudml_script <- file.path(application, "_cloudml.R")
-  # cat(add_filter, source_entrypoint, file = cloudml_script, sep="\n")
-  # on.exit(unlink(cloudml_script), add = TRUE)
+  # serialize '...' as extra arguments to be merged
+  # with the config file
+  dots <- list(...)
+  saveRDS(file.path(application, "cloudml/config.rds"))
 
   # generate deployment script
   arguments <- (ShellArgumentsBuilder()
