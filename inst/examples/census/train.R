@@ -10,11 +10,11 @@ learn_runner             <- learn$python$learn$learn_runner
 saved_model_export_utils <- learn$python$learn$utils$saved_model_export_utils
 
 # Read application config
-config <- config::get("train")
+config <- config::get()
 
 # Download data for local configurations if not available
 config$train_file <- gs_data(config$train_file)
-config$eval_file <- gs_data(config$eval_file)
+config$eval_file  <- gs_data(config$eval_file)
 
 # Define experiment function
 experiment_fn <- function(output_dir) {

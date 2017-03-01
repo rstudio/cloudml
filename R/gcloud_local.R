@@ -1,23 +1,29 @@
 #' Train a Model Locally
 #'
-#' Train a model locally, using the \code{gcloud} command line
+#' Train a model locally, using the `gcloud` command line
 #' utility. This can be used as a testing bed for TensorFlow
 #' applications which you want to later run on Google Cloud,
 #' submitted using [train_cloud()].
 #'
 #' @template roxlate-application
-#' @template roxlate-entrypoint
 #' @template roxlate-config
+#' @template roxlate-dots
 #'
 #' @export
 train_local <- function(application = getwd(),
-                        entrypoint  = "train.R",
-                        config      = "default")
+                        config      = "default",
+                        ...)
 {
   # ensure application initialized
   initialize_application(application)
   owd <- setwd(dirname(application))
   on.exit(setwd(owd), add = TRUE)
+
+  # resolve entrypoint
+  dots <- list(...)
+  entrypoint <- dots[["entrypoint"]] %||%
+    config::get("train_entrypoint", config = config) %||%
+    "train.R"
 
   # generate arguments for gcloud call
   arguments <- (ShellArgumentsBuilder()
@@ -30,6 +36,8 @@ train_local <- function(application = getwd(),
                 ("--")
                 (entrypoint)
                 (config))
+
+  # TODO: serialize dots and use remotely
 
   system2(gcloud(), arguments())
 }

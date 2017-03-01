@@ -3,66 +3,54 @@
 #' Upload a TensorFlow application to Google Cloud, and use that application
 #' to train a model.
 #'
+#' @param ... Additional configuration values for this training run
+#'
 #' @template roxlate-application
-#' @template roxlate-entrypoint
 #' @template roxlate-config
-
-#' @param job.name
-#'   The name to assign to the submitted job.
-#'
-#' @param job.dir
-#'   A Google Cloud Storage path in which to
-#'   store training outputs and other data needed for
-#'   training.
-#'
-#'   If packages must be uploaded and `--staging-bucket` is
-#'   not provided, this path will be used instead.
-#'
-#' @param staging.bucket
-#'   Bucket in which to stage training archives.
-#'
-#'   Required only if a file upload is necessary (that is,
-#'   other flags include local paths) and no other flags
-#'   implicitly specify an upload path.
-#'
-#' @param runtime.version
-#'   The Google Cloud ML runtime version for this job.
-#'
-#' @param region
-#'   The region of the machine learning training job to submit.
-#'
-#' @param async
-#'   Run the job asynchronously? When `FALSE`, this call will
-#'   block until the TensorFlow job has run to completion.
+#' @template roxlate-async
+#' @template roxlate-dots
 #'
 #' @export
-train_cloud <- function(application     = getwd(),
-                        entrypoint      = "train.R",
-                        config          = "gcloud",
-                        job.name        = NULL,
-                        job.dir         = NULL,
-                        staging.bucket  = NULL,
-                        runtime.version = "1.0",
-                        region          = "us-central1",
-                        async           = TRUE,
+train_cloud <- function(application = getwd(),
+                        config      = "gcloud",
+                        async       = TRUE,
                         ...)
 {
-  # initialize parameters that depend on config.yml
-  config_path <- file.path(application, "config.yml")
-  job.name <- job.name %||% cloudml_random_job_name(application, config)
-
-  if (is.null(job.dir))
-    job.dir <- resolve_config("job_dir", "train", config, config_path)
-
-  if (is.null(staging.bucket))
-    staging.bucket <- resolve_config("staging_bucket", "train", config, config_path)
-
   # ensure application initialized
   initialize_application(application)
   owd <- setwd(dirname(application))
   on.exit(setwd(owd), add = TRUE)
 
-  # generate setup script
+  # resolve entrypoint
+  dots <- list(...)
+  entrypoint <- dots[["entrypoint"]] %||%
+    config::get("train_entrypoint", config = config) %||%
+    "train.R"
+
+  # determine job name
+  job_name <- dots[["job_name"]] %||%
+    random_job_name(application, config)
+
+  # determine job directory
+  job_dir <- dots[["job_dir"]] %||%
+    config::get("job_dir", config = config)
+
+  # determine staging bucket
+  staging_bucket <- dots[["staging_bucket"]] %||%
+    config::get("staging_bucket", config = config)
+
+  # determine region
+  region <- dots[["region"]] %||%
+    config::get("region", config = config) %||%
+    "us-central1"
+
+  # determine runtime version
+  runtime_version <- dots[["runtime_version"]] %||%
+    config::get("runtime_version", config = config) %||%
+    "1.0"
+
+  # generate setup script (used to build the application as a Python
+  # package remotely)
   if (!file.exists("setup.py")) {
     file.copy(
       system.file("cloudml/setup.py", package = "cloudml"),
@@ -88,14 +76,14 @@ train_cloud <- function(application     = getwd(),
                 ("jobs")
                 ("submit")
                 ("training")
-                (job.name)
+                (job_name)
                 ("--package-path=%s", basename(application))
                 ("--module-name=%s.deploy", basename(application))
-                ("--job-dir=%s", job.dir)
-                ("--staging-bucket=%s", staging.bucket)
+                (if (!is.null(job_dir)) c("--job-dir=%s", job_dir))
+                (if (!is.null(staging_bucket)) c("--staging-bucket=%s", staging_bucket))
                 ("--region=%s", region)
                 (if (async) "--async")
-                ("--runtime-version=%s", runtime.version)
+                ("--runtime-version=%s", runtime_version)
                 ("--")
                 (basename(cloudml_script))
                 (config))
