@@ -98,7 +98,7 @@ gs_data <- function(uri) {
   if (is_gcloud() || !is_gs_uri(uri))
     uri
   else
-    gs_copy(uri, substring(uri, nchar("gs://") + 1))
+    gs_copy(uri, file.path("gs_data", substring(uri, nchar("gs://") + 1)))
 }
 
 
