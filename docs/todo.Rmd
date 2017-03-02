@@ -1,50 +1,50 @@
 
 
+## JJ
+
+- Create access token for installation of gcloud
+
+- Python interrupt callback
+
 ## Kevin
+
+- Need to figure out what happens to the exported model for both the local
+  and gcloud case. How do I get my hands on the model?
+  
+- How exactly do I use tf learn experiment to call predict on this model
+
+- Job status/control functions
 
 - How to handle the project directory for packaging (copy, symlink, cleanup, etc.)
     - Never upload gs_data
     - Don't want to upload the job or staging dir (how can we ensure this?)
     - Should we even exppose by default the job_dir and staging dir in the config file
     - Cleanup __init__.py, etc. after we create the python package (on.exit)
-    
-- Provide some down-sampled local versions of data and have them referenced via e.g.
-  gs://rstudio-cloudml-demo-ml/census/data/local.adult.test
-  
+
 - Pull out `hyperparameters` from config and write a new YAML file with:
     trainingInput:
        hyperparmeters:
   Then pass that to gcloud with --config hyperparmeters.yml
   
-- Then in our app.R generated file where we set the config pacakge hook we 
+  Then in our app.R generated file where we set the config pacakge hook we 
   propagate the command line options/hyperparamters back into the config list
-  
-- Ensure that we don't spray __init.py__ around directories that don't 
-  contain a cloudml project (i.e. some sort of validation heuristic)
-
-- More deterministic method of ignoring directories when creating cloudml
-  bundles (gs_data + any job_dir defined in the config file?)
-
-## Next
-
-- Prediction API
-
-Note that this will require us to grab the saved model. Currently you can get the path of the model export directory via:
-
-result <- learn_runner$run(experiment_fn, config$job_dir)
-saved_model_dir <- result[[2]]
-
-I haven't yet figured out how to restore this for the purpose of predictions.
-
-Note that the saved model's location is another item we want to protect from uploading to gcloud.
 
 
-- Job status/control functions
+## Cloud NEXT
 
-- Dataviz and/or Shiny app front-end (Nathan is going to handle this)
+- Sort out all of the gcloud sdk installation / authentication requirements
+  for people other than us to use the package and document this well.
 
-- What is returned by cloudml (minimially view it in stdout, for prediction structured data)
+- Documentation on using the package
 
+
+## Future
+
+- Package skeleton function w/ config.yml, train.R, etc.
+
+- Online prediction
+
+- Build pane integration: Custom project type exposing various commands
 
 
 
