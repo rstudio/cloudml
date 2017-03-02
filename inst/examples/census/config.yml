@@ -1,9 +1,9 @@
 default:
 
   # Paths to inputs, outputs
-  # TODO: authentication credentials to enable gs:// buckets?
-  eval_file                : data/adult.test
-  train_file               : data/adult.data
+  eval_file                : "gs://tf-ml-workshop/widendeep/adult.data"
+  train_file               : "gs://tf-ml-workshop/widendeep/adult.test"
+  job_dir                  : jobs
 
   # Parameters for training routines
   estimator_embedding_size : 8

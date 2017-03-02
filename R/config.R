@@ -19,20 +19,6 @@ config_filter <- function(extra_config) {
     # merge the extra config with the provided config
     config <- config::merge(config, extra_config)
 
-    # resolve gs:// urls (copy them locally if we aren't running on gcloud)
-    resolve_gs_data <- function(value) {
-      if (is.list(value) && length(value) > 0)
-        lapply(value, resolve_gs_data)
-      else if (is_gs_uri(value))
-        gs_data(value)
-      else
-        value
-    }
-    config <- lapply(config, resolve_gs_data)
-
-    # set defaults for missing parameters
-    config[["job_dir"]] <- config[["job_dir"]] %||% "jobs"
-
     # return the filtered config
     config
   }
