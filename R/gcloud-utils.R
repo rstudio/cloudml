@@ -1,16 +1,22 @@
 # initialize an application such that it can be easily
 # deployed on gcloud
 initialize_application <- function(application = getwd()) {
-  application <- normalizePath(application, winslash = "/")
+  application <- normalizePath(application, winslash = "/", mustWork = TRUE)
+  scope_dir(application)
+
+  # bail if this doesn't look like a cloudml TensorFlow application
+  if (!file.exists("config.yml")) {
+    fmt <- "'%s' appears not to be a cloudml application (missing config.yml)"
+    stopf(fmt, basename(application))
+  }
 
   # copy 'cloudml' deployment helpers to application
-  cloudml_path <- file.path(application, "cloudml")
-  if (file.exists(cloudml_path))
-    unlink(cloudml_path, recursive = TRUE)
+  if (file.exists("cloudml"))
+    unlink("cloudml", recursive = TRUE)
 
   copy_directory(
     system.file("cloudml/cloudml", package = "cloudml"),
-    cloudml_path
+    "cloudml"
   )
 
   # ensure sub-directories contain an '__init__.py'
@@ -38,26 +44,38 @@ scope_deployment <- function(application = getwd()) {
   application <- normalizePath(application, winslash = "/")
 
   # initialize application (tracking what new files were generated)
-  old <- list.files(application, all.files = TRUE, full.names = TRUE, recursive = TRUE)
+  # helper function for listing all generated artefacts
+  list_files <- function(folder) {
+    list.files(folder,
+               all.files = TRUE,
+               full.names = TRUE,
+               recursive = TRUE,
+               include.dirs = TRUE)
+  }
+
+  old <- list_files(application)
   initialize_application(application)
-  new <- list.files(application, all.files = TRUE, full.names = TRUE, recursive = TRUE)
+  new <- list_files(application)
 
   # clean up the newly generated files and move back
   # to callers directory when the parent function exits
   transient <- setdiff(new, old)
   defer({
+
+    # unlink all transient artefacts
     unlink(transient, recursive = TRUE)
 
-    # also clean up any '__init__.pyc' files
+    # clean up any '.pyc' files generated as a side effect
+    # of building the package
     pyc <- list.files(
-      "__init__.pyc$",
       application,
-      all.files = TRUE,
+      pattern    = "\\.pyc$",
+      all.files  = TRUE,
       full.names = TRUE,
-      recursive = TRUE
+      recursive  = TRUE
     )
-
     unlink(pyc)
+
   }, envir = parent.frame())
 
   # return normalized application path

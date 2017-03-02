@@ -106,3 +106,8 @@ defer <- function(expr, envir = parent.frame()) {
   # the exit handlrs of the selected frame
   do.call(base::on.exit, list(substitute(call), add = TRUE), envir = envir)
 }
+
+scope_dir <- function(dir) {
+  owd <- setwd(dir)
+  defer(setwd(owd), parent.frame())
+}
