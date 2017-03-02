@@ -92,8 +92,32 @@ gs_copy <- function(uri, destination, overwrite = FALSE) {
 gs_data <- function(uri) {
   if (is_gcloud() || !is_gs_uri(uri))
     uri
-  else
-    gs_copy(uri, file.path("gs_data", substring(uri, nchar("gs://") + 1)))
+  else {
+    # extract [BUCKET_NAME]/[OBJECT_NAME] and build local path
+    object_path <- substring(uri, nchar("gs://") + 1)
+    local_path <- file.path("gs_data", object_path)
+
+    # download if necessary
+    if (!file.exists(local_path)) {
+
+      # create the directory if necessary
+      local_dir <- dirname(local_path)
+      if (!utils::file_test("-d", local_dir))
+        dir.create(local_dir, recursive = TRUE)
+
+      # first attempt download via public api endpoint
+      public_url <- paste0("https://storage.googleapis.com/", object_path)
+      result <- tryCatch(suppressWarnings(download.file(public_url, local_path)),
+                         error = function(e) 1)
+
+      # if that failed then try gs_copy (which requires auth)
+      if (result != 0)
+        gs_copy(uri, local_path)
+    }
+
+    # return path
+    local_path
+  }
 }
 
 
