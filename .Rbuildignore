@@ -7,4 +7,5 @@
 ^internal/
 ^man-roxygen/
 ^docs/
+^README\.R?md
 
