@@ -1,8 +1,10 @@
 default:
 
-  # Paths to inputs, outputs
+  # Inputs
   eval_file                : "gs://tf-ml-workshop/widendeep/adult.data"
   train_file               : "gs://tf-ml-workshop/widendeep/adult.test"
+  
+  # Outputs
   job_dir                  : jobs
 
   # Parameters for training routines
@@ -18,9 +20,11 @@ default:
 
 gcloud:
 
-  # Paths to inputs, outputs
-  eval_file                : "gs://rstudio-cloudml-demo-ml/census/data/adult.test"
-  train_file               : "gs://rstudio-cloudml-demo-ml/census/data/adult.data"
+  # Inputs
+  eval_file                : "gs://tf-ml-workshop/widendeep/adult.data"
+  train_file               : "gs://tf-ml-workshop/widendeep/adult.test"
+  
+  # Outputs (to run within another gcloud account, substitute your own buckets)
   job_dir                  : "gs://rstudio-cloudml-demo-ml/census/jobs"
   staging_bucket           : "gs://rstudio-cloudml-demo-ml"
 
