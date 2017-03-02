@@ -19,13 +19,6 @@ from setuptools.command.install import install
 #
 # The output of custom commands (including failures) will be logged in the
 # worker-startup log.
-PACKAGE_INSTALL_R_SCRIPT_PATH = "/tmp/install-packages.R"
-PACKAGE_INSTALL_R_SCRIPT = """
-options(repos = c(CRAN = "http://cran.rstudio.com"))
-options(download.file.method = "wget")
-install.packages(c("devtools", "RCurl"))
-devtools::install_github("rstudio/tensorflow")
-"""
 
 CUSTOM_COMMANDS = [
     # ["apt-key", "adv", "--keyserver", "keyserver.ubuntu.com", "--recv-keys", "E298A3A825C0D65DFD57CBB651716619E084DAB9"],
@@ -38,40 +31,36 @@ CUSTOM_COMMANDS = [
     # ["apt-get", "clean"],
     ["apt-get", "-qq", "-m", "-y", "update"],
     ["apt-get", "-qq", "-m", "-y", "upgrade"],
-    ["apt-get", "-qq", "-m", "-y", "install", "libcurl4-openssl-dev", "libxml2-dev", "libxslt-dev", "libssl-dev", "r-base", "r-base-dev"],
-    ["Rscript", PACKAGE_INSTALL_R_SCRIPT_PATH]
+    ["apt-get", "-qq", "-m", "-y", "install", "libcurl4-openssl-dev", "libxml2-dev", "libxslt-dev", "libssl-dev", "r-base", "r-base-dev"]
 ]
-
-"""Creates an R Script to install required R packages in the temp folder"""
-def CreatePackageInstallRScript():
-  with open(PACKAGE_INSTALL_R_SCRIPT_PATH, "w") as f:
-    f.write(PACKAGE_INSTALL_R_SCRIPT)
 
 class CustomCommands(install):
 
   """A setuptools Command class able to run arbitrary commands."""
-  def RunCustomCommand(self, command_list):
-    print "Running command: %s" % command_list
-    p = subprocess.Popen(
-        command_list,
-        stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-    # Can use communicate(input="y\n".encode()) if the command run requires
-    # some confirmation.
-    stdout_data, _ = p.communicate()
-    print "Command output: %s" % stdout_data
-    if p.returncode != 0:
-      raise RuntimeError(
-          "Command %s failed: exit code: %s" % (command_list, p.returncode))
+  def RunCustomCommand(self, commands):
+
+    process = subprocess.Popen(
+        commands,
+        stdin  = subprocess.PIPE,
+        stdout = subprocess.PIPE,
+        stderr = subprocess.STDOUT
+    )
+
+    stdout, stderr = process.communicate
+    print "Command output: %s" % stdout
+    status = process.returncode
+    if status != 0:
+      message = "Command %s failed: exit code %s" % (commands, status)
+      raise RuntimeError(message)
 
   def run(self):
     distro = platform.linux_distribution()
     print "linux_distribution: %s" % (distro,)
 
-    CreatePackageInstallRScript()
-
     # Run custom commands
     for command in CUSTOM_COMMANDS:
       self.RunCustomCommand(command)
+
     # Run regular install
     install.run(self)
 
