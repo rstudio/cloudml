@@ -44,7 +44,3 @@
 - Build pane integration: Custom project type exposing various commands
 
 
-
-       
-       
-

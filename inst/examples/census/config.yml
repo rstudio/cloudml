@@ -3,9 +3,9 @@ default:
   # Inputs
   eval_file                : "gs://tf-ml-workshop/widendeep/adult.data"
   train_file               : "gs://tf-ml-workshop/widendeep/adult.test"
-  
+
   # Outputs
-  job_dir                  : jobs
+  job_dir                  : !expr cloudml::job_dir("jobs")
 
   # Parameters for training routines
   estimator_embedding_size : 8
@@ -23,9 +23,9 @@ gcloud:
   # Inputs
   eval_file                : "gs://tf-ml-workshop/widendeep/adult.data"
   train_file               : "gs://tf-ml-workshop/widendeep/adult.test"
-  
+
   # Outputs (to run within another gcloud account, substitute your own buckets)
-  job_dir                  : "gs://rstudio-cloudml-demo-ml/census/jobs"
+  job_dir                  : !expr cloudml::job_dir("gs://rstudio-cloudml-demo-ml/census/jobs")
   staging_bucket           : "gs://rstudio-cloudml-demo-ml"
 
   # Overrides for parameters
