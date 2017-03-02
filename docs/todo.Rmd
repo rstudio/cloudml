@@ -16,10 +16,7 @@
 - Job status/control functions
 
 - How to handle the project directory for packaging (copy, symlink, cleanup, etc.)
-    - Never upload gs_data
-    - Don't want to upload the job or staging dir (how can we ensure this?)
-    - Should we even exppose by default the job_dir and staging dir in the config file
-    - Cleanup __init__.py, etc. after we create the python package (on.exit)
+    - Consider copying to temporary directory and mutating + uploading that bundle
 
 - Pull out `hyperparameters` from config and write a new YAML file with:
     trainingInput:
