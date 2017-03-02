@@ -1,11 +1,4 @@
 
-## JJ
-
-
-- Automatically call gs_data on all embedded GS URLs
-
-- Generate the app.R file that includes the config hooks (do this in train_cloud)
-
 
 ## Kevin
 
