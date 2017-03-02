@@ -19,6 +19,11 @@
 - Then in our app.R generated file where we set the config pacakge hook we 
   propagate the command line options/hyperparamters back into the config list
   
+- Ensure that we don't spray __init.py__ around directories that don't 
+  contain a cloudml project (i.e. some sort of validation heuristic)
+
+- More deterministic method of ignoring directories when creating cloudml
+  bundles (gs_data + any job_dir defined in the config file?)
 
 ## Next
 
@@ -26,7 +31,7 @@
 
 - Job status/control functions
 
-- Dataviz and/or Shiny app front-end
+- Dataviz and/or Shiny app front-end (Nathan is going to handle this)
 
 - What is returned by cloudml (minimially view it in stdout, for prediction structured data)
 
