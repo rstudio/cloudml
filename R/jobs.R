@@ -125,10 +125,68 @@ train_cloud <- function(application = getwd(),
 
   # non-async -- just run and block
   system2(gcloud(), arguments())
-
 }
 
-cloudml_jobs_cancel <- "TODO"
-cloudml_jobs_describe <- "TODO"
-cloudml_jobs_list <- "TODO"
-cloudml_jobs_logs <- "TODO"
+jobs_cancel <- function(job) {
+  arguments <- (
+    ShellArgumentsBuilder()
+    ("beta")
+    ("ml")
+    ("jobs")
+    ("cancel")
+    (job))
+
+  system2(gcloud(), arguments())
+}
+
+jobs_describe <- function(job) {
+  arguments <- (
+    ShellArgumentsBuilder()
+    ("beta")
+    ("ml")
+    ("jobs")
+    ("describe")
+    (job))
+
+  system2(gcloud(), arguments())
+}
+
+jobs_list <- function(filter    = NULL,
+                      limit     = NULL,
+                      page_size = NULL,
+                      sort_by   = NULL,
+                      uri       = FALSE)
+{
+  arguments <- (
+    ShellArgumentsBuilder()
+    ("beta")
+    ("ml")
+    ("jobs")
+    ("list")
+    (if (!is.null(filter))    c("--filter=%s", filter))
+    (if (!is.null(limit))     c("--limit=%s", limit))
+    (if (!is.null(page_size)) c("--page-size=%s", page_size))
+    (if (!is.null(sort_by))   c("--sort-by=%s", sort_by))
+    (if (uri) "--uri"))
+
+  system2(gcloud(), arguments())
+}
+
+jobs_stream <- function(job,
+                        polling_interval = 60,
+                        task_name = NULL,
+                        allow_multiline_logs = FALSE)
+{
+  arguments <- (
+    ShellArgumentsBuilder()
+    ("beta")
+    ("ml")
+    ("jobs")
+    ("stream-logs")
+    (job)
+    ("--polling-interval=%i", as.integer(polling_interval))
+    (if (!is.null(task_name)) c("--task-name=%s", task_name))
+    (if (allow_multiline_logs) "--allow-multiline-logs"))
+
+  system2(gcloud(), arguments())
+}
