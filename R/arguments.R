@@ -9,15 +9,22 @@ ShellArgumentsBuilder <- function() {
 
   self <- function(...) {
 
-    # flatten a potentially nested list
-    dots <- as.list(unlist(list(...)))
-    if (length(dots) == 0)
-      return(arguments_)
+    dots <- list(...)
 
+    # handle 'NULL' specially
     if (length(dots) == 1 && is.null(dots[[1]]))
       return(invisible(self))
 
-    formatted <- do.call(sprintf, dots)
+    # return arguments when nothing supplied
+    if (length(dots) == 0)
+      return(arguments_)
+
+    # flatten a potentially nested list
+    flattened <- as.list(unlist(list(...)))
+    if (length(flattened) == 0)
+      return(arguments_)
+
+    formatted <- do.call(sprintf, flattened)
     arguments_ <<- c(arguments_, shell_quote(formatted))
     invisible(self)
   }
