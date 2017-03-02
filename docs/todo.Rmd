@@ -29,6 +29,16 @@
 
 - Prediction API
 
+Note that this will require us to grab the saved model. Currently you can get the path of the model export directory via:
+
+result <- learn_runner$run(experiment_fn, config$job_dir)
+saved_model_dir <- result[[2]]
+
+I haven't yet figured out how to restore this for the purpose of predictions.
+
+Note that the saved model's location is another item we want to protect from uploading to gcloud.
+
+
 - Job status/control functions
 
 - Dataviz and/or Shiny app front-end (Nathan is going to handle this)
