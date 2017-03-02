@@ -46,7 +46,7 @@ class CustomCommands(install):
         stderr = subprocess.STDOUT
     )
 
-    stdout, stderr = process.communicate
+    stdout, stderr = process.communicate()
     print "Command output: %s" % stdout
     status = process.returncode
     if status != 0:
