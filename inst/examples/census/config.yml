@@ -19,8 +19,8 @@ default:
 gcloud:
 
   # Paths to inputs, outputs
-  eval_file                : "gs://rstudio-cloudml-demo-ml/census/data/adult.test"
-  train_file               : "gs://rstudio-cloudml-demo-ml/census/data/adult.data"
+  eval_file                : "gs://tf-ml-workshop/widendeep/adult.data"
+  train_file               : "gs://tf-ml-workshop/widendeep/adult.test"
   job_dir                  : "gs://rstudio-cloudml-demo-ml/census/jobs"
   staging_bucket           : "gs://rstudio-cloudml-demo-ml"
 
