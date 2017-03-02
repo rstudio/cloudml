@@ -1,5 +1,4 @@
 library(tensorflow)
-library(cloudml)
 
 source("model.R")
 
