@@ -102,8 +102,30 @@ train_cloud <- function(application = getwd(),
                 (entrypoint)
                 (config))
 
-  # submit job through command line
+  # submit job through command line interface
+  # (handle command line output in async case)
+  if (async) {
+    output <- system2(
+      gcloud(),
+      arguments(),
+      stdout = TRUE,
+      stderr = TRUE
+    )
+
+    # extract job id from output
+    index <- grep("^jobId:", output)
+    id <- substring(output[index], 8)
+
+    # emit first line of output
+    cat(output[1], sep = "\n")
+
+    # return job id
+    return(id)
+  }
+
+  # non-async -- just run and block
   system2(gcloud(), arguments())
+
 }
 
 cloudml_jobs_cancel <- "TODO"
