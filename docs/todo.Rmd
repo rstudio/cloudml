@@ -1,13 +1,6 @@
 
 ## Kevin
 
-- train_cloudmlml chooses a randome remote job dir, is always async, and 
-  returns a job object (ID, directory, URLs). Job object should have a 
-  nice print method for users that don't keep it.
-  
-- Job functions should take a job object or a job id (in case we have to
-  reconsturct the object from the ID)
-  
 - job_collect is used to synchronously poll/wait for a job and to 
   write it's model into a local directory, by default "cloudml/jobs"
 

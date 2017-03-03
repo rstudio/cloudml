@@ -102,25 +102,29 @@ train_cloudml <- function(application = getwd(),
 }
 
 jobs_cancel <- function(job) {
+  id <- job_name(job)
+
   arguments <- (
     ShellArgumentsBuilder()
     ("beta")
     ("ml")
     ("jobs")
     ("cancel")
-    (job))
+    (id))
 
   gexec(gcloud(), arguments())
 }
 
 jobs_describe <- function(job) {
+  id <- job_name(job)
+
   arguments <- (
     ShellArgumentsBuilder()
     ("beta")
     ("ml")
     ("jobs")
     ("describe")
-    (job))
+    (id))
 
   gexec(gcloud(), arguments())
 }
@@ -151,13 +155,15 @@ jobs_stream <- function(job,
                         task_name = NULL,
                         allow_multiline_logs = FALSE)
 {
+  id <- job_name(job)
+
   arguments <- (
     ShellArgumentsBuilder()
     ("beta")
     ("ml")
     ("jobs")
     ("stream-logs")
-    (job)
+    (id)
     (sprintf("--polling-interval=%i", as.integer(polling_interval)))
     (if (!is.null(task_name)) sprintf("--task-name=%s", task_name))
     (if (allow_multiline_logs) "--allow-multiline-logs"))
