@@ -1,5 +1,9 @@
 `%||%` <- function(x, y) if (is.null(x)) y else x
 
+printf <- function(fmt, ...) {
+  cat(sprintf(fmt, ...), sep = "\n")
+}
+
 stopf <- function(fmt, ..., call. = TRUE, domain = NULL) {
   stop(simpleError(
     sprintf(fmt, ...),

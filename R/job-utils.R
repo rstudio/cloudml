@@ -23,7 +23,19 @@ job_name.cloudml_job <- function(x, ...) {
   x$job_name
 }
 
-job_name.default <- function(x, ...) {
+job_name.character <- function(x, ...) {
+  x
+}
+
+job_dir <- function(x, ...) {
+  UseMethod("job_dir")
+}
+
+job_dir.cloudml_job <- function(x, ...) {
+  x$job_dir
+}
+
+job_dir.character <- function(x, ...) {
   x
 }
 
@@ -54,7 +66,7 @@ print.cloudml_job <- function(x, ...) {
 #'   The prefix to be used for the job directory.
 #'
 #' @export
-job_dir <- function(prefix = "jobs") {
+create_job_dir <- function(prefix = "jobs") {
   sprintf(
     "%s/%s_%i",
     prefix,

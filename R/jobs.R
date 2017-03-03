@@ -170,3 +170,69 @@ job_stream <- function(job,
 
   gexec(gcloud(), arguments())
 }
+
+job_status <- function(job) {
+  id <- job_name(job)
+
+  arguments <- (
+    ShellArgumentsBuilder()
+    ("beta")
+    ("ml")
+    ("jobs")
+    ("describe")
+    (id))
+
+  # request job description from gcloud
+  output <- gexec(gcloud(), arguments(), stdout = TRUE, stderr = FALSE)
+
+  # parse as YAML and return
+  yaml::yaml.load(paste(output, collapse = "\n"))
+}
+
+job_collect <- function(job) {
+  id <- job_name(job)
+
+  # get the job status
+  status <- job_status(job)
+
+  # if we're already done, return early
+  if (status$state == "SUCCEEDED")
+    return(job_download(job))
+
+  # otherwise, notify the user and begin polling
+  fmt <- ">>> Job '%s' is currently running -- please wait..."
+  printf(fmt, id)
+  printf(">>> [state: %s]", status$state)
+
+  # TODO: should we give up after a while? (user can always interrupt)
+  repeat {
+
+    # get the job status
+    status <- job_status(job)
+
+    if (status$state == "SUCCEEDED")
+      return(job_download(job))
+
+    # job isn't ready yet; sleep for a while and try again
+    Sys.sleep(60)
+
+  }
+
+  stop("failed to receive job outputs")
+}
+
+job_download <- function(job, target = "jobs") {
+  source <- job$job_dir
+  target <- target %||% "jobs"
+
+  ensure_directory(target)
+
+  arguments <- (
+    ShellArgumentsBuilder()
+    ("cp")
+    ("-R")
+    (source)
+    (target))
+
+  gexec(gsutil(), arguments())
+}
