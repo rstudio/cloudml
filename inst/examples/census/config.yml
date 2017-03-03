@@ -1,10 +1,10 @@
 default:
 
-  # Inputs
-  eval_file                : "gs://tf-ml-workshop/widendeep/adult.data"
-  train_file               : "gs://tf-ml-workshop/widendeep/adult.test"
+  # Inputs (downsampled data for local development)
+  eval_file                : "data/local.adult.test"
+  train_file               : "data/local.adult.data"
 
-  # Outputs
+  # Outputs (write to local jobs directory)
   job_dir                  : !expr cloudml::job_dir("jobs")
 
   # Parameters for training routines
@@ -28,6 +28,6 @@ gcloud:
   job_dir                  : !expr cloudml::job_dir("gs://rstudio-cloudml-demo-ml/census/jobs")
   staging_bucket           : "gs://rstudio-cloudml-demo-ml"
 
-  # Overrides for parameters
-  eval_num_epochs          : 100
-  train_num_epochs         : 100
+  # Overrides for training parameters
+  eval_num_epochs          : 25
+  train_num_epochs         : 25

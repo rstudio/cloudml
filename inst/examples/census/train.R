@@ -11,10 +11,6 @@ saved_model_export_utils <- learn$python$learn$utils$saved_model_export_utils
 # read application config
 config <- config::get()
 
-# use local copy of training data when not on gcloud
-config$train_file <- cloudml::gs_data(config$train_file)
-config$eval_file  <- cloudml::gs_data(config$eval_file)
-
 # define estimator
 estimator <- build_estimator(
   model_dir      = config$job_dir,
