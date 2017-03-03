@@ -116,14 +116,15 @@ scope_dir <- function(dir) {
 # that the tensorflow package will bind to
 gexec <- function(command, args = character(), stdout = "", stderr = "", ...) {
 
-  # import tensorflow so that we resovle the python configuration, then
-  # propagate that version of python to CLOUDSDK_PYTHON
+  # import tensorflow so that we figure out where that version of python lives
   tf <- reticulate::import("tensorflow")
   python <- reticulate::py_config()$python
-  Sys.setenv(CLOUDSDK_PYTHON = python)
 
-  # execute the command
-  system2(command, args, stdout, stderr, ...)
+  # append that to the PATH as an extra version of Python to bind to
+  # if no other suitable ones are found
+  with_path(python, {
+    system2(command, args, stdout, stderr, ...)
+  }, action = "suffix")
 }
 
 
