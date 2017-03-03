@@ -4,6 +4,9 @@
 #' deployments when you want model artefacts to be confined to
 #' a unique directory.
 #'
+#' @param prefix
+#'   The prefix to be used for the job directory.
+#'
 #' @export
 job_dir <- function(prefix = "jobs") {
   sprintf(

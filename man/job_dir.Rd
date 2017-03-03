@@ -6,6 +6,9 @@
 \usage{
 job_dir(prefix = "jobs")
 }
+\arguments{
+\item{prefix}{The prefix to be used for the job directory.}
+}
 \description{
 Generate a job directory (as a relative path). Useful for
 deployments when you want model artefacts to be confined to
