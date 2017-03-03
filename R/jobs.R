@@ -1,12 +1,14 @@
 
 #' Google Cloud -- Submit a Training Job
 #'
-#' Upload a TensorFlow application to Google Cloud, and use that application
-#' to train a model.
+#' Upload a TensorFlow application to Google Cloud, and use
+#' that application to train a model.
 #'
 #' @template roxlate-application
 #' @template roxlate-config
 #' @template roxlate-dots
+#'
+#' @family jobs
 #'
 #' @export
 train_cloudml <- function(application = getwd(),
@@ -102,6 +104,13 @@ train_cloudml <- function(application = getwd(),
   )
 }
 
+#' Google Cloud -- Cancel a Job
+#'
+#' Cancel a job.
+#'
+#' @template roxlate-job
+#' @family jobs
+#' @export
 job_cancel <- function(job) {
   id <- job_name(job)
 
@@ -116,6 +125,13 @@ job_cancel <- function(job) {
   gexec(gcloud(), arguments())
 }
 
+#' Google Cloud -- Describe a Job
+#'
+#' Describe a job.
+#'
+#' @template roxlate-job
+#' @family jobs
+#' @export
 job_describe <- function(job) {
   id <- job_name(job)
 
@@ -130,6 +146,35 @@ job_describe <- function(job) {
   gexec(gcloud(), arguments())
 }
 
+#' Google Cloud -- List Jobs
+#'
+#' List existing Google Cloud ML jobs.
+#'
+#' @param filter
+#'   Filter the set of jobs to be returned.
+#'
+#' @param limit
+#'   The maximum number of resources to list. By default,
+#'   all jobs will be listed.
+#'
+#' @param page_size
+#'   Some services group resource list output into pages.
+#'   This flag specifies the maximum number of resources per
+#'   page. The default is determined by the service if it
+#'   supports paging, otherwise it is unlimited (no paging).
+#'
+#' @param sort_by
+#'   A comma-separated list of resource field key names to
+#'   sort by. The default order is ascending. Prefix a field
+#'   with `~` for descending order on that field.
+#'
+#' @param uri
+#'   Print a list of resource URIs instead of the default
+#'   output.
+#'
+#' @family jobs
+#'
+#' @export
 job_list <- function(filter    = NULL,
                      limit     = NULL,
                      page_size = NULL,
@@ -151,6 +196,24 @@ job_list <- function(filter    = NULL,
   gexec(gcloud(), arguments())
 }
 
+#' Google Cloud -- Stream Logs from a Job
+#'
+#' Show logs from a running Cloud ML Engine job.
+#'
+#' @template roxlate-job
+#'
+#' @param polling_interval
+#'   Number of seconds to wait between efforts to fetch the
+#'   latest log messages.
+#'
+#' @param task_name
+#'   If set, display only the logs for this particular task.
+#'
+#' @param allow_multiline_logs
+#'   Output multiline log messages as single records.
+#'
+#' @family jobs
+#' @export
 job_stream <- function(job,
                        polling_interval = 60,
                        task_name = NULL,
@@ -172,6 +235,15 @@ job_stream <- function(job,
   gexec(gcloud(), arguments())
 }
 
+#' Google Cloud -- Job Status
+#'
+#' Get the status of a job, as an \R list.
+#'
+#' @template roxlate-job
+#'
+#' @family jobs
+#'
+#' @export
 job_status <- function(job) {
   id <- job_name(job)
 
@@ -190,7 +262,25 @@ job_status <- function(job) {
   yaml::yaml.load(paste(output, collapse = "\n"))
 }
 
-job_collect <- function(job) {
+#' Collect Results from a Job
+#'
+#' Collect the job outputs (e.g. fitted model) from a job.
+#' If the job has not yet finished running, `job_collect()`
+#' will block and wait until the job has finished.
+#'
+#' @template roxlate-job
+#'
+#' @param target
+#'   The target directory in which model outputs should
+#'   be downloaded. Defaults to `cloudml/jobs`.
+#'
+#' @family jobs
+#'
+#' @export
+job_collect <- function(job,
+                        target = "cloudml/jobs")
+{
+  # TODO: we need to handle job failures here
   id <- job_name(job)
 
   # get the job status
@@ -198,7 +288,7 @@ job_collect <- function(job) {
 
   # if we're already done, return early
   if (status$state == "SUCCEEDED")
-    return(job_download(job))
+    return(job_download(job, target))
 
   # otherwise, notify the user and begin polling
   fmt <- ">>> Job '%s' is currently running -- please wait..."
@@ -212,7 +302,7 @@ job_collect <- function(job) {
     status <- job_status(job)
 
     if (status$state == "SUCCEEDED")
-      return(job_download(job))
+      return(job_download(job, target))
 
     # job isn't ready yet; sleep for a while and try again
     Sys.sleep(60)
@@ -222,7 +312,9 @@ job_collect <- function(job) {
   stop("failed to receive job outputs")
 }
 
-job_download <- function(job, target = "cloudml/jobs") {
+job_download <- function(job,
+                         target = "cloudml/jobs")
+{
   source <- job$job_dir
   target <- target %||% "jobs"
 

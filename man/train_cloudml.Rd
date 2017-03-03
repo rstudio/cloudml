@@ -14,6 +14,12 @@ train_cloudml(application = getwd(), config = "cloudml", ...)
 \item{...}{Optional arguments. TODO: describe in more detail.}
 }
 \description{
-Upload a TensorFlow application to Google Cloud, and use that application
-to train a model.
+Upload a TensorFlow application to Google Cloud, and use
+that application to train a model.
+}
+\seealso{
+Other jobs: \code{\link{job_cancel}},
+  \code{\link{job_collect}}, \code{\link{job_describe}},
+  \code{\link{job_list}}, \code{\link{job_status}},
+  \code{\link{job_stream}}
 }
