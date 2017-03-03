@@ -1,15 +1,27 @@
 
-
-## JJ
-
-- Python interrupt callback (pending PR)
-
 ## Kevin
 
-- Need to figure out what happens to the exported model for both the local
-  and gcloud case. How do I get my hands on the model?
+- Review python interrupt callback (pending PR)
+
+- train_local and source("train.R") will use a stable jobs directory
+- convention based local/jobs and local/data for local artifacts
+
+- rename to "train_local" and "train_cloudml"
+
+- train_cloudml chooses a randome remote job dir, is always async, and 
+  returns a job object (ID, directory, URLs). Job object should have a 
+  nice print method for users that don't keep it.
   
-- How exactly do I use tf learn experiment to call predict on this model
+- Job functions should take a job object or a job id (in case we have to
+  reconsturct the object from the ID)
+  
+- job_collect is used to synchronously poll/wait for a job and to 
+  write it's model into a local directory, by default "cloudml/jobs"
+
+- Rename "gcloud" config to "cloudml"
+
+- How exactly do I use tf learn experiment to call predict on this model. I think
+  we just reconsturct the Experiment with the job/model dir and call predict on it
 
 - Job status/control functions
 
@@ -42,5 +54,9 @@
 - Package skeleton function w/ config.yml, train.R, etc.
 
 - Build pane integration: Custom project type exposing various commands
+
+- rstudioapi package making available a version of system that pumps events
+
+
 
 
