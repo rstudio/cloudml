@@ -1,8 +1,6 @@
 
 ## Kevin
 
-- Review python interrupt callback (pending PR)
-
 - train_local and source("train.R") will use a stable jobs directory
 - convention based local/jobs and local/data for local artifacts
 
