@@ -116,15 +116,23 @@ scope_dir <- function(dir) {
 # that the tensorflow package will bind to
 gexec <- function(command, args = character(), stdout = "", stderr = "", ...) {
 
-  # import tensorflow so that we figure out where that version of python lives
-  tf <- reticulate::import("tensorflow")
-  python_dir <- dirname(reticulate::py_config()$python)
-
-  # append that to the PATH as an extra version of Python to bind to
-  # if no other suitable ones are found
-  with_path(new = python_dir, action = "suffix", code = {
+  # exec function
+  exec <- function() {
     system2(command, args, stdout, stderr, ...)
-  })
+  }
+
+  # import tensorflow so that we figure out where that version of python lives
+  tf <- tryCatch(reticulate::import("tensorflow"), error = function(e) NULL)
+  if (!is.null(tf)) {
+    # get the directory
+    python_dir <- dirname(reticulate::py_config()$python)
+
+    # append that to the PATH as an extra version of Python to bind to
+    # if no other suitable ones are found
+    with_path(new = python_dir, action = "suffix", exec())
+  } else {
+    exec()
+  }
 }
 
 
