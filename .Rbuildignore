@@ -2,8 +2,8 @@
 ^\.Rproj\.user$
 ^examples/
 ^internal/
-^inst/examples/census/jobs/
-^inst/examples/census/data/
+^inst/examples/census/local/jobs
+^inst/examples/census/cloudml/
 ^internal/
 ^man-roxygen/
 ^docs/
