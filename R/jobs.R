@@ -101,7 +101,7 @@ train_cloudml <- function(application = getwd(),
   )
 }
 
-jobs_cancel <- function(job) {
+job_cancel <- function(job) {
   id <- job_name(job)
 
   arguments <- (
@@ -115,7 +115,7 @@ jobs_cancel <- function(job) {
   gexec(gcloud(), arguments())
 }
 
-jobs_describe <- function(job) {
+job_describe <- function(job) {
   id <- job_name(job)
 
   arguments <- (
@@ -129,11 +129,11 @@ jobs_describe <- function(job) {
   gexec(gcloud(), arguments())
 }
 
-jobs_list <- function(filter    = NULL,
-                      limit     = NULL,
-                      page_size = NULL,
-                      sort_by   = NULL,
-                      uri       = FALSE)
+job_list <- function(filter    = NULL,
+                     limit     = NULL,
+                     page_size = NULL,
+                     sort_by   = NULL,
+                     uri       = FALSE)
 {
   arguments <- (
     ShellArgumentsBuilder()
@@ -150,10 +150,10 @@ jobs_list <- function(filter    = NULL,
   gexec(gcloud(), arguments())
 }
 
-jobs_stream <- function(job,
-                        polling_interval = 60,
-                        task_name = NULL,
-                        allow_multiline_logs = FALSE)
+job_stream <- function(job,
+                       polling_interval = 60,
+                       task_name = NULL,
+                       allow_multiline_logs = FALSE)
 {
   id <- job_name(job)
 
