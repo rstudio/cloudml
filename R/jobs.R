@@ -184,8 +184,8 @@ jobs_stream <- function(job,
     ("jobs")
     ("stream-logs")
     (job)
-    ("--polling-interval=%i", as.integer(polling_interval))
-    (if (!is.null(task_name)) c("--task-name=%s", task_name))
+    (sprintf("--polling-interval=%i", as.integer(polling_interval)))
+    (if (!is.null(task_name)) sprintf("--task-name=%s", task_name))
     (if (allow_multiline_logs) "--allow-multiline-logs"))
 
   gexec(gcloud(), arguments())
