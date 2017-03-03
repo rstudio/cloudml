@@ -1,11 +1,6 @@
 
 ## Kevin
 
-- job_collect is used to synchronously poll/wait for a job and to 
-  write it's model into a local directory, by default "cloudml/jobs"
-
-- Rename "gcloud" config to "cloudml"
-
 - How exactly do I use tf learn experiment to call predict on this model. I think
   we just reconsturct the Experiment with the job/model dir and call predict on it
 
