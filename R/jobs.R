@@ -27,10 +27,10 @@ job_dir <- function(prefix = "jobs") {
 #' @template roxlate-dots
 #'
 #' @export
-train_cloud <- function(application = getwd(),
-                        config      = "gcloud",
-                        async       = TRUE,
-                        ...)
+train_cloudml <- function(application = getwd(),
+                          config      = "gcloud",
+                          async       = TRUE,
+                          ...)
 {
   application <- scope_deployment(application)
 

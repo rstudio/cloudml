@@ -1,9 +1,7 @@
 
 ## Kevin
 
-- rename to "train_local" and "train_cloudml"
-
-- train_cloudml chooses a randome remote job dir, is always async, and 
+- train_cloudmlml chooses a randome remote job dir, is always async, and 
   returns a job object (ID, directory, URLs). Job object should have a 
   nice print method for users that don't keep it.
   

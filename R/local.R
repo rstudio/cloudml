@@ -3,7 +3,7 @@
 #' Train a model locally, using the `gcloud` command line
 #' utility. This can be used as a testing bed for TensorFlow
 #' applications which you want to later run on Google Cloud,
-#' submitted using [train_cloud()].
+#' submitted using [train_cloudml()].
 #'
 #' @template roxlate-application
 #' @template roxlate-config
