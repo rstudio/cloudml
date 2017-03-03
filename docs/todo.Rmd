@@ -37,9 +37,11 @@
 
 ## Future
 
-- Package skeleton function w/ config.yml, train.R, etc.
-
 - Online prediction
+
+- Satisfying R package dependencies of train.R (packrat manifest + .Rprofile?)
+
+- Package skeleton function w/ config.yml, train.R, etc.
 
 - Build pane integration: Custom project type exposing various commands
 
