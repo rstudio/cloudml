@@ -118,13 +118,13 @@ gexec <- function(command, args = character(), stdout = "", stderr = "", ...) {
 
   # import tensorflow so that we figure out where that version of python lives
   tf <- reticulate::import("tensorflow")
-  python <- reticulate::py_config()$python
+  python_dir <- dirname(reticulate::py_config()$python)
 
   # append that to the PATH as an extra version of Python to bind to
   # if no other suitable ones are found
-  with_path(python, {
+  with_path(new = python_dir, action = "suffix", code = {
     system2(command, args, stdout, stderr, ...)
-  }, action = "suffix")
+  })
 }
 
 
