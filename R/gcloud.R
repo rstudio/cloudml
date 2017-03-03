@@ -88,6 +88,8 @@ gs_copy <- function(uri, destination, overwrite = FALSE) {
 #' @return Path to data file (may be local or remote depending on the execution
 #'   context).
 #'
+#' @importFrom utils download.file
+#'
 #' @export
 gs_data <- function(uri) {
   if (is_gcloud() || !is_gs_uri(uri))
