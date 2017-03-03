@@ -23,13 +23,11 @@ job_dir <- function(prefix = "jobs") {
 #'
 #' @template roxlate-application
 #' @template roxlate-config
-#' @template roxlate-async
 #' @template roxlate-dots
 #'
 #' @export
 train_cloudml <- function(application = getwd(),
                           config      = "gcloud",
-                          async       = TRUE,
                           ...)
 {
   application <- scope_deployment(application)
@@ -96,35 +94,28 @@ train_cloudml <- function(application = getwd(),
                 (if (!is.null(job_dir)) c("--job-dir=%s", job_dir))
                 (if (!is.null(staging_bucket)) c("--staging-bucket=%s", staging_bucket))
                 ("--region=%s", region)
-                (if (async) "--async")
+                ("--async")
                 ("--runtime-version=%s", runtime_version)
                 ("--")
                 (entrypoint)
                 (config))
 
   # submit job through command line interface
-  # (handle command line output in async case)
-  if (async) {
-    output <- gexec(
-      gcloud(),
-      arguments(),
-      stdout = TRUE,
-      stderr = TRUE
-    )
+  output <- gexec(gcloud(), arguments(), stdout = TRUE, stderr = TRUE)
 
-    # extract job id from output
-    index <- grep("^jobId:", output)
-    id <- substring(output[index], 8)
+  # TODO: return a 'job' object bundling the job id,
+  # job dir, + perhaps config state.
 
-    # emit first line of output
-    cat(output[1], sep = "\n")
 
-    # return job id
-    return(id)
-  }
+  # extract job id from output
+  index <- grep("^jobId:", output)
+  id <- substring(output[index], 8)
 
-  # non-async -- just run and block
-  gexec(gcloud(), arguments())
+  # emit first line of output
+  cat(output[1], sep = "\n")
+
+  # return job id
+  id
 }
 
 jobs_cancel <- function(job) {

@@ -4,15 +4,12 @@
 \alias{train_cloudml}
 \title{Google Cloud -- Submit a Training Job}
 \usage{
-train_cloudml(application = getwd(), config = "gcloud", async = TRUE, ...)
+train_cloudml(application = getwd(), config = "gcloud", ...)
 }
 \arguments{
 \item{application}{The path to a TensorFlow application.}
 
 \item{config}{The name of the configuration to be used.}
-
-\item{async}{Run the job asynchronously? When `FALSE`, this call will
-block until the TensorFlow job has run to completion.}
 
 \item{...}{Additional configuration values for this training run}
 
