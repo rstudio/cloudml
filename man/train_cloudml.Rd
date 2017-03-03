@@ -11,8 +11,6 @@ train_cloudml(application = getwd(), config = "cloudml", ...)
 
 \item{config}{The name of the configuration to be used.}
 
-\item{...}{Additional configuration values for this training run}
-
 \item{...}{Optional arguments. TODO: describe in more detail.}
 }
 \description{

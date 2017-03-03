@@ -4,8 +4,6 @@
 #' Upload a TensorFlow application to Google Cloud, and use that application
 #' to train a model.
 #'
-#' @param ... Additional configuration values for this training run
-#'
 #' @template roxlate-application
 #' @template roxlate-config
 #' @template roxlate-dots
