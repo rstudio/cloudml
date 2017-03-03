@@ -111,3 +111,19 @@ scope_dir <- function(dir) {
   owd <- setwd(dir)
   defer(setwd(owd), parent.frame())
 }
+
+# wrapper for system2 that ensure we are using the same version of Python
+# that the tensorflow package will bind to
+gexec <- function(command, args = character(), stdout = "", stderr = "", ...) {
+
+  # import tensorflow so that we resovle the python configuration, then
+  # propagate that version of python to CLOUDSDK_PYTHON
+  tf <- reticulate::import("tensorflow")
+  python <- reticulate::py_config()$python
+  Sys.setenv(CLOUDSDK_PYTHON = python)
+
+  # execute the command
+  system2(command, args, stdout, stderr, ...)
+}
+
+

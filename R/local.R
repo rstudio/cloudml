@@ -43,7 +43,7 @@ train_local <- function(application = getwd(),
                 (entrypoint)
                 (config))
 
-  system2(gcloud(), arguments())
+  gexec(gcloud(), arguments())
 }
 
 #' Predict a Model Locally
@@ -77,5 +77,5 @@ predict_local <- function(model.dir = getwd(),
   else
     stop("one of 'json.instances' or 'text.instances' must be supplied")
 
-  system2(gcloud(), args())
+  gexec(gcloud(), args())
 }

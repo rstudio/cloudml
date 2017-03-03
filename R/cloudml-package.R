@@ -5,5 +5,6 @@
 #'
 #' @import withr
 #' @import config
+#' @import reticulate
 #'
 "_PACKAGE"

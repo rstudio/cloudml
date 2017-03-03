@@ -105,7 +105,7 @@ train_cloud <- function(application = getwd(),
   # submit job through command line interface
   # (handle command line output in async case)
   if (async) {
-    output <- system2(
+    output <- gexec(
       gcloud(),
       arguments(),
       stdout = TRUE,
@@ -124,7 +124,7 @@ train_cloud <- function(application = getwd(),
   }
 
   # non-async -- just run and block
-  system2(gcloud(), arguments())
+  gexec(gcloud(), arguments())
 }
 
 jobs_cancel <- function(job) {
@@ -136,7 +136,7 @@ jobs_cancel <- function(job) {
     ("cancel")
     (job))
 
-  system2(gcloud(), arguments())
+  gexec(gcloud(), arguments())
 }
 
 jobs_describe <- function(job) {
@@ -148,7 +148,7 @@ jobs_describe <- function(job) {
     ("describe")
     (job))
 
-  system2(gcloud(), arguments())
+  gexec(gcloud(), arguments())
 }
 
 jobs_list <- function(filter    = NULL,
@@ -169,7 +169,7 @@ jobs_list <- function(filter    = NULL,
     (if (!is.null(sort_by))   c("--sort-by=%s", sort_by))
     (if (uri) "--uri"))
 
-  system2(gcloud(), arguments())
+  gexec(gcloud(), arguments())
 }
 
 jobs_stream <- function(job,
@@ -188,5 +188,5 @@ jobs_stream <- function(job,
     (if (!is.null(task_name)) c("--task-name=%s", task_name))
     (if (allow_multiline_logs) "--allow-multiline-logs"))
 
-  system2(gcloud(), arguments())
+  gexec(gcloud(), arguments())
 }
