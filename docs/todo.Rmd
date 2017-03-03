@@ -2,9 +2,7 @@
 
 ## JJ
 
-- Create access token for installation of gcloud
-
-- Python interrupt callback
+- Python interrupt callback (pending PR)
 
 ## Kevin
 
