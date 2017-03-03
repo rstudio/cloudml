@@ -18,7 +18,7 @@ default:
   train_batch_size         : 40
   train_steps              : 10
 
-gcloud:
+cloudml:
 
   # Inputs
   eval_file                : "gs://tf-ml-workshop/widendeep/adult.data"

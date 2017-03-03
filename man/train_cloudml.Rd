@@ -4,7 +4,7 @@
 \alias{train_cloudml}
 \title{Google Cloud -- Submit a Training Job}
 \usage{
-train_cloudml(application = getwd(), config = "gcloud", ...)
+train_cloudml(application = getwd(), config = "cloudml", ...)
 }
 \arguments{
 \item{application}{The path to a TensorFlow application.}

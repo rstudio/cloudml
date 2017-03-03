@@ -1,18 +1,3 @@
-#' Generate a Job Directory
-#'
-#' Generate a job directory (as a relative path). Useful for
-#' deployments when you want model artefacts to be confined to
-#' a unique directory.
-#'
-#' @export
-job_dir <- function(prefix = "jobs") {
-  sprintf(
-    "%s/%s_%i",
-    prefix,
-    format(Sys.time(), "%Y%m%d"),
-    as.integer(Sys.time())
-  )
-}
 
 #' Google Cloud -- Submit a Training Job
 #'
@@ -27,7 +12,7 @@ job_dir <- function(prefix = "jobs") {
 #'
 #' @export
 train_cloudml <- function(application = getwd(),
-                          config      = "gcloud",
+                          config      = "cloudml",
                           ...)
 {
   application <- scope_deployment(application)
@@ -103,19 +88,19 @@ train_cloudml <- function(application = getwd(),
   # submit job through command line interface
   output <- gexec(gcloud(), arguments(), stdout = TRUE, stderr = TRUE)
 
-  # TODO: return a 'job' object bundling the job id,
-  # job dir, + perhaps config state.
-
-
   # extract job id from output
   index <- grep("^jobId:", output)
-  id <- substring(output[index], 8)
+  job_name <- substring(output[index], 8)
 
   # emit first line of output
   cat(output[1], sep = "\n")
 
-  # return job id
-  id
+  # return job object
+  cloudml_job(
+    "train",
+    job_name = job_name,
+    job_dir = job_dir
+  )
 }
 
 jobs_cancel <- function(job) {
