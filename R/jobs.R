@@ -221,7 +221,7 @@ job_collect <- function(job) {
   stop("failed to receive job outputs")
 }
 
-job_download <- function(job, target = "jobs") {
+job_download <- function(job, target = "cloudml/jobs") {
   source <- job$job_dir
   target <- target %||% "jobs"
 
