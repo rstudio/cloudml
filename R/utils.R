@@ -129,10 +129,15 @@ gexec <- function(command, args = character(), stdout = "", stderr = "", ...) {
 
     # append that to the PATH as an extra version of Python to bind to
     # if no other suitable ones are found
-    with_path(new = python_dir, action = "suffix", exec())
+    withr::with_path(new = python_dir, action = "suffix", exec())
   } else {
     exec()
   }
 }
 
-
+enumerate <- function(X, FUN, ...) {
+  N <- names(X)
+  lapply(seq_along(N), function(i) {
+    FUN(N[[i]], X[[i]], ...)
+  })
+}
