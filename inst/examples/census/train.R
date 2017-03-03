@@ -2,20 +2,27 @@ library(tensorflow)
 
 source("model.R")
 
-# Define some aliases for commonly-used modules
+# define some aliases for commonly-used modules
 learn                    <- tf$contrib$learn
 metrics                  <- tf$contrib$metrics
 learn_runner             <- learn$python$learn$learn_runner
 saved_model_export_utils <- learn$python$learn$utils$saved_model_export_utils
 
-# Read application config
+# read application config
 config <- config::get()
 
 # use local copy of training data when not on gcloud
 config$train_file <- cloudml::gs_data(config$train_file)
 config$eval_file  <- cloudml::gs_data(config$eval_file)
 
-# Define experiment function
+# define estimator
+estimator <- build_estimator(
+  model_dir      = config$job_dir,
+  embedding_size = config$estimator_embedding_size,
+  hidden_units   = config$estimator_hidden_units
+)
+
+# refine experiment function
 experiment_fn <- function(output_dir) {
 
   train_input <- generate_input_fn(
@@ -32,14 +39,8 @@ experiment_fn <- function(output_dir) {
 
   learn$Experiment(
 
-    build_estimator(
-      model_dir      = config$job_dir,
-      embedding_size = config$estimator_embedding_size,
-      hidden_units   = config$estimator_hidden_units
-    ),
-
+    estimator,
     train_input_fn = train_input,
-
     eval_input_fn = eval_input,
 
     eval_metrics = list(
@@ -59,5 +60,9 @@ experiment_fn <- function(output_dir) {
   )
 }
 
-# Run the training job.
-learn_runner$run(experiment_fn, config$job_dir)
+# run the experiment
+result <- learn_runner$run(experiment_fn, config$job_dir)
+
+# extract generated artefacts
+parameters <- result[[1]]
+exports <- result[[2]]
