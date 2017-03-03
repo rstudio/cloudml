@@ -1,9 +1,6 @@
 
 ## Kevin
 
-- train_local and source("train.R") will use a stable jobs directory
-- convention based local/jobs and local/data for local artifacts
-
 - rename to "train_local" and "train_cloudml"
 
 - train_cloudml chooses a randome remote job dir, is always async, and 

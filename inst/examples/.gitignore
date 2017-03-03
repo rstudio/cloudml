@@ -1,9 +1,5 @@
 **/__init__.py
 **/__init__.pyc
 **/cloudml
-**/gs_data
-**/jobs
-**/output
 **/deploy.py
 **/setup.py
-.DS_Store
