@@ -96,8 +96,9 @@ train_cloudml <- function(application = getwd(),
   # return job object
   cloudml_job(
     "train",
+    app_dir  = application,
     job_name = job_name,
-    job_dir = job_dir
+    job_dir  = job_dir
   )
 }
 

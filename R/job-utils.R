@@ -1,10 +1,12 @@
 cloudml_job <- function(class,
+                        app_dir,
                         job_name,
                         job_dir)
 {
   object <- list(
+    app_dir  = app_dir,
     job_name = job_name,
-    job_dir = job_dir
+    job_dir  = job_dir
   )
 
   class(object) <- c(
@@ -38,6 +40,19 @@ job_dir.cloudml_job <- function(x, ...) {
 job_dir.character <- function(x, ...) {
   x
 }
+
+app_dir <- function(x, ...) {
+  UseMethod("app_dir")
+}
+
+app_dir.cloudml_app <- function(x, ...) {
+  x$app_dir
+}
+
+app_dir.character <- function(x, ...) {
+  x
+}
+
 
 print.cloudml_job <- function(x, ...) {
   header <- "<cloudml job>"
