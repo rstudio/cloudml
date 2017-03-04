@@ -19,6 +19,9 @@ config_filter <- function(extra_config) {
     # merge the extra config with the provided config
     config <- config::merge(config, extra_config)
 
+    # provide defaults
+    config[["job_dir"]] <- config[["job_dir"]] %||% "jobs"
+
     # return the filtered config
     config
   }
