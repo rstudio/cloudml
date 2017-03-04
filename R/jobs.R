@@ -83,7 +83,8 @@ train_cloudml <- function(application = getwd(),
                 ("--runtime-version=%s", runtime_version)
                 ("--")
                 (entrypoint)
-                (config))
+                (config)
+                ("--environment=gcloud"))
 
   # submit job through command line interface
   output <- gexec(gcloud(), arguments(), stdout = TRUE, stderr = TRUE)

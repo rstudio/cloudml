@@ -124,7 +124,7 @@ gs_data <- function(uri, local_dir = "gs") {
 
 
 is_gcloud <- function() {
-  identical(Sys.getenv("GCLOUD_EXECUTION_ENVIRONMENT"), "1")
+  identical(Sys.getenv("CLOUDML_EXECUTION_ENVIRONMENT"), "gcloud")
 }
 
 

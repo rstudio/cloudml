@@ -6,16 +6,13 @@ install.packages(c("devtools", "RCurl"))
 devtools::install_github("rstudio/tensorflow")
 devtools::install_github("rstudio/cloudml")
 
-# extract command line arguments
+# extract command line arguments and populate R environment as required
 arguments <- as.list(commandArgs(trailingOnly = TRUE))
 entrypoint <- arguments[[1]]
 config     <- arguments[[2]]
-
-# set up environment
-Sys.setenv(
-  GCLOUD_EXECUTION_ENVIRONMENT = "1",
-  R_CONFIG_ACTIVE              = config
-)
+Sys.setenv(R_CONFIG_ACTIVE = config)
+environment <- strsplit(arguments[[3]], "=")[[1]][[2]]
+Sys.setenv(CLOUDML_EXECUTION_ENVIRONMENT = environment)
 
 # read config overlay if available
 overlay <- list()
