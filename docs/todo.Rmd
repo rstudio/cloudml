@@ -1,14 +1,4 @@
 
-## JJ 
-
-- move to 'jobs/local', 'jobs/cloudml'
-
-- job_dir should not have so much R code
-
-- include/exclude keys in config
-
-- start with staticdocs
-
 ## Kevin
 
 - How exactly do I use tf learn experiment to call predict on this model. I think
@@ -27,10 +17,6 @@
   Then in our app.R generated file where we set the config pacakge hook we 
   propagate the command line options/hyperparamters back into the config list
 
-
-- Ensure python package enumerates files correctly
-  https://github.com/rstudio/cloudml/commit/0c109336c366ada703ea563a1ddc806dab571cf9#commitcomment-21154573
-  
 
 ## Cloud NEXT
 
