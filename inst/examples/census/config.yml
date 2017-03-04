@@ -1,8 +1,8 @@
 default:
 
   # Inputs (downsampled data for local development)
-  eval_file                : "local/data/local.adult.test"
-  train_file               : "local/data/local.adult.data"
+  eval_file                : "gs://rstudio-cloudml-demo-ml/census/data/local.adult.test"
+  train_file               : "gs://rstudio-cloudml-demo-ml/census/data/local.adult.data"
 
   # Outputs (write to local jobs directory)
   job_dir                  : "local/jobs"
@@ -21,8 +21,8 @@ default:
 cloudml:
 
   # Inputs
-  eval_file                : "gs://tf-ml-workshop/widendeep/adult.data"
-  train_file               : "gs://tf-ml-workshop/widendeep/adult.test"
+  eval_file                : "gs://rstudio-cloudml-demo-ml/census/data/adult.test"
+  train_file               : "gs://rstudio-cloudml-demo-ml/census/data/adult.data"
 
   # Outputs (to run within another gcloud account, substitute your own buckets)
   job_dir                  : !expr cloudml::create_job_dir("gs://rstudio-cloudml-demo-ml/census/jobs")

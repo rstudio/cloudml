@@ -8,8 +8,10 @@ metrics                  <- tf$contrib$metrics
 learn_runner             <- learn$python$learn$learn_runner
 saved_model_export_utils <- learn$python$learn$utils$saved_model_export_utils
 
-# read application config
+# read application config and resolve data files
 config <- config::get()
+config$train_file <- cloudml::gs_data(config$train_file)
+config$eval_file <- cloudml::gs_data(config$eval_file)
 
 # define estimator
 estimator <- build_estimator(
