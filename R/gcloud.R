@@ -84,18 +84,19 @@ gs_copy <- function(uri, destination, overwrite = FALSE) {
 #' returned unchanged.
 #'
 #' @inheritParams gs_copy
+#' @param local_dir Local directory to copy files into
 #'
 #' @return Path to data file (may be local or remote depending on the execution
 #'   context).
 #'
 #' @export
-gs_data <- function(uri) {
+gs_data <- function(uri, local_dir = "gs") {
   if (is_gcloud() || !is_gs_uri(uri))
     uri
   else {
     # extract [BUCKET_NAME]/[OBJECT_NAME] and build local path
     object_path <- substring(uri, nchar("gs://") + 1)
-    local_path <- file.path("gs_data", object_path)
+    local_path <- file.path(local_dir, object_path)
 
     # download if necessary
     if (!file.exists(local_path)) {
