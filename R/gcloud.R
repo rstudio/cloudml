@@ -127,10 +127,6 @@ is_gcloud <- function() {
   identical(Sys.getenv("GCLOUD_EXECUTION_ENVIRONMENT"), "1")
 }
 
-with_gcloud_environment <- function(expr) {
-  withr::with_envvar(c(GCLOUD_EXECUTION_ENVIRONMENT = 1), expr)
-}
-
 
 is_gs_uri <- function(file) {
   is.character(file) && grepl("^gs://.+$", file)
