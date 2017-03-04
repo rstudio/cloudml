@@ -2,12 +2,12 @@
 % Please edit documentation in R/gcloud.R
 \name{gsutil}
 \alias{gsutil}
-\title{Discover the path of the \code{gsutl} executable.}
+\title{Discover the path of the \code{gsutil} executable.}
 \usage{
 gsutil()
 }
 \description{
-The path to the \code{gsutl} executable can be explicitly
+The path to the \code{gsutil} executable can be explicitly
 specified, using the \code{GSUTIL_BINARY_PATH} environment
 variable, or the \code{gsutil.binary.path} \R option.
 }

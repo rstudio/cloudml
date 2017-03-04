@@ -30,9 +30,9 @@ gcloud <- function() {
   stop("failed to find 'gcloud' binary")
 }
 
-#' Discover the path of the `gsutl` executable.
+#' Discover the path of the `gsutil` executable.
 #'
-#' The path to the `gsutl` executable can be explicitly
+#' The path to the `gsutil` executable can be explicitly
 #' specified, using the `GSUTIL_BINARY_PATH` environment
 #' variable, or the `gsutil.binary.path` \R option.
 #'
