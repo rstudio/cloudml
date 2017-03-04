@@ -8,7 +8,7 @@ Authors@R: c(
 Description: An R Interface to the Google Cloud Machine Learning Platform.
 Depends: R (>= 3.1.0)
 Imports:
-  config (>= 0.3),
+  config (>= 0.2),
   reticulate (>= 0.6.1),
   withr,
   yaml
@@ -17,4 +17,4 @@ Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 6.0.1
-Remotes: rstudio/config, rstudio/reticulate
+Remotes: rstudio/reticulate

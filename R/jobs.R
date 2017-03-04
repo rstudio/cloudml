@@ -16,34 +16,31 @@ train_cloudml <- function(application = getwd(),
                           ...)
 {
   application <- scope_deployment(application)
+  config_name <- config
+  config <- cloudml::config(config = config)
 
   # resolve entrypoint
   dots <- list(...)
   entrypoint <- dots[["entrypoint"]] %||%
-    config::get("train_entrypoint", config = config) %||%
-    "train.R"
+    config$train_entrypoint %||% "train.R"
 
   # determine job name
   job_name <- dots[["job_name"]] %||%
     random_job_name(application, config)
 
   # determine job directory
-  job_dir <- dots[["job_dir"]] %||%
-    config::get("job_dir", config = config)
+  job_dir <- dots[["job_dir"]] %||% config$job_dir
 
   # determine staging bucket
-  staging_bucket <- dots[["staging_bucket"]] %||%
-    config::get("staging_bucket", config = config)
+  staging_bucket <- dots[["staging_bucket"]] %||% config$staging_bucket
 
   # determine region
   region <- dots[["region"]] %||%
-    config::get("region", config = config) %||%
-    "us-central1"
+    config$region  %||% "us-central1"
 
   # determine runtime version
   runtime_version <- dots[["runtime_version"]] %||%
-    config::get("runtime_version", config = config) %||%
-    "1.0"
+    config$runtime_version %||%  "1.0"
 
   # move to application's parent directory
   owd <- setwd(dirname(application))
@@ -83,7 +80,7 @@ train_cloudml <- function(application = getwd(),
                 ("--runtime-version=%s", runtime_version)
                 ("--")
                 (entrypoint)
-                (config)
+                (config_name)
                 ("--environment=gcloud"))
 
   # submit job through command line interface

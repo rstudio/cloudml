@@ -4,3 +4,7 @@
 #' platform.
 #'
 "_PACKAGE"
+
+# package globals
+.globals <- new.env(parent = emptyenv())
+.globals$extra_config <- list()

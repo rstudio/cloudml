@@ -15,12 +15,13 @@ train_local <- function(application = getwd(),
                         ...)
 {
   application <- scope_deployment(application)
+  config_name <- config
+  config <- cloudml::config(config = config)
 
   # resolve entrypoint
   dots <- list(...)
   entrypoint <- dots[["entrypoint"]] %||%
-    config::get("train_entrypoint", config = config) %||%
-    "train.R"
+    config$train_entrypoint %||% "train.R"
 
   # move to application's parent directory
   owd <- setwd(dirname(application))
@@ -41,7 +42,7 @@ train_local <- function(application = getwd(),
                 ("--module-name=%s.cloudml.deploy", basename(application))
                 ("--")
                 (entrypoint)
-                (config)
+                (config_name)
                 ("--environment=local"))
 
   gexec(gcloud(), arguments())
