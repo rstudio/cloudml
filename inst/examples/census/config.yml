@@ -5,7 +5,7 @@ default:
   train_file               : "gs://rstudio-cloudml-demo-ml/census/data/local.adult.data"
 
   # Outputs (write to local jobs directory)
-  job_dir                  : "local/jobs"
+  job_dir                  : "jobs/local"
 
   # Parameters for training routines
   estimator_embedding_size : 8

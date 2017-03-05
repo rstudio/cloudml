@@ -61,7 +61,7 @@ train_cloudml <- function(application = getwd(),
   # serialize '...' as extra arguments to be merged
   # with the config file
   dots <- list(...)
-  saveRDS(dots, file.path(application, "cloudml/config.rds"))
+  saveRDS(dots, file.path(application, ".cloudml_config.rds"))
 
   # generate deployment script
   arguments <- (ShellArgumentsBuilder()
@@ -270,13 +270,12 @@ job_status <- function(job) {
 #'
 #' @param target
 #'   The target directory in which model outputs should
-#'   be downloaded. Defaults to `cloudml/jobs`.
+#'   be downloaded. Defaults to `jobs/cloudml`.
 #'
 #' @family jobs
 #'
 #' @export
-job_collect <- function(job,
-                        target = "cloudml/jobs")
+job_collect <- function(job, target = "jobs/cloudml")
 {
   # TODO: we need to handle job failures here
   id <- job_name(job)
@@ -310,8 +309,7 @@ job_collect <- function(job,
   stop("failed to receive job outputs")
 }
 
-job_download <- function(job,
-                         target = "cloudml/jobs")
+job_download <- function(job, target = "jobs/cloudml")
 {
   source <- job$job_dir
   target <- target %||% "jobs"

@@ -19,8 +19,11 @@ if (identical(environment, "gcloud")) {
 
 # read config overlay if available
 overlay <- list()
-if (file.exists("cloudml/config.rds"))
-  overlay <- readRDS("cloudml/config.rds")
+if (file.exists(".cloudml_config.rds")) {
+  overlay <- readRDS(".cloudml_config.rds")
+  unlink(".cloudml_config.rds")
+}
+
 
 # set extra config
 cloudml:::set_extra_config(overlay)

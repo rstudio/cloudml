@@ -1,3 +1,2 @@
-**/local/jobs
-**/cloudml
-**/gs
+jobs
+gs

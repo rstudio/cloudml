@@ -4,14 +4,14 @@
 \alias{job_collect}
 \title{Collect Results from a Job}
 \usage{
-job_collect(job, target = "cloudml/jobs")
+job_collect(job, target = "jobs/cloudml")
 }
 \arguments{
 \item{job}{Either a `cloudml_job` object as returned by [train_cloudml()],
 or the name of a job.}
 
 \item{target}{The target directory in which model outputs should
-be downloaded. Defaults to \code{cloudml/jobs}.}
+be downloaded. Defaults to \code{jobs/cloudml}.}
 }
 \description{
 Collect the job outputs (e.g. fitted model) from a job.

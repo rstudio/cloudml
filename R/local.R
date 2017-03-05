@@ -30,7 +30,7 @@ train_local <- function(application = getwd(),
   # serialize '...' as extra arguments to be merged
   # with the config file
   dots <- list(...)
-  saveRDS(dots, file.path(application, "cloudml/config.rds"))
+  saveRDS(dots, file.path(application, ".cloudml_config.rds"))
 
   # generate arguments for gcloud call
   arguments <- (ShellArgumentsBuilder()
