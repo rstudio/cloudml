@@ -21,7 +21,7 @@ train_cloudml <- function(application = getwd(),
   with_envvar(c(R_CONFIG_ACTIVE = config, CLOUDML_EXECUTION_ENVIRONMENT = "gcloud"), {
     application <- scope_deployment(application)
     config_name <- config
-    config <- cloudml::config(config = config)
+    config <- cloudml::config()
 
     # resolve extra config
     extra_config <- list(...)
