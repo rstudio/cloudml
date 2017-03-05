@@ -70,7 +70,8 @@ train_cloudml <- function(application = getwd(),
 
   # serialize '...' as extra arguments to be merged
   # with the config file
-  saveRDS(extra_config, file.path(application, ".cloudml_config.rds"))
+  ensure_directory("cloudml")
+  saveRDS(extra_config, file.path(application, "cloudml/config.rds"))
 
   # generate deployment script
   arguments <- (ShellArgumentsBuilder()
