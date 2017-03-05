@@ -6,6 +6,8 @@
 
 ## Kevin
 
+- Don't use the beta endpoint anymore
+
 - How exactly do I use tf learn experiment to call predict on this model. I think
   we just reconsturct the Experiment with the job/model dir and call predict on it
 
