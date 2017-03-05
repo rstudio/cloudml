@@ -24,9 +24,8 @@ if (file.exists("cloudml/config.rds")) {
   unlink("cloudml/config.rds")
 }
 
-
 # set extra config
 cloudml:::set_extra_config(overlay)
 
 # source entrypoint
-source(entrypoint)
+source(entrypoint, echo = TRUE)
