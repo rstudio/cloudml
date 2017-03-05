@@ -25,7 +25,7 @@ config <- function(config = "default", local_gs = "gs") {
   config <- config::merge(config, .globals$extra_config)
 
   # resolve gs:// urls (copy them locally if we aren't running on gcloud)
-  if (!is.null(local_gs)) {
+  if (!is.null(local_gs) && !is_gcloud()) {
     resolve_gs_data <- function(value) {
       if (is.list(value) && length(value) > 0)
         lapply(value, resolve_gs_data)
