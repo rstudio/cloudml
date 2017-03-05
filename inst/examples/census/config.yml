@@ -29,5 +29,6 @@ cloudml:
   staging_bucket           : "gs://rstudio-cloudml-demo-ml"
 
   # Overrides for training parameters
-  eval_num_epochs          : 25
-  train_num_epochs         : 25
+  eval_batch_size          : 100
+  train_batch_size         : 100
+
