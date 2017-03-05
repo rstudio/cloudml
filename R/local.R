@@ -21,7 +21,7 @@ train_local <- function(application = getwd(),
   with_envvar(c(R_CONFIG_ACTIVE = config, CLOUDML_EXECUTION_ENVIRONMENT = "local"), {
     application <- scope_deployment(application)
     config_name <- config
-    config <- cloudml::config()
+    config <- cloudml::config(config = config)
 
     # resolve extra config
     extra_config <- list(...)
