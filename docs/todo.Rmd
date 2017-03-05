@@ -1,4 +1,10 @@
 
+## JJ 
+
+- job_dir should not have so much R code
+- include/exclude keys in config
+- start with staticdocs
+
 ## Kevin
 
 - How exactly do I use tf learn experiment to call predict on this model. I think
@@ -6,8 +12,18 @@
 
 - Job status/control functions
 
-- How to handle the project directory for packaging (copy, symlink, cleanup, etc.)
-    - Consider copying to temporary directory and mutating + uploading that bundle
+- Ensure python package enumerates files correctly
+  https://github.com/rstudio/cloudml/commit/0c109336c366ada703ea563a1ddc806dab571cf9#commitcomment-21154573
+  
+
+## Cloud NEXT
+
+- Sort out all of the gcloud sdk installation / authentication requirements
+  for people other than us to use the package and document this well.
+
+- Windows compatibility
+
+- Documentation on using the package
 
 - Pull out `hyperparameters` from config and write a new YAML file with:
     trainingInput:
@@ -17,13 +33,6 @@
   Then in our app.R generated file where we set the config pacakge hook we 
   propagate the command line options/hyperparamters back into the config list
 
-
-## Cloud NEXT
-
-- Sort out all of the gcloud sdk installation / authentication requirements
-  for people other than us to use the package and document this well.
-
-- Documentation on using the package
 
 
 ## Future
