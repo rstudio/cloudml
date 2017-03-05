@@ -1,45 +1,52 @@
 
 #' Google Cloud -- Submit a Training Job
 #'
-#' Upload a TensorFlow application to Google Cloud, and use
-#' that application to train a model.
+#' Upload a TensorFlow application to Google Cloud, and use that application to
+#' train a model.
 #'
 #' @template roxlate-application
 #' @template roxlate-config
 #' @template roxlate-dots
+#'
+#' @inheritParams train_local
 #'
 #' @family jobs
 #'
 #' @export
 train_cloudml <- function(application = getwd(),
                           config      = "cloudml",
+                          job_dir     = NULL,
                           ...)
 {
   application <- scope_deployment(application)
   config_name <- config
   config <- cloudml::config(config = config)
 
+  # resolve extra config
+  extra_config <- list(...)
+  if (!is.null(job_dir))
+    extra_config$job_dir <- job_dir
+
   # resolve entrypoint
-  dots <- list(...)
-  entrypoint <- dots[["entrypoint"]] %||%
+  entrypoint <- extra_config[["entrypoint"]] %||%
     config$train_entrypoint %||% "train.R"
 
   # determine job name
-  job_name <- dots[["job_name"]] %||%
+  job_name <- extra_config[["job_name"]] %||%
     random_job_name(application, config)
 
   # determine job directory
-  job_dir <- dots[["job_dir"]] %||% config$job_dir
+  job_dir <- extra_config[["job_dir"]] %||% config$job_dir
 
   # determine staging bucket
-  staging_bucket <- dots[["staging_bucket"]] %||% config$staging_bucket
+  staging_bucket <- extra_config[["staging_bucket"]] %||% config$staging_bucket
 
   # determine region
-  region <- dots[["region"]] %||%
+  region <- extra_config[["region"]] %||%
     config$region  %||% "us-central1"
 
   # determine runtime version
-  runtime_version <- dots[["runtime_version"]] %||%
+  runtime_version <- extra_config[["runtime_version"]] %||%
     config$runtime_version %||%  "1.0"
 
   # move to application's parent directory
@@ -60,8 +67,7 @@ train_cloudml <- function(application = getwd(),
 
   # serialize '...' as extra arguments to be merged
   # with the config file
-  dots <- list(...)
-  saveRDS(dots, file.path(application, ".cloudml_config.rds"))
+  saveRDS(extra_config, file.path(application, ".cloudml_config.rds"))
 
   # generate deployment script
   arguments <- (ShellArgumentsBuilder()
@@ -268,14 +274,14 @@ job_status <- function(job) {
 #'
 #' @template roxlate-job
 #'
-#' @param target
-#'   The target directory in which model outputs should
+#' @param destination
+#'   The destination directory in which model outputs should
 #'   be downloaded. Defaults to `jobs/cloudml`.
 #'
 #' @family jobs
 #'
 #' @export
-job_collect <- function(job, target = "jobs/cloudml")
+job_collect <- function(job, destination = "jobs/cloudml")
 {
   # TODO: we need to handle job failures here
   id <- job_name(job)
@@ -285,7 +291,7 @@ job_collect <- function(job, target = "jobs/cloudml")
 
   # if we're already done, return early
   if (status$state == "SUCCEEDED")
-    return(job_download(job, target))
+    return(job_download(job, destination))
 
   # otherwise, notify the user and begin polling
   fmt <- ">>> Job '%s' is currently running -- please wait..."
@@ -299,7 +305,7 @@ job_collect <- function(job, target = "jobs/cloudml")
     status <- job_status(job)
 
     if (status$state == "SUCCEEDED")
-      return(job_download(job, target))
+      return(job_download(job, destination))
 
     # job isn't ready yet; sleep for a while and try again
     Sys.sleep(60)
@@ -309,19 +315,18 @@ job_collect <- function(job, target = "jobs/cloudml")
   stop("failed to receive job outputs")
 }
 
-job_download <- function(job, target = "jobs/cloudml")
+job_download <- function(job, destination = "jobs/cloudml")
 {
   source <- job$job_dir
-  target <- target %||% "jobs"
 
-  ensure_directory(target)
+  ensure_directory(destination)
 
   arguments <- (
     ShellArgumentsBuilder()
     ("cp")
     ("-R")
     (source)
-    (target))
+    (destination))
 
   gexec(gsutil(), arguments())
 }

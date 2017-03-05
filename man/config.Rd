@@ -7,11 +7,11 @@
 config(config = "default", local_gs = "gs")
 }
 \arguments{
+\item{config}{Configuration name (e.g. "default", "cloudml", etc.)}
+
 \item{local_gs}{Specify a directory name to automatically download local
 copies of references to Google Storage data (\code{gs://}) and then
 resolve their values to the path of their local copy.}
-
-\item{Configuration}{name (e.g. "default", "cloudml", etc.)}
 }
 \value{
 List with configuration values

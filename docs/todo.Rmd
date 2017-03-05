@@ -1,7 +1,6 @@
 
 ## JJ 
 
-- job_dir should not have so much R code
 - include/exclude keys in config
 - start with staticdocs
 

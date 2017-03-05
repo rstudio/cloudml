@@ -1,7 +1,7 @@
 
 #' Read the configuration for a CloudML application
 #'
-#' @param Configuration name (e.g. "default", "cloudml", etc.)
+#' @param config Configuration name (e.g. "default", "cloudml", etc.)
 #' @param local_gs Specify a directory name to automatically download local
 #'   copies of references to Google Storage data (`gs://`) and then
 #'   resolve their values to the path of their local copy.
@@ -36,9 +36,6 @@ config <- function(config = "default", local_gs = "gs") {
     }
     config <- lapply(config, resolve_gs_data)
   }
-
-  # provide defaults
-  config[["job_dir"]] <- config[["job_dir"]] %||% "jobs"
 
   # return config
   config

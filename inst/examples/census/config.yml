@@ -25,7 +25,7 @@ cloudml:
   train_file               : "gs://rstudio-cloudml-demo-ml/census/data/adult.data"
 
   # Outputs (to run within another gcloud account, substitute your own buckets)
-  job_dir                  : !expr cloudml::create_job_dir("gs://rstudio-cloudml-demo-ml/census/jobs")
+  job_dir                  : !expr cloudml::unique_job_dir("gs://rstudio-cloudml-demo-ml/census/jobs")
   staging_bucket           : "gs://rstudio-cloudml-demo-ml"
 
   # Overrides for training parameters

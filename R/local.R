@@ -9,18 +9,26 @@
 #' @template roxlate-config
 #' @template roxlate-dots
 #'
+#' @param job_dir Directory to write job into (defaults to the value
+#'   of `job_dir` in the `config.yml` file).
+#'
 #' @export
 train_local <- function(application = getwd(),
                         config      = "default",
+                        job_dir     = NULL,
                         ...)
 {
   application <- scope_deployment(application)
   config_name <- config
   config <- cloudml::config(config = config)
 
+  # resolve extra config
+  extra_config <- list(...)
+  if (!is.null(job_dir))
+    extra_config$job_dir <- job_dir
+
   # resolve entrypoint
-  dots <- list(...)
-  entrypoint <- dots[["entrypoint"]] %||%
+  entrypoint <- extra_config[["entrypoint"]] %||%
     config$train_entrypoint %||% "train.R"
 
   # move to application's parent directory
@@ -29,8 +37,7 @@ train_local <- function(application = getwd(),
 
   # serialize '...' as extra arguments to be merged
   # with the config file
-  dots <- list(...)
-  saveRDS(dots, file.path(application, ".cloudml_config.rds"))
+  saveRDS(extra_config, file.path(application, ".cloudml_config.rds"))
 
   # generate arguments for gcloud call
   arguments <- (ShellArgumentsBuilder()

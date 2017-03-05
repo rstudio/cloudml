@@ -4,18 +4,22 @@
 \alias{train_cloudml}
 \title{Google Cloud -- Submit a Training Job}
 \usage{
-train_cloudml(application = getwd(), config = "cloudml", ...)
+train_cloudml(application = getwd(), config = "cloudml", job_dir = NULL,
+  ...)
 }
 \arguments{
 \item{application}{The path to a TensorFlow application.}
 
 \item{config}{The name of the configuration to be used.}
 
+\item{job_dir}{Directory to write job into (defaults to the value
+of \code{job_dir} in the \code{config.yml} file).}
+
 \item{...}{Optional arguments. TODO: describe in more detail.}
 }
 \description{
-Upload a TensorFlow application to Google Cloud, and use
-that application to train a model.
+Upload a TensorFlow application to Google Cloud, and use that application to
+train a model.
 }
 \seealso{
 Other jobs: \code{\link{job_cancel}},

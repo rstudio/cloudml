@@ -71,7 +71,7 @@ print.cloudml_job <- function(x, ...) {
   x
 }
 
-#' Generate a Job Directory
+#' Generate a Unique Job Directory
 #'
 #' Generate a job directory (as a relative path). Useful for
 #' deployments when you want model artefacts to be confined to
@@ -81,7 +81,7 @@ print.cloudml_job <- function(x, ...) {
 #'   The prefix to be used for the job directory.
 #'
 #' @export
-create_job_dir <- function(prefix = "jobs") {
+unique_job_dir <- function(prefix = "") {
   sprintf(
     "%s/%s_%i",
     prefix,
