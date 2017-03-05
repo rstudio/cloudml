@@ -11,6 +11,14 @@
 
 - Job status/control functions
 
+- Error on job_collect when job has already completed
+
+- job_collect / job_status / etc. all need to take either a job id/name or a job object
+  (otherwise you can't ever get back to them if you don't have the live job object)
+
+- using the 'cloudml' directory within the user's project and then recursively unlinking it
+  seems very sketchy. We should use a more obscured name.
+
 - Ensure python package enumerates files correctly
   https://github.com/rstudio/cloudml/commit/0c109336c366ada703ea563a1ddc806dab571cf9#commitcomment-21154573
   
