@@ -59,6 +59,12 @@ experiment_fn <- function(output_dir) {
 # run the experiment
 result <- learn_runner$run(experiment_fn, config$job_dir)
 
-# extract generated artefacts
+# extract generated artifacts
 parameters <- result[[1]]
 exports <- result[[2]]
+
+# print results
+print(parameters)
+print(exports)
+
+

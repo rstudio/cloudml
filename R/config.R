@@ -1,7 +1,6 @@
 
 #' Read the configuration for a CloudML application
 #'
-#' @param config Configuration name (e.g. "default", "cloudml", etc.)
 #' @param local_gs Specify a directory name to automatically download local
 #'   copies of references to Google Storage data (`gs://`) and then
 #'   resolve their values to the path of their local copy.
@@ -9,7 +8,7 @@
 #' @return List with configuration values
 #'
 #' @export
-config <- function(config = "default", local_gs = "gs") {
+config <- function(local_gs = "gs") {
 
   # add any command line values passed to the R script into the extra_config
   # (this is used when CloudML passes arguments during hyperparameter turning)
@@ -19,7 +18,7 @@ config <- function(config = "default", local_gs = "gs") {
   cmd_args <- commandArgs(trailingOnly = TRUE)
 
   # read the config file
-  config <- config::get(config = config, file = "config.yml")
+  config <- config::get(file = "config.yml")
 
   # merge extra config
   config <- config::merge(config, .globals$extra_config)
