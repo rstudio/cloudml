@@ -82,13 +82,10 @@ print.cloudml_job <- function(x, ...) {
 #'
 #' @export
 unique_job_dir <- function(prefix = "") {
-
-  # `20170306_1488804470` ->  `2017-03-06_@_14-24-07.234`
-
   sprintf(
     "%s/%s",
     prefix,
-    format(Sys.time(), "%Y-%m-%d_@_%I-%M-%OS2", tz = "GMT")
+    timestamp_string()
   )
 }
 

@@ -86,13 +86,18 @@ random_string <- function(prefix = "") {
   basename(tempfile(prefix))
 }
 
+timestamp_string <- function() {
+  time <- format(Sys.time(), "%Y_%m_%d_%H%M%OS3", tz = "GMT")
+  gsub(".", "_", time, fixed = TRUE)
+}
+
 unique_job_name <- function(application = getwd(), config = "default") {
   application <- normalizePath(application, mustWork = TRUE)
   sprintf(
     "%s_%s_%s",
     basename(application),
     config,
-    format(Sys.time(), "%Y-%m-%d_@_%I-%M-%OS2", tz = "GMT")
+    timestamp_string()
   )
 }
 
