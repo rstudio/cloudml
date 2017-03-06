@@ -1,8 +1,4 @@
 
-## JJ
-
-- Ensure that CLOUDSDK_PYTHON points to python 2 not python 3
-
 
 ## Kevin
 
@@ -48,6 +44,8 @@
 
 
 ## Future
+
+- Ensure that CLOUDSDK_PYTHON points to python 2 not python 3
 
 - Job status / enumeration functions return R lists with custom print methods
 
