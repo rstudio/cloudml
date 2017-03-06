@@ -18,96 +18,97 @@ train_cloudml <- function(application = getwd(),
                           job_dir     = NULL,
                           ...)
 {
-  with_envvar(c(R_CONFIG_ACTIVE = config, CLOUDML_EXECUTION_ENVIRONMENT = "gcloud"), {
-    application <- scope_deployment(application)
-    config_name <- config
-    config <- cloudml::config(config = config)
+  Sys.setenv(CLOUDML_EXECUTION_ENVIRONMENT = "gcloud")
+  on.exit(Sys.unsetenv("CLOUDML_EXECUTION_ENVIRONMENT"), add = TRUE)
 
-    # resolve extra config
-    extra_config <- list(...)
+  application <- scope_deployment(application)
+  config_name <- config
+  config <- cloudml::config(config = config)
 
-    # resolve entrypoint
-    entrypoint <- extra_config[["entrypoint"]] %||%
-      config$train_entrypoint %||% "train.R"
+  # resolve extra config
+  extra_config <- list(...)
 
-    # determine job name
-    job_name <- extra_config[["job_name"]] %||%
-      unique_job_name(application, config_name)
+  # resolve entrypoint
+  entrypoint <- extra_config[["entrypoint"]] %||%
+    config$train_entrypoint %||% "train.R"
 
-    # determine job directory
-    job_dir <- extra_config[["job_dir"]] %||% config$job_dir
+  # determine job name
+  job_name <- extra_config[["job_name"]] %||%
+    unique_job_name(application, config_name)
 
-    # determine staging bucket
-    staging_bucket <- extra_config[["staging_bucket"]] %||% config$staging_bucket
+  # determine job directory
+  job_dir <- extra_config[["job_dir"]] %||% config$job_dir
 
-    # determine region
-    region <- extra_config[["region"]] %||%
-      config$region  %||% "us-central1"
+  # determine staging bucket
+  staging_bucket <- extra_config[["staging_bucket"]] %||% config$staging_bucket
 
-    # determine runtime version
-    runtime_version <- extra_config[["runtime_version"]] %||%
-      config$runtime_version %||%  "1.0"
+  # determine region
+  region <- extra_config[["region"]] %||%
+    config$region  %||% "us-central1"
 
-    # ensure 'job_dir' is passed through extra config
-    extra_config$job_dir <- job_dir
+  # determine runtime version
+  runtime_version <- extra_config[["runtime_version"]] %||%
+    config$runtime_version %||%  "1.0"
 
-    # move to application's parent directory
-    owd <- setwd(dirname(application))
-    on.exit(setwd(owd), add = TRUE)
+  # ensure 'job_dir' is passed through extra config
+  extra_config$job_dir <- job_dir
 
-    # generate setup script (used to build the application as a Python
-    # package remotely)
-    if (!file.exists("setup.py")) {
-      file.copy(
-        system.file("cloudml/setup.py", package = "cloudml"),
-        "setup.py",
-        overwrite = TRUE
-      )
-      setup.py <- normalizePath("setup.py")
-      on.exit(unlink(setup.py), add = TRUE)
-    }
+  # move to application's parent directory
+  owd <- setwd(dirname(application))
+  on.exit(setwd(owd), add = TRUE)
 
-    # serialize '...' as extra arguments to be merged
-    # with the config file
-    ensure_directory(file.path(application, "cloudml"))
-    saveRDS(extra_config, file.path(application, "cloudml/config.rds"))
-
-    # generate deployment script
-    arguments <- (MLArgumentsBuilder()
-                  ("jobs")
-                  ("submit")
-                  ("training")
-                  (job_name)
-                  ("--package-path=%s", basename(application))
-                  ("--module-name=%s.cloudml.deploy", basename(application))
-                  (if (!is.null(job_dir)) c("--job-dir=%s", job_dir))
-                  (if (!is.null(staging_bucket)) c("--staging-bucket=%s", staging_bucket))
-                  ("--region=%s", region)
-                  ("--async")
-                  ("--runtime-version=%s", runtime_version)
-                  ("--")
-                  (entrypoint)
-                  (config_name)
-                  ("--environment=gcloud"))
-
-    # submit job through command line interface
-    output <- gexec(gcloud(), arguments(), stdout = TRUE, stderr = TRUE)
-
-    # extract job id from output
-    index <- grep("^jobId:", output)
-    job_name <- substring(output[index], 8)
-
-    # emit first line of output
-    cat(output[1], sep = "\n")
-
-    # return job object
-    cloudml_job(
-      "train",
-      app_dir  = application,
-      job_name = job_name,
-      job_dir  = job_dir
+  # generate setup script (used to build the application as a Python
+  # package remotely)
+  if (!file.exists("setup.py")) {
+    file.copy(
+      system.file("cloudml/setup.py", package = "cloudml"),
+      "setup.py",
+      overwrite = TRUE
     )
-  })
+    setup.py <- normalizePath("setup.py")
+    on.exit(unlink(setup.py), add = TRUE)
+  }
+
+  # serialize '...' as extra arguments to be merged
+  # with the config file
+  ensure_directory(file.path(application, "cloudml"))
+  saveRDS(extra_config, file.path(application, "cloudml/config.rds"))
+
+  # generate deployment script
+  arguments <- (MLArgumentsBuilder()
+                ("jobs")
+                ("submit")
+                ("training")
+                (job_name)
+                ("--package-path=%s", basename(application))
+                ("--module-name=%s.cloudml.deploy", basename(application))
+                (if (!is.null(job_dir)) c("--job-dir=%s", job_dir))
+                (if (!is.null(staging_bucket)) c("--staging-bucket=%s", staging_bucket))
+                ("--region=%s", region)
+                ("--async")
+                ("--runtime-version=%s", runtime_version)
+                ("--")
+                (entrypoint)
+                (config_name)
+                ("--environment=gcloud"))
+
+  # submit job through command line interface
+  output <- gexec(gcloud(), arguments(), stdout = TRUE, stderr = TRUE)
+
+  # extract job id from output
+  index <- grep("^jobId:", output)
+  job_name <- substring(output[index], 8)
+
+  # emit first line of output
+  cat(output[1], sep = "\n")
+
+  # return job object
+  cloudml_job(
+    "train",
+    app_dir  = application,
+    job_name = job_name,
+    job_dir  = job_dir
+  )
 }
 
 #' Google Cloud -- Cancel a Job

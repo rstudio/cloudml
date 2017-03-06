@@ -18,42 +18,43 @@ train_local <- function(application = getwd(),
                         job_dir     = NULL,
                         ...)
 {
-  with_envvar(c(R_CONFIG_ACTIVE = config, CLOUDML_EXECUTION_ENVIRONMENT = "local"), {
-    application <- scope_deployment(application)
-    config_name <- config
-    config <- cloudml::config(config = config)
+  Sys.setenv(CLOUDML_EXECUTION_ENVIRONMENT = "local")
+  on.exit(Sys.unsetenv("CLOUDML_EXECUTION_ENVIRONMENT"), add = TRUE)
 
-    # resolve extra config
-    extra_config <- list(...)
-    if (!is.null(job_dir))
-      extra_config$job_dir <- job_dir
+  application <- scope_deployment(application)
+  config_name <- config
+  config <- cloudml::config(config = config)
 
-    # resolve entrypoint
-    entrypoint <- extra_config[["entrypoint"]] %||%
-      config$train_entrypoint %||% "train.R"
+  # resolve extra config
+  extra_config <- list(...)
+  if (!is.null(job_dir))
+    extra_config$job_dir <- job_dir
 
-    # move to application's parent directory
-    owd <- setwd(dirname(application))
-    on.exit(setwd(owd), add = TRUE)
+  # resolve entrypoint
+  entrypoint <- extra_config[["entrypoint"]] %||%
+    config$train_entrypoint %||% "train.R"
 
-    # serialize '...' as extra arguments to be merged
-    # with the config file
-    ensure_directory("cloudml")
-    saveRDS(extra_config, file.path(application, "cloudml/config.rds"))
+  # move to application's parent directory
+  owd <- setwd(dirname(application))
+  on.exit(setwd(owd), add = TRUE)
 
-    # generate arguments for gcloud call
-    arguments <- (MLArgumentsBuilder()
-                  ("local")
-                  ("train")
-                  ("--package-path=%s", basename(application))
-                  ("--module-name=%s.cloudml.deploy", basename(application))
-                  ("--")
-                  (entrypoint)
-                  (config_name)
-                  ("--environment=local"))
+  # serialize '...' as extra arguments to be merged
+  # with the config file
+  ensure_directory("cloudml")
+  saveRDS(extra_config, file.path(application, "cloudml/config.rds"))
 
-    gexec(gcloud(), arguments())
-  })
+  # generate arguments for gcloud call
+  arguments <- (MLArgumentsBuilder()
+                ("local")
+                ("train")
+                ("--package-path=%s", basename(application))
+                ("--module-name=%s.cloudml.deploy", basename(application))
+                ("--")
+                (entrypoint)
+                (config_name)
+                ("--environment=local"))
+
+  gexec(gcloud(), arguments())
 }
 
 #' Predict a Model Locally
