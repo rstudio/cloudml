@@ -10,12 +10,6 @@ initialize_application <- function(application = getwd()) {
     stopf(fmt, basename(application))
   }
 
-  # copy 'cloudml' deployment helpers to application
-  # TODO: use a more targeted approach here + validate that
-  # we're not stomping on user files
-  if (file.exists("cloudml"))
-    unlink("cloudml", recursive = TRUE)
-
   copy_directory(
     system.file("cloudml/cloudml", package = "cloudml"),
     "cloudml"
