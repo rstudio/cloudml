@@ -2,28 +2,22 @@ library(tensorflow)
 
 source("model.R")
 
-config <- cloudml::config()
-
 # read in the test data as an R data.frame
 data <- read.table(
-  config$eval_file,
+  cloudml::gs_data("gs://rstudio-cloudml-demo-ml/census/data/local.adult.test"),
+  col.names = CSV_COLUMNS,
   header = FALSE,
   sep = ",",
-  stringsAsFactors = FALSE
+  stringsAsFactors = FALSE,
+  nrows = 5
 )
-names(data) <- CSV_COLUMNS
 
-# use only first 5 rows of data
-header <- head(data, n = 5)
-
-# remove 'fnlwgt' column
+# remove some columns
 header$fnlwgt <- NULL
-
-# remove label
 header[[LABEL_COLUMN]] <- NULL
 
 # generate predictions
-predictions <- cloudml::predict_local(config$job_dir, header)
+predictions <- cloudml::predict_local("jobs/local", header)
 
 # print predictions
 cat(yaml::as.yaml(predictions))
