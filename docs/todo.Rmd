@@ -17,8 +17,13 @@
 - job_collect / job_status / etc. all need to take either a job id/name or a job object
   (otherwise you can't ever get back to them if you don't have the live job object)
 
-- using the 'cloudml' directory within the user's project and then recursively unlinking it
-  seems very sketchy. We should use a more obscured name.
+- I think we should stage the contents of the application directory into a temporary directory
+  before building the python package. This will eliminate the temporary writing of various 
+  artifacts (which today are visible in the RStudio Files pane because train_local blocks
+  the UI thread) as well as eliminate the problem of unlinking the .rds and cloudml directory.
+  We have made the 'local' folder ignored by default -- if users have large datasets they
+  want to use locally and not have uploaded we can document that these should go in the local 
+  folder.
 
 - Ensure python package enumerates files correctly
   https://github.com/rstudio/cloudml/commit/0c109336c366ada703ea563a1ddc806dab571cf9#commitcomment-21154573
