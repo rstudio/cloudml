@@ -25,8 +25,6 @@ train_cloudml <- function(application = getwd(),
 
     # resolve extra config
     extra_config <- list(...)
-    if (!is.null(job_dir))
-      extra_config$job_dir <- job_dir
 
     # resolve entrypoint
     entrypoint <- extra_config[["entrypoint"]] %||%
@@ -49,6 +47,9 @@ train_cloudml <- function(application = getwd(),
     # determine runtime version
     runtime_version <- extra_config[["runtime_version"]] %||%
       config$runtime_version %||%  "1.0"
+
+    # ensure 'job_dir' is passed through extra config
+    extra_config$job_dir <- job_dir
 
     # move to application's parent directory
     owd <- setwd(dirname(application))
