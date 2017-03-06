@@ -10,6 +10,8 @@
 
 - Support 'job_output' + 'job_name' as alternative to 'job_dir'
 
+- More human readable job_dir names, e.g.  `20170306_1488804470` ->  `2017-03-06_@_14-24-07.234`
+   
 - Job status/control functions
 
 - job_collect / job_status / etc. all need to take either a job id/name or a job object
