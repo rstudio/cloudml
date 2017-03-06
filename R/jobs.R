@@ -72,9 +72,7 @@ train_cloudml <- function(application = getwd(),
     saveRDS(extra_config, file.path(application, "cloudml/config.rds"))
 
     # generate deployment script
-    arguments <- (ShellArgumentsBuilder()
-                  ("beta")
-                  ("ml")
+    arguments <- (MLArgumentsBuilder()
                   ("jobs")
                   ("submit")
                   ("training")
@@ -122,9 +120,7 @@ job_cancel <- function(job) {
   id <- job_name(job)
 
   arguments <- (
-    ShellArgumentsBuilder()
-    ("beta")
-    ("ml")
+    MLArgumentsBuilder()
     ("jobs")
     ("cancel")
     (id))
@@ -143,9 +139,7 @@ job_describe <- function(job) {
   id <- job_name(job)
 
   arguments <- (
-    ShellArgumentsBuilder()
-    ("beta")
-    ("ml")
+    MLArgumentsBuilder()
     ("jobs")
     ("describe")
     (id))
@@ -189,9 +183,7 @@ job_list <- function(filter    = NULL,
                      uri       = FALSE)
 {
   arguments <- (
-    ShellArgumentsBuilder()
-    ("beta")
-    ("ml")
+    MLArgumentsBuilder()
     ("jobs")
     ("list")
     (if (!is.null(filter))    c("--filter=%s", filter))
@@ -229,9 +221,7 @@ job_stream <- function(job,
   id <- job_name(job)
 
   arguments <- (
-    ShellArgumentsBuilder()
-    ("beta")
-    ("ml")
+    MLArgumentsBuilder()
     ("jobs")
     ("stream-logs")
     (id)
@@ -255,9 +245,7 @@ job_status <- function(job) {
   id <- job_name(job)
 
   arguments <- (
-    ShellArgumentsBuilder()
-    ("beta")
-    ("ml")
+    MLArgumentsBuilder()
     ("jobs")
     ("describe")
     (id))

@@ -42,9 +42,7 @@ train_local <- function(application = getwd(),
     saveRDS(extra_config, file.path(application, "cloudml/config.rds"))
 
     # generate arguments for gcloud call
-    arguments <- (ShellArgumentsBuilder()
-                  ("beta")
-                  ("ml")
+    arguments <- (MLArgumentsBuilder()
                   ("local")
                   ("train")
                   ("--package-path=%s", basename(application))
@@ -75,9 +73,7 @@ predict_local <- function(model.dir = getwd(),
 
   # Add gcloud-specific arguments
   args <-
-    (ShellArgumentsBuilder()
-     ("beta")
-     ("ml")
+    (MLArgumentsBuilder()
      ("local")
      ("predict")
      ("--model-dir=%s", model.dir))

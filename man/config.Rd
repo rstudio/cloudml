@@ -4,9 +4,12 @@
 \alias{config}
 \title{Read the configuration for a CloudML application}
 \usage{
-config(local_gs = "gs")
+config(config = NULL, local_gs = "gs")
 }
 \arguments{
+\item{config}{Name of configuration to read (\code{NULL} will result in the
+active configuration for the current environment being used).}
+
 \item{local_gs}{Specify a directory name to automatically download local
 copies of references to Google Storage data (\code{gs://}) and then
 resolve their values to the path of their local copy.}
