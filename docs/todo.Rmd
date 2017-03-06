@@ -43,6 +43,8 @@
 
 ## Future
 
+- install_gcloud_sdk function (see headless install in https://cloud.google.com/sdk/downloads)
+
 - Include/exclude keys in config
 
 - Online prediction
