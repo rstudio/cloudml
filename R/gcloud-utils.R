@@ -24,17 +24,6 @@ initialize_application <- function(application = getwd()) {
   # ensure sub-directories contain an '__init__.py'
   # script, so that they're all included in tarball
   dirs <- list.dirs(application)
-
-  # ignore data directories in the bundle by default
-  # TODO: make the pattern here user-configurable?
-  dirs <- grep(
-    "/(?:jobs|local)",
-    dirs,
-    invert = TRUE,
-    perl = TRUE,
-    value = TRUE
-  )
-
   lapply(dirs, function(dir) {
     ensure_file(file.path(dir, "__init__.py"))
   })
@@ -45,41 +34,18 @@ initialize_application <- function(application = getwd()) {
 scope_deployment <- function(application = getwd()) {
   application <- normalizePath(application, winslash = "/")
 
-  # initialize application (tracking what new files were generated)
-  # helper function for listing all generated artefacts
-  list_files <- function(folder) {
-    list.files(folder,
-               all.files = TRUE,
-               full.names = TRUE,
-               recursive = TRUE,
-               include.dirs = TRUE)
-  }
+  # generate deployment directory
+  prefix <- sprintf("cloudml-deploy-%s-", basename(application))
+  root <- tempfile(pattern = prefix)
+  ensure_directory(root)
 
-  old <- list_files(application)
-  initialize_application(application)
-  new <- list_files(application)
-
-  # clean up the newly generated files and move back
-  # to callers directory when the parent function exits
-  transient <- setdiff(new, old)
-  defer({
-
-    # unlink all transient artefacts
-    unlink(transient, recursive = TRUE)
-
-    # clean up any '.pyc' files generated as a side effect
-    # of building the package
-    pyc <- list.files(
-      application,
-      pattern    = "\\.pyc$",
-      all.files  = TRUE,
-      full.names = TRUE,
-      recursive  = TRUE
-    )
-    unlink(pyc)
-
-  }, envir = parent.frame())
+  # TODO: read some kind of 'exclude' / 'include' list from the
+  # application's config?
+  deployment <- file.path(root, basename(application))
+  copy_directory(application, deployment, exclude = c("local", "jobs"))
+  defer(unlink(root, recursive = TRUE), envir = parent.frame())
+  initialize_application(deployment)
 
   # return normalized application path
-  application
+  deployment
 }
