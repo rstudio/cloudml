@@ -96,7 +96,7 @@ random_string <- function(prefix = "") {
 
 timestamp_string <- function() {
   time <- format(Sys.time(), "%Y_%m_%d_%H%M%OS3", tz = "GMT")
-  gsub(".", "_", time, fixed = TRUE)
+  gsub(".", "", time, fixed = TRUE)
 }
 
 unique_job_name <- function(application = getwd(), config = "default") {
