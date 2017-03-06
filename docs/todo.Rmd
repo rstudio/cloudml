@@ -1,19 +1,16 @@
 
-## JJ 
-
-- include/exclude keys in config
-- start with staticdocs
 
 ## Kevin
-
-- Support 'job_output' + 'job_name' as alternative to 'job_dir'
 
 - How exactly do I use tf learn experiment to call predict on this model. I think
   we just reconsturct the Experiment with the job/model dir and call predict on it
 
-- Job status/control functions
+  NOTE: the priority is predicaiton with classic TF apis rather than the 
+  `predict_local` function.
 
-- Error on job_collect when job has already completed
+- Support 'job_output' + 'job_name' as alternative to 'job_dir'
+
+- Job status/control functions
 
 - job_collect / job_status / etc. all need to take either a job id/name or a job object
   (otherwise you can't ever get back to them if you don't have the live job object)
@@ -45,6 +42,8 @@
 
 
 ## Future
+
+- Include/exclude keys in config
 
 - Online prediction
 
