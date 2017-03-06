@@ -103,12 +103,12 @@ train_cloudml <- function(application = getwd(),
   job_describe(job_name)
 
   # return job object
-  cloudml_job(
+  invisible(cloudml_job(
     "train",
     app_dir  = application,
     job_name = job_name,
     job_dir  = job_dir
-  )
+  ))
 }
 
 #' Google Cloud -- Cancel a Job
