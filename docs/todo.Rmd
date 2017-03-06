@@ -1,16 +1,11 @@
 
+## JJ
+
+- More human readable job_dir names, e.g.  `20170306_1488804470` ->  `2017-03-06_@_14-24-07.234`
 
 ## Kevin
 
-- How exactly do I use tf learn experiment to call predict on this model. I think
-  we just reconsturct the Experiment with the job/model dir and call predict on it
-
-  NOTE: the priority is prediction with classic TF apis rather than the 
-  `predict_local` function.
-
-- More human readable job_dir names, e.g.  `20170306_1488804470` ->  `2017-03-06_@_14-24-07.234`
-   
-- Job status/control functions (looks like we might be done here?)
+- `predict_local`
 
 - I think we should stage the contents of the application directory into a temporary directory
   before building the python package. This will eliminate the temporary writing of various 
@@ -19,12 +14,13 @@
   We have made the 'local' folder ignored by default -- if users have large datasets they
   want to use locally and not have uploaded we can document that these should go in the local 
   folder.
-
-- Ensure python package enumerates files correctly
-  https://github.com/rstudio/cloudml/commit/0c109336c366ada703ea563a1ddc806dab571cf9#commitcomment-21154573
   
+- Integerate with Sean's census-predict.Rmd
 
-## Cloud NEXT
+
+## Future
+
+- `predict_cloudml`
 
 - Sort out all of the gcloud sdk installation / authentication requirements
   for people other than us to use the package and document this well.
@@ -41,10 +37,6 @@
   Then in our app.R generated file where we set the config pacakge hook we 
   propagate the command line options/hyperparamters back into the config list
 
-
-
-## Future
-
 - Ensure that CLOUDSDK_PYTHON points to python 2 not python 3
 
 - Job status / enumeration functions return R lists with custom print methods
@@ -52,8 +44,6 @@
 - install_gcloud_sdk function (see headless install in https://cloud.google.com/sdk/downloads)
 
 - Include/exclude keys in config
-
-- Online prediction
 
 - Satisfying R package dependencies of train.R (packrat manifest + .Rprofile?)
 
