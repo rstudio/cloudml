@@ -6,6 +6,8 @@
 
 ## Kevin
 
+- Support 'job_output' + 'job_name' as alternative to 'job_dir'
+
 - How exactly do I use tf learn experiment to call predict on this model. I think
   we just reconsturct the Experiment with the job/model dir and call predict on it
 
