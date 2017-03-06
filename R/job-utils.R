@@ -1,20 +1,33 @@
 cloudml_job <- function(class,
-                        app_dir,
                         job_name,
                         job_dir)
 {
-  object <- list(
-    app_dir  = app_dir,
+  job <- list(
     job_name = job_name,
     job_dir  = job_dir
   )
 
-  class(object) <- c(
+  class(job) <- c(
     sprintf("cloudml_job_%s", class),
     "cloudml_job"
   )
 
-  object
+  register_job(job)
+  job
+}
+
+as.cloudml_job <- function(x) {
+  UseMethod("as.cloudml_job")
+}
+
+#' @export
+as.cloudml_job.character <- function(x) {
+  resolve_job(x)
+}
+
+#' @export
+as.cloudml_job.cloudml_job <- function(x) {
+  x
 }
 
 job_name <- function(x, ...) {
@@ -42,20 +55,6 @@ job_dir.cloudml_job <- function(x, ...) {
 
 #' @export
 job_dir.character <- function(x, ...) {
-  x
-}
-
-app_dir <- function(x, ...) {
-  UseMethod("app_dir")
-}
-
-#' @export
-app_dir.cloudml_app <- function(x, ...) {
-  x$app_dir
-}
-
-#' @export
-app_dir.character <- function(x, ...) {
   x
 }
 
