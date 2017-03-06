@@ -99,8 +99,8 @@ train_cloudml <- function(application = getwd(),
   index <- grep("^jobId:", output)
   job_name <- substring(output[index], 8)
 
-  # emit first line of output
-  cat(output[1], sep = "\n")
+  # print job info to console
+  job_describe(job_name)
 
   # return job object
   cloudml_job(
@@ -147,6 +147,9 @@ job_describe <- function(job) {
     (id))
 
   gexec(gcloud(), arguments())
+
+  # provide hints on R functions
+  message("\nCheck status and collect output with:\njob_status(\"", id, "\")\njob_collect(\"", id, "\")")
 }
 
 #' Google Cloud -- List Jobs

@@ -122,7 +122,25 @@ gexec <- function(command, args = character(), stdout = "", stderr = "", ...) {
 
   # exec function
   exec <- function() {
-    system2(command, args, stdout, stderr, ...)
+
+    # execute command
+    result <- system2(command, args, stdout, stderr, ...)
+
+    # check for errors given different return value conventions
+    if (isTRUE(stdout) || isTRUE(stderr)) {
+      status = attr(result, "status")
+      if (!is.null(status)) {
+        errmsg <- attr(result, "errmsg")
+        if (is.null(errmsg))
+          errmsg <- paste0("Error ", status, " occurred running command ", command)
+        stop(errmsg)
+      }
+    } else if (result != 0) {
+      stop("Error ", status, " occurred running command ", command)
+    }
+
+    # return result
+    result
   }
 
   # import tensorflow so that we figure out where that version of python lives
