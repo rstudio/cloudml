@@ -7,7 +7,7 @@ default:
   # Outputs (write to local jobs directory)
   job_dir                  : "jobs/local"
 
-  # Parameters for training routines
+  # Training parameters
   estimator_embedding_size : 8
   estimator_hidden_units   : [100, 70, 50, 25]
   eval_num_epochs          : 10
@@ -28,7 +28,7 @@ cloudml:
   job_dir                  : !expr cloudml::unique_job_dir("gs://rstudio-cloudml-demo-ml/census/jobs")
   staging_bucket           : "gs://rstudio-cloudml-demo-ml"
 
-  # Overrides for training parameters
+  # Training parameter overrides
   eval_batch_size          : 100
   train_batch_size         : 100
 
