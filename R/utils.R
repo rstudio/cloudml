@@ -11,6 +11,14 @@ stopf <- function(fmt, ..., call. = TRUE, domain = NULL) {
   ))
 }
 
+warnf <- function(fmt, ..., call. = TRUE)
+{
+  warning(simpleWarning(
+    sprintf(fmt, ...),
+    if (call.) sys.call(sys.parent())
+  ))
+}
+
 # TODO: Windows
 copy_directory <- function(source, target, overwrite = TRUE) {
 
