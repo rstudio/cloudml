@@ -1,11 +1,9 @@
 
 # extract command line arguments
-# TODO: use `tensorflow::parse_arguments()` and submit
-# command line in a way that's parsable for it
-arguments <- as.list(commandArgs(trailingOnly = TRUE))
-entrypoint <- arguments[[1]]
-config     <- arguments[[2]]
-environment <- strsplit(arguments[[3]], "=")[[1]][[2]]
+arguments <- tensorflow::parse_arguments()
+entrypoint  <- arguments[["cloudml_entrypoint"]]
+config      <- arguments[["cloudml_config"]]
+environment <- arguments[["cloudml_environment"]]
 
 # apply config, environment
 Sys.setenv(R_CONFIG_ACTIVE = config)
@@ -23,10 +21,8 @@ if (identical(environment, "gcloud")) {
 
 # read config overlay if available
 overlay <- list()
-if (file.exists("cloudml/config.rds")) {
+if (file.exists("cloudml/config.rds"))
   overlay <- readRDS("cloudml/config.rds")
-  unlink("cloudml/config.rds")
-}
 
 # set extra config
 cloudml:::set_extra_config(overlay)
