@@ -4,7 +4,7 @@
 \alias{gs_data}
 \title{Get a path to a data file within Google Storage}
 \usage{
-gs_data(uri, local_dir = "gs")
+gs_data(uri, local_dir = "local/gs")
 }
 \arguments{
 \item{uri}{Google storage URI (e.g. \code{gs://[BUCKET_NAME]/[FILENAME.CSV]})}

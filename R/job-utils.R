@@ -21,10 +21,12 @@ job_name <- function(x, ...) {
   UseMethod("job_name")
 }
 
+#' @export
 job_name.cloudml_job <- function(x, ...) {
   x$job_name
 }
 
+#' @export
 job_name.character <- function(x, ...) {
   x
 }
@@ -33,10 +35,12 @@ job_dir <- function(x, ...) {
   UseMethod("job_dir")
 }
 
+#' @export
 job_dir.cloudml_job <- function(x, ...) {
   x$job_dir
 }
 
+#' @export
 job_dir.character <- function(x, ...) {
   x
 }
@@ -45,10 +49,12 @@ app_dir <- function(x, ...) {
   UseMethod("app_dir")
 }
 
+#' @export
 app_dir.cloudml_app <- function(x, ...) {
   x$app_dir
 }
 
+#' @export
 app_dir.character <- function(x, ...) {
   x
 }
