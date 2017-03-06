@@ -81,18 +81,3 @@ discover_model_dir <- function(dir) {
   # return discovered directory
   dirname(files)
 }
-
-# TODO: Consider whether we should route through the 'google.cloud.ml.prediction' package?
-# predict_local <- function(dir, instances) {
-#   # TODO: route this through the gcloud APIs
-#   cloudml <- import("google.cloud.ml")
-#   prediction <- cloudml$prediction
-#
-#   # provide data as JSON
-#   instances <- resolve_instances(instances)
-#
-#   prediction$local_predict(
-#     model_dir = dir,
-#     instances = instances
-#   )
-# }
