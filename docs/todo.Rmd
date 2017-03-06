@@ -12,9 +12,6 @@
    
 - Job status/control functions
 
-- job_collect / job_status / etc. all need to take either a job id/name or a job object
-  (otherwise you can't ever get back to them if you don't have the live job object)
-
 - I think we should stage the contents of the application directory into a temporary directory
   before building the python package. This will eliminate the temporary writing of various 
   artifacts (which today are visible in the RStudio Files pane because train_local blocks
