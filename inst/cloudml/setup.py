@@ -73,7 +73,7 @@ setup(
     author_email     = "kevin@rstudio.com",
     install_requires = REQUIRED_PACKAGES,
     packages         = find_packages(),
-    package_data     = {"": ["*.r", "*.R", "config.yml"]},
+    package_data     = {"": ["*"]},
     description      = "RStudio Integration",
     requires         = [],
     cmdclass         = { "install": CustomCommands }
