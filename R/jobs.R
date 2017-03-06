@@ -322,6 +322,26 @@ job_download <- function(job, destination = "jobs/cloudml")
 {
   source <- job$job_dir
 
+  if (!is_gs_uri(source)) {
+    fmt <- "job directory '%s' is not a Google Storage URI"
+    stopf(fmt, source)
+  }
+
+  # check that we have an output folder associated
+  # with this job -- 'gsutil ls' will return with
+  # non-zero status when attempting to query a
+  # non-existent gs URL
+  arguments <- (
+    ShellArgumentsBuilder()
+    ("ls")
+    (source))
+
+  status <- gexec(gsutil(), arguments())
+  if (status) {
+    fmt <- "no directory at path '%s'"
+    stopf(fmt, job_name(job))
+  }
+
   ensure_directory(destination)
 
   arguments <- (
