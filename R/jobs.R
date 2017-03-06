@@ -274,15 +274,20 @@ job_status <- function(job) {
 #' @export
 job_collect <- function(job, destination = "jobs/cloudml")
 {
-  # TODO: we need to handle job failures here
   id <- job_name(job)
 
   # get the job status
   status <- job_status(job)
 
-  # if we're already done, return early
+  # if we're already done, attempt download of outputs
   if (status$state == "SUCCEEDED")
     return(job_download(job, destination))
+
+  # if the job has failed, report error
+  if (status$state == "FAILED") {
+    fmt <- "job '%s' failed [state: %s]"
+    stopf(fmt, id, status$state)
+  }
 
   # otherwise, notify the user and begin polling
   fmt <- ">>> Job '%s' is currently running -- please wait..."
@@ -295,8 +300,15 @@ job_collect <- function(job, destination = "jobs/cloudml")
     # get the job status
     status <- job_status(job)
 
+    # download outputs on success
     if (status$state == "SUCCEEDED")
       return(job_download(job, destination))
+
+    # if the job has failed, report error
+    if (status$state == "FAILED") {
+      fmt <- "job '%s' failed [state: %s]"
+      stopf(fmt, id, status$state)
+    }
 
     # job isn't ready yet; sleep for a while and try again
     Sys.sleep(60)
