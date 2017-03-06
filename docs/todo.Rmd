@@ -1,4 +1,8 @@
 
+## JJ
+
+- Ensure that CLOUDSDK_PYTHON points to python 2 not python 3
+
 
 ## Kevin
 
