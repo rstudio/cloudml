@@ -1,7 +1,4 @@
 
-## JJ
-
-- More human readable job_dir names, e.g.  `20170306_1488804470` ->  `2017-03-06_@_14-24-07.234`
 
 ## Kevin
 

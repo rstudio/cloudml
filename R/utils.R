@@ -89,11 +89,10 @@ random_string <- function(prefix = "") {
 unique_job_name <- function(application = getwd(), config = "default") {
   application <- normalizePath(application, mustWork = TRUE)
   sprintf(
-    "%s_%s_%s_%i",
+    "%s_%s_%s",
     basename(application),
     config,
-    format(Sys.time(), "%Y%m%d"),
-    as.integer(Sys.time())
+    format(Sys.time(), "%Y-%m-%d_@_%I-%M-%OS2", tz = "GMT")
   )
 }
 
