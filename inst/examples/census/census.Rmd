@@ -55,7 +55,7 @@ Most of the columns in the census data are categorical. We plot a few of the mos
 
 ```{r}
 plot.main.effects <- function(data, x, y){
-  p <- data %>%
+  data %>%
     mutate_(group = x, metric = y) %>%
     group_by(group) %>%
     summarize(percent = 100 * mean(metric)) %>%
@@ -64,7 +64,6 @@ plot.main.effects <- function(data, x, y){
     coord_flip() +
     labs(y = "Percent", x = "") +
     ggtitle(paste("Percent surveyed with incomes over $50k by", x))
-  ggplotly(p, tooltip = "percent")
 }
 
 plot.main.effects(train, "marital_status", "label")
@@ -106,7 +105,7 @@ plot.continuous(train_raw, "income_bracket", "hours_per_week", adjust = 5)
 We can examine some two-way and three-way intearcations with choropleth maps:
 
 ```{r}
-p <- train %>%
+train %>%
   select(education_num, age_buckets, label) %>%
   group_by(age_buckets, education_num) %>%
   summarize(percent = 100 * mean(label)) %>%
@@ -114,9 +113,8 @@ p <- train %>%
   geom_tile() +
   labs(x = "Education", y = "Age") +
   ggtitle("Percent surveyed with incomes over $50k by age, education")
-ggplotly(p)
 
-p <- train %>%
+train %>%
   select(age_buckets, education_num, occupation, label) %>%
   group_by(age_buckets, education_num, occupation) %>%
   summarize(percent = 100 * mean(label)) %>%
@@ -125,8 +123,6 @@ p <- train %>%
   facet_wrap( ~ occupation) +
   labs(x = "Education", y = "Age") +
   ggtitle("Percent surveyed with incomes over $50k by age, education, and occupation")
-ggplotly(p)
-
 ```
 
 
