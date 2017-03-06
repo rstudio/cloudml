@@ -47,8 +47,21 @@ as_json_instances.data.frame <- function(data) {
 
 discover_model_dir <- function(dir) {
 
+  # if we have a 'saved_model.pb' or 'saved_model.pbtxt' in
+  # this directory, then just use it
+  candidates <- c(
+    "saved_model.pb",
+    "saved_model.pbtxt"
+  )
+
+  for (candidate in candidates)
+    if (file.exists(file.path(dir, candidate)))
+      return(dir)
+
+  # otherwise, crawl directory for one of these files
+  re_candidates <- sprintf("(?:%s)", paste(candidates, collapse = "|"))
   files <- list.files(dir,
-                      pattern = "saved_model.pb(?:txt)?",
+                      pattern = re_candidates,
                       full.names = TRUE,
                       recursive = TRUE)
 
