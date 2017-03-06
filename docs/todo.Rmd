@@ -4,6 +4,8 @@
 
 - `predict_local`
 
+- `as.cloudml_job()` to convert job ids to job objects
+
 - I think we should stage the contents of the application directory into a temporary directory
   before building the python package. This will eliminate the temporary writing of various 
   artifacts (which today are visible in the RStudio Files pane because train_local blocks
