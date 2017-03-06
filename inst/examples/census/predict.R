@@ -1,5 +1,4 @@
 library(tensorflow)
-library(readr)
 
 source("model.R")
 
@@ -23,7 +22,7 @@ header$fnlwgt <- NULL
 # remove label
 header[[LABEL_COLUMN]] <- NULL
 
-# use local model directory
+# generate predictions
 predictions <- cloudml::predict_local(config$job_dir, header)
 
 # print predictions

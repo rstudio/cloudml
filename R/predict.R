@@ -29,7 +29,7 @@ predict_local <- function(dir, data) {
                 ("--model-dir=%s", model_dir)
                 ("--json-instances=%s", tempfile))
 
-  output <- system2(gcloud(), arguments(), stdout = TRUE)
+  output <- gexec(gcloud(), arguments(), stdout = TRUE)
   yaml::yaml.load(paste(output, collapse = "\n"))
 }
 
