@@ -34,7 +34,7 @@ train_cloudml <- function(application = getwd(),
 
     # determine job name
     job_name <- extra_config[["job_name"]] %||%
-      random_job_name(application, config)
+      random_job_name(application, config_name)
 
     # determine job directory
     job_dir <- extra_config[["job_dir"]] %||% config$job_dir
