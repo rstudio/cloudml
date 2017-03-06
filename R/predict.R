@@ -48,7 +48,7 @@ as_json_instances.data.frame <- function(data) {
 discover_model_dir <- function(dir) {
 
   files <- list.files(dir,
-                      pattern = "saved_model.pb",
+                      pattern = "saved_model.pb(?:txt)?",
                       full.names = TRUE,
                       recursive = TRUE)
 
