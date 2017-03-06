@@ -2,10 +2,6 @@
 
 ## Kevin
 
-- `predict_local`
-
-- `as.cloudml_job()` to convert job ids to job objects
-
 - Integerate with Sean's census-predict.Rmd
 
 
