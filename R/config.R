@@ -10,7 +10,7 @@
 #' @return List with configuration values
 #'
 #' @export
-config <- function(config = NULL, local_gs = "gs") {
+config <- function(config = NULL, local_gs = "local/gs") {
 
   # add any command line values passed to the R script into the extra_config
   # (this is used when CloudML passes arguments during hyperparameter turning)

@@ -28,7 +28,7 @@ initialize_application <- function(application = getwd()) {
   # ignore data directories in the bundle by default
   # TODO: make the pattern here user-configurable?
   dirs <- grep(
-    "/(?:jobs|gs)",
+    "/(?:jobs|local)",
     dirs,
     invert = TRUE,
     perl = TRUE,

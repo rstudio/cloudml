@@ -4,7 +4,7 @@
 \alias{config}
 \title{Read the configuration for a CloudML application}
 \usage{
-config(config = NULL, local_gs = "gs")
+config(config = NULL, local_gs = "local/gs")
 }
 \arguments{
 \item{config}{Name of configuration to read (\code{NULL} will result in the
