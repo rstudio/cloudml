@@ -13,11 +13,11 @@ data <- read.table(
 )
 
 # remove some columns
-header$fnlwgt <- NULL
-header[[LABEL_COLUMN]] <- NULL
+data$fnlwgt <- NULL
+data[[LABEL_COLUMN]] <- NULL
 
 # generate predictions
-predictions <- cloudml::predict_local("jobs/local", header)
+predictions <- cloudml::predict_local("jobs/local", data)
 
 # print predictions
 cat(yaml::as.yaml(predictions))
