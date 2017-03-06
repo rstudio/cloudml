@@ -1,0 +1,132 @@
+---
+title: "Census Data Exploratory Analysis"
+output:
+  html_document: 
+    highlight: textmate
+---
+
+## Overview
+
+Predict whether income exceeds \$50K/yr based on census data. Also known as "Adult" dataset. Extraction was done by Barry Becker from the 1994 Census database. Prediction task is to determine whether a person makes over 50K a year. See the [data source](https://archive.ics.uci.edu/ml/datasets/Census+Income) and [description](https://archive.ics.uci.edu/ml/machine-learning-databases/adult/adult.names) for more information. These data are also used for demonstrating [Tensorflow](https://www.tensorflow.org/tutorials/wide).
+
+The biggest drivers for predicting income over \$50k are: marital status (married is better), education (more is better), and sex (male is better). We will explore the continuous and categorical predictors before building statistical models. Data manipulation is carried out in `dplyr` and visualizations are done in `ggplot2` and `plotly`.
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(warning = FALSE, message = FALSE)
+library(tidyverse)
+library(plotly)
+```
+
+## Read the data
+
+First we read the raw data, converting missing values from `?` to `NA`. We then convert the target variable `income_bracket` into a numeric value, create a new column `age_buckets`, and remove records with missing values. 
+
+```{r, message=FALSE, warning=FALSE}
+train_raw <- read_csv(
+  cloudml::gs_data("gs://rstudio-cloudml-demo-ml/census/data/adult.data"), 
+  col_names = c(
+    "age", "workclass", "fnlwgt", "education", "education_num",
+    "marital_status", "occupation", "relationship", "race", "gender",
+    "capital_gain", "capital_loss", "hours_per_week", "native_country",
+    "income_bracket"
+  ), 
+  na = "?")
+
+train <- train_raw %>% 
+  mutate(label = ifelse(income_bracket == ">50K" | income_bracket == ">50K.", 1, 0)) %>%
+  mutate(age_buckets = cut(age, c(16, 18, 25, 30, 35, 40, 45, 50, 55, 60, 65, 90))) %>%
+  select(label, gender, native_country, education, education_num, occupation, workclass, marital_status, 
+         race, age_buckets) %>%
+  na.omit
+```
+
+## Plot categorical columns
+
+Most of the columns in the census data are categorical. We plot a few of the most important columns here. The complete list of categorical columns are:
+
+* workclass
+* education
+* marital_status
+* occupation
+* relationship
+* race
+* gender
+* native_country
+
+```{r}
+plot.main.effects <- function(data, x, y){
+  p <- data %>%
+    mutate_(group = x, metric = y) %>%
+    group_by(group) %>%
+    summarize(percent = 100 * mean(metric)) %>%
+    ggplot(aes(x = reorder(group, percent), percent)) +
+    geom_bar(stat="identity", fill = "lightblue4") +
+    coord_flip() +
+    labs(y = "Percent", x = "") +
+    ggtitle(paste("Percent surveyed with incomes over $50k by", x))
+  ggplotly(p, tooltip = "percent")
+}
+
+plot.main.effects(train, "marital_status", "label")
+plot.main.effects(train, "gender", "label")
+plot.main.effects(train, "education", "label")
+```
+
+## Plot continuous columns
+
+We can compare the distribution of the categorical variables for those who earn more than \$50k and those who earn less. The complete list of categorical variables are:
+
+* age
+* education_num
+* capital_gain
+* capital_loss
+* hours_per_week
+
+```{r}
+plot.continuous <- function(data, x, y, alpha = 0.2, ...){ 
+  lab <- stringr::str_replace_all(y, "_", " ") %>% stringr::str_to_title(y)
+  data %>%
+    select_(groups = x, y = y) %>%
+    na.omit %>%
+    ggplot(aes(y, fill = groups)) + geom_density(alpha = alpha, ...) +
+    labs(x = lab, y = "") +
+    ggtitle(paste0("Income by ", lab))
+}
+
+# People who earn more also work more, are better educated, and are older
+plot.continuous(train_raw, "income_bracket", "age")
+plot.continuous(train_raw, "income_bracket", "education_num", adjust = 5)
+plot.continuous(train_raw, "income_bracket", "hours_per_week", adjust = 5)
+
+```
+
+
+## Plot interactions
+
+We can examine some two-way and three-way intearcations with choropleth maps:
+
+```{r}
+p <- train %>%
+  select(education_num, age_buckets, label) %>%
+  group_by(age_buckets, education_num) %>%
+  summarize(percent = 100 * mean(label)) %>%
+  ggplot(aes(education_num, age_buckets, fill = percent)) +
+  geom_tile() +
+  labs(x = "Education", y = "Age") +
+  ggtitle("Percent surveyed with incomes over $50k by age, education")
+ggplotly(p)
+
+p <- train %>%
+  select(age_buckets, education_num, occupation, label) %>%
+  group_by(age_buckets, education_num, occupation) %>%
+  summarize(percent = 100 * mean(label)) %>%
+  ggplot(aes(education_num, age_buckets, fill = percent)) +
+  geom_tile() +
+  facet_wrap( ~ occupation) +
+  labs(x = "Education", y = "Age") +
+  ggtitle("Percent surveyed with incomes over $50k by age, education, and occupation")
+ggplotly(p)
+
+```
+
+
