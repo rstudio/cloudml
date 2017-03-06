@@ -56,35 +56,3 @@ train_local <- function(application = getwd(),
 
   gexec(gcloud(), arguments())
 }
-
-#' Predict a Model Locally
-#'
-#' @param model.dir The model directory.
-#' @param json.instances Path to a JSON file, defining data
-#'   to be used for prediction.
-#' @param text.instances Path to a text file, defining data
-#'   to be used for prediction.
-#'
-#' TODO
-predict_local <- function(model.dir = getwd(),
-                          json.instances = NULL,
-                          text.instances = NULL)
-{
-  model.dir <- normalizePath(model.dir)
-
-  # Add gcloud-specific arguments
-  args <-
-    (MLArgumentsBuilder()
-     ("local")
-     ("predict")
-     ("--model-dir=%s", model.dir))
-
-  if (!is.null(json.instances))
-    args("--json-instances=%s", json.instances)
-  else if (!is.null(text.instances))
-    args("--text-instances=%s", text.instances)
-  else
-    stop("one of 'json.instances' or 'text.instances' must be supplied")
-
-  gexec(gcloud(), args())
-}
