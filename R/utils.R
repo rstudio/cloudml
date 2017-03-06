@@ -86,7 +86,7 @@ random_string <- function(prefix = "") {
   basename(tempfile(prefix))
 }
 
-random_job_name <- function(application = getwd(), config = "default") {
+unique_job_name <- function(application = getwd(), config = "default") {
   application <- normalizePath(application, mustWork = TRUE)
   sprintf(
     "%s_%s_%s_%i",
