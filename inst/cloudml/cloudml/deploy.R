@@ -1,10 +1,14 @@
 
-# extract command line arguments and populate R environment as required
+# extract command line arguments
+# TODO: use `tensorflow::parse_arguments()` and submit
+# command line in a way that's parsable for it
 arguments <- as.list(commandArgs(trailingOnly = TRUE))
 entrypoint <- arguments[[1]]
 config     <- arguments[[2]]
-Sys.setenv(R_CONFIG_ACTIVE = config)
 environment <- strsplit(arguments[[3]], "=")[[1]][[2]]
+
+# apply config, environment
+Sys.setenv(R_CONFIG_ACTIVE = config)
 Sys.setenv(CLOUDML_EXECUTION_ENVIRONMENT = environment)
 
 # install required R packages if we in gcloud
