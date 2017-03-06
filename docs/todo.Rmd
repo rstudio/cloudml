@@ -10,7 +10,7 @@
 
 - More human readable job_dir names, e.g.  `20170306_1488804470` ->  `2017-03-06_@_14-24-07.234`
    
-- Job status/control functions
+- Job status/control functions (looks like we might be done here?)
 
 - I think we should stage the contents of the application directory into a temporary directory
   before building the python package. This will eliminate the temporary writing of various 
@@ -44,6 +44,8 @@
 
 
 ## Future
+
+- Job status / enumeration functions return R lists with custom print methods
 
 - install_gcloud_sdk function (see headless install in https://cloud.google.com/sdk/downloads)
 
