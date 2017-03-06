@@ -339,7 +339,7 @@ job_download <- function(job, destination = "jobs/cloudml")
   status <- gexec(gsutil(), arguments())
   if (status) {
     fmt <- "no directory at path '%s'"
-    stopf(fmt, job_name(job))
+    stopf(fmt, source)
   }
 
   ensure_directory(destination)
