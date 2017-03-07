@@ -89,29 +89,6 @@ Row {.sidebar}
 sliderInput("cutoff", "Cutoff", min = 0, max = 1, value = 0.5)
 ```
 
-```{r context = "server"}
-labelled_data <- reactive({
-  new_data$Label <- ifelse(new_data$score > input$cutoff, " >50K.", " <=50K.")
-  new_data
-})
-
-output$accuracy <- renderValueBox({
-  accuracy <- paste0(round(sum(labelled_data()$Label == labelled_data()$income_bracket) / nrow(labelled_data()), 2)*100, "%")
-  valueBox(accuracy, caption = "accuracy", color = "primary", icon = "fa-check-circle")
-})
-
-output$conf <- renderTable(rownames = TRUE, {
-  conf_matrix <- matrix(data = rep(0,4), nrow = 2, ncol = 2)
-  conf_matrix[1,1] <- round(sum(labelled_data()$Label == " <=50K." & labelled_data()$income_bracket == " <=50K." ))
-  conf_matrix[1,2] <- round(sum(labelled_data()$Label == " >50K." & labelled_data()$income_bracket == " <=50K." ))
-  conf_matrix[2,1] <- round(sum(labelled_data()$Label == " <=50K." & labelled_data()$income_bracket == " >50K." ))
-  conf_matrix[2,2] <- round(sum(labelled_data()$Label == " >50K." & labelled_data()$income_bracket == " >50K." ))
-  colnames(conf_matrix) <- c("Predicted <=50K", ">50K")
-  rownames(conf_matrix) <- c("Actual <=50K", ">50K")
-  conf_matrix
-})
-```
-
 Row {data-height=30}
 ------------------------
 
@@ -126,6 +103,30 @@ valueBoxOutput("accuracy")
 ```{r}
 tableOutput("conf")
 ```
+
+```{r context = "server"}
+labelled_data <- reactive({
+  new_data$Label <- ifelse(new_data$score > input$cutoff, " >50K.", " <=50K.")
+  new_data
+})
+
+output$accuracy <- renderValueBox({
+  accuracy <- paste0(round(sum(labelled_data()$Label == labelled_data()$income_bracket) / nrow(labelled_data()), 2)*100, "%")
+  valueBox(accuracy, caption = "accuracy", color = "primary", icon = "fa-check-circle")
+})
+
+output$conf <- renderTable(rownames = TRUE, digits = 0, {
+  conf_matrix <- matrix(data = rep(0,4), nrow = 2, ncol = 2)
+  conf_matrix[1,1] <- sum(labelled_data()$Label == " <=50K." & labelled_data()$income_bracket == " <=50K." )
+  conf_matrix[1,2] <- sum(labelled_data()$Label == " >50K." & labelled_data()$income_bracket == " <=50K." )
+  conf_matrix[2,1] <- sum(labelled_data()$Label == " <=50K." & labelled_data()$income_bracket == " >50K." )
+  conf_matrix[2,2] <- sum(labelled_data()$Label == " >50K." & labelled_data()$income_bracket == " >50K." )
+  colnames(conf_matrix) <- c("Predicted <=50K", ">50K")
+  rownames(conf_matrix) <- c("Actual <=50K", ">50K")
+  conf_matrix
+})
+```
+
 
 Row {data-height=60 .tabset}
 -------------------------
