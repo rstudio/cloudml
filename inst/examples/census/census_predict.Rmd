@@ -127,7 +127,7 @@ valueBoxOutput("accuracy")
 tableOutput("conf")
 ```
 
-Row {data-height=35 .tabset}
+Row {data-height=60 .tabset}
 -------------------------
 
 ### Gender 
@@ -203,8 +203,6 @@ output$native_country <- renderPlot({
 })
 ```
 
-Column  {data-height=35 .tabset}
--------------------------
 
 ### Hours Per Week 
 
