@@ -4,6 +4,7 @@ output:
   flexdashboard::flex_dashboard:
     orientation: rows
     source_code: embed
+    fig_mobile: false
 runtime: shiny_prerendered
 ---
 
