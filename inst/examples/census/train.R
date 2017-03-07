@@ -19,7 +19,7 @@ estimator <- build_estimator(
 )
 
 # run the experiment
-experiment_fn <- generate_experiment_fn(config)
+experiment_fn <- generate_experiment_fn(estimator, config)
 result <- learn_runner$run(experiment_fn, config$job_dir)
 
 # extract generated artifacts

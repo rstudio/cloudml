@@ -18,7 +18,7 @@ CSV_COLUMNS <- c(
 LABEL_COLUMN <- "income_bracket"
 
 DEFAULTS <- lapply(
-  list(0, "", 0, "", 0, "", "", "", "", "", 0, 0, 0, "", ""),
+  list(0L, "", 0L, "", 0L, "", "", "", "", "", 0L, 0L, 0L, "", ""),
   list
 )
 
@@ -114,7 +114,7 @@ build_estimator <- function(model_dir,
     model_dir = model_dir,
     linear_feature_columns = wide_columns,
     dnn_feature_columns = deep_columns,
-    dnn_hidden_units = hidden_units %||% c(100, 70, 50, 25)
+    dnn_hidden_units = hidden_units %||% c(100L, 70L, 50L, 25L)
   )
 }
 
@@ -184,8 +184,8 @@ generate_input_fn <- function(filename,
   input_fn
 }
 
-generate_experiment_fn <- function(config) {
-  force(config)
+generate_experiment_fn <- function(estimator, config) {
+  list(estimator, config)
   function(output_dir) {
     train_input <- generate_input_fn(
       filename   = config$train_file,
