@@ -14,7 +14,13 @@ resolve_job <- function(id) {
     return(registry[[id]])
 
   # otherwise, construct it by querying Google Cloud
-  desc <- job_describe(id)
+  arguments <- (MLArgumentsBuilder()
+                ("jobs")
+                ("describe")
+                (id))
+
+  output <- gexec(gcloud(), arguments(), stdout = TRUE)
+  desc <- yaml::yaml.load(paste(output, collapse = "\n"))
 
   # if we have a 'trainingInput' field, this was a training
   # job (as opposed to a prediction job)
