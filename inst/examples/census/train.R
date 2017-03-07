@@ -18,45 +18,8 @@ estimator <- build_estimator(
   hidden_units   = config$estimator_hidden_units
 )
 
-# refine experiment function
-experiment_fn <- function(output_dir) {
-
-  train_input <- generate_input_fn(
-    filename   = config$train_file,
-    num_epochs = config$train_num_epochs,
-    batch_size = config$train_batch_size
-  )
-
-  eval_input <- generate_input_fn(
-    filename   = config$eval_file,
-    num_epochs = config$eval_num_epochs,
-    batch_size = config$eval_batch_size
-  )
-
-  learn$Experiment(
-
-    estimator,
-    train_input_fn = train_input,
-    eval_input_fn = eval_input,
-
-    eval_metrics = list(
-      "training/hptuning/metric" = learn$MetricSpec(
-        metric_fn = metrics$streaming_accuracy,
-        prediction_key = "logits"
-      )
-    ),
-
-    export_strategies = list(
-      saved_model_export_utils$make_export_strategy(
-        serving_input_fn,
-        default_output_alternative_key = NULL,
-        exports_to_keep = 1L
-      )
-    )
-  )
-}
-
 # run the experiment
+experiment_fn <- generate_experiment_fn(estimator, config)
 result <- learn_runner$run(experiment_fn, config$job_dir)
 
 # extract generated artifacts

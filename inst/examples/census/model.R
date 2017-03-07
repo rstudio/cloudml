@@ -18,7 +18,7 @@ CSV_COLUMNS <- c(
 LABEL_COLUMN <- "income_bracket"
 
 DEFAULTS <- lapply(
-  list(0, "", 0, "", 0, "", "", "", "", "", 0, 0, 0, "", ""),
+  list(0L, "", 0L, "", 0L, "", "", "", "", "", 0L, 0L, 0L, "", ""),
   list
 )
 
@@ -114,7 +114,7 @@ build_estimator <- function(model_dir,
     model_dir = model_dir,
     linear_feature_columns = wide_columns,
     dnn_feature_columns = deep_columns,
-    dnn_hidden_units = hidden_units %||% c(100, 70, 50, 25)
+    dnn_hidden_units = hidden_units %||% c(100L, 70L, 50L, 25L)
   )
 }
 
@@ -182,4 +182,43 @@ generate_input_fn <- function(filename,
   }
 
   input_fn
+}
+
+generate_experiment_fn <- function(estimator, config) {
+  list(estimator, config)
+  function(output_dir) {
+    train_input <- generate_input_fn(
+      filename   = config$train_file,
+      num_epochs = config$train_num_epochs,
+      batch_size = config$train_batch_size
+    )
+
+    eval_input <- generate_input_fn(
+      filename   = config$eval_file,
+      num_epochs = config$eval_num_epochs,
+      batch_size = config$eval_batch_size
+    )
+
+    learn$Experiment(
+
+      estimator,
+      train_input_fn = train_input,
+      eval_input_fn = eval_input,
+
+      eval_metrics = list(
+        "training/hptuning/metric" = learn$MetricSpec(
+          metric_fn = metrics$streaming_accuracy,
+          prediction_key = "logits"
+        )
+      ),
+
+      export_strategies = list(
+        saved_model_export_utils$make_export_strategy(
+          serving_input_fn,
+          default_output_alternative_key = NULL,
+          exports_to_keep = 1L
+        )
+      )
+    )
+  }
 }

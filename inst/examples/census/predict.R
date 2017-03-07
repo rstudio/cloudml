@@ -2,22 +2,14 @@ library(tensorflow)
 
 source("model.R")
 
-# read in the test data as an R data.frame
-data <- read.table(
-  cloudml::gs_data("gs://rstudio-cloudml-demo-ml/census/data/local.adult.test"),
-  col.names = CSV_COLUMNS,
-  header = FALSE,
-  sep = ",",
-  stringsAsFactors = FALSE,
-  nrows = 5
-)
+# path to dataset used for prediction
+eval_file <- "local/gs/rstudio-cloudml-demo-ml/census/data/local.adult.data"
 
-# remove some columns
-data$fnlwgt <- NULL
-data[[LABEL_COLUMN]] <- NULL
+# define estimator
+estimator <- build_estimator("jobs/local")
 
-# generate predictions
-predictions <- cloudml::predict_local("jobs/local", data)
-
-# print predictions
-cat(yaml::as.yaml(predictions))
+# use model to generate predictions with our input function
+input_fn <- generate_input_fn(eval_file)
+predictions <- iterate(estimator$predict(input_fn = input_fn))
+classes <- iterate(estimator$predict_classes(input_fn = input_fn))
+probabilities <- iterate(estimator$predict_proba(input_fn = input_fn))
