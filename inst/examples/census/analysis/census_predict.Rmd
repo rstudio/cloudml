@@ -34,7 +34,7 @@ label <- new_data[[LABEL_COLUMN]]
 new_data[[LABEL_COLUMN]] <- NULL
 
 # generate predictions
-predictions <- cloudml::predict_local("../jobs/local", new_data)
+predictions <- cloudml::predict_local("../jobs/cloudml/2017_03_07_211647456", new_data)
       
 # flatten predictions
 new_data[[LABEL_COLUMN]] <- label
