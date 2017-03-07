@@ -1,3 +1,4 @@
 jobs
 local/gs
 *.html
+census_predict_*
