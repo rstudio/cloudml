@@ -97,7 +97,7 @@ labelled_data <- reactive({
 
 output$accuracy <- renderValueBox({
   accuracy <- paste0(round(sum(labelled_data()$Label == labelled_data()$income_bracket) / nrow(labelled_data()), 2)*100, "%")
-  valueBox(accuracy, caption = "accuracy", color = "#75aadb")
+  valueBox(accuracy, caption = "accuracy", color = "primary", icon = "fa-check-circle")
 })
 
 output$conf <- renderTable(rownames = TRUE, {
