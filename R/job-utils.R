@@ -58,6 +58,7 @@ job_dir.character <- function(x, ...) {
   x
 }
 
+#' @export
 print.cloudml_job <- function(x, ...) {
   header <- "<cloudml job>"
   fields <- enumerate(x, function(key, val) {
