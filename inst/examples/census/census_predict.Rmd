@@ -1,9 +1,8 @@
 ---
-title: "TensorFlow Model Results"
+title: "Census Model Income Predictions"
 output: 
   flexdashboard::flex_dashboard:
     orientation: rows
-    theme: readable
     source_code: embed
 runtime: shiny_prerendered
 ---
@@ -13,19 +12,18 @@ library(flexdashboard)
 library(shiny)
 library(tidyverse)
 library(stringr)
-library(cloudml)
 library(ggthemes)
+source('model.R')
 ```
 
-```{r context = "data", cache=TRUE, include = FALSE}
+```{r data, cache=TRUE}
 ## Load & Score Test Data Set 
-source('model.R')
 new_data <- read.table(
-    cloudml::gs_data("gs://rstudio-cloudml-demo-ml/census/data/adult.test"),
-    col.names = CSV_COLUMNS,
-    header = FALSE,
-    sep = ",",
-    stringsAsFactors = FALSE
+  cloudml::gs_data("gs://rstudio-cloudml-demo-ml/census/data/adult.test"),
+  col.names = CSV_COLUMNS,
+  header = FALSE,
+  sep = ",",
+  stringsAsFactors = FALSE
 ) 
 
 # Clean Up Data
@@ -41,55 +39,18 @@ new_data[[LABEL_COLUMN]] <- label
 new_data$score <- predictions$predictions %>% map_dbl(~ .x$probabilities[2])
 ```
 
-```{r context = "server", include = FALSE}
-plotContinuous <- function(variable = "hours_per_week") {
-  
-  lab <- str_replace_all(variable, "_", " ") %>% str_to_title()
-  ggplot(labelled_data()) +
-    geom_density(aes_string(x = variable)) + 
-    labs(
-      title = lab,
-      fill = ""
-    ) +
-    scale_y_continuous(label = function(x){paste0(x*100, "%")}) +
-    theme_fivethirtyeight() +
-    scale_fill_fivethirtyeight() +
-    facet_wrap(~Label)
-
-}
-
-
-plotDiscrete <- function(variable = "gender") {
- lab <- str_replace_all(variable, "_", " ") %>% str_to_title()
- 
-  labelled_data() %>% 
-    mutate_(var = variable) %>% 
-    group_by(Label, var) %>%
-    summarise(n = n()) %>%
-    mutate(prop = n / sum(n)) %>% 
-    ggplot() +
-    geom_col(aes(x = reorder(var, prop), y = prop),
-      position = 'dodge') +
-    labs(
-      title = lab,
-      fill = ""
-    ) +
-    scale_y_continuous(label = function(x){paste0(x*100, "%")}) +
-    theme_fivethirtyeight() +
-    theme(axis.text.x = element_text(angle = 90, size = 14)) +
-    scale_fill_fivethirtyeight() +
-    facet_wrap(~Label)
-}
-```
-
 Row {.sidebar}
 -------------------------
- 
+
+Predict whether income exceeds \$50K/yr based on census data. Data extraction was done by Barry Becker from the 1994 Census database. Prediction task is to determine whether a person makes over 50K a year. See the [data source](https://archive.ics.uci.edu/ml/datasets/Census+Income) and [description](https://archive.ics.uci.edu/ml/machine-learning-databases/adult/adult.names) for more information.
+
+***
+
 ```{r}
-sliderInput("cutoff", "Cutoff", min = 0, max = 1, value = 0.5)
+sliderInput("cutoff", "Probability Cutoff", min = 0, max = 1, value = 0.5)
 ```
 
-Row {data-height=30}
+Row {data-height=150}
 ------------------------
 
 ### Accuracy 
@@ -117,10 +78,14 @@ output$accuracy <- renderValueBox({
 
 output$conf <- renderTable(rownames = TRUE, digits = 0, {
   conf_matrix <- matrix(data = rep(0,4), nrow = 2, ncol = 2)
-  conf_matrix[1,1] <- sum(labelled_data()$Label == " <=50K." & labelled_data()$income_bracket == " <=50K." )
-  conf_matrix[1,2] <- sum(labelled_data()$Label == " >50K." & labelled_data()$income_bracket == " <=50K." )
-  conf_matrix[2,1] <- sum(labelled_data()$Label == " <=50K." & labelled_data()$income_bracket == " >50K." )
-  conf_matrix[2,2] <- sum(labelled_data()$Label == " >50K." & labelled_data()$income_bracket == " >50K." )
+  conf_matrix[1,1] <- sum(labelled_data()$Label == " <=50K." & 
+                          labelled_data()$income_bracket == " <=50K." )
+  conf_matrix[1,2] <- sum(labelled_data()$Label == " >50K." & 
+                          labelled_data()$income_bracket == " <=50K." )
+  conf_matrix[2,1] <- sum(labelled_data()$Label == " <=50K." & 
+                          labelled_data()$income_bracket == " >50K." )
+  conf_matrix[2,2] <- sum(labelled_data()$Label == " >50K." & 
+                          labelled_data()$income_bracket == " >50K." )
   colnames(conf_matrix) <- c("Predicted <=50K", ">50K")
   rownames(conf_matrix) <- c("Actual <=50K", ">50K")
   conf_matrix
@@ -128,7 +93,7 @@ output$conf <- renderTable(rownames = TRUE, digits = 0, {
 ```
 
 
-Row {data-height=60 .tabset}
+Row {.tabset}
 -------------------------
 
 ### Gender 
@@ -263,6 +228,49 @@ plotOutput("education_num")
 output$education_num <- renderPlot({
   plotContinuous("education_num")
 })
+```
+
+
+
+```{r, context = "server"}
+plotContinuous <- function(variable = "hours_per_week") {
+  
+  lab <- str_replace_all(variable, "_", " ") %>% str_to_title()
+  ggplot(labelled_data()) +
+    geom_density(aes_string(x = variable)) + 
+    labs(
+      title = lab,
+      fill = ""
+    ) +
+    scale_y_continuous(label = function(x){paste0(x*100, "%")}) +
+    theme_fivethirtyeight() +
+    scale_fill_fivethirtyeight() +
+    facet_wrap(~Label)
+
+}
+
+
+plotDiscrete <- function(variable = "gender") {
+ lab <- str_replace_all(variable, "_", " ") %>% str_to_title()
+ 
+  labelled_data() %>% 
+    mutate_(var = variable) %>% 
+    group_by(Label, var) %>%
+    summarise(n = n()) %>%
+    mutate(prop = n / sum(n)) %>% 
+    ggplot() +
+    geom_col(aes(x = reorder(var, prop), y = prop),
+      position = 'dodge') +
+    labs(
+      title = lab,
+      fill = ""
+    ) +
+    scale_y_continuous(label = function(x){paste0(x*100, "%")}) +
+    theme_fivethirtyeight() +
+    theme(axis.text.x = element_text(angle = 90, size = 14)) +
+    scale_fill_fivethirtyeight() +
+    facet_wrap(~Label)
+}
 ```
 
 
