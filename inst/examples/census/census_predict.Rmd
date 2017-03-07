@@ -1,0 +1,272 @@
+---
+title: "Tensorflow Income Calculator"
+output: 
+  flexdashboard::flex_dashboard:
+    orientation: rows
+    vertical_layout: fill
+    source_code: embed
+    theme: readable
+runtime: shiny    
+---
+
+```{r setup, include=FALSE}
+library(flexdashboard)
+library(shiny)
+library(tidyverse)
+library(stringr)
+library(cloudml)
+library(ggthemes)
+source("model.R")
+
+## Load Training Data 
+train <- read.table(
+  cloudml::gs_data("gs://rstudio-cloudml-demo-ml/census/data/local.adult.data"),
+  col.names = CSV_COLUMNS,
+  header = FALSE,
+  sep = ",",
+  stringsAsFactors = FALSE
+)
+
+train$data <- "Training"
+
+## Define Plotting Functions
+plotContinuous <- function(variable = "hours_per_week") {
+  
+  lab <- str_replace_all(variable, "_", " ") %>% str_to_title()
+  p <- ggplot(all()) +
+    geom_density(aes_string(x = variable, fill = 'data'), alpha = 0.3) + 
+    labs(
+      title = lab,
+      fill = ""
+    ) +
+    scale_y_continuous(label = function(x){paste0(x*100, "%")}) +
+    theme_fivethirtyeight() +
+    scale_fill_fivethirtyeight()
+  
+  if ("Label" %in% colnames(all())) {
+     p <- p + facet_wrap(~Label)
+  }
+  p
+}
+
+
+plotDiscrete <- function(variable = "gender") {
+ lab <- str_replace_all(variable, "_", " ") %>% str_to_title()
+ 
+ if ("Label" %in% colnames(all())) {
+   plot_data <- all() %>% 
+    mutate_(var = variable) %>% 
+    group_by(Label, data, var) %>%
+    summarise(n = n()) %>%
+    mutate(prop = n / sum(n)) 
+ } else {
+   plot_data <- all() %>% 
+    mutate_(var = variable) %>% 
+    group_by(data, var) %>%
+    summarise(n = n()) %>%
+    mutate(prop = n / sum(n)) 
+ }
+ 
+ p <- ggplot(plot_data) +
+  geom_col(aes(x = reorder(var, prop), y = prop, fill = data),
+           position = 'dodge') +
+  labs(
+    title = lab,
+    fill = ""
+  ) +
+  scale_y_continuous(label = function(x){paste0(x*100, "%")}) +
+  theme_fivethirtyeight() +
+  theme(axis.text.x = element_text(angle = 90, size = 14)) +
+  scale_fill_fivethirtyeight()
+ 
+ if ("Label" %in% colnames(all())) {
+   p <- p + facet_wrap(~Label)
+ }
+ p
+} 
+```
+
+Input {.sidebar}
+-------------------------
+
+```{r}
+rv <- reactiveValues()
+rv$test <- NULL
+
+## Functions To Upload File
+br()
+actionButton("upload", "Upload File")
+br()
+br()
+
+observeEvent(input$upload, {
+  showModal(modalDialog(
+    textInput('test_file', "Enter Location of Test CSV", placeholder = "gs://", value = NULL),
+    actionButton("ok", "Upload")
+  ))
+})
+
+observeEvent(input$ok, {
+   removeModal()
+   t <- read.table(
+    cloudml::gs_data(input$test_file),
+    col.names = CSV_COLUMNS,
+    header = FALSE,
+    sep = ",",
+    stringsAsFactors = FALSE
+   )
+  
+   t$data <- "Test" 
+   
+   rv$test <- t
+})
+
+
+## Functions to Score File
+actionButton("score", "Score Data")
+
+observeEvent(input$score, {
+  if (!is.data.frame(rv$test)) {
+    showModal(modalDialog("You must upload a test data set before scoring!"))
+  } else {
+    withProgress(value = 0.3, message = "Scoring Data ...", {
+      
+      new_data <- rv$test
+      new_data$fnlwgt <- NULL
+      new_data$data <- NULL
+      new_data[[LABEL_COLUMN]] <- NULL
+    
+      # generate predictions
+      predictions <- cloudml::predict_local("jobs/local", new_data)
+      
+      # flatten predictions
+      rv$test$score <- predictions$predictions %>% map_dbl(~ .x$probabilities[2])
+    
+      # add label
+      rv$test$Label <- ifelse(rv$test$score > input$cutoff, " >50K", " <=50K")
+      
+    })
+  }
+})
+
+## Allow users to change input cutoff
+sliderInput("cutoff", "Cutoff Value", min = 0, max = 1, value = 0.5)
+
+observeEvent(input$cutoff, {
+  rv$test$Label <- ifelse(rv$test$score > input$cutoff, " >50K", " <=50K")
+})
+
+
+## Reactive to Hold All Data
+all <- reactive({
+  all <- train
+  if (!is.null(rv$test)) {
+    test <- rv$test
+    if ('Label' %in% colnames(test)) {
+      all$Label <- all$income_bracket 
+      test$score <- NULL
+    }
+    all$income_bracket <- NULL
+    test$income_bracket <- NULL
+    all$fnlwgt <- NULL
+    test$fnlwgt <- NULL
+    all <- rbind(all, test) 
+  }
+})
+
+```
+
+Row {data-height=75 .tabset}
+-------------------------
+
+### Gender {.no-title}
+
+
+```{r}
+renderPlot({
+  plotDiscrete("gender")
+})
+```
+
+
+### Hours Per Week {.no-title}
+
+```{r}
+renderPlot({
+  plotContinuous("hours_per_week")
+})
+```
+
+### Occupation {.no-title}
+
+```{r}
+renderPlot({
+  plotDiscrete("occupation")
+})
+```
+
+### Age {.no-title}
+
+```{r}
+renderPlot({
+  plotContinuous("age")
+})
+```
+
+### Relationship {.no-title}
+
+```{r}
+renderPlot({
+  plotDiscrete("relationship")
+})
+```
+
+### Marital Status {.no-title}
+
+```{r}
+renderPlot({
+  plotDiscrete("marital_status")
+})
+```
+
+### Race {.no-title}
+
+```{r}
+renderPlot({
+  plotDiscrete("race")
+})
+```
+
+
+### Native Country {.no-title}
+
+```{r}
+renderPlot({
+  plotDiscrete("native_country")
+})
+```
+
+### Education - Degree {.no-title}
+
+```{r}
+renderPlot({
+  plotDiscrete("education")
+})
+```
+
+### Education - Years {.no-title}
+
+```{r}
+renderPlot({
+  plotContinuous("education_num")
+})
+```
+
+### Occupation Class {.no-title}
+
+```{r}
+renderPlot({
+  plotDiscrete("workclass")
+})
+```
+
