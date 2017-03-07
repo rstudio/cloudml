@@ -2,17 +2,11 @@ library(tensorflow)
 
 source("model.R")
 
-# use test dataset for prediction
-filename <- "local/gs/rstudio-cloudml-demo-ml/census/data/local.adult.test"
+### Predict using TF estimator ----------------------------------------------
 
-# rebuild estimator from existing job directory
+# estimator and input_fn for predction
 estimator <- build_estimator("jobs/local")
-
-# generate input function (request only 1 epoch
-# so we just get one round of predictions)
-input_fn <- generate_input_fn(filename = filename,
-                              num_epochs = 1L,
-                              batch_size = 10L)
+input_fn <- predict_input_fn(filename = "local/data/adult.predict")
 
 # generate predictions
 predictions   <- iterate(estimator$predict(input_fn = input_fn))
@@ -49,3 +43,28 @@ gg <- ggplot(dataset, aesthetics) +
   )
 
 print(gg)
+
+
+### Predict using CloudML predict_local -------------------------------------
+
+
+# read in the test data as an R data.frame
+data <- read.table(
+  cloudml::gs_data("gs://rstudio-cloudml-demo-ml/census/data/local.adult.test"),
+  col.names = CSV_COLUMNS,
+  header = FALSE,
+  sep = ",",
+  stringsAsFactors = FALSE,
+  nrows = 5
+)
+
+# remove some columns
+data$fnlwgt <- NULL
+data[[LABEL_COLUMN]] <- NULL
+
+# generate predictions
+predictions <- cloudml::predict_local("jobs/local", data)
+
+# print predictions
+cat(yaml::as.yaml(predictions))
+

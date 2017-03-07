@@ -184,6 +184,14 @@ generate_input_fn <- function(filename,
   input_fn
 }
 
+# generate input function for predictions (request only 1 epoch
+# so we just get one round of predictions)
+predict_input_fn <- function(filename, batch_size = 10L) {
+  generate_input_fn(filename,
+                    num_epochs = 1L,
+                    batch_size = batch_size)
+}
+
 generate_experiment_fn <- function(estimator, config) {
   list(estimator, config)
   function(output_dir) {
