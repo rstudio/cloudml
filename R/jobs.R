@@ -106,8 +106,35 @@ train_cloudml <- function(application = getwd(),
     job_dir  = job_dir
   )
 
-  # print job info to console and return
-  job_describe(job_name)
+  # inform user of successful job submission
+  template <- c(
+    "Job %1$s successfully submitted.",
+    "",
+    "Check status and collect output with:",
+    "- job_status(\"%1$s\")",
+    "- job_collect(\"%1$s\")"
+  )
+
+  rendered <- sprintf(paste(template, collapse = "\n"), job_name(job))
+
+  # print stderr output from a 'describe' call (this gives the
+  # user URLs that can be navigated to for more information)
+  arguments <- (MLArgumentsBuilder()
+                ("jobs")
+                ("describe")
+                (job_name))
+
+  # write stdout, stderr separately (we only want to report
+  # the data written to stderr here)
+  sofile <- tempfile("stdout-")
+  sefile <- tempfile("stderr-")
+  output <- gexec(gcloud(), arguments(), stdout = sofile, stderr = sefile)
+  stderr <- readChar(sefile, file.info(sefile)$size, TRUE)
+
+  # write the generated messages to the console
+  message(rendered)
+  message(stderr)
+
   invisible(job)
 }
 
@@ -145,18 +172,6 @@ job_describe <- function(job) {
                 (job_name(job)))
 
   output <- gexec(gcloud(), arguments(), stdout = TRUE)
-  cat(output, sep = "\n")
-
-  # provide hints on R functions
-  fmt <- paste(
-    "",
-    "Check status and collect output with:",
-    "- job_status(\"%1$s\")",
-    "- job_collect(\"%1$s\")",
-    sep = "\n"
-  )
-  txt <- sprintf(fmt, job_name(job))
-  message(txt)
 
   # return as R list
   yaml::yaml.load(paste(output, collapse = "\n"))
