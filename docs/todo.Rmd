@@ -21,6 +21,7 @@
 
 - Sort out all of the gcloud sdk installation / authentication requirements
   for people other than us to use the package and document this well.
+  (see: https://cloud.google.com/ml/docs/how-tos/getting-set-up)
 
 - Windows compatibility
 
