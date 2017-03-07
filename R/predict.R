@@ -2,7 +2,7 @@
 #'
 #' Generate predictions using a TensorFlow model saved on disk.
 #'
-#' @param dir
+#' @param model_dir
 #'   The path to a model directory, or a jobs directory containing
 #'   an exported model directory.
 #'
@@ -10,10 +10,8 @@
 #'   The dataset to be used for prediction.
 #'
 #' @export
-predict_local <- function(dir, data) {
-
-  # discover model dir
-  model_dir <- discover_model_dir(dir)
+predict_local <- function(model_dir, data) {
+  model_dir <- discover_model_dir(model_dir)
 
   # convert to JSON
   json <- as.character(as_json_instances(data))
@@ -45,10 +43,28 @@ as_json_instances.data.frame <- function(data) {
   })
 }
 
+#' @export
+as_json_instances.default <- function(data) {
+  jsonlite::toJSON(data, auto_unbox = TRUE)
+}
+
 discover_model_dir <- function(dir) {
 
+  # if we have a 'saved_model.pb' or 'saved_model.pbtxt' in
+  # this directory, then just use it
+  candidates <- c(
+    "saved_model.pb",
+    "saved_model.pbtxt"
+  )
+
+  for (candidate in candidates)
+    if (file.exists(file.path(dir, candidate)))
+      return(dir)
+
+  # otherwise, crawl directory for one of these files
+  re_candidates <- sprintf("(?:%s)", paste(candidates, collapse = "|"))
   files <- list.files(dir,
-                      pattern = "saved_model.pb(?:txt)?",
+                      pattern = re_candidates,
                       full.names = TRUE,
                       recursive = TRUE)
 
@@ -68,18 +84,3 @@ discover_model_dir <- function(dir) {
   # return discovered directory
   dirname(files)
 }
-
-# TODO: Consider whether we should route through the 'google.cloud.ml.prediction' package?
-# predict_local <- function(dir, instances) {
-#   # TODO: route this through the gcloud APIs
-#   cloudml <- import("google.cloud.ml")
-#   prediction <- cloudml$prediction
-#
-#   # provide data as JSON
-#   instances <- resolve_instances(instances)
-#
-#   prediction$local_predict(
-#     model_dir = dir,
-#     instances = instances
-#   )
-# }

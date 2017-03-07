@@ -20,10 +20,13 @@ warnf <- function(fmt, ..., call. = TRUE)
 }
 
 # TODO: Windows
-copy_directory <- function(source, target, overwrite = TRUE) {
-
-  if (!file.exists(source))
-    stopf("no directory at path '%s'", source)
+copy_directory <- function(source,
+                           target,
+                           overwrite = TRUE,
+                           exclude = character())
+{
+  # validate source, target directories
+  source <- normalizePath(source, winslash = "/", mustWork = TRUE)
 
   if (file.exists(target)) {
     if (!overwrite)
@@ -31,13 +34,26 @@ copy_directory <- function(source, target, overwrite = TRUE) {
     unlink(target, recursive = TRUE)
   }
 
+  # construct exclusion string for rsync
+  shexclude <- if (length(exclude))
+    sprintf("--exclude={%s}", paste(exclude, collapse = ","))
+
+  # call rsync to copy directory contents to new directory
+  # trailing slash on 'source' lets us override dirname
   system(paste(
-    "cp -R",
-    shQuote(source),
-    shQuote(target)
+    "rsync -a",
+    shQuote(paste(source, "/", sep = "")),
+    shQuote(target),
+    if (length(shexclude)) shexclude
   ))
 
-  isTRUE(file.info(target)$isdir)
+  isdir <- isTRUE(file.info(target)$isdir)
+  if (!isdir) {
+    fmt <- "failed to copy '%s' => '%s': unknown reason"
+    stopf(fmt, source, target)
+  }
+
+  isdir
 }
 
 ensure_directory <- function(path) {

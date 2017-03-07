@@ -4,10 +4,10 @@
 \alias{predict_local}
 \title{Generate Predictions with a Model Locally}
 \usage{
-predict_local(dir, data)
+predict_local(model_dir, data)
 }
 \arguments{
-\item{dir}{The path to a model directory, or a jobs directory containing
+\item{model_dir}{The path to a model directory, or a jobs directory containing
 an exported model directory.}
 
 \item{data}{The dataset to be used for prediction.}
