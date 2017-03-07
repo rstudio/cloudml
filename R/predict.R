@@ -43,6 +43,11 @@ as_json_instances.data.frame <- function(data) {
   })
 }
 
+#' @export
+as_json_instances.default <- function(data) {
+  jsonlite::toJSON(data, auto_unbox = TRUE)
+}
+
 discover_model_dir <- function(dir) {
 
   # if we have a 'saved_model.pb' or 'saved_model.pbtxt' in
