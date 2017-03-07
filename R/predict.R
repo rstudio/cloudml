@@ -2,7 +2,7 @@
 #'
 #' Generate predictions using a TensorFlow model saved on disk.
 #'
-#' @param dir
+#' @param model_dir
 #'   The path to a model directory, or a jobs directory containing
 #'   an exported model directory.
 #'
@@ -10,10 +10,8 @@
 #'   The dataset to be used for prediction.
 #'
 #' @export
-predict_local <- function(dir, data) {
-
-  # discover model dir
-  model_dir <- discover_model_dir(dir)
+predict_local <- function(model_dir, data) {
+  model_dir <- discover_model_dir(model_dir)
 
   # convert to JSON
   json <- as.character(as_json_instances(data))
