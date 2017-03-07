@@ -32,7 +32,14 @@ dataset$predicted_probabilities <- as.numeric(lapply(probabilities, `[[`, 2))
 # generate a simple plot
 library(ggplot2)
 
-gg <- ggplot(dataset, aes(x = occupation, y = predicted_probabilities)) +
+# generate aesthetics (re-order occupation by average
+# predicted probability)
+aesthetics <- aes(
+  x = reorder(occupation, predicted_probabilities, FUN = mean),
+  y = predicted_probabilities
+)
+
+gg <- ggplot(dataset, aesthetics) +
   geom_boxplot() +
   coord_flip() +
   labs(
