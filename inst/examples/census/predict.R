@@ -29,7 +29,7 @@ dataset <- read.table(
 dataset$predicted_classes <- as.numeric(classes)
 dataset$predicted_probabilities <- as.numeric(lapply(probabilities, `[[`, 2))
 
-# generate some simple scatterplots
+# generate a simple plot
 library(ggplot2)
 
 gg <- ggplot(dataset, aes(x = occupation, y = predicted_probabilities)) +
