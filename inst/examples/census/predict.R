@@ -18,7 +18,7 @@ data$fnlwgt <- NULL
 data[[LABEL_COLUMN]] <- NULL
 
 # generate predictions
-predictions <- cloudml::predict_local("jobs/cloudml/2017_03_07_211647456", data)
+predictions <- cloudml::predict_local("jobs/local", data)
 
 # print predictions
 cat(yaml::as.yaml(predictions))
@@ -28,7 +28,7 @@ cat(yaml::as.yaml(predictions))
 ### Predict using TF estimator ----------------------------------------------
 
 # estimator and input_fn for predction
-estimator <- build_estimator("jobs/cloudml/2017_03_07_211647456")
+estimator <- build_estimator("jobs/local")
 input_fn <- predict_input_fn(filename = "local/data/adult.predict")
 
 # generate predictions
