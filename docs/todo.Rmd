@@ -2,16 +2,6 @@
 
 ## Kevin
 
-- `predict_local`
-
-- I think we should stage the contents of the application directory into a temporary directory
-  before building the python package. This will eliminate the temporary writing of various 
-  artifacts (which today are visible in the RStudio Files pane because train_local blocks
-  the UI thread) as well as eliminate the problem of unlinking the .rds and cloudml directory.
-  We have made the 'local' folder ignored by default -- if users have large datasets they
-  want to use locally and not have uploaded we can document that these should go in the local 
-  folder.
-  
 - Integerate with Sean's census-predict.Rmd
 
 

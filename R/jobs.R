@@ -99,16 +99,16 @@ train_cloudml <- function(application = getwd(),
   index <- grep("^jobId:", output)
   job_name <- substring(output[index], 8)
 
-  # print job info to console
-  job_describe(job_name)
-
-  # return job object
-  invisible(cloudml_job(
+  # construct and register job object
+  job <- cloudml_job(
     "train",
-    app_dir  = application,
     job_name = job_name,
     job_dir  = job_dir
-  ))
+  )
+
+  # print job info to console and return
+  job_describe(job_name)
+  invisible(job)
 }
 
 #' Google Cloud -- Cancel a Job
@@ -119,13 +119,12 @@ train_cloudml <- function(application = getwd(),
 #' @family jobs
 #' @export
 job_cancel <- function(job) {
-  id <- job_name(job)
+  job <- as.cloudml_job(job)
 
-  arguments <- (
-    MLArgumentsBuilder()
-    ("jobs")
-    ("cancel")
-    (id))
+  arguments <- (MLArgumentsBuilder()
+                ("jobs")
+                ("cancel")
+                (job_name(job)))
 
   gexec(gcloud(), arguments())
 }
@@ -138,18 +137,29 @@ job_cancel <- function(job) {
 #' @family jobs
 #' @export
 job_describe <- function(job) {
-  id <- job_name(job)
+  job <- as.cloudml_job(job)
 
-  arguments <- (
-    MLArgumentsBuilder()
-    ("jobs")
-    ("describe")
-    (id))
+  arguments <- (MLArgumentsBuilder()
+                ("jobs")
+                ("describe")
+                (job_name(job)))
 
-  gexec(gcloud(), arguments())
+  output <- gexec(gcloud(), arguments(), stdout = TRUE)
+  cat(output, sep = "\n")
 
   # provide hints on R functions
-  message("\nCheck status and collect output with:\njob_status(\"", id, "\")\njob_collect(\"", id, "\")")
+  fmt <- paste(
+    "",
+    "Check status and collect output with:",
+    "- job_status(\"%1$s\")",
+    "- job_collect(\"%1$s\")",
+    sep = "\n"
+  )
+  txt <- sprintf(fmt, job_name(job))
+  message(txt)
+
+  # return as R list
+  yaml::yaml.load(paste(output, collapse = "\n"))
 }
 
 #' Google Cloud -- List Jobs
@@ -223,13 +233,13 @@ job_stream <- function(job,
                        task_name = NULL,
                        allow_multiline_logs = FALSE)
 {
-  id <- job_name(job)
+  job <- as.cloudml_job(job)
 
   arguments <- (
     MLArgumentsBuilder()
     ("jobs")
     ("stream-logs")
-    (id)
+    (job_name(job))
     (sprintf("--polling-interval=%i", as.integer(polling_interval)))
     (if (!is.null(task_name)) sprintf("--task-name=%s", task_name))
     (if (allow_multiline_logs) "--allow-multiline-logs"))
@@ -247,13 +257,12 @@ job_stream <- function(job,
 #'
 #' @export
 job_status <- function(job) {
-  id <- job_name(job)
+  job <- as.cloudml_job(job)
 
-  arguments <- (
-    MLArgumentsBuilder()
-    ("jobs")
-    ("describe")
-    (id))
+  arguments <- (MLArgumentsBuilder()
+                ("jobs")
+                ("describe")
+                (job_name(job)))
 
   # request job description from gcloud
   output <- gexec(gcloud(), arguments(), stdout = TRUE, stderr = FALSE)
@@ -277,8 +286,8 @@ job_status <- function(job) {
 #' @family jobs
 #'
 #' @export
-job_collect <- function(job, destination = "jobs/cloudml")
-{
+job_collect <- function(job, destination = "jobs/cloudml") {
+  job <- as.cloudml_job(job)
   id <- job_name(job)
 
   # get the job status
@@ -323,9 +332,9 @@ job_collect <- function(job, destination = "jobs/cloudml")
   stop("failed to receive job outputs")
 }
 
-job_download <- function(job, destination = "jobs/cloudml")
-{
-  source <- job$job_dir
+job_download <- function(job, destination = "jobs/cloudml") {
+  job <- as.cloudml_job(job)
+  source <- job_dir(job)
 
   if (!is_gs_uri(source)) {
     fmt <- "job directory '%s' is not a Google Storage URI"
