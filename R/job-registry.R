@@ -19,7 +19,7 @@ resolve_job <- function(id) {
                 ("describe")
                 (id))
 
-  output <- gexec(gcloud(), arguments(), stdout = TRUE)
+  output <- gexec(gcloud(), arguments(), stdout = TRUE, stderr = FALSE)
   desc <- yaml::yaml.load(paste(output, collapse = "\n"))
 
   # if we have a 'trainingInput' field, this was a training
