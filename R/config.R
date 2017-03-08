@@ -21,6 +21,9 @@ config <- function(config = NULL, local_gs = "local/gs") {
   # merge extra config
   config <- config::merge(config, .globals$extra_config)
 
+  # merge information provided by TF_CONFIG environment variable
+  config <- config::merge(config, tf_config())
+
   # merge parsed command line arguments
   clargs <- tensorflow::parse_arguments()
   config <- config::merge(config, clargs)
@@ -38,10 +41,30 @@ config <- function(config = NULL, local_gs = "local/gs") {
     config <- lapply(config, resolve_gs_data)
   }
 
+  # if we've opted in for hyperparameter tuning, then
+  # augment the 'job_dir' path using that information from
+  # the configuration
+  if (is.list(config[["task"]])) {
+    task <- config[["task"]]
+    if (is.numeric(task[["trial"]])) {
+      config$job_dir <- file.path(config$job_dir, "task", task[["trial"]])
+    }
+  }
+
   # return config
   config
 }
 
+#' Read TensorFlow Configuration
+#'
+#' Read the `TF_CONFIG` environment variable into
+#' an \R list.
+#'
+#' @export
+tf_config <- function() {
+  config <- Sys.getenv("TF_CONFIG", unset = "{}")
+  jsonlite::fromJSON(config)
+}
 
 # set extra config to be used for `cloudml::config()`
 set_extra_config <- function(extra_config) {
