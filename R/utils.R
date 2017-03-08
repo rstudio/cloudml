@@ -191,3 +191,13 @@ enumerate <- function(X, FUN, ...) {
     FUN(N[[i]], X[[i]], ...)
   })
 }
+
+flatten_list <- function(list) {
+  mutated <- list
+  while (TRUE) {
+    types <- lapply(mutated, typeof)
+    if (!"list" %in% types) break
+    mutated <- unlist(mutated, recursive = FALSE)
+  }
+  mutated
+}
