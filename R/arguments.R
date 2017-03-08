@@ -11,16 +11,16 @@ ShellArgumentsBuilder <- function() {
 
     dots <- list(...)
 
-    # handle 'NULL' specially
-    if (length(dots) == 1 && is.null(dots[[1]]))
-      return(invisible(self))
-
     # return arguments when nothing supplied
     if (length(dots) == 0)
       return(arguments_)
 
+    # any NULL entries imply we should ignore this
+    if (any(vapply(dots, is.null, logical(1))))
+      return(invisible(self))
+
     # flatten a potentially nested list
-    flattened <- as.list(unlist(list(...)))
+    flattened <- flatten_list(dots)
     if (length(flattened) == 0)
       return(arguments_)
 
