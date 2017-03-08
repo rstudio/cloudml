@@ -29,7 +29,8 @@ cat(yaml::as.yaml(predictions))
 
 # estimator and input_fn for predction
 estimator <- build_estimator("jobs/local")
-input_fn <- predict_input_fn(filename = "local/data/adult.predict")
+filename <- cloudml::gs_data("gs://rstudio-cloudml-demo-ml/census/data/local.adult.test")
+input_fn <- predict_input_fn(filename)
 
 # generate predictions
 predictions   <- iterate(estimator$predict(input_fn = input_fn))
