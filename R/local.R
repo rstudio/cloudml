@@ -49,9 +49,9 @@ train_local <- function(application = getwd(),
                 ("--package-path=%s", basename(application))
                 ("--module-name=%s.cloudml.deploy", basename(application))
                 ("--")
-                (entrypoint)
-                (config_name)
-                ("--environment=local"))
+                ("--cloudml-entrypoint=%s", entrypoint)
+                ("--cloudml-config=%s", config_name)
+                ("--cloudml-environment=local"))
 
   gexec(gcloud(), arguments())
 }
