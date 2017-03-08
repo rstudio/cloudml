@@ -7,7 +7,7 @@
 job_collect(job, destination = "jobs/cloudml")
 }
 \arguments{
-\item{job}{Either a `cloudml_job` object as returned by [train_cloudml()],
+\item{job}{Either a `cloudml_job` object as returned by [cloudml_train()],
 or the name of a job.}
 
 \item{destination}{The destination directory in which model outputs should
@@ -19,8 +19,8 @@ If the job has not yet finished running, \code{job_collect()}
 will block and wait until the job has finished.
 }
 \seealso{
-Other jobs: \code{\link{job_cancel}},
-  \code{\link{job_describe}}, \code{\link{job_list}},
-  \code{\link{job_status}}, \code{\link{job_stream}},
-  \code{\link{train_cloudml}}
+Other jobs: \code{\link{cloudml_train}},
+  \code{\link{job_cancel}}, \code{\link{job_describe}},
+  \code{\link{job_list}}, \code{\link{job_status}},
+  \code{\link{job_stream}}
 }

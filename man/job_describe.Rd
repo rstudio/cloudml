@@ -7,15 +7,15 @@
 job_describe(job)
 }
 \arguments{
-\item{job}{Either a `cloudml_job` object as returned by [train_cloudml()],
+\item{job}{Either a `cloudml_job` object as returned by [cloudml_train()],
 or the name of a job.}
 }
 \description{
 Describe a job.
 }
 \seealso{
-Other jobs: \code{\link{job_cancel}},
-  \code{\link{job_collect}}, \code{\link{job_list}},
-  \code{\link{job_status}}, \code{\link{job_stream}},
-  \code{\link{train_cloudml}}
+Other jobs: \code{\link{cloudml_train}},
+  \code{\link{job_cancel}}, \code{\link{job_collect}},
+  \code{\link{job_list}}, \code{\link{job_status}},
+  \code{\link{job_stream}}
 }
