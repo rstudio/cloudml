@@ -61,6 +61,8 @@ resolve_train_overlay <- function(application,
   overlay <- new.env(parent = emptyenv())
   populate <- make_config_populator(overlay, list(dots, conf))
 
+  # populate our overlay with entries that are required
+  # at deploy-time (ie, entries that will be passed to 'gcloud')
   populate(
     entrypoint      = "train.R",
     job_output      = "jobs/local",
@@ -71,5 +73,10 @@ resolve_train_overlay <- function(application,
     runtime_version = "1.0"
   )
 
+  # amend with all other entries in the 'dots', as we want these
+  # to be visible on cloudml when the application is run
+  list2env(dots, envir = overlay)
+
+  # return to caller as list
   as.list(overlay)
 }
