@@ -4,10 +4,14 @@
 #' Upload a TensorFlow application to Google Cloud, and use that application to
 #' train a model.
 #'
-#' @param application The path to a TensorFlow application
-#' @param config The name of the configuration to be used.
-#' @param job_dir Directory to write job into (defaults to the value
-#'   of `job_dir` in the `config.yml` file).
+#' @param application
+#'   The path to a TensorFlow application. Defaults to
+#'   the current working directory.
+#'
+#' @param config
+#'   The name of the configuration to be used. Defaults to
+#'   the `"cloudml"` configuration.
+#'
 #' @param ...
 #'   Named arguments, used to supply runtime configuration
 #'   settings to your TensorFlow application. When

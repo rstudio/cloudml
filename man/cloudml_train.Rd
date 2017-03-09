@@ -7,9 +7,11 @@
 cloudml_train(application = getwd(), config = "cloudml", ...)
 }
 \arguments{
-\item{application}{The path to a TensorFlow application}
+\item{application}{The path to a TensorFlow application. Defaults to
+the current working directory.}
 
-\item{config}{The name of the configuration to be used.}
+\item{config}{The name of the configuration to be used. Defaults to
+the \code{"cloudml"} configuration.}
 
 \item{...}{Named arguments, used to supply runtime configuration
 settings to your TensorFlow application. When
