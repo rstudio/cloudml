@@ -15,81 +15,42 @@
 #' @export
 cloudml_train <- function(application = getwd(),
                           config      = "cloudml",
-                          job_dir     = NULL,
                           ...)
 {
   Sys.setenv(CLOUDML_EXECUTION_ENVIRONMENT = "gcloud")
   on.exit(Sys.unsetenv("CLOUDML_EXECUTION_ENVIRONMENT"), add = TRUE)
 
+  # prepare application for deployment
   application <- scope_deployment(application)
-  config_name <- config
-  config <- cloudml::config(config = config)
 
-  # resolve extra config
-  extra_config <- list(...)
+  # resolve runtime configuration and serialize
+  # within the application's cloudml directory
+  overlay <- resolve_train_overlay(application, list(...), config)
+  ensure_directory("cloudml")
+  saveRDS(overlay, file = "cloudml/overlay.rds")
 
-  # resolve entrypoint
-  entrypoint <- extra_config[["entrypoint"]] %||%
-    config$train_entrypoint %||% "train.R"
-
-  # determine job name
-  job_name <- extra_config[["job_name"]] %||%
-    unique_job_name(application, config_name)
-
-  # determine job directory
-  job_dir <- extra_config[["job_dir"]] %||% config$job_dir
-
-  # determine staging bucket
-  staging_bucket <- extra_config[["staging_bucket"]] %||% config$staging_bucket
-
-  # determine region
-  region <- extra_config[["region"]] %||%
-    config$region  %||% "us-central1"
-
-  # determine runtime version
-  runtime_version <- extra_config[["runtime_version"]] %||%
-    config$runtime_version %||%  "1.0"
-
-  # ensure 'job_dir' is passed through extra config
-  extra_config$job_dir <- job_dir
+  # generate setup.py
+  scope_setup_py(application)
 
   # move to application's parent directory
-  owd <- setwd(dirname(application))
-  on.exit(setwd(owd), add = TRUE)
-
-  # generate setup script (used to build the application as a Python
-  # package remotely)
-  if (!file.exists("setup.py")) {
-    file.copy(
-      system.file("cloudml/setup.py", package = "cloudml"),
-      "setup.py",
-      overwrite = TRUE
-    )
-    setup.py <- normalizePath("setup.py")
-    on.exit(unlink(setup.py), add = TRUE)
-  }
-
-  # serialize '...' as extra arguments to be merged
-  # with the config file
-  ensure_directory(file.path(application, "cloudml"))
-  saveRDS(extra_config, file.path(application, "cloudml/config.rds"))
+  setwd(dirname(application))
 
   # generate deployment script
   arguments <- (MLArgumentsBuilder()
                 ("jobs")
                 ("submit")
                 ("training")
-                (job_name)
+                (overlay$job_name)
+                ("--async")
                 ("--package-path=%s", basename(application))
                 ("--module-name=%s.cloudml.deploy", basename(application))
-                ("--job-dir=%s", job_dir)
-                ("--staging-bucket=%s", staging_bucket)
-                ("--region=%s", region)
-                ("--async")
-                ("--runtime-version=%s", runtime_version)
+                ("--job-dir=%s", overlay$job_dir)
+                ("--staging-bucket=%s", overlay$staging_bucket)
+                ("--region=%s", overlay$region)
+                ("--runtime-version=%s", overlay$runtime_version)
                 ("--")
-                ("--cloudml-entrypoint=%s", entrypoint)
-                ("--cloudml-config=%s", config_name)
+                ("--cloudml-entrypoint=%s", overlay$entrypoint)
+                ("--cloudml-config=%s", config)
                 ("--cloudml-environment=gcloud"))
 
   # submit job through command line interface
@@ -108,7 +69,7 @@ cloudml_train <- function(application = getwd(),
 
   # inform user of successful job submission
   template <- c(
-    "Job %1$s successfully submitted.",
+    "Job '%1$s' successfully submitted.",
     "",
     "Check status and collect output with:",
     "- job_status(\"%1$s\")",

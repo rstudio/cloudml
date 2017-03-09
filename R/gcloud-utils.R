@@ -40,6 +40,10 @@ scope_deployment <- function(application = getwd()) {
   defer(unlink(root, recursive = TRUE), envir = parent.frame())
   initialize_application(deployment)
 
+  # move to application path
+  owd <- setwd(deployment)
+  defer(setwd(owd), envir = parent.frame())
+
   # return normalized application path
   deployment
 }
