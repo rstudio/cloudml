@@ -73,6 +73,7 @@ cloudml_train <- function(application = getwd(),
   # extract job id from output
   index <- grep("^jobId:", output)
   job_name <- substring(output[index], 8)
+  job_dir <- overlay$job_dir
 
   # construct and register job object
   job <- cloudml_job(
