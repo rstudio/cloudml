@@ -156,12 +156,7 @@ job_cancel <- function(job) {
   gexec(gcloud(), arguments())
 }
 
-#' Describe a job
-#'
-#' Describe a job.
-#'
-#' @template roxlate-job
-#' @family jobs
+#' @rdname job_status
 #' @export
 job_describe <- function(job) {
   job <- as.cloudml_job(job)
@@ -225,23 +220,8 @@ job_list <- function(filter    = NULL,
   gexec(gcloud(), arguments())
 }
 
-#' Show job log stream
-#'
-#' Show logs from a running Cloud ML Engine job.
-#'
-#' @template roxlate-job
-#'
-#' @param polling_interval
-#'   Number of seconds to wait between efforts to fetch the
-#'   latest log messages.
-#'
-#' @param task_name
-#'   If set, display only the logs for this particular task.
-#'
-#' @param allow_multiline_logs
-#'   Output multiline log messages as single records.
-#'
-#' @family jobs
+
+#' @rdname job_status
 #' @export
 job_stream <- function(job,
                        polling_interval = 60,
@@ -263,9 +243,16 @@ job_stream <- function(job,
   gexec(gcloud(), arguments())
 }
 
-#' Current status of a job
+#' Get job information
 #'
-#' Get the status of a job, as an \R list.
+#' Get detailed information on a job and it's status. Stream
+#' the log of a running job.
+#'
+#' @param task_name
+#'   If set, display only the logs for this particular task.
+#'
+#' @param allow_multiline_logs
+#'   Output multiline log messages as single records.
 #'
 #' @template roxlate-job
 #'

@@ -21,6 +21,5 @@ will block and wait until the job has finished.
 \seealso{
 Other jobs: \code{\link{cloudml_train}},
   \code{\link{job_cancel}}, \code{\link{job_describe}},
-  \code{\link{job_list}}, \code{\link{job_status}},
-  \code{\link{job_stream}}
+  \code{\link{job_list}}
 }

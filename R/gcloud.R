@@ -57,7 +57,7 @@ gsutil <- function() {
   stop("failed to find 'gsutil' binary")
 }
 
-#' Copy a file from Google Storage to the local system
+#' Copy files from Google Storage
 #'
 #' @param uri Google storage URI (e.g. `gs://[BUCKET_NAME]/[FILENAME.CSV]`)
 #' @param destination Path to copy file to on the local filesystem
@@ -74,7 +74,7 @@ gs_copy <- function(uri, destination, overwrite = FALSE) {
 }
 
 
-#' Get a path to a data file within Google Storage
+#' Get a path to data within Google Storage
 #'
 #' When running on Google Cloud the path is returned unchanged. When running in
 #' other contexts the file is copied to the local system and a path to the local

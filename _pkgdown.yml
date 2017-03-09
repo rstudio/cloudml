@@ -26,6 +26,6 @@ reference:
       - starts_with("job_")
   - title: "Google Storage"
     desc: >
-      Functions for reading data from Google Storage.
+      Functions for interacting with Google Storage.
     contents:
       - starts_with("gs_")

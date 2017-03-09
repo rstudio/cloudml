@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Current status of a job — job_status • cloudml</title>
+<title>Get job information — job_describe • cloudml</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -71,28 +71,37 @@
       <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Current status of a job</h1>
+    <h1>Get job information</h1>
     </div>
 
     
-    <p>Get the status of a job, as an <span style="R">R</span> list.</p>
+    <p>Get detailed information on a job and it&#39;s status. Stream
+the log of a running job.</p>
     
 
-    <pre><span class='fu'>job_status</span>(<span class='no'>job</span>)</pre>
+    <pre><span class='fu'>job_describe</span>(<span class='no'>job</span>)
+
+<span class='fu'>job_stream</span>(<span class='no'>job</span>, <span class='kw'>polling_interval</span> <span class='kw'>=</span> <span class='fl'>60</span>, <span class='kw'>task_name</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>allow_multiline_logs</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)
+
+<span class='fu'>job_status</span>(<span class='no'>job</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <dl class="dl-horizontal">
       <dt>job</dt>
       <dd>Either a `cloudml_job` object as returned by [cloudml_train()],
 or the name of a job.</dd>
+      <dt>task_name</dt>
+      <dd>If set, display only the logs for this particular task.</dd>
+      <dt>allow_multiline_logs</dt>
+      <dd>Output multiline log messages as single records.</dd>
     </dl>
     
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
     <p>Other jobs: <code><a href='cloudml_train.html'>cloudml_train</a></code>,
   <code><a href='job_cancel.html'>job_cancel</a></code>, <code><a href='job_collect.html'>job_collect</a></code>,
-  <code><a href='job_describe.html'>job_describe</a></code>, <code><a href='job_list.html'>job_list</a></code>,
-  <code><a href='job_stream.html'>job_stream</a></code></p>
+  <code><a href='job_list.html'>job_list</a></code></p>
     
 
   </div>
