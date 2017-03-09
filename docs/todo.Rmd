@@ -3,7 +3,6 @@
  
 - Windows compatibility
 - Documentation on using the package
-- TensorBoard integration
 
 ## Kevin
 
@@ -57,4 +56,7 @@
 
 - rstudioapi package making available a version of system that pumps events
   (only required with shell API)
+  
+- TensorBoard integration
+
 
