@@ -6,4 +6,4 @@
 ^man-roxygen/
 ^docs/
 ^README\.R?md
-
+^_pkgdown.yml$

@@ -248,6 +248,8 @@ job_stream <- function(job,
 #' Get detailed information on a job and it's status. Stream
 #' the log of a running job.
 #'
+#' @param polling_interval Polling interval for streamed output.
+#'
 #' @param task_name
 #'   If set, display only the logs for this particular task.
 #'

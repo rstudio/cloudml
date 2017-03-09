@@ -17,6 +17,8 @@ job_status(job)
 \item{job}{Either a `cloudml_job` object as returned by [cloudml_train()],
 or the name of a job.}
 
+\item{polling_interval}{Polling interval for streamed output.}
+
 \item{task_name}{If set, display only the logs for this particular task.}
 
 \item{allow_multiline_logs}{Output multiline log messages as single records.}
