@@ -1,13 +1,11 @@
-#' Train a Model Locally
+#' Train a model locally
 #'
 #' Train a model locally, using the `gcloud` command line
 #' utility. This can be used as a testing bed for TensorFlow
 #' applications which you want to later run on Google Cloud,
 #' submitted using [cloudml_train()].
 #'
-#' @template roxlate-application
-#' @template roxlate-config
-#' @template roxlate-dots
+#' @inheritParams cloudml_train
 #'
 #' @export
 local_train <- function(application = getwd(),

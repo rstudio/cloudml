@@ -1,3 +1,3 @@
-#' @import config jsonlite reticulate tensorflow withr yaml
+#' @import config tensorflow jsonlite reticulate withr yaml
 #' @importFrom utils download.file
 NULL

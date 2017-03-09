@@ -2,7 +2,7 @@
 % Please edit documentation in R/jobs.R
 \name{job_list}
 \alias{job_list}
-\title{Google Cloud -- List Jobs}
+\title{List all jobs}
 \usage{
 job_list(filter = NULL, limit = NULL, page_size = NULL, sort_by = NULL,
   uri = FALSE)
@@ -29,8 +29,5 @@ output.}
 List existing Google Cloud ML jobs.
 }
 \seealso{
-Other jobs: \code{\link{cloudml_train}},
-  \code{\link{job_cancel}}, \code{\link{job_collect}},
-  \code{\link{job_describe}}, \code{\link{job_status}},
-  \code{\link{job_stream}}
+\code{\link[=job_describe]{job_describe()}}, \code{\link[=job_collect]{job_collect()}}, \code{\link[=job_cancel]{job_cancel()}}
 }

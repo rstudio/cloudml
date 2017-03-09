@@ -2,20 +2,17 @@
 % Please edit documentation in R/jobs.R
 \name{job_cancel}
 \alias{job_cancel}
-\title{Google Cloud -- Cancel a Job}
+\title{Cancel a job}
 \usage{
 job_cancel(job)
 }
 \arguments{
-\item{job}{Either a `cloudml_job` object as returned by [cloudml_train()],
+\item{job}{Either a \code{cloudml_job} object as returned by \code{\link[=cloudml_train]{cloudml_train()}},
 or the name of a job.}
 }
 \description{
 Cancel a job.
 }
 \seealso{
-Other jobs: \code{\link{cloudml_train}},
-  \code{\link{job_collect}}, \code{\link{job_describe}},
-  \code{\link{job_list}}, \code{\link{job_status}},
-  \code{\link{job_stream}}
+\code{\link[=job_describe]{job_describe()}}, \code{\link[=job_collect]{job_collect()}}, \code{\link[=job_list]{job_list()}}
 }

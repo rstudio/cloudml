@@ -1,17 +1,27 @@
 
-#' Google Cloud -- Submit a Training Job
+#' Train a model using Cloud ML
 #'
 #' Upload a TensorFlow application to Google Cloud, and use that application to
 #' train a model.
 #'
-#' @template roxlate-application
-#' @template roxlate-config
-#' @template roxlate-dots
+#' @param application The path to a TensorFlow application
+#' @param config The name of the configuration to be used.
+#' @param job_dir Directory to write job into (defaults to the value
+#'   of `job_dir` in the `config.yml` file).
+#' @param ...
+#'   Named arguments, used to supply runtime configuration
+#'   settings to your TensorFlow application. When
+#'   [cloudml::config()] is called, these values will effectively
+#'   be overlayed on top of the configuration requested.
 #'
-#' @inheritParams local_train
+#' @seealso [job_describe()], [job_collect()], [job_cancel()]
 #'
-#' @family jobs
-#'
+#' @examples \dontrun{
+#' library(cloudml)
+#' job <- cloudml_train()
+#' job_status(job)
+#' job_collect(job)
+#' }
 #' @export
 cloudml_train <- function(application = getwd(),
                           config      = "cloudml",
@@ -99,12 +109,14 @@ cloudml_train <- function(application = getwd(),
   invisible(job)
 }
 
-#' Google Cloud -- Cancel a Job
+#' Cancel a job
 #'
 #' Cancel a job.
 #'
-#' @template roxlate-job
-#' @family jobs
+#' @inheritParams job_status
+#'
+#' @seealso [job_describe()], [job_collect()], [job_list()]
+#'
 #' @export
 job_cancel <- function(job) {
   job <- as.cloudml_job(job)
@@ -117,12 +129,7 @@ job_cancel <- function(job) {
   gexec(gcloud(), arguments())
 }
 
-#' Google Cloud -- Describe a Job
-#'
-#' Describe a job.
-#'
-#' @template roxlate-job
-#' @family jobs
+#' @rdname job_status
 #' @export
 job_describe <- function(job) {
   job <- as.cloudml_job(job)
@@ -138,7 +145,7 @@ job_describe <- function(job) {
   yaml::yaml.load(paste(output, collapse = "\n"))
 }
 
-#' Google Cloud -- List Jobs
+#' List all jobs
 #'
 #' List existing Google Cloud ML jobs.
 #'
@@ -164,7 +171,9 @@ job_describe <- function(job) {
 #'   Print a list of resource URIs instead of the default
 #'   output.
 #'
-#' @family jobs
+#' @family job management
+#'
+#' @seealso [job_describe()], [job_collect()], [job_cancel()]
 #'
 #' @export
 job_list <- function(filter    = NULL,
@@ -186,23 +195,8 @@ job_list <- function(filter    = NULL,
   gexec(gcloud(), arguments())
 }
 
-#' Google Cloud -- Stream Logs from a Job
-#'
-#' Show logs from a running Cloud ML Engine job.
-#'
-#' @template roxlate-job
-#'
-#' @param polling_interval
-#'   Number of seconds to wait between efforts to fetch the
-#'   latest log messages.
-#'
-#' @param task_name
-#'   If set, display only the logs for this particular task.
-#'
-#' @param allow_multiline_logs
-#'   Output multiline log messages as single records.
-#'
-#' @family jobs
+
+#' @rdname job_status
 #' @export
 job_stream <- function(job,
                        polling_interval = 60,
@@ -224,13 +218,21 @@ job_stream <- function(job,
   gexec(gcloud(), arguments())
 }
 
-#' Google Cloud -- Job Status
+#' Get job information
 #'
-#' Get the status of a job, as an \R list.
+#' Get detailed information on a job and it's status. Stream
+#' the log of a running job.
 #'
-#' @template roxlate-job
+#' @param job
+#'   Either a `cloudml_job` object as returned by [cloudml_train()],
+#'   or the name of a job.
+#' @param polling_interval Polling interval for streamed output.
+#' @param task_name
+#'   If set, display only the logs for this particular task.
+#' @param allow_multiline_logs
+#'   Output multiline log messages as single records.
 #'
-#' @family jobs
+#' @seealso [job_collect()], [job_cancel()], [job_list()]
 #'
 #' @export
 job_status <- function(job) {
@@ -248,19 +250,19 @@ job_status <- function(job) {
   yaml::yaml.load(paste(output, collapse = "\n"))
 }
 
-#' Collect Results from a Job
+#' Collect job output
 #'
 #' Collect the job outputs (e.g. fitted model) from a job.
 #' If the job has not yet finished running, `job_collect()`
 #' will block and wait until the job has finished.
 #'
-#' @template roxlate-job
+#' @inheritParams job_status
 #'
 #' @param destination
 #'   The destination directory in which model outputs should
 #'   be downloaded. Defaults to `jobs/cloudml`.
 #'
-#' @family jobs
+#' @seealso [job_describe()], [job_cancel()], [job_list()]
 #'
 #' @export
 job_collect <- function(job, destination = "jobs/cloudml") {

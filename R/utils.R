@@ -156,7 +156,7 @@ gexec <- function(command, args = character(), stdout = "", stderr = "", ...) {
 
     # check for errors given different return value conventions
     if (isTRUE(stdout) || isTRUE(stderr)) {
-      status = attr(result, "status")
+      status <- attr(result, "status")
       if (!is.null(status)) {
         errmsg <- attr(result, "errmsg")
         if (is.null(errmsg))
@@ -164,7 +164,7 @@ gexec <- function(command, args = character(), stdout = "", stderr = "", ...) {
         stop(errmsg)
       }
     } else if (result != 0) {
-      stop("Error ", status, " occurred running command ", command)
+      stop("Error ", result, " occurred running command ", command)
     }
 
     # return result

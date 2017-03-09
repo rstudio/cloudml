@@ -2,7 +2,7 @@
 % Please edit documentation in R/predict.R
 \name{local_predict}
 \alias{local_predict}
-\title{Generate Predictions with a Model Locally}
+\title{Generate predictions locally}
 \usage{
 local_predict(model_dir, data)
 }

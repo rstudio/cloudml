@@ -1,17 +1,7 @@
 
-
-
-## Future
+### Training/Prediction
 
 - `predict_cloudml`
-
-- Sort out all of the gcloud sdk installation / authentication requirements
-  for people other than us to use the package and document this well.
-  (see: https://cloud.google.com/ml/docs/how-tos/getting-set-up)
-
-- Windows compatibility
-
-- Documentation on using the package
 
 - Pull out `hyperparameters` from config and write a new YAML file with:
     trainingInput:
@@ -21,24 +11,42 @@
   Then in our app.R generated file where we set the config pacakge hook we 
   propagate the command line options/hyperparamters back into the config list
 
-- Ensure that CLOUDSDK_PYTHON points to python 2 not python 3
-
 - Job status / enumeration functions return R lists with custom print methods
-
-- install_gcloud_sdk function (see headless install in https://cloud.google.com/sdk/downloads)
 
 - TensorBoard integration
 
-- Include/exclude keys in config
+- Functions for publishing and versioning models?
 
 - Satisfying R package dependencies of train.R (packrat manifest + .Rprofile?)
+
+### Cloud SDK
+
+- Sort out all of the gcloud sdk installation / authentication requirements
+  for people other than us to use the package and document this well.
+  (see: https://cloud.google.com/ml/docs/how-tos/getting-set-up)
+
+- install_gcloud_sdk function (see headless install in 
+  https://cloud.google.com/sdk/downloads)
+  
+- Ensure that CLOUDSDK_PYTHON points to python 2 not python 3
+
+- Consider whether we should use the REST API for Google Cloud rather
+  than the local SDK (https://github.com/rstudio/cloudml/issues/6). 
+  It is going to be *very* painful to depend on the Cloud ML Python
+  libraries as that will force the use of Python 2 (which might not
+  correspond to where the user has already installed tensorflow).
+
+### General
+
+- Windows compatibility
+
+- Documentation on using the package
+
+### Tooling
 
 - Package skeleton function w/ config.yml, train.R, etc.
 
 - Build pane integration: Custom project type exposing various commands
 
 - rstudioapi package making available a version of system that pumps events
-
-
-
 

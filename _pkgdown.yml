@@ -1,0 +1,37 @@
+
+templates:
+  params:
+    bootswatch: cosmo
+
+navbar:
+  title: "Cloud ML interface for R"
+  theme: cosmo
+  type: inverse
+  right:
+   - icon: fa-github
+     href: https://github.com/rstudio/cloudml
+
+reference:
+  - title: "Training and Prediction "
+    desc: >
+      Functions for model training and prediction.
+    contents:
+      - cloudml_train
+      - local_train
+      - local_predict
+  - title: "Job Management"
+    desc: >
+      Functions for managing remote Cloud ML Jobs.
+    contents:
+      - starts_with("job_")
+  - title: "Configuration"
+    desc: >
+      Functions for project configuration.
+    contents:
+      - config
+      - unique_job_dir
+  - title: "Google Storage"
+    desc: >
+      Functions for interacting with Google Storage.
+    contents:
+      - starts_with("gs_")

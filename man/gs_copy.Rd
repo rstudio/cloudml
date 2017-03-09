@@ -2,7 +2,7 @@
 % Please edit documentation in R/gcloud.R
 \name{gs_copy}
 \alias{gs_copy}
-\title{Copy a file from Google Storage to the local system}
+\title{Copy files from Google Storage}
 \usage{
 gs_copy(uri, destination, overwrite = FALSE)
 }
@@ -14,5 +14,5 @@ gs_copy(uri, destination, overwrite = FALSE)
 \item{overwrite}{Overwrite an existing file of the same name}
 }
 \description{
-Copy a file from Google Storage to the local system
+Copy files from Google Storage
 }

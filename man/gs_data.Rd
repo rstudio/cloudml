@@ -2,7 +2,7 @@
 % Please edit documentation in R/gcloud.R
 \name{gs_data}
 \alias{gs_data}
-\title{Get a path to a data file within Google Storage}
+\title{Get a path to data within Google Storage}
 \usage{
 gs_data(uri, local_dir = "local/gs")
 }

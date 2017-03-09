@@ -2,7 +2,7 @@ library(tensorflow)
 
 source("model.R")
 
-### Predict using CloudML local_predict -------------------------------------
+### Predict using Cloud ML local_predict -------------------------------------
 
 # read in the data to use for predictions
 data <- read.table(

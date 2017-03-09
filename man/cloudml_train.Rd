@@ -2,27 +2,32 @@
 % Please edit documentation in R/jobs.R
 \name{cloudml_train}
 \alias{cloudml_train}
-\title{Google Cloud -- Submit a Training Job}
+\title{Train a model using Cloud ML}
 \usage{
 cloudml_train(application = getwd(), config = "cloudml", ...)
 }
 \arguments{
-\item{application}{The path to a TensorFlow application.}
+\item{application}{The path to a TensorFlow application}
 
 \item{config}{The name of the configuration to be used.}
 
 \item{...}{Named arguments, used to supply runtime configuration
 settings to your TensorFlow application. When
-[cloudml::config()] is called, these values will effectively
+\code{\link[cloudml:config]{cloudml::config()}} is called, these values will effectively
 be overlayed on top of the configuration requested.}
 }
 \description{
 Upload a TensorFlow application to Google Cloud, and use that application to
 train a model.
 }
+\examples{
+\dontrun{
+library(cloudml)
+job <- cloudml_train()
+job_status(job)
+job_collect(job)
+}
+}
 \seealso{
-Other jobs: \code{\link{job_cancel}},
-  \code{\link{job_collect}}, \code{\link{job_describe}},
-  \code{\link{job_list}}, \code{\link{job_status}},
-  \code{\link{job_stream}}
+\code{\link[=job_describe]{job_describe()}}, \code{\link[=job_collect]{job_collect()}}, \code{\link[=job_cancel]{job_cancel()}}
 }

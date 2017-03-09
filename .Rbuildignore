@@ -2,10 +2,8 @@
 ^\.Rproj\.user$
 ^examples/
 ^internal/
-^inst/examples/census/jobs
-^inst/examples/census/gs
 ^internal/
 ^man-roxygen/
 ^docs/
 ^README\.R?md
-
+^_pkgdown.yml$
