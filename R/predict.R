@@ -1,4 +1,4 @@
-#' Generate model predictions locally
+#' Generate predictions locally
 #'
 #' Generate predictions using a TensorFlow model saved on disk.
 #'
