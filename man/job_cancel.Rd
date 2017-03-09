@@ -2,7 +2,7 @@
 % Please edit documentation in R/jobs.R
 \name{job_cancel}
 \alias{job_cancel}
-\title{Google Cloud -- Cancel a Job}
+\title{Cancel a job}
 \usage{
 job_cancel(job)
 }

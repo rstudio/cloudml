@@ -2,7 +2,7 @@
 % Please edit documentation in R/jobs.R
 \name{job_describe}
 \alias{job_describe}
-\title{Google Cloud -- Describe a Job}
+\title{Describe a job}
 \usage{
 job_describe(job)
 }

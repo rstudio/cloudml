@@ -1,4 +1,4 @@
-#' Train a Model Locally
+#' Train a model locally
 #'
 #' Train a model locally, using the `gcloud` command line
 #' utility. This can be used as a testing bed for TensorFlow

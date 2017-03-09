@@ -2,7 +2,7 @@
 % Please edit documentation in R/jobs.R
 \name{job_status}
 \alias{job_status}
-\title{Google Cloud -- Job Status}
+\title{Current status of a job}
 \usage{
 job_status(job)
 }

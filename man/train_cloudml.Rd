@@ -2,7 +2,7 @@
 % Please edit documentation in R/jobs.R
 \name{train_cloudml}
 \alias{train_cloudml}
-\title{Google Cloud -- Submit a Training Job}
+\title{Train a model using Cloud ML}
 \usage{
 train_cloudml(application = getwd(), config = "cloudml", job_dir = NULL,
   ...)

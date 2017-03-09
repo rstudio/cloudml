@@ -2,7 +2,7 @@
 % Please edit documentation in R/jobs.R
 \name{job_stream}
 \alias{job_stream}
-\title{Google Cloud -- Stream Logs from a Job}
+\title{Show job log stream}
 \usage{
 job_stream(job, polling_interval = 60, task_name = NULL,
   allow_multiline_logs = FALSE)

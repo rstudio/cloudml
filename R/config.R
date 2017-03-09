@@ -1,5 +1,5 @@
 
-#' Read the configuration for a CloudML application
+#' Read the configuration for a Cloud ML application
 #'
 #' @param config Name of configuration to read (`NULL` will result in the
 #'   active configuration for the current environment being used).
@@ -13,7 +13,7 @@
 config <- function(config = NULL, local_gs = "local/gs") {
 
   # add any command line values passed to the R script into the extra_config
-  # (this is used when CloudML passes arguments during hyperparameter turning)
+  # (this is used when Cloud ML passes arguments during hyperparameter turning)
   #
   # TODO: forward these args in deploy.py and pick out args after --
   #

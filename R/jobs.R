@@ -1,5 +1,5 @@
 
-#' Google Cloud -- Submit a Training Job
+#' Train a model using Cloud ML
 #'
 #' Upload a TensorFlow application to Google Cloud, and use that application to
 #' train a model.
@@ -138,7 +138,7 @@ train_cloudml <- function(application = getwd(),
   invisible(job)
 }
 
-#' Google Cloud -- Cancel a Job
+#' Cancel a job
 #'
 #' Cancel a job.
 #'
@@ -156,7 +156,7 @@ job_cancel <- function(job) {
   gexec(gcloud(), arguments())
 }
 
-#' Google Cloud -- Describe a Job
+#' Describe a job
 #'
 #' Describe a job.
 #'
@@ -177,7 +177,7 @@ job_describe <- function(job) {
   yaml::yaml.load(paste(output, collapse = "\n"))
 }
 
-#' Google Cloud -- List Jobs
+#' List all jobs
 #'
 #' List existing Google Cloud ML jobs.
 #'
@@ -225,7 +225,7 @@ job_list <- function(filter    = NULL,
   gexec(gcloud(), arguments())
 }
 
-#' Google Cloud -- Stream Logs from a Job
+#' Show job log stream
 #'
 #' Show logs from a running Cloud ML Engine job.
 #'
@@ -263,7 +263,7 @@ job_stream <- function(job,
   gexec(gcloud(), arguments())
 }
 
-#' Google Cloud -- Job Status
+#' Current status of a job
 #'
 #' Get the status of a job, as an \R list.
 #'
@@ -287,7 +287,7 @@ job_status <- function(job) {
   yaml::yaml.load(paste(output, collapse = "\n"))
 }
 
-#' Collect Results from a Job
+#' Collect job output
 #'
 #' Collect the job outputs (e.g. fitted model) from a job.
 #' If the job has not yet finished running, `job_collect()`

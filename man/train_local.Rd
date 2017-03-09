@@ -2,7 +2,7 @@
 % Please edit documentation in R/local.R
 \name{train_local}
 \alias{train_local}
-\title{Train a Model Locally}
+\title{Train a model locally}
 \usage{
 train_local(application = getwd(), config = "default", job_dir = NULL,
   ...)

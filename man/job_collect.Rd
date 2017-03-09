@@ -2,7 +2,7 @@
 % Please edit documentation in R/jobs.R
 \name{job_collect}
 \alias{job_collect}
-\title{Collect Results from a Job}
+\title{Collect job output}
 \usage{
 job_collect(job, destination = "jobs/cloudml")
 }
