@@ -15,8 +15,9 @@ ShellArgumentsBuilder <- function() {
     if (length(dots) == 0)
       return(arguments_)
 
-    # any NULL entries imply we should ignore this
-    if (any(vapply(dots, is.null, logical(1))))
+    # any 0-length entries imply we should ignore this
+    n <- lapply(dots, length)
+    if (any(n == 0))
       return(invisible(self))
 
     # flatten a potentially nested list
