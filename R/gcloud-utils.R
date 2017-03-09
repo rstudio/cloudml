@@ -6,6 +6,8 @@ initialize_application <- function(application = getwd()) {
 
   validate_application(application)
 
+  # copy in 'cloudml' helpers (e.g. the files that act as
+  # entrypoints for deployment)
   copy_directory(
     system.file("cloudml/cloudml", package = "cloudml"),
     "cloudml"

@@ -70,5 +70,16 @@ if (file.exists("cloudml/overlay.rds")) {
 if (file.exists("dependencies.R"))
   source("dependencies.R")
 
+# attempt to restore using a packrat lockfile
+if (file.exists("packrat/packrat.lock")) {
+
+  # ensure packrat installed
+  if (!"packrat" %in% installed)
+    install.packages("packrat")
+
+  # attempt a project restore
+  packrat::restore()
+}
+
 # source entrypoint
 source(entrypoint, echo = TRUE)
