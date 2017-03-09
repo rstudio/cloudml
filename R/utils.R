@@ -19,42 +19,46 @@ warnf <- function(fmt, ..., call. = TRUE)
   ))
 }
 
-# TODO: Windows
 copy_directory <- function(source,
                            target,
                            overwrite = TRUE,
-                           exclude = character())
-{
-  # validate source, target directories
+                           exclude = character(),
+                           include = character()) {
+
+  # source dir
   source <- normalizePath(source, winslash = "/", mustWork = TRUE)
 
+  # target dir
   if (file.exists(target)) {
     if (!overwrite)
       stopf("a file already exists at path '%s'", target)
     unlink(target, recursive = TRUE)
   }
+  dir.create(target)
 
-  # construct exclusion string for rsync
-  shexclude <- if (length(exclude))
-    sprintf("--exclude={%s}", paste(exclude, collapse = ","))
+  # get the original top level file listing
+  all_files <- list.files(source, all.files = TRUE)
 
-  # call rsync to copy directory contents to new directory
-  # trailing slash on 'source' lets us override dirname
-  system(paste(
-    "rsync -a",
-    shQuote(paste(source, "/", sep = "")),
-    shQuote(target),
-    if (length(shexclude)) shexclude
-  ))
+  # apply excludes to the top level listing
+  exclude <- c("^\\..*$", utils::glob2rx(exclude))
+  files <- all_files
+  for (pattern in exclude)
+    files <- files[!grepl(pattern, files)]
 
-  isdir <- isTRUE(file.info(target)$isdir)
-  if (!isdir) {
-    fmt <- "failed to copy '%s' => '%s': unknown reason"
-    stopf(fmt, source, target)
+  # apply back includes
+  include <- utils::glob2rx(include)
+  for (pattern in include) {
+    include_files <- all_files[grepl(pattern, all_files)]
+    files <- unique(c(files, include_files))
   }
 
-  isdir
+  # copy the files
+  file.copy(from = file.path(source, files),
+            to = target,
+            recursive = TRUE)
 }
+
+
 
 ensure_directory <- function(path) {
 

@@ -1,7 +1,6 @@
 
 ## JJ
  
-- Windows compatibility
 - Documentation on using the package
 
 ## Kevin
