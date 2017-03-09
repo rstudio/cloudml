@@ -27,6 +27,12 @@
 
 - install_gcloud_sdk function (see headless install in https://cloud.google.com/sdk/downloads)
 
+- Consider whether we should use the REST API for Google Cloud rather
+  than the local SDK (https://github.com/rstudio/cloudml/issues/6). 
+  It is going to be *very* painful to depend on the Cloud ML Python
+  libraries as that will force the use of Python 2 (which might not
+  correspond to where the user has already installed tensorflow).
+
 - TensorBoard integration
 
 - Functions for publishing and versioning models?
