@@ -8,12 +8,12 @@
 #' @template roxlate-config
 #' @template roxlate-dots
 #'
-#' @inheritParams train_local
+#' @inheritParams local_train
 #'
 #' @family jobs
 #'
 #' @export
-train_cloudml <- function(application = getwd(),
+cloudml_train <- function(application = getwd(),
                           config      = "cloudml",
                           job_dir     = NULL,
                           ...)

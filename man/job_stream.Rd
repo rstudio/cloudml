@@ -8,7 +8,7 @@ job_stream(job, polling_interval = 60, task_name = NULL,
   allow_multiline_logs = FALSE)
 }
 \arguments{
-\item{job}{Either a `cloudml_job` object as returned by [train_cloudml()],
+\item{job}{Either a `cloudml_job` object as returned by [cloudml_train()],
 or the name of a job.}
 
 \item{polling_interval}{Number of seconds to wait between efforts to fetch the
@@ -22,8 +22,8 @@ latest log messages.}
 Show logs from a running Cloud ML Engine job.
 }
 \seealso{
-Other jobs: \code{\link{job_cancel}},
-  \code{\link{job_collect}}, \code{\link{job_describe}},
-  \code{\link{job_list}}, \code{\link{job_status}},
-  \code{\link{train_cloudml}}
+Other jobs: \code{\link{cloudml_train}},
+  \code{\link{job_cancel}}, \code{\link{job_collect}},
+  \code{\link{job_describe}}, \code{\link{job_list}},
+  \code{\link{job_status}}
 }

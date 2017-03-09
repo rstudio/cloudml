@@ -12,13 +12,6 @@
 #' @export
 config <- function(config = NULL, local_gs = "local/gs") {
 
-  # add any command line values passed to the R script into the extra_config
-  # (this is used when Cloud ML passes arguments during hyperparameter turning)
-  #
-  # TODO: forward these args in deploy.py and pick out args after --
-  #
-  cmd_args <- commandArgs(trailingOnly = TRUE)
-
   # read the config file
   if (!is.null(config))
     config <- config::get(config = config, file = "config.yml")
@@ -27,6 +20,10 @@ config <- function(config = NULL, local_gs = "local/gs") {
 
   # merge extra config
   config <- config::merge(config, .globals$extra_config)
+
+  # merge parsed command line arguments
+  clargs <- tensorflow::parse_arguments()
+  config <- config::merge(config, clargs)
 
   # resolve gs:// urls (copy them locally if we aren't running on gcloud)
   if (!is.null(local_gs) && !is_gcloud()) {

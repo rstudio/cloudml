@@ -2,7 +2,7 @@ library(tensorflow)
 
 source("model.R")
 
-### Predict using Cloud ML predict_local -------------------------------------
+### Predict using Cloud ML local_predict -------------------------------------
 
 # read in the data to use for predictions
 data <- read.table(
@@ -18,7 +18,7 @@ data$fnlwgt <- NULL
 data[[LABEL_COLUMN]] <- NULL
 
 # generate predictions
-predictions <- cloudml::predict_local("jobs/local", data)
+predictions <- cloudml::local_predict("jobs/local", data)
 
 # print predictions
 cat(yaml::as.yaml(predictions))
