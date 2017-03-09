@@ -16,7 +16,7 @@ local_train <- function(application = getwd(),
   on.exit(Sys.unsetenv("CLOUDML_EXECUTION_ENVIRONMENT"), add = TRUE)
 
   # prepare application for deployment
-  application <- scope_deployment(application)
+  application <- scope_deployment(application, config)
 
   # resolve runtime configuration and serialize
   # within the application's cloudml directory
