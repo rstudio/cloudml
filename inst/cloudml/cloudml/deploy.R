@@ -66,5 +66,9 @@ if (file.exists("cloudml/overlay.rds")) {
   cloudml:::set_overlay(overlay)
 }
 
+# source a file 'requirements.R', if it exists
+if (file.exists("requirements.R"))
+  source("requirements.R")
+
 # source entrypoint
 source(entrypoint, echo = TRUE)
