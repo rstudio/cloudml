@@ -21,6 +21,8 @@
 - Satisfying R package dependencies of train.R 
    - install.R or requirements.R
    - Use packrat
+   - Hybrid where packrat auto-generates dependencies.R (but still allows
+     the user to provide their own hand edited dependencies.R)
 
 ### API 
 
