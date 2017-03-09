@@ -1,0 +1,16 @@
+trainingInput:
+  hyperparameters:
+
+    # Define how we want to optimize hyperparameters.
+    goal: MAXIMIZE
+    hyperparameterMetricTag: accuracy
+    maxTrials: 4
+    maxParallelTrials: 2
+
+    # Define the hyperparameters we want to search over.
+    params:
+      - parameterName: estimator_embedding_size
+        type: INTEGER
+        minValue: 4
+        maxValue: 12
+        scaleType: UNIT_LINEAR_SCALE

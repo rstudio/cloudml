@@ -62,6 +62,7 @@ cloudml_train <- function(application = getwd(),
                 ("--staging-bucket=%s", overlay$staging_bucket)
                 ("--region=%s", overlay$region)
                 ("--runtime-version=%s", overlay$runtime_version)
+                ("--config=%s/%s", basename(application), overlay$hyperparameters)
                 ("--")
                 ("--cloudml-entrypoint=%s", overlay$entrypoint)
                 ("--cloudml-config=%s", config)
