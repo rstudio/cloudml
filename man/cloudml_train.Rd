@@ -8,7 +8,7 @@ cloudml_train(application = getwd(), config = "cloudml", job_dir = NULL,
   ...)
 }
 \arguments{
-\item{application}{The path to a TensorFlow application.}
+\item{application}{The path to a TensorFlow application}
 
 \item{config}{The name of the configuration to be used.}
 
@@ -17,7 +17,7 @@ of \code{job_dir} in the \code{config.yml} file).}
 
 \item{...}{Named arguments, used to supply runtime configuration
 settings to your TensorFlow application. When
-[cloudml::config()] is called, these values will effectively
+\code{\link[cloudml:config]{cloudml::config()}} is called, these values will effectively
 be overlayed on top of the configuration requested.}
 }
 \description{
@@ -25,7 +25,5 @@ Upload a TensorFlow application to Google Cloud, and use that application to
 train a model.
 }
 \seealso{
-Other jobs: \code{\link{job_cancel}},
-  \code{\link{job_collect}}, \code{\link{job_describe}},
-  \code{\link{job_list}}
+\code{\link[=job_describe]{job_describe()}}, \code{\link[=job_collect]{job_collect()}}, \code{\link[=job_cancel]{job_cancel()}}
 }

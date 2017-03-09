@@ -14,7 +14,7 @@ job_stream(job, polling_interval = 60, task_name = NULL,
 job_status(job)
 }
 \arguments{
-\item{job}{Either a `cloudml_job` object as returned by [cloudml_train()],
+\item{job}{Either a \code{cloudml_job} object as returned by \code{\link[=cloudml_train]{cloudml_train()}},
 or the name of a job.}
 
 \item{polling_interval}{Polling interval for streamed output.}
@@ -28,7 +28,5 @@ Get detailed information on a job and it's status. Stream
 the log of a running job.
 }
 \seealso{
-Other jobs: \code{\link{cloudml_train}},
-  \code{\link{job_cancel}}, \code{\link{job_collect}},
-  \code{\link{job_list}}
+\code{\link[=job_collect]{job_collect()}}, \code{\link[=job_cancel]{job_cancel()}}, \code{\link[=job_list]{job_list()}}
 }

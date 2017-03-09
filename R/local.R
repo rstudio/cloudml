@@ -5,12 +5,7 @@
 #' applications which you want to later run on Google Cloud,
 #' submitted using [cloudml_train()].
 #'
-#' @template roxlate-application
-#' @template roxlate-config
-#' @template roxlate-dots
-#'
-#' @param job_dir Directory to write job into (defaults to the value
-#'   of `job_dir` in the `config.yml` file).
+#' @inheritParams cloudml_train
 #'
 #' @export
 local_train <- function(application = getwd(),

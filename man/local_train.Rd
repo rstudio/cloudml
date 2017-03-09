@@ -8,7 +8,7 @@ local_train(application = getwd(), config = "default", job_dir = NULL,
   ...)
 }
 \arguments{
-\item{application}{The path to a TensorFlow application.}
+\item{application}{The path to a TensorFlow application}
 
 \item{config}{The name of the configuration to be used.}
 
@@ -17,7 +17,7 @@ of \code{job_dir} in the \code{config.yml} file).}
 
 \item{...}{Named arguments, used to supply runtime configuration
 settings to your TensorFlow application. When
-[cloudml::config()] is called, these values will effectively
+\code{\link[cloudml:config]{cloudml::config()}} is called, these values will effectively
 be overlayed on top of the configuration requested.}
 }
 \description{
