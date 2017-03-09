@@ -2,7 +2,7 @@
 % Please edit documentation in R/config.R
 \name{config}
 \alias{config}
-\title{Read the configuration for a Cloud ML application}
+\title{Read the configuration for a project}
 \usage{
 config(config = NULL, local_gs = "local/gs")
 }
@@ -18,5 +18,5 @@ resolve their values to the path of their local copy.}
 List with configuration values
 }
 \description{
-Read the configuration for a Cloud ML application
+Read the configuration for a project
 }

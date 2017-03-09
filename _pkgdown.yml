@@ -12,9 +12,9 @@ navbar:
      href: https://github.com/rstudio/cloudml
 
 reference:
-  - title: "Training and Prediction"
+  - title: "Training and Prediction "
     desc: >
-      Functions for local and cloud based training and prediction.
+      Functions for model training and prediction.
     contents:
       - cloudml_train
       - local_train
@@ -24,6 +24,12 @@ reference:
       Functions for managing remote Cloud ML Jobs.
     contents:
       - starts_with("job_")
+  - title: "Configuration"
+    desc: >
+      Functions for project configuration.
+    contents:
+      - config
+      - unique_job_dir
   - title: "Google Storage"
     desc: >
       Functions for interacting with Google Storage.

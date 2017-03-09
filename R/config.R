@@ -1,5 +1,5 @@
 
-#' Read the configuration for a Cloud ML application
+#' Read the configuration for a project
 #'
 #' @param config Name of configuration to read (`NULL` will result in the
 #'   active configuration for the current environment being used).

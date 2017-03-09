@@ -2,7 +2,7 @@
 % Please edit documentation in R/job-utils.R
 \name{unique_job_dir}
 \alias{unique_job_dir}
-\title{Generate a Unique Job Directory}
+\title{Generate a unique job directory}
 \usage{
 unique_job_dir(prefix = "")
 }
