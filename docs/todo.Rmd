@@ -3,7 +3,6 @@
  
 - Windows compatibility
 - Documentation on using the package
-- Job status / enumeration functions return R lists with custom print methods
 - TensorBoard integration
 
 ## Kevin
@@ -42,6 +41,8 @@
 - Ensure that CLOUDSDK_PYTHON points to python 2 not python 3
 
 - `predict_cloudml`
+
+- Job status / enumeration functions return R lists with custom print methods
 
 - Functions for publishing and versioning models?
 
