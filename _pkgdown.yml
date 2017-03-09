@@ -16,9 +16,9 @@ reference:
     desc: >
       Functions for local and cloud based training and prediction.
     contents:
-      - train_local
-      - train_cloudml
-      - predict_local
+      - cloudml_train
+      - local_train
+      - local_predict
   - title: "Job Management"
     desc: >
       Functions for managing remote Cloud ML Jobs.

@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>List all jobs — job_list • cloudml</title>
+<title>Train a model using Cloud ML — cloudml_train • cloudml</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -71,42 +71,38 @@
       <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>List all jobs</h1>
+    <h1>Train a model using Cloud ML</h1>
     </div>
 
     
-    <p>List existing Google Cloud ML jobs.</p>
+    <p>Upload a TensorFlow application to Google Cloud, and use that application to
+train a model.</p>
     
 
-    <pre><span class='fu'>job_list</span>(<span class='kw'>filter</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>limit</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>page_size</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>sort_by</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>uri</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
+    <pre><span class='fu'>cloudml_train</span>(<span class='kw'>application</span> <span class='kw'>=</span> <span class='fu'>getwd</span>(), <span class='kw'>config</span> <span class='kw'>=</span> <span class='st'>"cloudml"</span>, <span class='kw'>job_dir</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='no'>...</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <dl class="dl-horizontal">
-      <dt>filter</dt>
-      <dd>Filter the set of jobs to be returned.</dd>
-      <dt>limit</dt>
-      <dd>The maximum number of resources to list. By default,
-all jobs will be listed.</dd>
-      <dt>page_size</dt>
-      <dd>Some services group resource list output into pages.
-This flag specifies the maximum number of resources per
-page. The default is determined by the service if it
-supports paging, otherwise it is unlimited (no paging).</dd>
-      <dt>sort_by</dt>
-      <dd>A comma-separated list of resource field key names to
-sort by. The default order is ascending. Prefix a field
-with <code>~</code> for descending order on that field.</dd>
-      <dt>uri</dt>
-      <dd>Print a list of resource URIs instead of the default
-output.</dd>
+      <dt>application</dt>
+      <dd>The path to a TensorFlow application.</dd>
+      <dt>config</dt>
+      <dd>The name of the configuration to be used.</dd>
+      <dt>job_dir</dt>
+      <dd>Directory to write job into (defaults to the value
+of <code>job_dir</code> in the <code>config.yml</code> file).</dd>
+      <dt>...</dt>
+      <dd>Named arguments, used to supply runtime configuration
+settings to your TensorFlow application. When
+[cloudml::config()] is called, these values will effectively
+be overlayed on top of the configuration requested.</dd>
     </dl>
     
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
-    <p>Other jobs: <code><a href='cloudml_train.html'>cloudml_train</a></code>,
-  <code><a href='job_cancel.html'>job_cancel</a></code>, <code><a href='job_collect.html'>job_collect</a></code>,
-  <code><a href='job_describe.html'>job_describe</a></code>, <code><a href='job_status.html'>job_status</a></code>,
+    <p>Other jobs: <code><a href='job_cancel.html'>job_cancel</a></code>,
+  <code><a href='job_collect.html'>job_collect</a></code>, <code><a href='job_describe.html'>job_describe</a></code>,
+  <code><a href='job_list.html'>job_list</a></code>, <code><a href='job_status.html'>job_status</a></code>,
   <code><a href='job_stream.html'>job_stream</a></code></p>
     
 
