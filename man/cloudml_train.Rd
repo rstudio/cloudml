@@ -4,16 +4,12 @@
 \alias{cloudml_train}
 \title{Train a model using Cloud ML}
 \usage{
-cloudml_train(application = getwd(), config = "cloudml", job_dir = NULL,
-  ...)
+cloudml_train(application = getwd(), config = "cloudml", ...)
 }
 \arguments{
 \item{application}{The path to a TensorFlow application}
 
 \item{config}{The name of the configuration to be used.}
-
-\item{job_dir}{Directory to write job into (defaults to the value
-of \code{job_dir} in the \code{config.yml} file).}
 
 \item{...}{Named arguments, used to supply runtime configuration
 settings to your TensorFlow application. When

@@ -4,16 +4,12 @@
 \alias{local_train}
 \title{Train a model locally}
 \usage{
-local_train(application = getwd(), config = "default", job_dir = NULL,
-  ...)
+local_train(application = getwd(), config = "default", ...)
 }
 \arguments{
 \item{application}{The path to a TensorFlow application}
 
 \item{config}{The name of the configuration to be used.}
-
-\item{job_dir}{Directory to write job into (defaults to the value
-of \code{job_dir} in the \code{config.yml} file).}
 
 \item{...}{Named arguments, used to supply runtime configuration
 settings to your TensorFlow application. When

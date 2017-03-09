@@ -1,11 +1,10 @@
 default:
+  project_name             : "census_demo"
+  job_output               : "jobs/local"
 
   # Inputs (downsampled data for local development)
   eval_file                : "gs://rstudio-cloudml-demo-ml/census/data/local.adult.test"
   train_file               : "gs://rstudio-cloudml-demo-ml/census/data/local.adult.data"
-
-  # Outputs (write to local jobs directory)
-  job_dir                  : "jobs/local"
 
   # Training parameters
   estimator_embedding_size : 8
@@ -24,9 +23,8 @@ cloudml:
   eval_file                : "gs://rstudio-cloudml-demo-ml/census/data/adult.test"
   train_file               : "gs://rstudio-cloudml-demo-ml/census/data/adult.data"
 
-  # Outputs (to run within another gcloud account, substitute your own buckets)
-  job_dir                  : !expr cloudml::unique_job_dir("gs://rstudio-cloudml-demo-ml/census/jobs")
-  staging_bucket           : "gs://rstudio-cloudml-demo-ml"
+  # Outputs
+  job_output               : "gs://rstudio-cloudml-demo-ml/census/jobs"
 
   # Training parameter overrides
   eval_batch_size          : 100

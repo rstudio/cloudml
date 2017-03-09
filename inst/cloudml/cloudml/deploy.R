@@ -61,12 +61,10 @@ Sys.setenv(R_CONFIG_ACTIVE = config)
 Sys.setenv(CLOUDML_EXECUTION_ENVIRONMENT = environment)
 
 # read config overlay if available
-overlay <- list()
-if (file.exists("cloudml/config.rds"))
-  overlay <- readRDS("cloudml/config.rds")
-
-# set extra config
-cloudml:::set_extra_config(overlay)
+if (file.exists("cloudml/overlay.rds")) {
+  overlay <- readRDS("cloudml/overlay.rds")
+  cloudml:::set_overlay(overlay)
+}
 
 # source entrypoint
 source(entrypoint, echo = TRUE)

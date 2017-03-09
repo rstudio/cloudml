@@ -201,3 +201,23 @@ flatten_list <- function(list) {
   }
   mutated
 }
+
+# Generates 'setup.py' in the parent directory of an application,
+# and removes it when the calling function finishes execution.
+scope_setup_py <- function(application,
+                           envir = parent.frame())
+{
+  scope_dir(dirname(application))
+
+  if (file.exists("setup.py"))
+    return()
+
+  file.copy(
+    system.file("cloudml/setup.py", package = "cloudml"),
+    "setup.py",
+    overwrite = TRUE
+  )
+
+  setup.py <- normalizePath("setup.py")
+  defer(unlink(setup.py), envir = parent.frame())
+}

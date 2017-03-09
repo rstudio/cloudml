@@ -18,8 +18,8 @@ config <- function(config = NULL, local_gs = "local/gs") {
   else
     config <- config::get(file = "config.yml")
 
-  # merge extra config
-  config <- config::merge(config, .globals$extra_config)
+  # merge overlay
+  config <- config::merge(config, .globals$overlay)
 
   # merge parsed command line arguments
   clargs <- tensorflow::parse_arguments()
@@ -44,8 +44,8 @@ config <- function(config = NULL, local_gs = "local/gs") {
 
 
 # set extra config to be used for `cloudml::config()`
-set_extra_config <- function(extra_config) {
-  .globals$extra_config <- extra_config
+set_overlay <- function(overlay) {
+  .globals$overlay <- overlay
 }
 
 
