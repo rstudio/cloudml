@@ -16,6 +16,12 @@
 #'
 #' @seealso [job_describe()], [job_collect()], [job_cancel()]
 #'
+#' @examples \dontrun{
+#' library(cloudml)
+#' job <- cloudml_train()
+#' job_status(job)
+#' job_collect(job)
+#' }
 #' @export
 cloudml_train <- function(application = getwd(),
                           config      = "cloudml",
