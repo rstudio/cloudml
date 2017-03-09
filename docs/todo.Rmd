@@ -29,6 +29,8 @@
 
 - TensorBoard integration
 
+- Functions for publishing and versioning models?
+
 - Satisfying R package dependencies of train.R (packrat manifest + .Rprofile?)
 
 - Package skeleton function w/ config.yml, train.R, etc.
