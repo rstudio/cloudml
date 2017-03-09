@@ -21,7 +21,7 @@ train_cloudml <- function(application = getwd(),
   Sys.setenv(CLOUDML_EXECUTION_ENVIRONMENT = "gcloud")
   on.exit(Sys.unsetenv("CLOUDML_EXECUTION_ENVIRONMENT"), add = TRUE)
 
-  application <- scope_deployment(application)
+  application <- scope_deployment(application, config)
   config_name <- config
   config <- cloudml::config(config = config)
 

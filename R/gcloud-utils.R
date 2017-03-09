@@ -4,11 +4,7 @@ initialize_application <- function(application = getwd()) {
   application <- normalizePath(application, winslash = "/", mustWork = TRUE)
   scope_dir(application)
 
-  # bail if this doesn't look like a cloudml TensorFlow application
-  if (!file.exists("config.yml")) {
-    fmt <- "'%s' appears not to be a cloudml application (missing config.yml)"
-    stopf(fmt, basename(application))
-  }
+  validate_application(application)
 
   copy_directory(
     system.file("cloudml/cloudml", package = "cloudml"),
@@ -25,18 +21,32 @@ initialize_application <- function(application = getwd()) {
   TRUE
 }
 
-scope_deployment <- function(application = getwd()) {
+validate_application <- function(application) {
+  # bail if this doesn't look like a cloudml TensorFlow application
+  if (!file.exists(file.path(application,"config.yml"))) {
+    fmt <- "'%s' appears not to be a Cloud ML application (missing config.yml)"
+    stopf(fmt, application, call. = FALSE)
+  }
+}
+
+scope_deployment <- function(application = getwd(), config) {
   application <- normalizePath(application, winslash = "/")
+
+  validate_application(application)
 
   # generate deployment directory
   prefix <- sprintf("cloudml-deploy-%s-", basename(application))
   root <- tempfile(pattern = prefix)
   ensure_directory(root)
 
-  # TODO: read some kind of 'exclude' / 'include' list from the
-  # application's config?
+  # default excludes plus any additional excludes in the config file
+  config <- cloudml::config(config = config)
+  exclude <- c("local", "jobs")
+  exclude <- unique(c(exclude, config$exclude))
+
+  # build deployment bundle
   deployment <- file.path(root, basename(application))
-  copy_directory(application, deployment, exclude = c("local", "jobs"))
+  copy_directory(application, deployment, exclude = exclude)
   defer(unlink(root, recursive = TRUE), envir = parent.frame())
   initialize_application(deployment)
 
