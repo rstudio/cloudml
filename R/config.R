@@ -12,11 +12,12 @@
 #' @export
 project_config <- function(config = NULL, local_gs = "gs") {
 
+  # resolve active configuration
+  active <- Sys.getenv("R_CONFIG_ACTIVE", unset = "default")
+  config <- config %||% active
+
   # read the config file
-  if (!is.null(config))
-    config <- config::get(config = config, file = "config.yml")
-  else
-    config <- config::get(file = "config.yml")
+  config <- config::get(config = active, file = "config.yml")
 
   # merge overlay
   config <- config::merge(config, .globals$overlay)
@@ -24,6 +25,13 @@ project_config <- function(config = NULL, local_gs = "gs") {
   # merge parsed command line arguments
   clargs <- tensorflow::parse_arguments()
   config <- config::merge(config, clargs)
+
+  # resolve job dir if it's not available (for 'source'-based workflows)
+  if (is.null(config$job_dir)) {
+    job_name   <- config$job_name %||% unique_job_name(config = active)
+    job_output <- config$job_output %||% unique_job_dir()
+    config$job_dir <- file.path(job_output, job_name)
+  }
 
   # resolve gs:// urls (copy them locally if we aren't running on gcloud)
   if (!is.null(local_gs) && !is_gcloud()) {
