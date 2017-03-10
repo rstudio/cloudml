@@ -22,14 +22,6 @@ be overlayed on top of the configuration requested.}
 Upload a TensorFlow application to Google Cloud, and use that application to
 train a model.
 }
-\examples{
-\dontrun{
-library(cloudml)
-job <- cloudml_train()
-job_status(job)
-job_collect(job)
-}
-}
 \seealso{
 \code{\link[=job_describe]{job_describe()}}, \code{\link[=job_collect]{job_collect()}}, \code{\link[=job_cancel]{job_cancel()}}
 }
