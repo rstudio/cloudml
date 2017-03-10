@@ -15,7 +15,7 @@
 #' @param ...
 #'   Named arguments, used to supply runtime configuration
 #'   settings to your TensorFlow application. When
-#'   [cloudml::config()] is called, these values will effectively
+#'   [cloudml::project_config()] is called, these values will effectively
 #'   be overlayed on top of the configuration requested.
 #'
 #' @seealso [job_describe()], [job_collect()], [job_cancel()]

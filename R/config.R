@@ -10,7 +10,7 @@
 #' @return List with configuration values
 #'
 #' @export
-config <- function(config = NULL, local_gs = "local/gs") {
+project_config <- function(config = NULL, local_gs = "local/gs") {
 
   # read the config file
   if (!is.null(config))
@@ -43,7 +43,7 @@ config <- function(config = NULL, local_gs = "local/gs") {
 }
 
 
-# set extra config to be used for `cloudml::config()`
+# set extra config to be used for `cloudml::project_config()`
 set_overlay <- function(overlay) {
   .globals$overlay <- overlay
 }

@@ -15,7 +15,7 @@ the \code{"cloudml"} configuration.}
 
 \item{...}{Named arguments, used to supply runtime configuration
 settings to your TensorFlow application. When
-\code{\link[cloudml:config]{cloudml::config()}} is called, these values will effectively
+\code{\link[cloudml:project_config]{cloudml::project_config()}} is called, these values will effectively
 be overlayed on top of the configuration requested.}
 }
 \description{

@@ -29,7 +29,7 @@ reference:
     desc: >
       Functions for project configuration.
     contents:
-      - config
+      - project_config
       - unique_job_dir
   - title: "Google Storage"
     desc: >

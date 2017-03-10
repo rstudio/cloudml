@@ -42,7 +42,7 @@ scope_deployment <- function(application = getwd(), config) {
   ensure_directory(root)
 
   # default excludes plus any additional excludes in the config file
-  config <- cloudml::config(config = config)
+  config <- cloudml::project_config(config = config)
   exclude <- c("local", "jobs", ".git", ".svn")
   exclude <- unique(c(exclude, config$exclude))
 

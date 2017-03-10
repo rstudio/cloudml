@@ -9,7 +9,7 @@ learn_runner             <- learn$python$learn$learn_runner
 saved_model_export_utils <- learn$python$learn$utils$saved_model_export_utils
 
 # read application config and resolve data files
-config <- cloudml::config()
+config <- cloudml::project_config()
 
 # define estimator
 estimator <- build_estimator(
