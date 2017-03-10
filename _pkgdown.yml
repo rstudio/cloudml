@@ -5,8 +5,20 @@ templates:
 
 navbar:
   title: "Cloud ML interface for R"
-  theme: cosmo
   type: inverse
+  left:
+    - text: "Projects"
+      href: articles/projects.html
+    - text: "Training"
+      href: articles/training.html
+    - text: "Tuning"
+      href: articles/tuning.html
+    - text: "Prediction"
+      href: articles/prediction.html
+    - text: "Jobs"
+      href: articles/jobs.html
+    - text: "Reference"
+      href: "reference/index.html"
   right:
    - icon: fa-github
      href: https://github.com/rstudio/cloudml

@@ -7,3 +7,5 @@
 ^docs/
 ^README\.R?md
 ^_pkgdown.yml$
+^index\..*$
+
