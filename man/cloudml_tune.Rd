@@ -5,7 +5,7 @@
 \title{Tune hyperparameters on Cloud ML}
 \usage{
 cloudml_tune(application = getwd(), config = "cloudml",
-  hyperparameters = "hyperparameters.yml", ...)
+  hypertune = "hypertune.yml", ...)
 }
 \arguments{
 \item{application}{The path to a TensorFlow application. Defaults to
@@ -14,10 +14,10 @@ the current working directory.}
 \item{config}{The name of the configuration to be used. Defaults to
 the \code{"cloudml"} configuration.}
 
-\item{hyperparameters}{Path to the job configuration file. The file should be
-a YAML document containing a Job resource as defined in
-the API (all fields are optional):
-https://cloud.google.com/ml/reference/rest/v1/projects.jobs}
+\item{hypertune}{Path to a YAML file, defining how hyperparameters should
+be tuned. See
+https://cloud.google.com/ml/reference/rest/v1/projects.jobs
+for more details.}
 
 \item{...}{Named arguments, used to supply runtime configuration
 settings to your TensorFlow application. When

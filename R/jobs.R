@@ -35,7 +35,7 @@ cloudml_train <- function(application = getwd(),
   application <- scope_deployment(application, config)
 
   # generate hyperparameters
-  overlay <- write_hyperparameters(application, overlay)
+  overlay <- write_hypertune(application, overlay)
 
   # serialize overlay
   ensure_directory("cloudml")
@@ -60,7 +60,7 @@ cloudml_train <- function(application = getwd(),
                 ("--staging-bucket=%s", overlay$staging_bucket)
                 ("--region=%s", overlay$region)
                 ("--runtime-version=%s", overlay$runtime_version)
-                ("--config=%s/%s", basename(application), overlay$hyperparameters)
+                ("--config=%s/%s", basename(application), overlay$hypertune)
                 ("--")
                 ("--cloudml-entrypoint=%s", overlay$entrypoint)
                 ("--cloudml-config=%s", config)
