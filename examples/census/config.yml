@@ -1,6 +1,10 @@
 default:
+
+  # project configuration
   project_name             : "census_demo"
   job_output               : "jobs/local"
+  exclude:                 : "analysis"
+
 
   # Inputs (downsampled data for local development)
   eval_file                : "gs://rstudio-cloudml-demo-ml/census/data/local.adult.test"
