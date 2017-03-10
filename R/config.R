@@ -10,7 +10,7 @@
 #' @return List with configuration values
 #'
 #' @export
-project_config <- function(config = NULL, local_gs = "local/gs") {
+project_config <- function(config = NULL, local_gs = "gs") {
 
   # read the config file
   if (!is.null(config))

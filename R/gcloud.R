@@ -88,7 +88,7 @@ gs_copy <- function(uri, destination, overwrite = FALSE) {
 #'   context).
 #'
 #' @export
-gs_data <- function(uri, local_dir = "local/gs") {
+gs_data <- function(uri, local_dir = "gs") {
   if (is_gcloud() || !is_gs_uri(uri))
     uri
   else {

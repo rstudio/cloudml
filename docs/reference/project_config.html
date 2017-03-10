@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Get a path to data within Google Storage — gs_data • cloudml</title>
+<title>Read the configuration for a project — project_config • cloudml</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -71,30 +71,29 @@
       <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Get a path to data within Google Storage</h1>
+    <h1>Read the configuration for a project</h1>
     </div>
 
     
-    <p>When running on Google Cloud the path is returned unchanged. When running in
-other contexts the file is copied to the local system and a path to the local
-file is returned. If a plain filesystem path is passed then it is also
-returned unchanged.</p>
+    <p>Read the configuration for a project</p>
     
 
-    <pre><span class='fu'>gs_data</span>(<span class='no'>uri</span>, <span class='kw'>local_dir</span> <span class='kw'>=</span> <span class='st'>"gs"</span>)</pre>
+    <pre><span class='fu'>project_config</span>(<span class='kw'>config</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>local_gs</span> <span class='kw'>=</span> <span class='st'>"gs"</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <dl class="dl-horizontal">
-      <dt>uri</dt>
-      <dd>Google storage URI (e.g. <code>gs://[BUCKET_NAME]/[FILENAME.CSV]</code>)</dd>
-      <dt>local_dir</dt>
-      <dd>Local directory to copy files into</dd>
+      <dt>config</dt>
+      <dd>Name of configuration to read (<code>NULL</code> will result in the
+active configuration for the current environment being used).</dd>
+      <dt>local_gs</dt>
+      <dd>Specify a directory name to automatically download local
+copies of references to Google Storage data (<code>gs://</code>) and then
+resolve their values to the path of their local copy.</dd>
     </dl>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>Path to data file (may be local or remote depending on the execution
-context).</p>
+    <p>List with configuration values</p>
     
 
   </div>

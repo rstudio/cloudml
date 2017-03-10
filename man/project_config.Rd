@@ -4,7 +4,7 @@
 \alias{project_config}
 \title{Read the configuration for a project}
 \usage{
-project_config(config = NULL, local_gs = "local/gs")
+project_config(config = NULL, local_gs = "gs")
 }
 \arguments{
 \item{config}{Name of configuration to read (\code{NULL} will result in the

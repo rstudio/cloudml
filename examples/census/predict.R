@@ -6,7 +6,7 @@ source("model.R")
 
 # read in the data to use for predictions
 data <- read.table(
-  "local/data/adult.predict",
+  cloudml::gs_data("gs://rstudio-cloudml-demo-ml/census/data/local.adult.test"),
   col.names = CSV_COLUMNS,
   header = FALSE,
   sep = ",",
