@@ -4,3 +4,5 @@
 internal/
 **/.DS_Store
 index.html
+vignettes/*.html
+
