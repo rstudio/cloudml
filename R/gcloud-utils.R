@@ -62,3 +62,32 @@ scope_deployment <- function(application = getwd(), config) {
   # return normalized application path
   deployment
 }
+
+write_hyperparameters <- function(application, overlay) {
+
+  if (is.null(overlay$hyperparameters))
+    return(FALSE)
+
+  # attempt to discover user's hyperparameters file
+  hyperparameters <- file.path(application, overlay$hyperparameters)
+  if (!file.exists(hyperparameters))
+    return(FALSE)
+
+  hyperparameters <- yaml::yaml.load_file(hyperparameters)
+
+  # wrap into 'trainingInput:', 'hyperparameters:' keys
+  input <- list(
+    trainingInput = list(
+      hyperparameters = hyperparameters
+    )
+  )
+
+  # write to target file
+  target <- file.path(application, "cloudml/hyperparameters.yml")
+  writeLines(yaml::as.yaml(input), con = target)
+
+  # update in overlay
+  overlay$hyperparameters <- "cloudml/hyperparameters.yml"
+
+  overlay
+}

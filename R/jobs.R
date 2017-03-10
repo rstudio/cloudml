@@ -34,12 +34,16 @@ cloudml_train <- function(application = getwd(),
   Sys.setenv(CLOUDML_EXECUTION_ENVIRONMENT = "gcloud")
   on.exit(Sys.unsetenv("CLOUDML_EXECUTION_ENVIRONMENT"), add = TRUE)
 
+  # resolve runtime configuration
+  overlay <- resolve_train_overlay(application, list(...), config)
+
   # prepare application for deployment
   application <- scope_deployment(application, config)
 
-  # resolve runtime configuration and serialize
-  # within the application's cloudml directory
-  overlay <- resolve_train_overlay(application, list(...), config)
+  # generate hyperparameters
+  overlay <- write_hyperparameters(application, overlay)
+
+  # serialize overlay
   ensure_directory("cloudml")
   saveRDS(overlay, file = "cloudml/overlay.rds")
 

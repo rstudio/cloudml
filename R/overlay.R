@@ -44,18 +44,19 @@ make_config_populator <- function(target, sources) {
   }
 }
 
-resolve_config <- function(config) {
+resolve_config <- function(application, config) {
   if (is.list(config))
-    config
-  else
-    config::get(config = config)
+    return(config)
+
+  scope_dir(application)
+  config::get(config = config)
 }
 
 resolve_train_overlay <- function(application,
                                   dots,
                                   config)
 {
-  conf <- resolve_config(config)
+  conf <- resolve_config(application, config)
 
   # prepare our overlay + helper for filling in fields
   overlay <- new.env(parent = emptyenv())

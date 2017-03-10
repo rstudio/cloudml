@@ -15,12 +15,14 @@ local_train <- function(application = getwd(),
   Sys.setenv(CLOUDML_EXECUTION_ENVIRONMENT = "local")
   on.exit(Sys.unsetenv("CLOUDML_EXECUTION_ENVIRONMENT"), add = TRUE)
 
-  # prepare application for deployment
-  application <- scope_deployment(application, config)
-
   # resolve runtime configuration and serialize
   # within the application's cloudml directory
   overlay <- resolve_train_overlay(application, list(...), config)
+
+  # prepare application for deployment
+  application <- scope_deployment(application, config)
+
+  # serialize overlay
   ensure_directory("cloudml")
   saveRDS(overlay, file = "cloudml/overlay.rds")
 
