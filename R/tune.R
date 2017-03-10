@@ -1,5 +1,4 @@
-#' Tune a TensorFlow Application on Google Cloud
-#'
+#' Tune hyperparameters on Cloud ML
 #'
 #' @inheritParams cloudml_train
 #' @param hyperparameters

@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Train a model locally — local_train • cloudml</title>
+<title>Tune hyperparameters on Cloud ML — cloudml_tune • cloudml</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -71,17 +71,15 @@
       <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Train a model locally</h1>
+    <h1>Tune hyperparameters on Cloud ML</h1>
     </div>
 
     
-    <p>Train a model locally, using the <code>gcloud</code> command line
-utility. This can be used as a testing bed for TensorFlow
-applications which you want to later run on Google Cloud,
-submitted using <code><a href='cloudml_train.html'>cloudml_train()</a></code>.</p>
+    <p>Tune hyperparameters on Cloud ML</p>
     
 
-    <pre><span class='fu'>local_train</span>(<span class='kw'>application</span> <span class='kw'>=</span> <span class='fu'>getwd</span>(), <span class='kw'>config</span> <span class='kw'>=</span> <span class='st'>"default"</span>, <span class='no'>...</span>)</pre>
+    <pre><span class='fu'>cloudml_tune</span>(<span class='kw'>application</span> <span class='kw'>=</span> <span class='fu'>getwd</span>(), <span class='kw'>config</span> <span class='kw'>=</span> <span class='st'>"cloudml"</span>,
+  <span class='kw'>hyperparameters</span> <span class='kw'>=</span> <span class='st'>"hyperparameters.yml"</span>, <span class='no'>...</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <dl class="dl-horizontal">
@@ -91,6 +89,11 @@ the current working directory.</dd>
       <dt>config</dt>
       <dd>The name of the configuration to be used. Defaults to
 the <code>&quot;cloudml&quot;</code> configuration.</dd>
+      <dt>hyperparameters</dt>
+      <dd>Path to the job configuration file. The file should be
+a YAML document containing a Job resource as defined in
+the API (all fields are optional):
+https://cloud.google.com/ml/reference/rest/v1/projects.jobs</dd>
       <dt>...</dt>
       <dd>Named arguments, used to supply runtime configuration
 settings to your TensorFlow application. When

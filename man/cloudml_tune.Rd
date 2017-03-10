@@ -2,7 +2,7 @@
 % Please edit documentation in R/tune.R
 \name{cloudml_tune}
 \alias{cloudml_tune}
-\title{Tune a TensorFlow Application on Google Cloud}
+\title{Tune hyperparameters on Cloud ML}
 \usage{
 cloudml_tune(application = getwd(), config = "cloudml",
   hyperparameters = "hyperparameters.yml", ...)
@@ -25,5 +25,5 @@ settings to your TensorFlow application. When
 be overlayed on top of the configuration requested.}
 }
 \description{
-Tune a TensorFlow Application on Google Cloud
+Tune hyperparameters on Cloud ML
 }

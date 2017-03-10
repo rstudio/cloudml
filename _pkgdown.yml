@@ -17,6 +17,7 @@ reference:
       Functions for model training and prediction.
     contents:
       - cloudml_train
+      - cloudml_tune
       - local_train
       - local_predict
   - title: "Job Management"
