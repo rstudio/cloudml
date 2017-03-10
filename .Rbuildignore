@@ -7,4 +7,4 @@
 ^README\.R?md
 ^_pkgdown.yml$
 ^index\..*$
-
+^todo.Rmd$
