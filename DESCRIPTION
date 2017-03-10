@@ -20,3 +20,5 @@ LazyData: true
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 6.0.1
 Remotes: rstudio/reticulate, rstudio/tensorflow
+VignetteBuilder: knitr
+
