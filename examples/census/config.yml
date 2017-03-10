@@ -3,7 +3,7 @@ default:
   # project configuration
   project_name             : "census_demo"
   job_output               : "jobs/local"
-  exclude:                 : "analysis"
+  exclude                  : "analysis"
 
 
   # Inputs (downsampled data for local development)
