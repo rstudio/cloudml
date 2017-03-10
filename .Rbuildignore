@@ -4,6 +4,7 @@
 ^internal/
 ^man-roxygen/
 ^docs/
+^internal/
 ^README\.R?md
 ^_pkgdown.yml$
 ^index\..*$
