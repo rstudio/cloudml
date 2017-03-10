@@ -1,0 +1,7 @@
+---
+title: "Cloud ML interface for R"
+site: cloudml:::docs_site
+---
+
+Home page
+

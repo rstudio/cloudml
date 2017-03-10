@@ -1,0 +1,6 @@
+---
+title: "Training Models with Cloud ML"
+---
+
+
+`cloudml_train()`

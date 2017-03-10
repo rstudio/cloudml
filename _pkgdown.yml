@@ -8,17 +8,17 @@ navbar:
   type: inverse
   left:
     - text: "Projects"
-      href: articles/projects.html
+      href: projects.html
     - text: "Training"
-      href: articles/training.html
+      href: training.html
     - text: "Tuning"
-      href: articles/tuning.html
+      href: tuning.html
     - text: "Prediction"
-      href: articles/prediction.html
+      href: prediction.html
     - text: "Jobs"
-      href: articles/jobs.html
+      href: jobs.html
     - text: "Reference"
-      href: "reference/index.html"
+      href: "reference.html"
   right:
    - icon: fa-github
      href: https://github.com/rstudio/cloudml

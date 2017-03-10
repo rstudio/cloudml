@@ -1,0 +1,8 @@
+---
+title: "Prediction with Cloud ML"
+---
+
+
+`local_predict()`
+
+

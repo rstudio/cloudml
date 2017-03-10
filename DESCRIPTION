@@ -14,13 +14,11 @@ Imports:
   withr,
   yaml,
   jsonlite
-Suggests:
-  knitr
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 6.0.1
 Remotes: rstudio/reticulate, rstudio/tensorflow
-VignetteBuilder: knitr
+
 
