@@ -43,12 +43,15 @@ scope_deployment <- function(application = getwd(), config) {
 
   # default excludes plus any additional excludes in the config file
   config <- cloudml::config(config = config)
-  exclude <- c("local", "jobs")
+  exclude <- c("local", "jobs", ".git", ".svn")
   exclude <- unique(c(exclude, config$exclude))
 
   # build deployment bundle
   deployment <- file.path(root, basename(application))
-  copy_directory(application, deployment, exclude = exclude)
+  copy_directory(application,
+                 deployment,
+                 exclude = exclude,
+                 include = config$include)
   defer(unlink(root, recursive = TRUE), envir = parent.frame())
   initialize_application(deployment)
 
