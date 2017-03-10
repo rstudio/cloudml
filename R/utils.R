@@ -37,10 +37,10 @@ copy_directory <- function(source,
   dir.create(target)
 
   # get the original top level file listing
-  all_files <- list.files(source, all.files = TRUE)
+  all_files <- list.files(source, all.files = TRUE, no.. = TRUE)
 
   # apply excludes to the top level listing
-  exclude <- c("^\\..*$", utils::glob2rx(exclude))
+  exclude <- utils::glob2rx(exclude)
   files <- all_files
   for (pattern in exclude)
     files <- files[!grepl(pattern, files)]
