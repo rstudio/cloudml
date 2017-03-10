@@ -20,7 +20,7 @@
 #'
 #' @seealso [job_describe()], [job_collect()], [job_cancel()]
 #'
-#' @examples \dontrun{
+#' @examples \donttest{
 #' library(cloudml)
 #' job <- cloudml_train()
 #' job_status(job)

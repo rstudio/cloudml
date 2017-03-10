@@ -23,7 +23,7 @@ Upload a TensorFlow application to Google Cloud, and use that application to
 train a model.
 }
 \examples{
-\dontrun{
+\donttest{
 library(cloudml)
 job <- cloudml_train()
 job_status(job)
