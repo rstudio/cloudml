@@ -177,9 +177,6 @@ $(document).ready(function () {
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
-  <a href="projects.html">Projects</a>
-</li>
-<li>
   <a href="training.html">Training</a>
 </li>
 <li>
@@ -187,6 +184,9 @@ $(document).ready(function () {
 </li>
 <li>
   <a href="prediction.html">Prediction</a>
+</li>
+<li>
+  <a href="projects.html">Projects</a>
 </li>
 <li>
   <a href="jobs.html">Jobs</a>
@@ -216,7 +216,128 @@ $(document).ready(function () {
 </div>
 
 
-<p><code>local_predict()</code></p>
+<style type="text/css">
+td code {
+  background-color: inherit !important;
+}
+td a {
+  text-decoration: none !important;
+}
+td a:hover {
+  text-decoration: underline !important;
+}
+tr td:first-child {
+  width: 30%;
+}
+</style>
+<div id="training-and-prediction" class="section level3">
+<h3>Training and Prediction</h3>
+<table>
+<thead>
+<tr class="header">
+<th>Function</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="reference/cloudml_train.html"><code>cloudml_train</code></a></td>
+<td>Train a model with Cloud ML</td>
+</tr>
+<tr class="even">
+<td><a href="reference/cloudml_tune.html"><code>cloudml_tune</code></a></td>
+<td>Tune hyperparameters with Cloud ML</td>
+</tr>
+<tr class="odd">
+<td><a href="reference/local_train.html"><code>local_train</code></a></td>
+<td>Train a model locally</td>
+</tr>
+<tr class="even">
+<td><a href="reference/local_predict.html"><code>local_predict</code></a></td>
+<td>Generate model predictions locally</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="cloud-ml-projects" class="section level3">
+<h3>Cloud ML Projects</h3>
+<table>
+<thead>
+<tr class="header">
+<th>Function</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="reference/project_config.html"><code>project_config</code></a></td>
+<td>Read the configuration for a project</td>
+</tr>
+<tr class="even">
+<td><a href="reference/unique_job_dir.html"><code>unique_job_dir</code></a></td>
+<td>Generate a unique job directory</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="cloud-ml-jobs" class="section level3">
+<h3>Cloud ML Jobs</h3>
+<table>
+<thead>
+<tr class="header">
+<th>Function</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="reference/job_list.html"><code>job_list</code></a></td>
+<td>List all Cloud ML jobs</td>
+</tr>
+<tr class="even">
+<td><a href="reference/job_collect.html"><code>job_collect</code></a></td>
+<td>Collect job output to a local directory</td>
+</tr>
+<tr class="odd">
+<td><a href="reference/job_status.html"><code>job_status</code></a></td>
+<td>Current status of a job</td>
+</tr>
+<tr class="even">
+<td><a href="reference/job_describe.html"><code>job_describe</code></a></td>
+<td>Describe a job</td>
+</tr>
+<tr class="odd">
+<td><a href="reference/job_stream.html"><code>job_stream</code></a></td>
+<td>Show log stream from a job</td>
+</tr>
+<tr class="even">
+<td><a href="reference/job_cancel.html"><code>job_cancel</code></a></td>
+<td>Cancel a running job</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="google-storage" class="section level3">
+<h3>Google Storage</h3>
+<table>
+<thead>
+<tr class="header">
+<th>Function</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="reference/gs_data.html"><code>gs_data</code></a></td>
+<td>Get a path to data within Google Storage</td>
+</tr>
+<tr class="even">
+<td><a href="reference/gs_copy.html"><code>gs_copy</code></a></td>
+<td>Copy files from Google Storage to the local system</td>
+</tr>
+</tbody>
+</table>
+</div>
 
 
 

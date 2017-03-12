@@ -3,6 +3,69 @@ title: "Function Reference"
 ---
 
 
-`local_predict()`
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+source("doc-utils.R")
+```
+
+```{css}
+td code {
+  background-color: inherit !important;
+}
+td a {
+  text-decoration: none !important;
+}
+td a:hover {
+  text-decoration: underline !important;
+}
+tr td:first-child {
+  width: 30%;
+}
+```
+
+
+### Training and Prediction
+
+| Function | Description  |
+|----------|------------------------------------------------------|
+```{r}
+ref("cloudml_train",  "Train a model with Cloud ML")
+ref("cloudml_tune",   "Tune hyperparameters with Cloud ML")
+ref("local_train",    "Train a model locally")
+ref("local_predict",  "Generate model predictions locally")
+```
+
+### Cloud ML Projects
+
+| Function | Description  |
+|----------|------------------------------------------------------|
+```{r}
+ref("project_config", "Read the configuration for a project")
+ref("unique_job_dir", "Generate a unique job directory")
+```
+
+
+### Cloud ML Jobs
+
+| Function | Description  |
+|----------|------------------------------------------------------|
+```{r}
+ref("job_list",       "List all Cloud ML jobs")
+ref("job_collect",    "Collect job output to a local directory")
+ref("job_status",     "Current status of a job")
+ref("job_describe",   "Describe a job")
+ref("job_stream",     "Show log stream from a job")
+ref("job_cancel",     "Cancel a running job")
+```
+
+### Google Storage
+
+| Function | Description  |
+|----------|------------------------------------------------------|
+```{r}
+ref("gs_data",        "Get a path to data within Google Storage")
+ref("gs_copy",        "Copy files from Google Storage to the local system")
+```
+
 
 

@@ -10,14 +10,14 @@ navbar:
   title: "Cloud ML interface for R"
   type: inverse
   left:
-    - text: "Projects"
-      href: projects.html
     - text: "Training"
       href: training.html
     - text: "Tuning"
       href: tuning.html
     - text: "Prediction"
       href: prediction.html
+    - text: "Projects"
+      href: projects.html
     - text: "Jobs"
       href: jobs.html
     - text: "Reference"

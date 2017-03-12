@@ -1,5 +1,13 @@
 
 
+ref <- function(name, desc) {
+  # | [`func`](reference/func.html) | My func |
+  knitr::asis_output(
+    paste0('| [`', name, '`](reference/', name, '.html) | ', desc, '|\n') 
+  )
+}
+
+
 docs_site_impl <- function (input, encoding = getOption("encoding"), ...) {
 
   # get the default site from rmarkdown
