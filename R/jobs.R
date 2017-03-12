@@ -119,7 +119,7 @@ cloudml_train <- function(application = getwd(),
 #'
 #' @inheritParams job_status
 #'
-#' @seealso [job_describe()], [job_collect()], [job_list()]
+#' @family job management
 #'
 #' @export
 job_cancel <- function(job) {
@@ -133,7 +133,12 @@ job_cancel <- function(job) {
   gexec(gcloud(), arguments())
 }
 
-#' @rdname job_status
+#' Describe a job
+#'
+#' @inheritParams job_status
+#'
+#' @family job management
+#'
 #' @export
 job_describe <- function(job) {
   job <- as.cloudml_job(job)
@@ -177,8 +182,6 @@ job_describe <- function(job) {
 #'
 #' @family job management
 #'
-#' @seealso [job_describe()], [job_collect()], [job_cancel()]
-#'
 #' @export
 job_list <- function(filter    = NULL,
                      limit     = NULL,
@@ -200,7 +203,24 @@ job_list <- function(filter    = NULL,
 }
 
 
-#' @rdname job_status
+#' Show job log stream
+#'
+#' Show logs from a running Cloud ML Engine job.
+#'
+#' @inheritParams job_status
+#'
+#' @param polling_interval
+#'   Number of seconds to wait between efforts to fetch the
+#'   latest log messages.
+#'
+#' @param task_name
+#'   If set, display only the logs for this particular task.
+#'
+#' @param allow_multiline_logs
+#'   Output multiline log messages as single records.
+#'
+#' @family job management
+#'
 #' @export
 job_stream <- function(job,
                        polling_interval = 60,
@@ -222,21 +242,13 @@ job_stream <- function(job,
   gexec(gcloud(), arguments())
 }
 
-#' Get job information
+#' Current status of a job
 #'
-#' Get detailed information on a job and it's status. Stream
-#' the log of a running job.
+#' Get the status of a job, as an \R list.
 #'
-#' @param job
-#'   Either a `cloudml_job` object as returned by [cloudml_train()],
-#'   or the name of a job.
-#' @param polling_interval Polling interval for streamed output.
-#' @param task_name
-#'   If set, display only the logs for this particular task.
-#' @param allow_multiline_logs
-#'   Output multiline log messages as single records.
+#' @param job Job name or job object.
 #'
-#' @seealso [job_collect()], [job_cancel()], [job_list()]
+#' @family job management
 #'
 #' @export
 job_status <- function(job) {
@@ -266,7 +278,7 @@ job_status <- function(job) {
 #'   The destination directory in which model outputs should
 #'   be downloaded. Defaults to `jobs/cloudml`.
 #'
-#' @seealso [job_describe()], [job_cancel()], [job_list()]
+#' @family job management
 #'
 #' @export
 job_collect <- function(job, destination = "jobs/cloudml") {
