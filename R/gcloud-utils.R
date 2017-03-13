@@ -59,6 +59,23 @@ scope_deployment <- function(application = getwd(), config) {
   owd <- setwd(deployment)
   defer(setwd(owd), envir = parent.frame())
 
+  # use packrat for deployment when specified
+  if (isTRUE(config$packrat_enabled)) {
+
+    # ignore 'cloudml' for now since it will usually be
+    # installed from source and we'll want to just reinstall
+    # from github anyhow -- we can probably change this later
+    packrat::opts$ignored.packages("cloudml")
+
+    packrat::.snapshotImpl(
+      project = getwd(),
+      ignore.stale = TRUE,
+      prompt = FALSE,
+      snapshot.sources = FALSE,
+      verbose = FALSE
+    )
+  }
+
   # return normalized application path
   deployment
 }
@@ -66,12 +83,12 @@ scope_deployment <- function(application = getwd(), config) {
 write_hypertune <- function(application, overlay) {
 
   if (is.null(overlay$hypertune))
-    return(FALSE)
+    return(overlay)
 
   # attempt to discover user's hyperparameters file
   hypertune <- file.path(application, overlay$hypertune)
   if (!file.exists(hypertune))
-    return(FALSE)
+    return(overlay)
 
   hyperparameters <- yaml::yaml.load_file(hypertune)
 

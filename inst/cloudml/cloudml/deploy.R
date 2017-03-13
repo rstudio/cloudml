@@ -33,6 +33,22 @@ if (nzchar(Sys.which("curl"))) {
   options(repos = c(CRAN = "http://cran.rstudio.com"))
 }
 
+# source a file 'dependencies.R', if it exists
+if (file.exists("dependencies.R"))
+  source("dependencies.R")
+
+# attempt to restore using a packrat lockfile
+if (file.exists("packrat/packrat.lock")) {
+
+  # ensure packrat is installed
+  if (!"packrat" %in% rownames(installed.packages()))
+    install.packages("packrat")
+
+  # attempt a project restore
+  packrat::restore()
+  packrat::on()
+}
+
 # discover available R packages
 installed <- rownames(installed.packages())
 
@@ -64,21 +80,6 @@ Sys.setenv(CLOUDML_EXECUTION_ENVIRONMENT = environment)
 if (file.exists("cloudml/overlay.rds")) {
   overlay <- readRDS("cloudml/overlay.rds")
   cloudml:::set_overlay(overlay)
-}
-
-# source a file 'dependencies.R', if it exists
-if (file.exists("dependencies.R"))
-  source("dependencies.R")
-
-# attempt to restore using a packrat lockfile
-if (file.exists("packrat/packrat.lock")) {
-
-  # ensure packrat installed
-  if (!"packrat" %in% installed)
-    install.packages("packrat")
-
-  # attempt a project restore
-  packrat::restore()
 }
 
 # source entrypoint
