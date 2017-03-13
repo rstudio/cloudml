@@ -8,23 +8,8 @@ knitr::opts_chunk$set(echo = FALSE)
 source("doc-utils.R")
 ```
 
-```{css}
-td code {
-  background-color: inherit !important;
-}
-td a {
-  text-decoration: none !important;
-}
-td a:hover {
-  text-decoration: underline !important;
-}
-tr td:first-child {
-  width: 30%;
-}
-```
 
-
-### Training and Prediction
+### Training and Prediction {.reference}
 
 | Function | Description  |
 |----------|------------------------------------------------------|
@@ -35,7 +20,7 @@ ref("local_train",    "Train a model locally")
 ref("local_predict",  "Generate model predictions locally")
 ```
 
-### Cloud ML Projects
+### Cloud ML Projects  {.reference}
 
 | Function | Description  |
 |----------|------------------------------------------------------|
@@ -45,7 +30,7 @@ ref("unique_job_dir", "Generate a unique job directory")
 ```
 
 
-### Cloud ML Jobs
+### Cloud ML Jobs  {.reference}
 
 | Function | Description  |
 |----------|------------------------------------------------------|
@@ -58,7 +43,7 @@ ref("job_stream",     "Show log stream from a job")
 ref("job_cancel",     "Cancel a running job")
 ```
 
-### Google Storage
+### Google Storage  {.reference}
 
 | Function | Description  |
 |----------|------------------------------------------------------|

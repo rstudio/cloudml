@@ -5,6 +5,7 @@ output_dir: "."
 output:
   html_document:
     theme: cosmo
+    css: styles.css
 
 navbar:
   title: "Cloud ML interface for R"

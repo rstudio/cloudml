@@ -1,0 +1,14 @@
+
+.reference td code {
+  background-color: inherit !important;
+}
+.reference td a {
+  text-decoration: none !important;
+}
+.reference td a:hover {
+  text-decoration: underline !important;
+}
+.reference tr td:first-child {
+  width: 30%;
+}
+
