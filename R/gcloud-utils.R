@@ -13,6 +13,22 @@ initialize_application <- function(application = getwd()) {
     "cloudml"
   )
 
+  # use packrat for deployment when specified
+  if (isTRUE(config$packrat_enabled)) {
+
+    # ignore 'cloudml' for now since it will usually be
+    # installed from source and we'll want to just reinstall
+    # from github anyhow -- we can probably change this later
+    packrat::opts$ignored.packages("cloudml")
+    packrat::.snapshotImpl(
+      project = getwd(),
+      ignore.stale = TRUE,
+      prompt = FALSE,
+      snapshot.sources = FALSE,
+      verbose = FALSE
+    )
+  }
+
   # ensure sub-directories contain an '__init__.py'
   # script, so that they're all included in tarball
   dirs <- list.dirs(application)
@@ -58,23 +74,6 @@ scope_deployment <- function(application = getwd(), config) {
   # move to application path
   owd <- setwd(deployment)
   defer(setwd(owd), envir = parent.frame())
-
-  # use packrat for deployment when specified
-  if (isTRUE(config$packrat_enabled)) {
-
-    # ignore 'cloudml' for now since it will usually be
-    # installed from source and we'll want to just reinstall
-    # from github anyhow -- we can probably change this later
-    packrat::opts$ignored.packages("cloudml")
-
-    packrat::.snapshotImpl(
-      project = getwd(),
-      ignore.stale = TRUE,
-      prompt = FALSE,
-      snapshot.sources = FALSE,
-      verbose = FALSE
-    )
-  }
 
   # return normalized application path
   deployment
