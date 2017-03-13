@@ -21,6 +21,13 @@
    - Hybrid where packrat auto-generates dependencies.R (but still allows
      the user to provide their own hand edited dependencies.R)
 
+### Jobs API
+
+- Can we consolidate job_status and job_describe (perhaps just call it job_describe)
+
+- Could we rename job_stream to job_log?
+
+
 ### API 
 
 - Consider whether we should use the REST API for Google Cloud rather
