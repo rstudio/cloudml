@@ -2,6 +2,7 @@
 ## JJ
  
 - Documentation on using the package
+  (https://cloud.google.com/ml-engine/docs/)
 
 ## Kevin
 
