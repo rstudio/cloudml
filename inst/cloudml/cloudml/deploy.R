@@ -77,10 +77,16 @@ Sys.setenv(R_CONFIG_ACTIVE = config)
 Sys.setenv(CLOUDML_EXECUTION_ENVIRONMENT = environment)
 
 # read config overlay if available
-if (file.exists("cloudml/overlay.rds")) {
+overlay <- list()
+if (file.exists("cloudml/overlay.rds"))
   overlay <- readRDS("cloudml/overlay.rds")
-  cloudml:::set_overlay(overlay)
-}
+
+# merge in command line arguments (these can be provided
+# during e.g. hyperparameter tuning)
+overlay <- config::merge(overlay, arguments)
+
+# set the active overlay
+cloudml:::set_overlay(overlay)
 
 # source entrypoint
 source(entrypoint, echo = TRUE)
