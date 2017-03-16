@@ -152,41 +152,24 @@ scope_dir <- function(dir) {
 # that the tensorflow package will bind to
 gexec <- function(command, args = character(), stdout = "", stderr = "", ...) {
 
-  # exec function
-  exec <- function() {
+  # execute command
+  result <- system2(command, args, stdout, stderr, ...)
 
-    # execute command
-    result <- system2(command, args, stdout, stderr, ...)
-
-    # check for errors given different return value conventions
-    if (isTRUE(stdout) || isTRUE(stderr)) {
-      status <- attr(result, "status")
-      if (!is.null(status)) {
-        errmsg <- attr(result, "errmsg")
-        if (is.null(errmsg))
-          errmsg <- paste0("Error ", status, " occurred running command ", command)
-        stop(errmsg)
-      }
-    } else if (result != 0) {
-      stop("Error ", result, " occurred running command ", command)
+  # check for errors given different return value conventions
+  if (isTRUE(stdout) || isTRUE(stderr)) {
+    status <- attr(result, "status")
+    if (!is.null(status)) {
+      errmsg <- attr(result, "errmsg")
+      if (is.null(errmsg))
+        errmsg <- paste0("Error ", status, " occurred running command ", command)
+      stop(errmsg)
     }
-
-    # return result
-    result
+  } else if (result != 0) {
+    stop("Error ", result, " occurred running command ", command)
   }
 
-  # import tensorflow so that we figure out where that version of python lives
-  tf <- tryCatch(reticulate::import("tensorflow"), error = function(e) NULL)
-  if (!is.null(tf)) {
-    # get the directory
-    python_dir <- dirname(reticulate::py_config()$python)
-
-    # append that to the PATH as an extra version of Python to bind to
-    # if no other suitable ones are found
-    withr::with_path(new = python_dir, action = "suffix", exec())
-  } else {
-    exec()
-  }
+  # return result
+  result
 }
 
 enumerate <- function(X, FUN, ...) {
