@@ -12,7 +12,8 @@ Imports:
   tensorflow,
   withr,
   yaml,
-  jsonlite
+  jsonlite,
+  packrat
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
