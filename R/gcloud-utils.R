@@ -1,6 +1,8 @@
 # initialize an application such that it can be easily
 # deployed on gcloud
-initialize_application <- function(application = getwd()) {
+initialize_application <- function(application = getwd(),
+                                   config)
+{
   application <- normalizePath(application, winslash = "/", mustWork = TRUE)
   scope_dir(application)
 
@@ -69,7 +71,7 @@ scope_deployment <- function(application = getwd(), config) {
                  exclude = exclude,
                  include = config$include)
   defer(unlink(root, recursive = TRUE), envir = parent.frame())
-  initialize_application(deployment)
+  initialize_application(deployment, config)
 
   # move to application path
   owd <- setwd(deployment)
