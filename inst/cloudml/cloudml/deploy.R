@@ -1,6 +1,16 @@
+
 # required R packages
-CRAN <- c("RCurl", "devtools")
-GITHUB <- c("rstudio/tensorflow", "rstudio/cloudml")
+CRAN <- c(
+  "Rcpp",
+  "yaml"
+)
+
+GITHUB <- c(
+  "rstudio/config",
+  "rstudio/reticulate",
+  "rstudio/tensorflow",
+  "rstudio/cloudml"
+)
 
 # save repository + download methods
 repos <- getOption("repos")
@@ -63,7 +73,8 @@ for (pkg in CRAN) {
 for (uri in GITHUB) {
   if (basename(uri) %in% installed)
     next
-  devtools::install_github(uri)
+
+  cloudml:::install_github(uri)
 }
 
 # extract command line arguments
