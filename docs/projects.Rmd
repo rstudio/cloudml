@@ -1,31 +1,12 @@
 ---
-title: "Using Cloud ML Projects"
+title: "Cloud ML Projects"
+output:
+  html_document:
+    toc: true
+    toc_float:
+      collapsed: false
 ---
 
 ```{r setup, include=FALSE}
 source("doc-utils.R")
 ```
-
-## Project Workflow
-
-The **cloudml** package has some built in tools and recommended conventions around managing workflow between local development and cloud training. Here are the basics (more details will be provied below):
-
-1. Select or create a [Google Cloud Platform Project](https://cloud.google.com/resource-manager/docs/creating-managing-projects) for your application.
-
-2. Create a local R project that is configured for use with the cloud project (you can do this via the `r ref("project_create")` function). This project will have at a minimum the following two files:
-
-     - `train.R` --- An R script where all the code for training your model will go.
-     - `config.yml` --- A YAML configuration file which includes settings for data sources, training parameters, etc. 
-
-    The config file will include "default" settings for local development as well as "cloudml" settings for running in the cloud. By reading the config file within `train.R` you can ensure that your code does not need to change when you move from local development to running in the cloud. 
-
-3. Work on your model locally by executing the code within `train.R` as you normally would for any R script.
-
-4. Once you are ready to train in the cloud, do a local dry run using the `r ref("local_train")` function.
-
-5. Create a Cloud ML training job using the `r ref("cloudml_train")` function.
-
-6. Collect the results of the job (e.g. the exported model) using the `r ref("job_collect")` function.
-
-
-
