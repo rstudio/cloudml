@@ -1,9 +1,11 @@
 
 
-ref <- function(name, desc) {
+ref <- function(name, desc = NULL, table = !is.null(desc)) {
   # | [`func`](reference/func.html) | My func |
+  table <- ifelse(table, "| ", "")
+  desc <- paste(desc, table)
   knitr::asis_output(
-    paste0('| [`', name, '`](reference/', name, '.html) | ', desc, '|\n') 
+    paste0(table, '[`', name, '`](reference/', name, '.html)', table, desc, '\n') 
   )
 }
 

@@ -4,7 +4,7 @@
 
 <head>
 
-<meta charset="utf-8" />
+<meta charset="utf-8">
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="generator" content="pandoc" />
 
@@ -178,6 +178,9 @@ $(document).ready(function () {
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
+  <a href="projects.html">Projects</a>
+</li>
+<li>
   <a href="training.html">Training</a>
 </li>
 <li>
@@ -185,9 +188,6 @@ $(document).ready(function () {
 </li>
 <li>
   <a href="prediction.html">Prediction</a>
-</li>
-<li>
-  <a href="projects.html">Projects</a>
 </li>
 <li>
   <a href="jobs.html">Jobs</a>
@@ -217,7 +217,23 @@ $(document).ready(function () {
 </div>
 
 
-<p><code>project_config()</code></p>
+<div id="project-workflow" class="section level2">
+<h2>Project Workflow</h2>
+<p>The <strong>cloudml</strong> package has some built in tools and recommended conventions around managing workflow between local development and cloud training. Here are the basics (more details will be provied below):</p>
+<ol style="list-style-type: decimal">
+<li><p>Select or create a <a href="https://cloud.google.com/resource-manager/docs/creating-managing-projects">Google Cloud Platform Project</a> for your application.</p></li>
+<li><p>Create a local R project that is configured for use with the cloud project (you can do this via the <a href="reference/project_create.html"><code>project_create</code></a> function). This project will have at a minimum the following 2 files:</p>
+<ul>
+<li><code>train.R</code> — An R script where all the code for training your model will go.</li>
+<li><code>config.yml</code> — A YAML configuration file which includes settings for data sources, training parameters, etc.</li>
+</ul>
+<p>The config file will include “default” settings for local development as well as “cloudml” settings for running in the cloud. By reading the config file within <code>train.R</code> you can ensure that your code does not need to change when you move from local development to running in the cloud.</p></li>
+<li><p>Work on your model locally by executing the code within <code>train.R</code> as you normally would for any R script.</p></li>
+<li><p>Once you are ready to train in the cloud, do a local dry run using the <a href="reference/local_train.html"><code>local_train</code></a> function.</p></li>
+<li><p>Create a Cloud ML training job using the <a href="reference/cloudml_train.html"><code>cloudml_train</code></a> function.</p></li>
+<li><p>Collect the results of the job (e.g. the exported model) using the <a href="reference/job_collect.html"><code>job_collect</code></a> function.</p></li>
+</ol>
+</div>
 
 
 
