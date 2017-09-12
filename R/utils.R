@@ -208,3 +208,9 @@ scope_setup_py <- function(application,
   setup.py <- normalizePath("setup.py")
   defer(unlink(setup.py), envir = parent.frame())
 }
+
+as_aliased_path <- function(path) {
+  home <- gsub("/$", "", path.expand("~/"))
+  pattern <- paste0("^", home)
+  sub(pattern, "~", path)
+}
