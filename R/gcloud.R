@@ -130,9 +130,14 @@ is_gs_uri <- function(file) {
   is.character(file) && grepl("^gs://.+$", file)
 }
 
-gcloud_config <- function() {
+gcloud_config <- function(path = getwd()) {
 
-  file <- rprojroot::find_root_file("gcloud.yml", criterion = "gcloud.yml")
+  file <- rprojroot::find_root_file(
+    "gcloud.yml",
+    criterion = "gcloud.yml",
+    path = path
+  )
+
   config <- yaml::yaml.load_file(file)
 
   for (field in c("project", "account")) {

@@ -73,9 +73,15 @@ scope_deployment <- function(application = getwd(), config) {
   defer(unlink(root, recursive = TRUE), envir = parent.frame())
   initialize_application(deployment, config)
 
+  envir <- parent.frame()
+
+  # set application directory as active directory
+  Sys.setenv(CLOUDML_APPLICATION_DIR = application)
+  defer(Sys.unsetenv("CLOUDML_APPLICATION_DIR"), envir = envir)
+
   # move to application path
   owd <- setwd(deployment)
-  defer(setwd(owd), envir = parent.frame())
+  defer(setwd(owd), envir = envir)
 
   # return normalized application path
   deployment

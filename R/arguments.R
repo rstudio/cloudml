@@ -31,8 +31,11 @@ ShellArgumentsBuilder <- function() {
     invisible(builder)
   }
 
+  # discover active application directory
+  path <- Sys.getenv("CLOUDML_APPLICATION_DIR", unset = getwd())
+
   # prepend project + account information
-  conf <- gcloud_config()
+  conf <- gcloud_config(path = path)
   (builder
     ("--project")
     (conf$project)
