@@ -53,7 +53,6 @@ cloudml_train <- function(application = getwd(),
                 ("submit")
                 ("training")
                 (overlay$job_name)
-                ("--async")
                 ("--package-path=%s", basename(application))
                 ("--module-name=%s.cloudml.deploy", basename(application))
                 ("--job-dir=%s", overlay$job_dir)
