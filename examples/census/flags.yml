@@ -1,0 +1,12 @@
+cloudml:
+
+  # Inputs
+  eval_file                : "gs://cloudml-public/census/data/adult.test.csv"
+  train_file               : "gs://cloudml-public/census/data/adult.data.csv"
+
+  # Outputs
+  job_output               : "gs://rstudio-cloudml-demo-ml/census/jobs"
+
+  # Training parameter overrides
+  eval_batch_size          : 100
+  train_batch_size         : 100

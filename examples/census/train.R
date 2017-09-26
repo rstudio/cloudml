@@ -9,6 +9,25 @@ learn_runner             <- learn$python$learn$learn_runner
 saved_model_export_utils <- learn$python$learn$utils$saved_model_export_utils
 
 # read application config and resolve data files
+FLAGS <- flags(
+
+  flag_string("train_file", "gs://cloudml-public/census/data/adult.data.csv"),
+  flag_string("eval_file", "gs://cloudml-public/census/data/adult.test.csv"),
+
+  flag_numeric("estimator_embedding_size", 8),
+  flag_numeric("estimator_hidden_units", c(100, 70, 50, 25)),
+
+  flag_numeric("eval_num_epochs", 10),
+  flag_numeric("eval_batch_size", 40),
+  flag_numeric("eval_delay_secs", 10),
+  flag_numeric("eval_steps", 100),
+
+  flag_numeric("train_num_epcohs", 10),
+  flag_numeric("train_batch_size", 40),
+  flag_numeric("train_steps", 10)
+
+)
+
 config <- cloudml::project_config()
 
 # define estimator
