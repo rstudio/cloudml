@@ -42,11 +42,8 @@ initialize_application <- function(application = getwd(),
 }
 
 validate_application <- function(application) {
-  # bail if this doesn't look like a cloudml TensorFlow application
-  if (!file.exists(file.path(application,"config.yml"))) {
-    fmt <- "'%s' appears not to be a Cloud ML application (missing config.yml)"
-    stopf(fmt, application, call. = FALSE)
-  }
+  # TODO: what checks should we perform here?
+  TRUE
 }
 
 scope_deployment <- function(application = getwd(), config) {

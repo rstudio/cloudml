@@ -17,7 +17,7 @@ project_config <- function(config = NULL, local_gs = "gs") {
   config <- config %||% active
 
   # read the config file
-  config <- config::get(config = active, file = "config.yml")
+  config <- config::get(config = active, file = "flags.yml")
 
   # merge overlay
   config <- config::merge(config, .globals$overlay)
