@@ -1,12 +1,4 @@
-library(tensorflow)
-tf$logging$set_verbosity(tf$logging$INFO)
-
-`%||%` <- function(x, y) if (is.null(x)) y else x
-
-# Extract often-used layer components
-layers         <- tf$contrib$layers
-learn          <- tf$contrib$learn
-input_fn_utils <- tf$contrib$learn$python$learn$utils$input_fn_utils
+library(tfestimators)
 
 CSV_COLUMNS <- c(
   "age", "workclass", "fnlwgt", "education", "education_num",
@@ -22,16 +14,19 @@ DEFAULTS <- lapply(
   list
 )
 
-INPUT_COLUMNS <- list(
+FEATURE_COLUMNS <- feature_columns(
 
-  gender = layers$sparse_column_with_keys(
-    column_name = "gender",
-    keys = c("female", "male")
+  gender = column_categorical_with_vocabulary_list(
+    "gender",
+    vocabulary_list = c(
+      "Female",
+      "Male"
+    )
   ),
 
-  race = layers$sparse_column_with_keys(
-    column_name = "race",
-    keys = c(
+  race = column_categorical_with_vocabulary_list(
+    "race",
+    vocabulary_list = c(
       "Amer-Indian-Eskimo",
       "Asian-Pac-Islander",
       "Black",
@@ -40,49 +35,49 @@ INPUT_COLUMNS <- list(
     )
   ),
 
-  education      = layers$sparse_column_with_hash_bucket("education", 1000L),
-  marital_status = layers$sparse_column_with_hash_bucket("marital_status", 100L),
-  relationship   = layers$sparse_column_with_hash_bucket("relationship", 100L),
-  workclass      = layers$sparse_column_with_hash_bucket("workclass", 100L),
-  occupation     = layers$sparse_column_with_hash_bucket("occupation", 1000L),
-  native_country = layers$sparse_column_with_hash_bucket("native_country", 1000L),
+  education = column_categorical_with_hash_bucket("education", hash_bucket_size = 1000L),
+  marital_status = column_categorical_with_hash_bucket("marital_status", hash_bucket_size = 100L),
+  relationship = column_categorical_with_hash_bucket("relationship", hash_bucket_size = 100L),
+  workclass = column_categorical_with_hash_bucket("workclass", hash_bucket_size = 100L),
+  occupation = column_categorical_with_hash_bucket("occupation", hash_bucket_size = 1000L),
+  native_country = column_categorical_with_hash_bucket("native_country", hash_bucket_size = 1000L),
 
-  # Continuous base columns.
-  age            = layers$real_valued_column("age"),
-  education_num  = layers$real_valued_column("education_num"),
-  capital_gain   = layers$real_valued_column("capital_gain"),
-  capital_loss   = layers$real_valued_column("capital_loss"),
-  hours_per_week = layers$real_valued_column("hours_per_week")
+  age = column_numeric("age"),
+  education_num = column_numeric("education_num"),
+  capital_gain = column_numeric("capital_gain"),
+  capital_loss = column_numeric("capital_loss"),
+  hours_per_week = column_numeric("hours_per_week")
+
 )
 
-build_estimator <- function(model_dir,
-                            embedding_size = 8L,
+build_estimator <- function(embedding_size = 8L,
                             hidden_units = NULL)
 {
-  # Attach input columns (for easy access)
-  list2env(INPUT_COLUMNS, envir = environment())
+  list2env(FEATURE_COLUMNS, envir = environment())
 
-  age_buckets <- layers$bucketized_column(
+  age_buckets <- column_bucketized(
     age,
     boundaries = c(18, 25, 30, 35, 40, 45, 50, 55, 60, 65)
   )
 
-  wide_columns <- list(
+  linear_feature_columns <- list(
 
-    layers$crossed_column(
-      list(education, occupation),
+    column_crossed(
+      list("education", "occupation"),
       hash_bucket_size = 1E4L
     ),
 
-    layers$crossed_column(
-      list(age_buckets, race, occupation),
+    column_crossed(
+      list(age_buckets, "race", "occupation"),
       hash_bucket_size = 1E6L
     ),
 
-    layers$crossed_column(
-      list(native_country, occupation),
+    column_crossed(
+      list("native_country", "occupation"),
       hash_bucket_size = 1E4L
     ),
+
+    age_buckets,
 
     gender,
     native_country,
@@ -90,19 +85,19 @@ build_estimator <- function(model_dir,
     occupation,
     workclass,
     marital_status,
-    relationship,
-    age_buckets
+    relationship
+
   )
 
-  deep_columns <- list(
-    layers$embedding_column(workclass, dimension = embedding_size),
-    layers$embedding_column(education, dimension = embedding_size),
-    layers$embedding_column(marital_status, dimension = embedding_size),
-    layers$embedding_column(gender, dimension = embedding_size),
-    layers$embedding_column(relationship, dimension = embedding_size),
-    layers$embedding_column(race, dimension = embedding_size),
-    layers$embedding_column(native_country, dimension = embedding_size),
-    layers$embedding_column(occupation, dimension = embedding_size),
+  dnn_feature_columns <- list(
+    column_embedding(workclass, dimension = embedding_size),
+    column_embedding(education, dimension = embedding_size),
+    column_embedding(marital_status, dimension = embedding_size),
+    column_embedding(gender, dimension = embedding_size),
+    column_embedding(relationship, dimension = embedding_size),
+    column_embedding(race, dimension = embedding_size),
+    column_embedding(native_country, dimension = embedding_size),
+    column_embedding(occupation, dimension = embedding_size),
     age,
     education_num,
     capital_gain,
@@ -110,123 +105,10 @@ build_estimator <- function(model_dir,
     hours_per_week
   )
 
-  learn$DNNLinearCombinedClassifier(
-    model_dir = model_dir,
-    linear_feature_columns = wide_columns,
-    dnn_feature_columns = deep_columns,
-    dnn_hidden_units = hidden_units %||% c(100L, 70L, 50L, 25L)
+  dnn_linear_combined_classifier(
+    linear_feature_columns = linear_feature_columns,
+    dnn_feature_columns = dnn_feature_columns,
+    dnn_hidden_units = hidden_units
   )
 }
 
-is_sparse <- function(column) {
-  inherits(column, "tensorflow.contrib.layers.python.layers.feature_column._SparseColumn")
-}
-
-feature_columns_to_placeholders <- function(feature_columns,
-                                            default_batch_size = NULL)
-{
-  # create a dictionary mapping feature column names to placeholders
-  placeholders <- lapply(feature_columns, function(column) {
-    tf$placeholder(
-      if (is_sparse(column)) tf$string else tf$float32,
-      list(default_batch_size)
-    )
-  })
-
-  keys <- vapply(feature_columns, function(column) {
-    column$name
-  }, character(1))
-
-  names(placeholders) <- keys
-
-  placeholders
-}
-
-serving_input_fn <- function() {
-
-  feature_placeholders <- feature_columns_to_placeholders(INPUT_COLUMNS)
-
-  features <- lapply(feature_placeholders, function(tensor) {
-    tf$expand_dims(tensor, -1L)
-  })
-
-  input_fn_utils$InputFnOps(
-    features,
-    NULL,
-    feature_placeholders
-  )
-}
-
-generate_input_fn <- function(filename,
-                              num_epochs = NULL,
-                              batch_size = 40L)
-{
-  input_fn <- function() {
-
-    filename_queue <- tf$train$string_input_producer(
-      list(filename),
-      num_epochs = num_epochs
-    )
-
-    reader <- tf$TextLineReader()
-    tensors <- reader$read_up_to(filename_queue, num_records = batch_size)
-    value_column <- tf$expand_dims(tensors$values, -1L)
-
-    columns <- tf$decode_csv(value_column, record_defaults = DEFAULTS)
-    names(columns) <- CSV_COLUMNS
-    features <- columns
-
-    features$fnlwgt <- NULL
-    income_int <- tf$to_int32(tf$equal(features[[LABEL_COLUMN]], " >50K"))
-    list(features, income_int)
-  }
-
-  input_fn
-}
-
-# generate input function for predictions (request only 1 epoch
-# so we just get one round of predictions)
-predict_input_fn <- function(filename, batch_size = 10L) {
-  generate_input_fn(filename,
-                    num_epochs = 1L,
-                    batch_size = batch_size)
-}
-
-generate_experiment_fn <- function(estimator, config) {
-  list(estimator, config)
-  function(output_dir) {
-    train_input <- generate_input_fn(
-      filename   = config$train_file,
-      num_epochs = config$train_num_epochs,
-      batch_size = config$train_batch_size
-    )
-
-    eval_input <- generate_input_fn(
-      filename   = config$eval_file,
-      num_epochs = config$eval_num_epochs,
-      batch_size = config$eval_batch_size
-    )
-
-    learn$Experiment(
-
-      estimator,
-      train_input_fn = train_input,
-      eval_input_fn = eval_input,
-
-      eval_metrics = list(
-        "training/hptuning/metric" = learn$MetricSpec(
-          metric_fn = metrics$streaming_accuracy,
-          prediction_key = "logits"
-        )
-      ),
-
-      export_strategies = list(
-        saved_model_export_utils$make_export_strategy(
-          serving_input_fn,
-          default_output_alternative_key = NULL,
-          exports_to_keep = 1L
-        )
-      )
-    )
-  }
-}

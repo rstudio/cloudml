@@ -1,17 +1,11 @@
 library(tensorflow)
+library(tfestimators)
 
 source("model.R")
 
-# define some aliases for commonly-used modules
-learn                    <- tf$contrib$learn
-metrics                  <- tf$contrib$metrics
-learn_runner             <- learn$python$learn$learn_runner
-saved_model_export_utils <- learn$python$learn$utils$saved_model_export_utils
-
-# read application config and resolve data files
+# read in flags
 FLAGS <- flags(
 
-  flag_string("job_dir", tfruns::run_dir()),
   flag_string("train_file", "gs://cloudml-public/census/data/adult.data.csv"),
   flag_string("eval_file", "gs://cloudml-public/census/data/adult.test.csv"),
 
@@ -31,21 +25,26 @@ FLAGS <- flags(
 
 # define estimator
 estimator <- build_estimator(
-  model_dir      = FLAGS$job_dir,
   embedding_size = FLAGS$estimator_embedding_size,
   hidden_units   = FLAGS$estimator_hidden_units
 )
 
-# run the experiment
-experiment_fn <- generate_experiment_fn(estimator, FLAGS)
-result <- learn_runner$run(experiment_fn, FLAGS$job_dir)
+# define input function
+train_file <- cloudml::gs_data(FLAGS$train_file)
+train_data <- readr::read_csv(
+  train_file,
+  col_names = CSV_COLUMNS,
+  trim_ws = TRUE,
+  progress = FALSE
+)
 
-# extract generated artifacts
-parameters <- result[[1]]
-exports <- result[[2]]
+# tensorflow doesn't like string inputs?
+train_data$income_bracket <- as.integer(as.factor(train_data$income_bracket)) - 1L
 
-# print results
-print(parameters)
-print(exports)
+train_input_fn <- input_fn(
+  train_data,
+  response = LABEL_COLUMN,
+  features = setdiff(names(train_data), LABEL_COLUMN)
+)
 
-
+train(estimator, input_fn = train_input_fn)
