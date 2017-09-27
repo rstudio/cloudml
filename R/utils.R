@@ -148,28 +148,67 @@ scope_dir <- function(dir) {
   defer(setwd(owd), parent.frame())
 }
 
-# wrapper for system2 that ensure we are using the same version of Python
-# that the tensorflow package will bind to
-gexec <- function(command, args = character(), stdout = "", stderr = "", ...) {
+# execute a shell command in a separate terminal
+gexec_terminal <- function(command,
+                           args = character(),
+                           ...)
+{
+  # retrieve terminal manager
+  terminal <- getOption("terminal.manager")
+  if (is.null(terminal))
+    stop("no terminal manager is registered")
 
-  # execute command
-  result <- system2(command, args, stdout, stderr, ...)
 
-  # check for errors given different return value conventions
-  if (isTRUE(stdout) || isTRUE(stderr)) {
-    status <- attr(result, "status")
-    if (!is.null(status)) {
-      errmsg <- attr(result, "errmsg")
-      if (is.null(errmsg))
-        errmsg <- paste0("Error ", status, " occurred running command ", command)
-      stop(errmsg)
-    }
-  } else if (result != 0) {
-    stop("Error ", result, " occurred running command ", command)
+  # paste command together (shell-quoting arguments as needed)
+  pasted <- paste(
+    shell_quote(command),
+    paste(shell_quote(args), collapse = " ")
+  )
+
+  terminal$terminalExecute(pasted)
+  terminal$terminalExecute
+}
+
+# execute a gcloud command using processx
+gexec <- function(command, args = character()) {
+
+  p <- processx::process$new(
+    command = command,
+    args = args,
+    stdout = "|",
+    stderr = "|"
+  )
+
+  p$wait()
+
+  stdout <- p$read_all_output_lines()
+  stderr <- p$read_all_error_lines()
+
+  if (p$get_exit_status() != 0) {
+
+    full <- paste(
+      shell_quote(command),
+      paste(shell_quote(args), collapse = " ")
+    )
+
+    # report all output to user, or just error?
+    output <- c(
+      sprintf("call to '%s' failed!", full),
+      "",
+      "[stdout]",
+      if (length(stdout)) stdout else "<no output available>",
+      "",
+      "[stderr]",
+      if (length(stderr)) stderr else "<no output available>",
+      "",
+      ""
+    )
+
+    message <- paste(output, collapse = "\n")
+    stop(message)
   }
 
-  # return result
-  result
+  TRUE
 }
 
 enumerate <- function(X, FUN, ...) {
@@ -213,4 +252,10 @@ as_aliased_path <- function(path) {
   home <- gsub("/$", "", path.expand("~/"))
   pattern <- paste0("^", home)
   sub(pattern, "~", path)
+}
+
+shell_quote <- function(arguments) {
+  ascii <- grepl("^[[:alnum:]_-]*$", arguments)
+  arguments[!ascii] <- shQuote(arguments[!ascii])
+  arguments
 }
