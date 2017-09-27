@@ -160,13 +160,9 @@ gexec_terminal <- function(command,
 
 
   # paste command together (shell-quoting arguments as needed)
-  pasted <- paste(
-    shell_quote(command),
-    paste(shell_quote(args), collapse = " ")
-  )
-
-  terminal$terminalExecute(pasted)
-  terminal$terminalExecute
+  pasted <- shell_paste(command, args)
+  id <- terminal$terminalExecute(pasted)
+  invisible(id)
 }
 
 # execute a gcloud command using processx
@@ -186,10 +182,7 @@ gexec <- function(command, args = character()) {
 
   if (p$get_exit_status() != 0) {
 
-    full <- paste(
-      shell_quote(command),
-      paste(shell_quote(args), collapse = " ")
-    )
+    full <- shell_paste(command, args)
 
     # report all output to user, or just error?
     output <- c(
@@ -258,4 +251,11 @@ shell_quote <- function(arguments) {
   ascii <- grepl("^[[:alnum:]_-]*$", arguments)
   arguments[!ascii] <- shQuote(arguments[!ascii])
   arguments
+}
+
+shell_paste <- function(command, arguments) {
+  paste(
+    shell_quote(command),
+    paste(shell_quote(arguments), collapse = " ")
+  )
 }
