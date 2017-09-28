@@ -13,8 +13,8 @@ if not os.path.exists(deploy):
 os.chdir(os.path.dirname(path))
 
 # Run 'Rscript' with this entrypoint. Forward command line arguments.
-commands = ["Rscript", deploy]
-[commands.append(argument) for argument in sys.argv[1:]]
+commands = [sys.argv[1], deploy]
+[commands.append(argument) for argument in sys.argv[2:]]
 
 process = subprocess.Popen(
   commands,

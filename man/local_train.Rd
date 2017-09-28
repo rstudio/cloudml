@@ -4,7 +4,8 @@
 \alias{local_train}
 \title{Train a model locally}
 \usage{
-local_train(application = getwd(), config = "default", ...)
+local_train(application = getwd(), config = "default",
+  entrypoint = "train.R", ...)
 }
 \arguments{
 \item{application}{The path to a TensorFlow application. Defaults to
@@ -14,9 +15,7 @@ the current working directory.}
 the \code{"cloudml"} configuration.}
 
 \item{...}{Named arguments, used to supply runtime configuration
-settings to your TensorFlow application. When
-\code{\link[cloudml:project_config]{cloudml::project_config()}} is called, these values will effectively
-be overlayed on top of the configuration requested.}
+settings to your TensorFlow application.}
 }
 \description{
 Train a model locally, using the \code{gcloud} command line

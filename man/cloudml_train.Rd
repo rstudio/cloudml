@@ -14,9 +14,7 @@ the current working directory.}
 the \code{"cloudml"} configuration.}
 
 \item{...}{Named arguments, used to supply runtime configuration
-settings to your TensorFlow application. When
-\code{\link[cloudml:project_config]{cloudml::project_config()}} is called, these values will effectively
-be overlayed on top of the configuration requested.}
+settings to your TensorFlow application.}
 }
 \description{
 Upload a TensorFlow application to Google Cloud, and use that application to

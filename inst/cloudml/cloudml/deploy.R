@@ -66,27 +66,19 @@ for (uri in GITHUB) {
   devtools::install_github(uri)
 }
 
-# extract command line arguments
-arguments <- tensorflow::parse_arguments()
-entrypoint  <- arguments[["cloudml_entrypoint"]]
-config      <- arguments[["cloudml_config"]]
-environment <- arguments[["cloudml_environment"]]
-
-# apply config, environment
-Sys.setenv(R_CONFIG_ACTIVE = config)
-Sys.setenv(CLOUDML_EXECUTION_ENVIRONMENT = environment)
-
-# read config overlay if available
+# read flags overlay if available
 overlay <- list()
 if (file.exists("cloudml/overlay.rds"))
   overlay <- readRDS("cloudml/overlay.rds")
 
-# merge in command line arguments (these can be provided
-# during e.g. hyperparameter tuning)
-overlay <- config::merge(overlay, arguments)
-
-# set the active overlay
-cloudml:::set_overlay(overlay)
+# read config
+config <- list()
+if (file.exists("cloudml/config.rds"))
+  config <- readRDS("cloudml/config.rds")
 
 # source entrypoint
-source(entrypoint, echo = TRUE)
+tfruns::training_run(file = config$entrypoint,
+                     context = config$environment,
+                     flags = overlay,
+                     echo = TRUE,
+                     encoding = "UTF-8")

@@ -177,29 +177,31 @@ gexec <- function(command, args = character()) {
 
   p$wait()
 
+  # report output
   stdout <- p$read_all_output_lines()
   stderr <- p$read_all_error_lines()
 
-  if (p$get_exit_status() != 0) {
+  full <- shell_paste(command, args)
 
-    full <- shell_paste(command, args)
+  output <- c(
+    paste("[[", full, "]]", sep = ""),
+    "",
+    "[stdout]",
+    if (length(stdout)) stdout else "<no output available>",
+    "",
+    "[stderr]",
+    if (length(stderr)) stderr else "<no output available>",
+    "",
+    ""
+  )
 
-    # report all output to user, or just error?
-    output <- c(
-      sprintf("call to '%s' failed!", full),
-      "",
-      "[stdout]",
-      if (length(stdout)) stdout else "<no output available>",
-      "",
-      "[stderr]",
-      if (length(stderr)) stderr else "<no output available>",
-      "",
-      ""
-    )
+  pasted <- paste(output, collapse = "\n")
+  message(pasted)
 
-    message <- paste(output, collapse = "\n")
-    stop(message)
-  }
+  # err out if process exited with non-zero status
+  status <- p$get_exit_status()
+  if (status != 0)
+    stopf("[process exited with error code %i]", status)
 
   TRUE
 }
@@ -248,7 +250,7 @@ as_aliased_path <- function(path) {
 }
 
 shell_quote <- function(arguments) {
-  ascii <- grepl("^[[:alnum:]_-]*$", arguments)
+  ascii <- grepl("^[[:alnum:]=_.-]*$", arguments)
   arguments[!ascii] <- shQuote(arguments[!ascii])
   arguments
 }

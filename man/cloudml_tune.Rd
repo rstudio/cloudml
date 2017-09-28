@@ -20,9 +20,7 @@ https://cloud.google.com/ml/reference/rest/v1/projects.jobs
 for more details.}
 
 \item{...}{Named arguments, used to supply runtime configuration
-settings to your TensorFlow application. When
-\code{\link[cloudml:project_config]{cloudml::project_config()}} is called, these values will effectively
-be overlayed on top of the configuration requested.}
+settings to your TensorFlow application.}
 }
 \description{
 Tune hyperparameters on Cloud ML
