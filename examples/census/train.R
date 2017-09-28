@@ -10,7 +10,7 @@ FLAGS <- flags(
   flag_string("eval_file", "gs://cloudml-public/census/data/adult.test.csv"),
 
   flag_integer("estimator_embedding_size", 8),
-  flag_integer("estimator_hidden_units", c(100, 70, 50, 25)),
+  flag_string("estimator_hidden_units", "[100, 70, 50, 25]"),
 
   flag_integer("eval_num_epochs", 5),
   flag_integer("eval_batch_size", 40),
@@ -22,6 +22,9 @@ FLAGS <- flags(
   flag_integer("train_steps", 10)
 
 )
+
+FLAGS$estimator_hidden_units <-
+  yaml::yaml.load(FLAGS$estimator_hidden_units)
 
 # define estimator
 estimator <- build_estimator(
