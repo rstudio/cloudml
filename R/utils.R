@@ -165,45 +165,54 @@ gexec_terminal <- function(command,
   invisible(id)
 }
 
-# execute a gcloud command using processx
-gexec <- function(command, args = character()) {
-
-  p <- processx::process$new(
+# execute a gcloud command
+gexec <- function(command,
+                  args = character(),
+                  stdout = TRUE,
+                  stderr = TRUE,
+                  ...)
+{
+  result <- system2(
     command = command,
-    args = args,
-    stdout = "|",
-    stderr = "|"
+    args    = shell_quote(args),
+    stdout  = stdout,
+    stderr  = stderr,
+    ...
   )
 
-  p$wait()
+  # if we've interned stdout / stderr, then we need to
+  # grab the return status and report output separately
+  if (isTRUE(stdout) || isTRUE(stderr)) {
+    status <- attr(result, "status")
+    if (!is.null(status)) {
+      errmsg <- attr(result, "errmsg")
 
-  # report output
-  stdout <- p$read_all_output_lines()
-  stderr <- p$read_all_error_lines()
+      output <- c(
+        sprintf("[[%s]]", shell_paste(command, args)),
 
-  full <- shell_paste(command, args)
+        "",
+        "[output]",
+        if (length(result))
+          paste(result, collapse = "\n")
+        else
+          "<none available>",
 
-  output <- c(
-    paste("[[", full, "]]", sep = ""),
-    "",
-    "[stdout]",
-    if (length(stdout)) stdout else "<no output available>",
-    "",
-    "[stderr]",
-    if (length(stderr)) stderr else "<no output available>",
-    "",
-    ""
-  )
+        "",
+        "[errmsg]",
+        if (!is.null(errmsg))
+          paste(errmsg, collapse = "\n")
+        else
+          "<none available>"
+      )
 
-  pasted <- paste(output, collapse = "\n")
-  message(pasted)
+      pasted <- paste(output, collapse = "\n")
+      message(pasted)
 
-  # err out if process exited with non-zero status
-  status <- p$get_exit_status()
-  if (status != 0)
-    stopf("[process exited with error code %i]", status)
+      stop(shell_paste(command, args))
+    }
+  }
 
-  TRUE
+  result
 }
 
 enumerate <- function(X, FUN, ...) {
