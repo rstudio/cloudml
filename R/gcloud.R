@@ -133,26 +133,27 @@ is_gs_uri <- function(file) {
 gcloud_config <- function(path = getwd()) {
 
   file <- rprojroot::find_root_file(
-    "gcloud.yml",
-    criterion = "gcloud.yml",
+    "cloudml.yml",
+    criterion = "cloudml.yml",
     path = path
   )
 
   config <- yaml::yaml.load_file(file)
+  gcloud <- config$gcloud
 
   for (field in c("project", "account")) {
 
-    if (is.null(config[[field]])) {
+    if (is.null(gcloud[[field]])) {
       fmt <- "[%s]: field '%s' is missing"
       stopf(fmt, as_aliased_path(file), field)
     }
 
-    if (!is.character(config[[field]])) {
+    if (!is.character(gcloud[[field]])) {
       fmt <- "[%s]: field '%s' is not a string"
       stopf(fmt, as_aliased_path(file), field)
     }
 
   }
 
-  config
+  gcloud
 }
