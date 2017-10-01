@@ -1,6 +1,11 @@
 # required R packages
 CRAN <- c("RCurl", "devtools")
-GITHUB <- c("rstudio/tensorflow", "rstudio/cloudml")
+GITHUB <- c(
+  "tidyverse/purrr",
+  "rstudio/tensorflow",
+  "rstudio/cloudml",
+  "rstudio/tfruns"
+)
 
 # save repository + download methods
 repos <- getOption("repos")
@@ -66,19 +71,12 @@ for (uri in GITHUB) {
   devtools::install_github(uri)
 }
 
-# read flags overlay if available
-overlay <- list()
-if (file.exists("cloudml/overlay.rds"))
-  overlay <- readRDS("cloudml/overlay.rds")
-
-# read config
-config <- list()
-if (file.exists("cloudml/config.rds"))
-  config <- readRDS("cloudml/config.rds")
+# read deployment information
+deploy <- readRDS("cloudml/deploy.rds")
 
 # source entrypoint
-tfruns::training_run(file = config$entrypoint,
-                     context = config$environment,
-                     flags = overlay,
+tfruns::training_run(file = deploy$entrypoint,
+                     context = deploy$environment,
+                     flags = deploy$overlay,
                      echo = TRUE,
                      encoding = "UTF-8")

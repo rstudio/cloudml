@@ -89,7 +89,7 @@ gs_copy <- function(uri, destination, overwrite = FALSE) {
 #'
 #' @export
 gs_data <- function(uri, local_dir = "gs") {
-  if (is_gcloud() || !is_gs_uri(uri))
+  if (!is_gs_uri(uri))
     uri
   else {
     # extract [BUCKET_NAME]/[OBJECT_NAME] and build local path
@@ -118,13 +118,6 @@ gs_data <- function(uri, local_dir = "gs") {
     local_path
   }
 }
-
-
-
-is_gcloud <- function() {
-  identical(Sys.getenv("CLOUDML_EXECUTION_ENVIRONMENT"), "gcloud")
-}
-
 
 is_gs_uri <- function(file) {
   is.character(file) && grepl("^gs://.+$", file)

@@ -13,32 +13,28 @@ local_train <- function(application = getwd(),
                         entrypoint  = "train.R",
                         ...)
 {
-  Sys.setenv(CLOUDML_EXECUTION_ENVIRONMENT = "local")
-  on.exit(Sys.unsetenv("CLOUDML_EXECUTION_ENVIRONMENT"), add = TRUE)
-
   # prepare application for deployment
-  application <- scope_deployment(application, config)
-
-  # serialize overlay (these will be restored on deployment)
-  ensure_directory("cloudml")
+  id <- unique_job_name(application, config)
   overlay <- list(...)
-  saveRDS(overlay, file = "cloudml/overlay.rds")
-
-  # serialize config, entrypoint separately
-  config <- list(application = application,
-                 config = config,
-                 entrypoint = entrypoint)
-  saveRDS(config, file = "cloudml/config.rds")
+  deployment <- scope_deployment(
+    id = id,
+    application = application,
+    context = "local",
+    config = config,
+    overlay = overlay,
+    entrypoint = entrypoint
+  )
 
   # move to application's parent directory
-  setwd(dirname(application))
+  directory <- deployment$directory
+  setwd(dirname(directory))
 
   # generate arguments for gcloud call
   arguments <- (MLArgumentsBuilder()
                 ("local")
                 ("train")
-                ("--package-path=%s", basename(application))
-                ("--module-name=%s.cloudml.deploy", basename(application))
+                ("--package-path=%s", basename(directory))
+                ("--module-name=%s.cloudml.deploy", basename(directory))
                 ("--")
                 (R.home("bin/Rscript")))
 

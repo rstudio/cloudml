@@ -1,3 +1,5 @@
 gcloud:
-  project: "rstudio-cloudml"
-  account: "kevin@rstudio.com"
+  project        : "rstudio-cloudml"
+  account        : "kevin@rstudio.com"
+  staging.bucket : "gs://rstudio-cloudml"
+  region         : "us-central1"

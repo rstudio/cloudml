@@ -47,7 +47,13 @@ validate_application <- function(application) {
   TRUE
 }
 
-scope_deployment <- function(application = getwd(), config) {
+scope_deployment <- function(id,
+                             application = getwd(),
+                             context = "local",
+                             config = NULL,
+                             overlay = NULL,
+                             entrypoint = NULL)
+{
   application <- normalizePath(application, winslash = "/")
 
   validate_application(application)
@@ -62,12 +68,12 @@ scope_deployment <- function(application = getwd(), config) {
   exclude <- c("gs", "jobs", ".git", ".svn")
 
   # build deployment bundle
-  deployment <- file.path(root, basename(application))
+  directory <- file.path(root, basename(application))
   copy_directory(application,
-                 deployment,
+                 directory,
                  exclude = exclude)
   defer(unlink(root, recursive = TRUE), envir = parent.frame())
-  initialize_application(deployment, config)
+  initialize_application(directory, config)
 
   envir <- parent.frame()
 
@@ -76,38 +82,17 @@ scope_deployment <- function(application = getwd(), config) {
   defer(Sys.unsetenv("CLOUDML_APPLICATION_DIR"), envir = envir)
 
   # move to application path
-  owd <- setwd(deployment)
+  owd <- setwd(directory)
   defer(setwd(owd), envir = envir)
 
-  # return normalized application path
-  deployment
-}
+  # serialize deployment information
+  info <- list(directory = directory,
+               context = context,
+               entrypoint = entrypoint,
+               config = config,
+               overlay = overlay)
+  ensure_directory("cloudml")
+  saveRDS(info, file = "cloudml/deploy.rds")
 
-write_hypertune <- function(application, overlay) {
-
-  if (is.null(overlay$hypertune))
-    return(overlay)
-
-  # attempt to discover user's hyperparameters file
-  hypertune <- file.path(application, overlay$hypertune)
-  if (!file.exists(hypertune))
-    return(overlay)
-
-  hyperparameters <- yaml::yaml.load_file(hypertune)
-
-  # wrap into 'trainingInput:', 'hyperparameters:' keys
-  input <- list(
-    trainingInput = list(
-      hyperparameters = hyperparameters
-    )
-  )
-
-  # write to target file
-  target <- file.path(application, "cloudml/config.yml")
-  writeLines(yaml::as.yaml(input), con = target)
-
-  # update in overlay
-  overlay$hypertune <- "cloudml/config.yml"
-
-  overlay
+  info
 }

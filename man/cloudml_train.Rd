@@ -4,7 +4,8 @@
 \alias{cloudml_train}
 \title{Train a model using Cloud ML}
 \usage{
-cloudml_train(application = getwd(), config = "cloudml", ...)
+cloudml_train(application = getwd(), config = "cloudml",
+  entrypoint = "train.R", ...)
 }
 \arguments{
 \item{application}{The path to a TensorFlow application. Defaults to

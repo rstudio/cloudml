@@ -21,62 +21,51 @@
 #' @export
 cloudml_train <- function(application = getwd(),
                           config      = "cloudml",
+                          entrypoint  = "train.R",
                           ...)
 {
-  Sys.setenv(CLOUDML_EXECUTION_ENVIRONMENT = "gcloud")
-  on.exit(Sys.unsetenv("CLOUDML_EXECUTION_ENVIRONMENT"), add = TRUE)
-
-  # resolve runtime configuration
-  overlay <- resolve_train_overlay(application, list(...), config)
-
   # prepare application for deployment
-  application <- scope_deployment(application, config)
+  id <- unique_job_name(application, config)
+  overlay <- list(...)
+  deployment <- scope_deployment(
+    id = id,
+    application = application,
+    context = "cloudml",
+    config = config,
+    overlay = overlay,
+    entrypoint = entrypoint
+  )
 
-  # generate hyperparameters
-  overlay <- write_hypertune(application, overlay)
+  # read 'gcloud' configuration
+  conf <- gcloud_config()
 
-  # serialize overlay
-  ensure_directory("cloudml")
-  saveRDS(overlay, file = "cloudml/overlay.rds")
-
-  # generate setup.py
-  scope_setup_py(application)
-
-  # move to application's parent directory
-  setwd(dirname(application))
+  # move to deployment parent directory and spray __init__.py
+  directory <- deployment$directory
+  scope_setup_py(directory)
+  setwd(dirname(directory))
 
   # generate deployment script
   arguments <- (MLArgumentsBuilder()
                 ("jobs")
                 ("submit")
                 ("training")
-                (overlay$job_name)
-                ("--package-path=%s", basename(application))
-                ("--module-name=%s.cloudml.deploy", basename(application))
-                ("--job-dir=%s", overlay$job_dir)
-                ("--staging-bucket=%s", overlay$staging_bucket)
-                ("--region=%s", overlay$region)
-                ("--runtime-version=%s", overlay$runtime_version)
-                ("--config=%s/%s", basename(application), overlay$hypertune)
+                (id)
+                ("--package-path=%s", basename(directory))
+                ("--module-name=%s.cloudml.deploy", basename(directory))
+                ("--staging-bucket=%s", conf$staging.bucket)
+                ("--region=%s", conf$region)
                 ("--")
-                ("--cloudml-entrypoint=%s", overlay$entrypoint)
-                ("--cloudml-config=%s", config)
-                ("--cloudml-environment=gcloud"))
+                ("Rscript"))
+
+                # TODO: re-enable these
+                # ("--job-dir=%s", overlay$job_dir)
+                # ("--staging-bucket=%s", overlay$staging_bucket)
+                # ("--region=%s", overlay$region)
+                # ("--runtime-version=%s", overlay$runtime_version)
+                # ("--config=%s/%s", basename(application), overlay$hypertune)
 
   # submit job through command line interface
   output <- gexec(gcloud(), arguments(), stdout = TRUE, stderr = TRUE)
-
-  # extract job id from output
-  index <- grep("^jobId:", output)
-  job_name <- substring(output[index], 8)
-  job_dir <- overlay$job_dir
-
-  # construct and register job object
-  job <- cloudml_job(
-    "train",
-    job_name = job_name,
-    job_dir  = job_dir
-  )
 
   # inform user of successful job submission
   template <- c(
@@ -87,25 +76,32 @@ cloudml_train <- function(application = getwd(),
     "- job_collect(\"%1$s\")"
   )
 
-  rendered <- sprintf(paste(template, collapse = "\n"), job_name(job))
+  rendered <- sprintf(paste(template, collapse = "\n"), id)
+  message(rendered)
 
+  # call 'describe' to discover additional information related to
+  # the job, and generate a 'job' object from that
+  #
   # print stderr output from a 'describe' call (this gives the
   # user URLs that can be navigated to for more information)
   arguments <- (MLArgumentsBuilder()
                 ("jobs")
                 ("describe")
-                (job_name))
+                (id))
 
-  # write stdout, stderr separately (we only want to report
-  # the data written to stderr here)
   sofile <- tempfile("stdout-")
   sefile <- tempfile("stderr-")
   output <- gexec(gcloud(), arguments(), stdout = sofile, stderr = sefile)
+  stdout <- readChar(sofile, file.info(sofile)$size, TRUE)
   stderr <- readChar(sefile, file.info(sefile)$size, TRUE)
 
-  # write the generated messages to the console
-  message(rendered)
+  # write stderr to the console
   message(stderr)
+
+  # create job object
+  description <- yaml::yaml.load(stdout)
+  job <- cloudml_job("train", id, description)
+  register_job(job)
 
   invisible(job)
 }
@@ -125,7 +121,7 @@ job_cancel <- function(job) {
   arguments <- (MLArgumentsBuilder()
                 ("jobs")
                 ("cancel")
-                (job_name(job)))
+                (job))
 
   gexec(gcloud(), arguments())
 }
@@ -143,7 +139,7 @@ job_describe <- function(job) {
   arguments <- (MLArgumentsBuilder()
                 ("jobs")
                 ("describe")
-                (job_name(job)))
+                (job))
 
   output <- gexec(gcloud(), arguments(), stdout = TRUE)
 
@@ -196,7 +192,14 @@ job_list <- function(filter    = NULL,
     ("--sort-by=%s", sort_by)
     (if (uri) "--uri"))
 
-  gexec(gcloud(), arguments())
+  output <- gexec(gcloud(), arguments(), stdout = TRUE, stderr = TRUE)
+
+  if (!uri) {
+    pasted <- paste(output, collapse = "\n")
+    output <- readr::read_table2(pasted)
+  }
+
+  output
 }
 
 
@@ -254,7 +257,7 @@ job_status <- function(job) {
   arguments <- (MLArgumentsBuilder()
                 ("jobs")
                 ("describe")
-                (job_name(job)))
+                (job))
 
   # request job description from gcloud
   output <- gexec(gcloud(), arguments(), stdout = TRUE, stderr = FALSE)
@@ -280,7 +283,6 @@ job_status <- function(job) {
 #' @export
 job_collect <- function(job, destination = "jobs/cloudml") {
   job <- as.cloudml_job(job)
-  id <- job_name(job)
 
   # get the job status
   status <- job_status(job)

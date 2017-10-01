@@ -172,12 +172,17 @@ gexec <- function(command,
                   stderr = TRUE,
                   ...)
 {
-  result <- system2(
-    command = command,
-    args    = shell_quote(args),
-    stdout  = stdout,
-    stderr  = stderr,
-    ...
+  # 'system2' will report a warning if a command is executed but
+  # returns with a non-zero status. we handle that explicitly so we
+  # suppress the R warning here and print an equivalent later
+  suppressWarnings(
+    result <- system2(
+      command = command,
+      args    = shell_quote(args),
+      stdout  = stdout,
+      stderr  = stderr,
+      ...
+    )
   )
 
   # if we've interned stdout / stderr, then we need to
@@ -187,8 +192,23 @@ gexec <- function(command,
     if (!is.null(status)) {
       errmsg <- attr(result, "errmsg")
 
+      pretty <- paste(
+        shell_quote(command),
+        paste(
+          "",
+          shell_quote(args),
+          sep = "\t",
+          collapse = "\n"
+        ),
+        sep = "\n"
+      )
+
       output <- c(
-        sprintf("[[%s]]", shell_paste(command, args)),
+        sprintf("ERROR: gcloud invocation failed [exit status %i]", status),
+
+        "",
+        "[command]",
+        pretty,
 
         "",
         "[output]",
@@ -208,7 +228,7 @@ gexec <- function(command,
       pasted <- paste(output, collapse = "\n")
       message(pasted)
 
-      stop(shell_paste(command, args))
+      stop("error invoking 'gcloud' executable", call. = FALSE)
     }
   }
 
@@ -259,7 +279,13 @@ as_aliased_path <- function(path) {
 }
 
 shell_quote <- function(arguments) {
-  ascii <- grepl("^[[:alnum:]=_.-]*$", arguments)
+
+  regex <- if (Sys.info()[["sysname"]] == "Windows")
+    "^[[:alnum:]_]*$"
+  else
+    "^[[:alnum:]:/=_.-]*$"
+
+  ascii <- grepl(regex, arguments)
   arguments[!ascii] <- shQuote(arguments[!ascii])
   arguments
 }

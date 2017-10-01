@@ -1,6 +1,4 @@
 
 
 # package globals
-.globals <- new.env(parent = emptyenv())
-.globals$overlay <- list()
-.globals$job_registry <- new.env(parent = emptyenv())
+.__JOB_REGISTRY__. <- new.env(parent = emptyenv())

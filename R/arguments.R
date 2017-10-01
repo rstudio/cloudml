@@ -16,6 +16,13 @@ ShellArgumentsBuilder <- function() {
     if (any(n == 0))
       return(invisible(builder))
 
+    # convert job objects into ids
+    dots <- lapply(dots, function(dot) {
+      if (inherits(dot, "cloudml_job"))
+        return(dot$id)
+      dot
+    })
+
     # flatten a potentially nested list
     flattened <- flatten_list(dots)
     if (length(flattened) == 0)
