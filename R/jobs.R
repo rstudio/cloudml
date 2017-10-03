@@ -53,7 +53,7 @@ cloudml_train <- function(application = getwd(),
                 ("--package-path=%s", basename(directory))
                 ("--module-name=%s.cloudml.deploy", basename(directory))
                 ("--staging-bucket=%s", conf[["staging-bucket"]])
-                ("--region=%s", conf$region)
+                ("--region=%s", conf[["region"]])
                 ("--")
                 ("Rscript"))
 

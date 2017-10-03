@@ -40,9 +40,9 @@ ShellArgumentsBuilder <- function() {
   conf <- gcloud_config(path = path)
   (builder
     ("--project")
-    (conf$project)
+    (conf[["project"]])
     ("--account")
-    (conf$account))
+    (conf[["account"]]))
 
   # return our builder object
   builder
