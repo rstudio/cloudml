@@ -283,6 +283,7 @@ job_status <- function(job) {
 #' @export
 job_collect <- function(job, destination = "jobs/cloudml") {
   job <- as.cloudml_job(job)
+  id <- job$id
 
   # get the job status
   status <- job_status(job)

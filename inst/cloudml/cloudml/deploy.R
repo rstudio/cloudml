@@ -2,9 +2,11 @@
 CRAN <- c("RCurl", "devtools")
 GITHUB <- c(
   "tidyverse/purrr",
+  "tidyverse/modelr",
   "rstudio/tensorflow",
   "rstudio/cloudml",
-  "rstudio/tfruns"
+  "rstudio/tfruns",
+  "rstudio/tfestimators"
 )
 
 # save repository + download methods
