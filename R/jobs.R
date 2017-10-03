@@ -53,6 +53,7 @@ cloudml_train <- function(application = getwd(),
                 ("--package-path=%s", basename(directory))
                 ("--module-name=%s.cloudml.deploy", basename(directory))
                 ("--staging-bucket=%s", conf[["staging-bucket"]])
+                ("--runtime-version=%s", conf[["runtime-version"]])
                 ("--region=%s", conf[["region"]])
                 ("--")
                 ("Rscript"))
@@ -285,8 +286,27 @@ job_collect <- function(job, destination = "jobs/cloudml") {
   job <- as.cloudml_job(job)
   id <- job$id
 
+  # helper function for writing job status to console
+  write_status <- function(status, time) {
+
+    # generate message
+    fmt <- ">>> [state: %s; last updated %s]"
+    msg <- sprintf(fmt, status$state, time)
+
+    whitespace <- ""
+    width <- getOption("width")
+    if (nchar(msg) < width)
+      whitespace <- paste(rep("", width - nchar(msg)), collapse = " ")
+
+    # generate and write console text (overwrite old output)
+    output <- paste0("\r", msg, whitespace)
+    cat(output, sep = "")
+
+  }
+
   # get the job status
   status <- job_status(job)
+  time <- Sys.time()
 
   # if we're already done, attempt download of outputs
   if (status$state == "SUCCEEDED")
@@ -299,28 +319,34 @@ job_collect <- function(job, destination = "jobs/cloudml") {
   }
 
   # otherwise, notify the user and begin polling
-  fmt <- ">>> Job '%s' is currently running -- please wait..."
+  fmt <- ">>> Job '%s' is currently running -- please wait...\n"
   printf(fmt, id)
-  printf(">>> [state: %s]", status$state)
+
+  write_status(status, time)
 
   # TODO: should we give up after a while? (user can always interrupt)
   repeat {
 
     # get the job status
     status <- job_status(job)
+    time <- Sys.time()
+    write_status(status, time)
 
     # download outputs on success
-    if (status$state == "SUCCEEDED")
+    if (status$state == "SUCCEEDED") {
+      printf("\n")
       return(job_download(job, destination))
+    }
 
     # if the job has failed, report error
     if (status$state == "FAILED") {
+      printf("\n")
       fmt <- "job '%s' failed [state: %s]"
       stopf(fmt, id, status$state)
     }
 
     # job isn't ready yet; sleep for a while and try again
-    Sys.sleep(60)
+    Sys.sleep(30)
 
   }
 

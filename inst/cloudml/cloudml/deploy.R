@@ -1,10 +1,11 @@
 # required R packages
-CRAN <- c("RCurl", "devtools")
+CRAN <- c("RCurl", "devtools", "readr")
 GITHUB <- c(
   "tidyverse/purrr",
   "tidyverse/modelr",
   "rstudio/tensorflow",
   "rstudio/cloudml",
+  "rstudio/keras",
   "rstudio/tfruns",
   "rstudio/tfestimators"
 )
@@ -13,6 +14,9 @@ GITHUB <- c(
 repos <- getOption("repos")
 download.file.method <- getOption("download.file.method")
 download.file.extra  <- getOption("download.file.extra")
+
+# emit warnings as they occur
+options(warn = 1)
 
 on.exit(
   options(

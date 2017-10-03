@@ -21,17 +21,14 @@ from setuptools.command.install import install
 # worker-startup log.
 
 CUSTOM_COMMANDS = [
-    # ["apt-key", "adv", "--keyserver", "keyserver.ubuntu.com", "--recv-keys", "E298A3A825C0D65DFD57CBB651716619E084DAB9"],
-    # ["add-apt-repository", "deb [arch=amd64,i386] https://cran.rstudio.com/bin/linux/ubuntu xenial/"],
-    ["echo", "deb https://cloud.r-project.org/bin/linux/debian jessie-cran3/", ">>", "/etc/apt/sources.list"],
-    ["apt-key", "adv", "--keyserver", "keys.gnupg.net", "--recv-key", "6212B7B7931C4BB16280BA1306F90DE5381BA480"],
-    # ["apt-get", "clean"],
-    # ["rm", "-rf", "/var/lib/apt/lists/*"],
-    # ["rm", "-rf", "/var/lib/apt/lists/partial/*"],
-    # ["apt-get", "clean"],
+    # Update repositories and install R + dependencies
     ["apt-get", "-qq", "-m", "-y", "update"],
     ["apt-get", "-qq", "-m", "-y", "upgrade"],
-    ["apt-get", "-qq", "-m", "-y", "install", "libcurl4-openssl-dev", "libxml2-dev", "libxslt-dev", "libssl-dev", "r-base", "r-base-dev"]
+    ["apt-get", "-qq", "-m", "-y", "install", "libcurl4-openssl-dev", "libxml2-dev", "libxslt-dev", "libssl-dev", "r-base", "r-base-dev"],
+
+    # These are here just because ml-engine doesn't provide TensorFlow 1.3 yet
+    ["pip", "install", "keras", "--upgrade"],
+    ["pip", "install", "tensorflow", "--upgrade"]
 ]
 
 class CustomCommands(install):

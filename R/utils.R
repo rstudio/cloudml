@@ -1,7 +1,7 @@
 `%||%` <- function(x, y) if (is.null(x)) y else x
 
 printf <- function(fmt, ...) {
-  cat(sprintf(fmt, ...), sep = "\n")
+  cat(sprintf(fmt, ...), sep = "")
 }
 
 stopf <- function(fmt, ..., call. = TRUE, domain = NULL) {
@@ -295,4 +295,8 @@ shell_paste <- function(command, arguments) {
     shell_quote(command),
     paste(shell_quote(arguments), collapse = " ")
   )
+}
+
+clear_line <- function(width = getOption("width")) {
+  cat(paste0(c("\r", rep(" ", width)), collapse = ""))
 }
