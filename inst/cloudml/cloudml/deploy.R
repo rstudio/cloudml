@@ -77,12 +77,29 @@ for (uri in GITHUB) {
   devtools::install_github(uri)
 }
 
+# Training ----
+
+library(cloudml)
+
 # read deployment information
 deploy <- readRDS("cloudml/deploy.rds")
 
 # source entrypoint
+run_dir <- tfruns::unique_run_dir()
 tfruns::training_run(file = deploy$entrypoint,
                      context = deploy$environment,
                      flags = deploy$overlay,
+                     encoding = "UTF-8",
                      echo = TRUE,
-                     encoding = "UTF-8")
+                     view = FALSE,
+                     run_dir = run_dir)
+
+# upload run directory to requested bucket (if any)
+config <- yaml::yaml.load_file("cloudml.yml")
+cloudml <- config$cloudml
+storage <- cloudml[["storage-bucket"]]
+if (is.character(storage)) {
+  source <- run_dir
+  target <- file.path(storage, run_dir)
+  system(paste(gsutil(), "cp", "-r", shQuote(source), shQuote(target)))
+}

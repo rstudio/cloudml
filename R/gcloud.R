@@ -132,8 +132,9 @@ gcloud_config <- function(path = getwd()) {
   )
 
   config <- yaml::yaml.load_file(file)
-  gcloud <- config$gcloud
 
+  # validate required 'gcloud' fields
+  gcloud <- config$gcloud
   for (field in c("project", "account")) {
 
     if (is.null(gcloud[[field]])) {
