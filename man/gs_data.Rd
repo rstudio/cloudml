@@ -7,8 +7,6 @@
 gs_data(uri, local_dir = "gs")
 }
 \arguments{
-\item{uri}{Google storage URI (e.g. \code{gs://[BUCKET_NAME]/[FILENAME.CSV]})}
-
 \item{local_dir}{Local directory to copy files into}
 }
 \value{

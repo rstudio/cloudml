@@ -2,17 +2,23 @@
 % Please edit documentation in R/gcloud.R
 \name{gs_copy}
 \alias{gs_copy}
-\title{Copy files from Google Storage}
+\title{Copy files to / from Google Storage}
 \usage{
-gs_copy(uri, destination, overwrite = FALSE)
+gs_copy(source, destination, recursive = FALSE)
 }
 \arguments{
-\item{uri}{Google storage URI (e.g. \code{gs://[BUCKET_NAME]/[FILENAME.CSV]})}
+\item{source}{The file to be copied. This can be either a path on the local
+filesystem, or a Google Storage URI (e.g. \code{gs://[BUCKET_NAME]/[FILENAME.CSV]}).}
 
-\item{destination}{Path to copy file to on the local filesystem}
+\item{destination}{The location where the \code{source} file should be copied to. This can be
+either a path on the local filesystem, or a Google Storage URI (e.g.
+\code{gs://[BUCKET_NAME]/[FILENAME.CSV]}).}
 
-\item{overwrite}{Overwrite an existing file of the same name}
+\item{recursive}{Boolean; perform a recursive copy? This must be specified if you intend on
+copying directories.}
 }
 \description{
-Copy files from Google Storage
+Use the \code{gsutil cp} command to copy data between your local file system and
+the cloud, copy data within the cloud, and copy data between cloud storage
+providers.
 }

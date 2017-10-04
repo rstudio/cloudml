@@ -57,19 +57,38 @@ gsutil <- function() {
   stop("failed to find 'gsutil' binary")
 }
 
-#' Copy files from Google Storage
+#' Copy files to / from Google Storage
 #'
-#' @param uri Google storage URI (e.g. `gs://[BUCKET_NAME]/[FILENAME.CSV]`)
-#' @param destination Path to copy file to on the local filesystem
-#' @param overwrite Overwrite an existing file of the same name
+#' Use the `gsutil cp` command to copy data between your local file system and
+#' the cloud, copy data within the cloud, and copy data between cloud storage
+#' providers.
+#'
+#' @param source
+#'   The file to be copied. This can be either a path on the local
+#'   filesystem, or a Google Storage URI (e.g. `gs://[BUCKET_NAME]/[FILENAME.CSV]`).
+#'
+#' @param destination
+#'   The location where the `source` file should be copied to. This can be
+#'   either a path on the local filesystem, or a Google Storage URI (e.g.
+#'   `gs://[BUCKET_NAME]/[FILENAME.CSV]`).
+#'
+#' @param recursive
+#'   Boolean; perform a recursive copy? This must be specified if you intend on
+#'   copying directories.
 #'
 #' @export
-gs_copy <- function(uri, destination, overwrite = FALSE) {
-  gsutil <- gsutil()
-  if (!file.exists(destination) || overwrite) {
-    dir.create(dirname(destination), recursive = TRUE, showWarnings = FALSE)
-    system(paste(gsutil, "cp", shQuote(uri), shQuote(destination)))
-  }
+gs_copy <- function(source, destination, recursive = FALSE) {
+
+  arguments <- c(
+    "cp",
+    if (recursive) "-r",
+    shell_quote(source),
+    shell_quote(destination)
+  )
+
+  command <- shell_paste(gsutil(), arguments)
+  system(command)
+
   destination
 }
 
