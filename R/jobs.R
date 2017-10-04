@@ -36,8 +36,9 @@ cloudml_train <- function(application = getwd(),
     entrypoint = entrypoint
   )
 
-  # read 'gcloud' configuration
-  conf <- gcloud_config()
+  # read configuration
+  gcloud <- gcloud_config()
+  cloudml <- cloudml_config()
 
   # move to deployment parent directory and spray __init__.py
   directory <- deployment$directory
@@ -50,11 +51,12 @@ cloudml_train <- function(application = getwd(),
                 ("submit")
                 ("training")
                 (id)
+                ("--job-dir=%s", file.path(cloudml[["storage"]], "staging"))
                 ("--package-path=%s", basename(directory))
                 ("--module-name=%s.cloudml.deploy", basename(directory))
-                ("--staging-bucket=%s", conf[["staging-bucket"]])
-                ("--runtime-version=%s", conf[["runtime-version"]])
-                ("--region=%s", conf[["region"]])
+                ("--staging-bucket=%s", gcloud[["staging-bucket"]])
+                ("--runtime-version=%s", gcloud[["runtime-version"]])
+                ("--region=%s", gcloud[["region"]])
                 ("--")
                 ("Rscript"))
 

@@ -123,6 +123,19 @@ is_gs_uri <- function(file) {
   is.character(file) && grepl("^gs://.+$", file)
 }
 
+cloudml_config <- function(path = getwd()) {
+
+  file <- rprojroot::find_root_file(
+    "cloudml.yml",
+    criterion = "cloudml.yml",
+    path = path
+  )
+
+  config <- yaml::yaml.load_file(file)
+  config$cloudml
+
+}
+
 gcloud_config <- function(path = getwd()) {
 
   file <- rprojroot::find_root_file(

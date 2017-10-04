@@ -1,6 +1,8 @@
 gcloud:
   project         : "rstudio-cloudml"
   account         : "kevin@rstudio.com"
-  staging-bucket  : "gs://rstudio-cloudml"
   region          : "us-central1"
   runtime-version : "1.2"
+
+cloudml:
+  storage         : "gs://rstudio-cloudml/census"
