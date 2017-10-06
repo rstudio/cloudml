@@ -1,3 +1,60 @@
+# cloudml
+
+This package seeks to make it possible to train TensorFlow models, especially those produced by the R [tensorflow](https://tensorflow.rstudio.com/), [keras](https://keras.rstudio.com/), and the [tfestimators](https://github.com/rstudio/tfestimators) packages, on Google Cloud's [Machine Learning Engine](https://cloud.google.com/ml-engine/). This document outlines the current status of this package, and future work items.
+
+## Overview
+
+This package seeks to make it possible to take a TensorFlow application, and submit it to Google Cloud for training and prediction. This is accomplished primarily through the use of the [Google Cloud SDK](https://cloud.google.com/sdk/downloads), which provides shell utilities for interacting with Google Cloud services -- primarily, the `gcloud` and `gsutil` tools. With these utilities, we can:
+
+- Submit a prediction / training job to Cloud ML,
+- Retrieve the downloaded model for use locally,
+- Manage Cloud ML jobs directly from an R session.
+
+We intend for users to develop their applications making use of the [flags](https://github.com/rstudio/tfruns#using-flags) mechanism defined in the [tfruns](https://github.com/rstudio/tfruns) package.
+
+### Cloud SDK
+
+The Google Cloud SDK can be installed by following the instructions at:
+
+https://cloud.google.com/sdk/downloads
+
+It may be worth considering whether we can automate the download and installation of these utilities from within the `cloudml` package.
+
+Note that Google Cloud also exposes a [REST API](https://cloud.google.com/ml-engine/reference/rest/), but it seems to us that using the shell tools is likely easier, especially in terms of authentication and streaming output.
+
+## Submitting a Training Job
+
+    API: gcloud ml-engine jobs submit training
+    R:   train_cloudml()
+
+Cloud ML expects TensorFlow applications to be bundled up as a Python package. However, we don't want the user to have to know or care about how a Python package is created, so `cloudml` attempts to handle all of this behind the scenes. This is accomplished in the following way:
+
+First, the application is copied to a temporary directory. This is because we'll be modifying the contents of the project for deployment, but don't want these changes polluting the user's application.
+
+Second, we spray `__init__.py` into each directory and sub-directory within the project. This tells Python's packaging system that all of these directories need to be included in part of the to-be-generated Python package.
+
+Finally, we write a `setup.py` file, which is used to instruct Google Cloud how this 'Python' 'package' should be built. In particular, we can jerry-rig the invocation of custom shell commands in at this point to prime the instance's environment (e.g. updating `apt` packages; upgrading Python packages as needed). See the file at `inst/cloudml/setup.py` for more details.
+
+When the package is uploaded, we instruct Google Cloud to source the Python entrypoint `cloudml/deploy.py`. This entrypoint itself delegates to the `deploy.R` script, which then also takes care of other startup book-keeping -- e.g. installation of required R packages. This R script then calls the user-specified entrypoint (typically, `train.R`) through `tfruns::training_run()`. After that training run completes, we use `gsutil` to synchronize the contents of the created run directory with the requested bucket, from which the user can later collect the results back to their local machine as desired.
+
+See https://cloud.google.com/ml-engine/docs/training-overview for in-depth details on how training job submission works from the Google side.
+
+## Submitting a Prediction Job
+
+    API: gcloud ml-engine jobs submit prediction
+    R:   <NA>
+    
+This has been less fleshed out thus far. We should follow the steps outlined in this documentation:
+
+https://cloud.google.com/ml-engine/docs/deploying-models, to register an existing model (give it a name to be referenced by for future predictions)
+
+https://cloud.google.com/ml-engine/docs/batch-predict, for submitting a prediction job to a model that's already been registered.
+
+We'll have to think a bit more deeply about how we can transform input data from the user so it can easily be used through this API. Note that this API expects inputs to be from files, and output to be to files, so we'll likely have to do some magic on the `cloudml` side to transform e.g. an R `data.frame` into the format required by the prediction API here.
+
+---
+
+Older TODOs (some topics may be out of date)
 
 ## JJ
  
