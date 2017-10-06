@@ -380,13 +380,5 @@ job_download <- function(job, destination = "jobs/cloudml") {
   }
 
   ensure_directory(destination)
-
-  arguments <- (
-    ShellArgumentsBuilder()
-    ("cp")
-    ("-R")
-    (source)
-    (destination))
-
-  gexec(gsutil(), arguments())
+  gs_copy(source, destination)
 }
