@@ -26,14 +26,19 @@ We'll use the [census example](https://github.com/rstudio/cloudml/tree/master/ex
 
 ## Setting Up
 
-Before using the **cloudml** package, you'll need to make sure you're set up with an account and project on Google Cloud. In addition, the **cloudml** package makes use of the [Google Cloud SDK](https://cloud.google.com/sdk/) for communication with the Google Cloud machine learning platform. You can follow the instructions [here](https://cloud.google.com/sdk/downloads) to get the SDK installed on your machine.
+Before using the **cloudml** package, you'll need to make sure you're set up with an account and project on Google Cloud. Then install the [Google Cloud SDK](https://cloud.google.com/sdk/) by running:
+
+```{r}
+sdk_install()
+```
 
 Each **cloudml** application needs to be associated with an Google Cloud project + account. If you haven't already, you can [create an account](https://console.cloud.google.com) following the instructions online, and then [create a project](https://cloud.google.com/resource-manager/docs/creating-managing-projects) after that. You'll also want to provision a [bucket](https://cloud.google.com/storage/docs/creating-buckets), to be used as a storage / staging space for applications trained in the cloud.
 
-After you've set this up, you might want to set up a default configuration for this account and project. You can do this from the command line with:
+After you've set this up, you might want to set up a default configuration for this account and project. You can run:
 
-    gcloud config set core.account <account>
-    gcloud config set core.project <project>
+```{r}
+sdk_config("<name@domain.com>", "<project>")
+```
 
 We'll show later how you can configure an application to deploy to multiple accounts / projects if so desired.
 
@@ -42,9 +47,11 @@ We'll show later how you can configure an application to deploy to multiple acco
 
 After creating your account, you'll need to set up default application credentials to ensure that the Google Cloud SDK can securely communicate with Google and take actions with your project. Try running
 
-    gcloud auth application-default login
+```{r}
+sdk_login()
+```
 
-from a terminal, to request these credentials.
+to request these credentials.
 
 
 ## Configuration
