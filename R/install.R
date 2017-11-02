@@ -10,13 +10,28 @@ cloudml_install <- function() {
   cloudsdk_url <- "https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/"
   cloudsdk_tar <- "google-cloud-sdk-178.0.0-darwin-x86_64.tar.gz"
 
-  cloudsdk_dir <- "~/google-cloud-sdk/"
-  cloudsdk_path <- file.path(cloudsdk_dir, cloudsdk_tar)
+  download_dir <- tempdir()
+  download_file <- file.path(download_dir, cloudsdk_tar)
 
-  if (!dir.exists(cloudsdk_dir)) dir.create(cloudsdk_dir)
+  if (!dir.exists(download_dir)) dir.create(download_dir)
 
   download.file(
     file.path(cloudsdk_url, cloudsdk_tar),
-    cloudsdk_path
+    download_file
   )
+
+  extract_dir <- "~/"
+  untar(tarfile = download_file,
+        exdir = extract_dir,
+        tar = "internal")
+}
+
+#' Path to the Google Cloud SDK
+#'
+#' Retrieves the path to the Google Cloud SDK.
+#'
+#' @internal
+#' @export
+cloudml_sdk_dir <- function() {
+  "~/google-cloud-sdk"
 }
