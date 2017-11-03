@@ -20,14 +20,20 @@ We'll use the [census example](https://github.com/rstudio/cloudml/tree/master/ex
 Setting Up
 ----------
 
-Before using the **cloudml** package, you'll need to make sure you're set up with an account and project on Google Cloud. In addition, the **cloudml** package makes use of the [Google Cloud SDK](https://cloud.google.com/sdk/) for communication with the Google Cloud machine learning platform. You can follow the instructions [here](https://cloud.google.com/sdk/downloads) to get the SDK installed on your machine.
+Before using the **cloudml** package, you'll need to make sure you're set up with an account and project on Google Cloud. Then install the [Google Cloud SDK](https://cloud.google.com/sdk/) by running:
+
+``` r
+library(cloudml)
+sdk_install()
+```
 
 Each **cloudml** application needs to be associated with an Google Cloud project + account. If you haven't already, you can [create an account](https://console.cloud.google.com) following the instructions online, and then [create a project](https://cloud.google.com/resource-manager/docs/creating-managing-projects) after that. You'll also want to provision a [bucket](https://cloud.google.com/storage/docs/creating-buckets), to be used as a storage / staging space for applications trained in the cloud.
 
-After you've set this up, you might want to set up a default configuration for this account and project. You can do this from the command line with:
+After you've set this up, you might want to set up a default configuration for this account and project. You can run:
 
-    gcloud config set core.account <account>
-    gcloud config set core.project <project>
+``` r
+sdk_config("<name@domain.com>", "<project>")
+```
 
 We'll show later how you can configure an application to deploy to multiple accounts / projects if so desired.
 
@@ -36,18 +42,20 @@ Authentication
 
 After creating your account, you'll need to set up default application credentials to ensure that the Google Cloud SDK can securely communicate with Google and take actions with your project. Try running
 
-    gcloud auth application-default login
+``` r
+sdk_login()
+```
 
-from a terminal, to request these credentials.
+to request these credentials.
 
 Configuration
 -------------
 
-Application deployment is configured through the use of a top-level [YAML](http://yaml.org/) file called `cloudml.yml`. See [here](https://github.com/rstudio/cloudml/blob/master/examples/census/cloudml.yml) for the associated file used in our census example -- we'll explore the fields used here.
+Application deployment is configured through the use of a top-level [YAML](http://yaml.org/) file called `cloudml.yml`. See [here](https://github.com/rstudio/cloudml/blob/master/examples/census/cloudml.yml) for the associated file used in our census example, copy this file locally and modify appropiately to train models successfully.
 
     ## gcloud:
     ##   project         : "rstudio-cloudml"
-    ##   account         : "kevin@rstudio.com"
+    ##   account         : "account@domain.com"
     ##   region          : "us-central1"
     ##   runtime-version : "1.2"
     ## 
@@ -78,12 +86,12 @@ If you've followed these steps, your application should now be ready to be deplo
 You can train your application with:
 
 ``` r
-job <- cloudml::cloudml_train(entrypoint = "train.R")
+job <- cloudml_train(entrypoint = system.file("examples/census/train.R", package = "cloudml"))
 ```
 
 This function will submit your application to Google Cloud, and request that it train your application by sourcing the training script `"train.R"`. You should see output of the form:
 
-    > job <- with_census(cloudml::cloudml_train())
+    > job <- with_census(cloudml_train())
     Job 'census_cloudml_2017_10_26_172932520' successfully submitted.
 
     Check status and collect output with:
@@ -99,7 +107,7 @@ This function will submit your application to Google Cloud, and request that it 
 After submitting this job, you can tell the R session to wait for training to complete, and pull the generated models back to your local filesystem with:
 
 ``` r
-collected <- cloudml::job_collect(job)
+collected <- job_collect(job)
 ```
 
 The R session will wait and continue polling Google Cloud until your application has finished running; if the application trained successfully, then the trained models will be copied to disk.
