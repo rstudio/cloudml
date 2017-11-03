@@ -46,7 +46,7 @@ gcloud_path_default <- function() {
 #' Installs the Google Cloud SDK which enables CloudML operations.
 #'
 #' @export
-gcloud_install <- function() {
+gcloud_install <- function(version = "178.0.0") {
   if (dir.exists(gcloud_path_default())) {
     message("SDK already installed.")
     return(invisible(NULL))
@@ -56,7 +56,7 @@ gcloud_install <- function() {
     stop("Currently, only OS X installation is supported.")
 
   cloudsdk_url <- "https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/"
-  cloudsdk_tar <- "google-cloud-sdk-178.0.0-darwin-x86_64.tar.gz"
+  cloudsdk_tar <- paste0("google-cloud-sdk-", version, "-darwin-x86_64.tar.gz")
 
   download_dir <- tempdir()
   download_file <- file.path(download_dir, cloudsdk_tar)
