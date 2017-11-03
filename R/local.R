@@ -38,5 +38,5 @@ local_train <- function(application = getwd(),
                 ("--")
                 (R.home("bin/Rscript")))
 
-  gexec(gcloud(), arguments())
+  gcloud_exec(args = arguments())
 }

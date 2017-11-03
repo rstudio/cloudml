@@ -18,7 +18,7 @@ resolve_job <- function(id, registry = job_registry()) {
                 ("describe")
                 (id))
 
-  output <- gexec(gcloud(), arguments(), stdout = TRUE, stderr = FALSE)
+  output <- gcloud_exec(args = arguments(), stdout = TRUE, stderr = FALSE)
   description <- yaml::yaml.load(paste(output, collapse = "\n"))
 
   # if we have a 'trainingInput' field, this was a training

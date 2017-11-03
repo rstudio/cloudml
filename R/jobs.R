@@ -68,7 +68,7 @@ cloudml_train <- function(application = getwd(),
                 # ("--config=%s/%s", basename(application), overlay$hypertune)
 
   # submit job through command line interface
-  output <- gexec(gcloud(), arguments(), stdout = TRUE, stderr = TRUE)
+  output <- gcloud_exec(args = arguments(), stdout = TRUE, stderr = TRUE)
 
   # inform user of successful job submission
   template <- c(
@@ -94,7 +94,7 @@ cloudml_train <- function(application = getwd(),
 
   sofile <- tempfile("stdout-")
   sefile <- tempfile("stderr-")
-  output <- gexec(gcloud(), arguments(), stdout = sofile, stderr = sefile)
+  output <- gcloud_exec(args = arguments(), stdout = sofile, stderr = sefile)
   stdout <- readChar(sofile, file.info(sofile)$size, TRUE)
   stderr <- readChar(sefile, file.info(sefile)$size, TRUE)
 
@@ -126,7 +126,7 @@ job_cancel <- function(job) {
                 ("cancel")
                 (job))
 
-  gexec(gcloud(), arguments())
+  gcloud_exec(args = arguments())
 }
 
 #' Describe a job
@@ -144,7 +144,7 @@ job_describe <- function(job) {
                 ("describe")
                 (job))
 
-  output <- gexec(gcloud(), arguments(), stdout = TRUE)
+  output <- gcloud_exec(args = arguments(), stdout = TRUE)
 
   # return as R list
   yaml::yaml.load(paste(output, collapse = "\n"))
@@ -195,7 +195,7 @@ job_list <- function(filter    = NULL,
     ("--sort-by=%s", sort_by)
     (if (uri) "--uri"))
 
-  output <- gexec(gcloud(), arguments(), stdout = TRUE, stderr = TRUE)
+  output <- gcloud_exec(args = arguments(), stdout = TRUE, stderr = TRUE)
 
   if (!uri) {
     pasted <- paste(output, collapse = "\n")
@@ -242,7 +242,7 @@ job_stream <- function(job,
   if (allow_multiline_logs)
     arguments("--allow-multiline-logs")
 
-  gexec(gcloud(), arguments())
+  gcloud_exec(args = arguments())
 }
 
 #' Current status of a job
@@ -263,7 +263,7 @@ job_status <- function(job) {
                 (job))
 
   # request job description from gcloud
-  output <- gexec(gcloud(), arguments(), stdout = TRUE, stderr = FALSE)
+  output <- gcloud_exec(args = arguments(), stdout = TRUE, stderr = FALSE)
 
   # parse as YAML and return
   yaml::yaml.load(paste(output, collapse = "\n"))
