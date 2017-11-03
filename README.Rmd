@@ -34,26 +34,7 @@ gcloud_install()
 
 Each **cloudml** application needs to be associated with an Google Cloud project + account. If you haven't already, you can [create an account](https://console.cloud.google.com) following the instructions online, and then [create a project](https://cloud.google.com/resource-manager/docs/creating-managing-projects) after that. You'll also want to provision a [bucket](https://cloud.google.com/storage/docs/creating-buckets), to be used as a storage / staging space for applications trained in the cloud.
 
-After you've set this up, you might want to set up a default configuration for this account and project. You can run:
-
-```{r eval=FALSE}
-gcloud_account("<name@domain.com>")
-gcloud_project("<project>")
-```
-
 We'll show later how you can configure an application to deploy to multiple accounts / projects if so desired.
-
-
-## Authentication
-
-After creating your account, you'll need to set up default application credentials to ensure that the Google Cloud SDK can securely communicate with Google and take actions with your project. Try running
-
-```{r eval=FALSE}
-gcloud_login()
-```
-
-to request these credentials.
-
 
 ## Configuration
 
@@ -61,12 +42,16 @@ Application deployment is configured through the use of a top-level [YAML](http:
 and modify appropiately to train models successfully.
 
 ```{r echo=FALSE}
-contents <- readLines(system.file("examples/census/cloudml.yml", package = "cloudml"))
-writeLines(contents)
+result <- file.copy(
+  system.file("examples/census/cloudml.yml", package = "cloudml"),
+  "cloudml.yml"
+)
 
-contents <- sub("account@domain.com", gcloud_account(), contents)
-contents <- sub("project-name", gcloud_project(), contents)
-writeLines(contents, "cloudml.yml")
+config <- gcloud_config()
+if (config$account == "account@domain.com") stop("Please configure 'cloudml.yml'")
+
+contents <- readLines("cloudml.yml")
+writeLines(contents)
 ```
 
 The `gcloud` key is used for configuration specific to the Google Cloud SDK, and so contains items relevant to how applications are deployed.
@@ -82,6 +67,17 @@ The `storage` field in the `cloudml` section indicates where various artefacts u
 - `<storage>/staging`: applications will be 'staged' in this directory; that is, your deployed application will be uploaded and built in this location;
 
 - `<storage>/runs/<timestamp>`: training outputs will be copied to this directory.
+
+
+## Authentication
+
+After creating your account, you'll need to set up default application credentials to ensure that the Google Cloud SDK can securely communicate with Google and take actions with your project. Try running
+
+```{r eval=FALSE}
+gcloud_login()
+```
+
+to request these credentials.
 
 
 ## Deployment
