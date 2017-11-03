@@ -29,7 +29,7 @@ Before using the **cloudml** package, you'll need to make sure you're set up wit
 
 ```{r message=FALSE}
 library(cloudml)
-sdk_install()
+gcloud_install()
 ```
 
 Each **cloudml** application needs to be associated with an Google Cloud project + account. If you haven't already, you can [create an account](https://console.cloud.google.com) following the instructions online, and then [create a project](https://cloud.google.com/resource-manager/docs/creating-managing-projects) after that. You'll also want to provision a [bucket](https://cloud.google.com/storage/docs/creating-buckets), to be used as a storage / staging space for applications trained in the cloud.
@@ -37,7 +37,8 @@ Each **cloudml** application needs to be associated with an Google Cloud project
 After you've set this up, you might want to set up a default configuration for this account and project. You can run:
 
 ```{r eval=FALSE}
-sdk_config("<name@domain.com>", "<project>")
+gcloud_account("<name@domain.com>")
+gcloud_project("<project>")
 ```
 
 We'll show later how you can configure an application to deploy to multiple accounts / projects if so desired.
@@ -48,7 +49,7 @@ We'll show later how you can configure an application to deploy to multiple acco
 After creating your account, you'll need to set up default application credentials to ensure that the Google Cloud SDK can securely communicate with Google and take actions with your project. Try running
 
 ```{r eval=FALSE}
-sdk_login()
+gcloud_login()
 ```
 
 to request these credentials.
@@ -63,8 +64,8 @@ and modify appropiately to train models successfully.
 contents <- readLines(system.file("examples/census/cloudml.yml", package = "cloudml"))
 writeLines(contents)
 
-contents <- sub("account@domain.com", sdk_account(), contents)
-contents <- sub("project-name", sdk_project(), contents)
+contents <- sub("account@domain.com", gcloud_account(), contents)
+contents <- sub("project-name", gcloud_project(), contents)
 writeLines(contents, "cloudml.yml")
 ```
 
