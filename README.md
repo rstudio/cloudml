@@ -1,6 +1,12 @@
 cloudml Package
 ================
 
+``` r
+getwd()
+```
+
+    ## [1] "/Users/javierluraschi/RStudio/cloudml"
+
 **\[WIP\]**
 
 The **cloudml** package provides an R interface to the Google Cloud Machine Learning platform. **cloudml** makes it easy to take machine learning applications built with R packages like [tensorflow](https://tensorflow.rstudio.com/), [Keras](https://keras.rstudio.com/), and [tfestimators](https://tensorflow.rstudio.com/tfestimators/), and use Google Cloud's machine learning platform for training, testing, and prediction.
@@ -24,43 +30,17 @@ Before using the **cloudml** package, you'll need to make sure you're set up wit
 
 ``` r
 library(cloudml)
-sdk_install()
+gcloud_install()
 ```
 
 Each **cloudml** application needs to be associated with an Google Cloud project + account. If you haven't already, you can [create an account](https://console.cloud.google.com) following the instructions online, and then [create a project](https://cloud.google.com/resource-manager/docs/creating-managing-projects) after that. You'll also want to provision a [bucket](https://cloud.google.com/storage/docs/creating-buckets), to be used as a storage / staging space for applications trained in the cloud.
 
-After you've set this up, you might want to set up a default configuration for this account and project. You can run:
-
-``` r
-sdk_config("<name@domain.com>", "<project>")
-```
-
 We'll show later how you can configure an application to deploy to multiple accounts / projects if so desired.
-
-Authentication
---------------
-
-After creating your account, you'll need to set up default application credentials to ensure that the Google Cloud SDK can securely communicate with Google and take actions with your project. Try running
-
-``` r
-sdk_login()
-```
-
-to request these credentials.
 
 Configuration
 -------------
 
 Application deployment is configured through the use of a top-level [YAML](http://yaml.org/) file called `cloudml.yml`. See [here](https://github.com/rstudio/cloudml/blob/master/examples/census/cloudml.yml) for the associated file used in our census example, copy this file locally and modify appropiately to train models successfully.
-
-    ## gcloud:
-    ##   project         : "rstudio-cloudml"
-    ##   account         : "account@domain.com"
-    ##   region          : "us-central1"
-    ##   runtime-version : "1.2"
-    ## 
-    ## cloudml:
-    ##   storage         : "gs://rstudio-cloudml/census"
 
 The `gcloud` key is used for configuration specific to the Google Cloud SDK, and so contains items relevant to how applications are deployed.
 
@@ -75,6 +55,17 @@ The `storage` field in the `cloudml` section indicates where various artefacts u
 -   `<storage>/staging`: applications will be 'staged' in this directory; that is, your deployed application will be uploaded and built in this location;
 
 -   `<storage>/runs/<timestamp>`: training outputs will be copied to this directory.
+
+Authentication
+--------------
+
+After creating your account, you'll need to set up default application credentials to ensure that the Google Cloud SDK can securely communicate with Google and take actions with your project. Try running
+
+``` r
+gcloud_login()
+```
+
+to request these credentials.
 
 Deployment
 ----------

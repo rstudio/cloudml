@@ -4,7 +4,7 @@
 \alias{gcloud_install}
 \title{Install the Google Cloud SDK}
 \usage{
-gcloud_install()
+gcloud_install(version = "178.0.0")
 }
 \description{
 Installs the Google Cloud SDK which enables CloudML operations.
