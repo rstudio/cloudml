@@ -4,6 +4,11 @@
 #'
 #' @export
 sdk_install <- function() {
+  if (dir.exists(sdk_dir())) {
+    message("SDK already installed.")
+    return(invisible(NULL))
+  }
+
   if (Sys.info()["sysname"] != "Darwin")
     stop("Currently, only OS X installation is supported.")
 
@@ -46,7 +51,7 @@ sdk_command <- function(...) {
   params <- list(...)
   gcloud <- file.path(sdk_dir(), "bin", "gcloud")
 
-  system2(
+  gexec(
     normalizePath(gcloud),
     params
   )
@@ -73,4 +78,22 @@ sdk_login <- function() {
 sdk_config <- function(account, project) {
   sdk_command("config", "set", "core/account", account)
   sdk_command("config", "set", "core/project", project)
+}
+
+#' Get Account from Google Cloud SDK
+#'
+#' Gets the account from the Google Cloud SDK.
+#'
+#' @export
+sdk_account <- function() {
+  sdk_command("config", "get-value", "core/account")
+}
+
+#' Get Project from Google Cloud SDK
+#'
+#' Gets the project from the Google Cloud SDK.
+#'
+#' @export
+sdk_project <- function() {
+  sdk_command("config", "get-value", "core/project")
 }
