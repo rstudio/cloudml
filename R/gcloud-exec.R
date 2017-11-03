@@ -87,7 +87,7 @@ gcloud_exec <- function(...,
   gexec(
     normalizePath(gcloud_path()),
     args,
-    stdout = TRUE,
-    stderr = TRUE
+    stdout = stdout,
+    stderr = stderr
   )
 }
