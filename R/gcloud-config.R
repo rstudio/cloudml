@@ -1,3 +1,10 @@
+#' Google Cloud Config
+#'
+#' Reads the Google Cloud config file.
+#'
+#' @param path Path to 'cloudml.yml' file; defaults to \code{getwd()}.
+#'
+#' @export
 gcloud_config <- function(path = getwd()) {
 
   file <- rprojroot::find_root_file(
@@ -25,33 +32,4 @@ gcloud_config <- function(path = getwd()) {
   }
 
   gcloud
-}
-
-#' Google Cloud Account
-#'
-#' Gets/Sets the Google Cloud account through the Google Cloud SDK.
-#'
-#' @param account The account to use in subsequent Google Cloud SDK operations.
-#'   Usually the email associated to the account.
-#'
-#' @return The account associated to the Google Cloud SDK.
-#'
-#' @export
-gcloud_account <- function(account = NULL) {
-  if (!is.null(account)) gcloud_exec("config", "set", "core/account", account)
-  gcloud_exec("config", "get-value", "core/account")
-}
-
-#' Google Cloud Project
-#'
-#' Gets/Sets the Google Cloud account through the Google Cloud SDK.
-#'
-#' @param project The project to use in subsequent Google Cloud SDK operations.
-#'
-#' @return The project associated to the Google Cloud SDK.
-#'
-#' @export
-gcloud_project <- function(account, project) {
-  if (!is.null(project)) gcloud_exec("config", "set", "core/project", project)
-  gcloud_exec("config", "set", "core/project", project)
 }
