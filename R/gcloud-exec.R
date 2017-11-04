@@ -1,71 +1,45 @@
 # execute a gcloud command
 gexec <- function(command,
-                  args = character(),
-                  stdout = TRUE,
-                  stderr = TRUE,
-                  ...)
+                  args = character())
 {
-  # 'system2' will report a warning if a command is executed but
-  # returns with a non-zero status. we handle that explicitly so we
-  # suppress the R warning here and print an equivalent later
-  suppressWarnings(
-    result <- system2(
-      command = command,
-      args    = shell_quote(args),
-      stdout  = stdout,
-      stderr  = stderr,
-      ...
-    )
+  result <- processx::run(
+    commandline = paste(
+      command,
+      paste(shell_quote(args), collapse = " ")
+    ),
+    echo = TRUE
   )
 
-  # if we've interned stdout / stderr, then we need to
-  # grab the return status and report output separately
-  if (isTRUE(stdout) || isTRUE(stderr)) {
-    status <- attr(result, "status")
-    if (!is.null(status)) {
-      errmsg <- attr(result, "errmsg")
+  if (result$status != 0) {
+    output <- c(
+      sprintf("ERROR: gcloud invocation failed [exit status %i]", status),
 
-      pretty <- paste(
-        shell_quote(command),
-        paste(
-          "",
-          shell_quote(args),
-          sep = "\t",
-          collapse = "\n"
-        ),
-        sep = "\n"
-      )
+      "",
+      "[command]",
+      pretty,
 
-      output <- c(
-        sprintf("ERROR: gcloud invocation failed [exit status %i]", status),
+      "",
+      "[output]",
+      if (length(result$stdout))
+        paste(result$stdout, collapse = "\n")
+      else
+        "<none available>",
 
-        "",
-        "[command]",
-        pretty,
+      "",
+      "[errmsg]",
+      if (length(result$stderr))
+        paste(result$stderr, collapse = "\n")
+      else
+        "<none available>"
+    )
 
-        "",
-        "[output]",
-        if (length(result))
-          paste(result, collapse = "\n")
-        else
-          "<none available>",
+    pasted <- paste(output, collapse = "\n")
+    message(pasted)
 
-        "",
-        "[errmsg]",
-        if (!is.null(errmsg))
-          paste(errmsg, collapse = "\n")
-        else
-          "<none available>"
-      )
-
-      pasted <- paste(output, collapse = "\n")
-      message(pasted)
-
-      stop("error invoking 'gcloud' executable", call. = FALSE)
-    }
+    stop("error invoking 'gcloud' executable", call. = FALSE)
   }
 
-  result
+  invisible(result)
 }
 
 #' Executes a Google Cloud Command
@@ -76,18 +50,13 @@ gexec <- function(command,
 #' @param args Parameters to use specified as a list.
 #'
 #' @export
-gcloud_exec <- function(...,
-                        args = NULL,
-                        stdout = TRUE,
-                        stderr = TRUE)
+gcloud_exec <- function(..., args = NULL)
 {
   if (is.null(args))
     args <- list(...)
 
   gexec(
     normalizePath(gcloud_path()),
-    args,
-    stdout = stdout,
-    stderr = stderr
+    args
   )
 }
