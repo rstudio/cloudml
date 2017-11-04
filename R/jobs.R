@@ -68,7 +68,7 @@ cloudml_train <- function(application = getwd(),
                 # ("--config=%s/%s", basename(application), overlay$hypertune)
 
   # submit job through command line interface
-  output <- gcloud_exec(args = arguments(), stdout = TRUE, stderr = TRUE)
+  gcloud_exec(args = arguments())
 
   # inform user of successful job submission
   template <- c(
@@ -92,11 +92,9 @@ cloudml_train <- function(application = getwd(),
                 ("describe")
                 (id))
 
-  sofile <- tempfile("stdout-")
-  sefile <- tempfile("stderr-")
-  output <- gcloud_exec(args = arguments(), stdout = sofile, stderr = sefile)
-  stdout <- readChar(sofile, file.info(sofile)$size, TRUE)
-  stderr <- readChar(sefile, file.info(sefile)$size, TRUE)
+  output <- gcloud_exec(args = arguments())
+  stdout <- output$stdout
+  stderr <- output$stderr
 
   # write stderr to the console
   message(stderr)
@@ -147,7 +145,7 @@ job_describe <- function(job) {
   output <- gcloud_exec(args = arguments(), stdout = TRUE)
 
   # return as R list
-  yaml::yaml.load(paste(output, collapse = "\n"))
+  yaml::yaml.load(paste(output$stdout, collapse = "\n"))
 }
 
 #' List all jobs
@@ -195,10 +193,10 @@ job_list <- function(filter    = NULL,
     ("--sort-by=%s", sort_by)
     (if (uri) "--uri"))
 
-  output <- gcloud_exec(args = arguments(), stdout = TRUE, stderr = TRUE)
+  output <- gcloud_exec(args = arguments())
 
   if (!uri) {
-    pasted <- paste(output, collapse = "\n")
+    pasted <- paste(output$stdout, collapse = "\n")
     output <- readr::read_table2(pasted)
   }
 
@@ -242,7 +240,8 @@ job_stream <- function(job,
   if (allow_multiline_logs)
     arguments("--allow-multiline-logs")
 
-  gcloud_exec(args = arguments())
+  output <- gcloud_exec(args = arguments())
+  print(output$stdout)
 }
 
 #' Current status of a job
