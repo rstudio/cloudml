@@ -67,11 +67,20 @@ if (file.exists("packrat/packrat.lock")) {
 # discover available R packages
 installed <- rownames(installed.packages())
 
+cache_package <- function () {
+  if (is.character(cache)) {
+    source <- system.file("", package = pkg)
+    target <- file.path(cache, pkg)
+    system(paste(gsutil_path(), "cp", "-r", shQuote(source), shQuote(target)))
+  }
+}
+
 # install required CRAN packages
 for (pkg in CRAN) {
   if (pkg %in% installed)
     next
   install.packages(pkg)
+  cache_package(pkg)
 }
 
 # install required GitHub packages
@@ -79,6 +88,7 @@ for (entry in GITHUB) {
   if (basename(entry$uri) %in% installed)
     next
   devtools::install_github(entry$uri, ref = entry$ref)
+  cache_package(strsplit(entry$uri, "/")[[1]][[2]])
 }
 
 # Training ----
