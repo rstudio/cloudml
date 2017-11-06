@@ -6,3 +6,4 @@ gcloud:
 
 cloudml:
   storage         : "gs://project-name/census"
+  cache           : "gs://project-name/cache"
