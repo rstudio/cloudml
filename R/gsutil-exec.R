@@ -32,7 +32,7 @@ gsutil_exec <- function(..., args = NULL)
     args <- list(...)
 
   gexec(
-    normalizePath(gutils()),
+    normalizePath(gsutil_path()),
     args
   )
 }

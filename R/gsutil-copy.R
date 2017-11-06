@@ -27,10 +27,7 @@ gsutil_copy <- function(source, destination, recursive = FALSE) {
     shell_quote(destination)
   )
 
-  command <- shell_paste(gsutil_path(), arguments)
-  system(command)
-
-  destination
+  gsutil_exec(args = arguments)
 }
 
 #' Get a path to data within Google Storage

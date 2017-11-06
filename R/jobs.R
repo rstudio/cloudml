@@ -367,19 +367,15 @@ job_download <- function(job, destination = "jobs/cloudml") {
   # with this job -- 'gsutil ls' will return with
   # non-zero status when attempting to query a
   # non-existent gs URL
-  arguments <- (
-    ShellArgumentsBuilder()
-    ("ls")
-    (source))
+  result <- gsutil_exec("ls", source)
 
-  status <- gexec(gsutil_path(), arguments())
-  if (status) {
+  if (result$status) {
     fmt <- "no directory at path '%s'"
     stopf(fmt, source)
   }
 
   ensure_directory(destination)
-  gsutil_copy(source, destination)
+  gsutil_copy(source, destination, TRUE)
 }
 
 job_dir <- function(job) {
