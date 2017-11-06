@@ -1,3 +1,7 @@
+config <- yaml::yaml.load_file("cloudml.yml")
+cloudml <- config$cloudml
+cache <- cloudml[["cache"]]
+
 # required R packages
 CRAN <- c("RCurl", "devtools", "readr")
 GITHUB <- c(
@@ -95,9 +99,7 @@ tfruns::training_run(file = deploy$entrypoint,
                      run_dir = run_dir)
 
 # upload run directory to requested bucket (if any)
-config <- yaml::yaml.load_file("cloudml.yml")
-cloudml <- config$cloudml
-storage <- cloudml[["storage-bucket"]]
+storage <- cloudml[["storage"]]
 if (is.character(storage)) {
   source <- run_dir
   target <- file.path(storage, run_dir)
