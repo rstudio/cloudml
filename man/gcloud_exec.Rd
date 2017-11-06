@@ -4,7 +4,7 @@
 \alias{gcloud_exec}
 \title{Executes a Google Cloud Command}
 \usage{
-gcloud_exec(..., args = NULL, stdout = TRUE, stderr = TRUE)
+gcloud_exec(..., args = NULL)
 }
 \arguments{
 \item{...}{Parameters to use specified based on position.}
