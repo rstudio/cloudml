@@ -1,23 +1,3 @@
-#' @keywords internal
-#' @rdname gcloud-paths
-#' @export
-gsutil <- function() {
-  user_path <- user_setting("gsutil.binary.path")
-  if (!is.null(user_path))
-    return(normalizePath(user_path))
-
-  candidates <- c(
-    function() Sys.which("gsutil"),
-    function() "~/google-cloud-sdk/bin/gsutil"
-  )
-
-  for (candidate in candidates)
-    if (file.exists(candidate()))
-      return(normalizePath(candidate()))
-
-  stop("failed to find 'gsutil' binary")
-}
-
 #' Copy files to / from Google Storage
 #'
 #' Use the `gsutil cp` command to copy data between your local file system and
@@ -38,7 +18,7 @@ gsutil <- function() {
 #'   copying directories.
 #'
 #' @export
-gs_copy <- function(source, destination, recursive = FALSE) {
+gsutil_copy <- function(source, destination, recursive = FALSE) {
 
   arguments <- c(
     "cp",
@@ -47,7 +27,7 @@ gs_copy <- function(source, destination, recursive = FALSE) {
     shell_quote(destination)
   )
 
-  command <- shell_paste(gsutil(), arguments)
+  command <- shell_paste(gsutil_path(), arguments)
   system(command)
 
   destination
@@ -67,7 +47,7 @@ gs_copy <- function(source, destination, recursive = FALSE) {
 #'   context).
 #'
 #' @export
-gs_data <- function(uri, local_dir = "gs") {
+gutil_data <- function(uri, local_dir = "gs") {
   if (!is_gs_uri(uri))
     uri
   else {
@@ -100,23 +80,4 @@ gs_data <- function(uri, local_dir = "gs") {
 
 is_gs_uri <- function(file) {
   is.character(file) && grepl("^gs://.+$", file)
-}
-
-#' Executes a Google Utils Command
-#'
-#' Executes a Google Utils command with the given parameters.
-#'
-#' @param ... Parameters to use specified based on position.
-#' @param args Parameters to use specified as a list.
-#'
-#' @export
-gsutil_exec <- function(..., args = NULL)
-{
-  if (is.null(args))
-    args <- list(...)
-
-  gexec(
-    normalizePath(gutils()),
-    args
-  )
 }
