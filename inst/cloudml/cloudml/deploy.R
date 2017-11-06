@@ -1,3 +1,5 @@
+install.packages("yaml")
+
 config <- yaml::yaml.load_file("cloudml.yml")
 cloudml <- config$cloudml
 cache <- cloudml[["cache"]]
