@@ -101,3 +101,22 @@ gs_data <- function(uri, local_dir = "gs") {
 is_gs_uri <- function(file) {
   is.character(file) && grepl("^gs://.+$", file)
 }
+
+#' Executes a Google Utils Command
+#'
+#' Executes a Google Utils command with the given parameters.
+#'
+#' @param ... Parameters to use specified based on position.
+#' @param args Parameters to use specified as a list.
+#'
+#' @export
+gsutil_exec <- function(..., args = NULL)
+{
+  if (is.null(args))
+    args <- list(...)
+
+  gexec(
+    normalizePath(gutils()),
+    args
+  )
+}
