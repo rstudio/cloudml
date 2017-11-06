@@ -142,7 +142,7 @@ job_describe <- function(job) {
                 ("describe")
                 (job))
 
-  output <- gcloud_exec(args = arguments(), stdout = TRUE)
+  output <- gcloud_exec(args = arguments())
 
   # return as R list
   yaml::yaml.load(paste(output$stdout, collapse = "\n"))
@@ -262,10 +262,10 @@ job_status <- function(job) {
                 (job))
 
   # request job description from gcloud
-  output <- gcloud_exec(args = arguments(), stdout = TRUE, stderr = FALSE)
+  output <- gcloud_exec(args = arguments())
 
   # parse as YAML and return
-  yaml::yaml.load(paste(output, collapse = "\n"))
+  yaml::yaml.load(paste(output$stdout, collapse = "\n"))
 }
 
 #' Collect job output
