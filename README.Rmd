@@ -42,16 +42,17 @@ Application deployment is configured through the use of a top-level [YAML](http:
 and modify appropiately to train models successfully.
 
 ```{r echo=FALSE}
-result <- file.copy(
-  system.file("examples/census/cloudml.yml", package = "cloudml"),
-  "cloudml.yml"
-)
+examples_yml <- system.file("examples/census/cloudml.yml", package = "cloudml")
+
+result <- file.copy(examples_yml, "cloudml.yml")
 
 config <- gcloud_config()
 if (config$account == "account@domain.com") stop("Please configure 'cloudml.yml'")
 
-contents <- readLines("cloudml.yml")
+contents <- readLines(examples_yml)
 writeLines(contents)
+
+result <- file.copy("cloudml.yml", examples_yml, overwrite = T)
 ```
 
 The `gcloud` key is used for configuration specific to the Google Cloud SDK, and so contains items relevant to how applications are deployed.
@@ -89,7 +90,10 @@ If you've followed these steps, your application should now be ready to be deplo
 You can train your application with:
 
 ```{r eval=FALSE}
-job <- cloudml_train(entrypoint = system.file("examples/census/train.R", package = "cloudml"))
+job <- cloudml_train(
+  application = system.file("examples/census/", package = "cloudml"),
+  entrypoint = "train.R"
+)
 ```
 
 This function will submit your application to Google Cloud, and request that it train your application by sourcing the training script `"train.R"`. You should see output of the form:
