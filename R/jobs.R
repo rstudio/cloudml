@@ -381,3 +381,7 @@ job_download <- function(job, destination = "jobs/cloudml") {
   ensure_directory(destination)
   gs_copy(source, destination)
 }
+
+job_dir <- function(job) {
+  job$description$trainingInput$jobDir
+}
