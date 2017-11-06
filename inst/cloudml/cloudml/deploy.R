@@ -1,13 +1,13 @@
 # required R packages
 CRAN <- c("RCurl", "devtools", "readr")
 GITHUB <- c(
-  "tidyverse/purrr",
-  "tidyverse/modelr",
-  "rstudio/tensorflow",
-  "rstudio/cloudml",
-  "rstudio/keras",
-  "rstudio/tfruns",
-  "rstudio/tfestimators"
+  list(uri = "tidyverse/purrr",      ref = NULL),
+  list(uri = "tidyverse/modelr",     ref = NULL),
+  list(uri = "rstudio/tensorflow",   ref = NULL),
+  list(uri = "rstudio/cloudml",      ref = "feature/sdk"),
+  list(uri = "rstudio/keras",        ref = NULL),
+  list(uri = "rstudio/tfruns",       ref = NULL),
+  list(uri = "rstudio/tfestimators", ref = NULL)
 )
 
 # save repository + download methods
@@ -71,10 +71,10 @@ for (pkg in CRAN) {
 }
 
 # install required GitHub packages
-for (uri in GITHUB) {
-  if (basename(uri) %in% installed)
+for (entry in GITHUB) {
+  if (basename(entry$uri) %in% installed)
     next
-  devtools::install_github(uri)
+  devtools::install_github(entry$uri, ref = entry$ref)
 }
 
 # Training ----
