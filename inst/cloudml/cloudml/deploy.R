@@ -73,7 +73,7 @@ cache_package <- function (pkg) {
   if (is.character(cache)) {
     source <- system.file("", package = pkg)
     target <- file.path(cache, pkg)
-    system(paste(gsutil_path(), "cp", "-r", shQuote(source), shQuote(target)))
+    system(paste("gsutil", "cp", "-r", shQuote(source), shQuote(target)))
   }
 }
 
