@@ -1,9 +1,3 @@
-install.packages("yaml")
-
-config <- yaml::yaml.load_file("cloudml.yml")
-cloudml <- config$cloudml
-cache <- cloudml[["cache"]]
-
 # required R packages
 CRAN <- c("RCurl", "devtools", "readr")
 GITHUB <- c(
@@ -69,7 +63,13 @@ if (file.exists("packrat/packrat.lock")) {
 # discover available R packages
 installed <- rownames(installed.packages())
 
-cache_package <- function () {
+if (!"yaml" %in% installed) install.packages("yaml")
+
+config <- yaml::yaml.load_file("cloudml.yml")
+cloudml <- config$cloudml
+cache <- cloudml[["cache"]]
+
+cache_package <- function (pkg) {
   if (is.character(cache)) {
     source <- system.file("", package = pkg)
     target <- file.path(cache, pkg)
