@@ -69,11 +69,16 @@ config <- yaml::yaml.load_file("cloudml.yml")
 cloudml <- config$cloudml
 cache <- cloudml[["cache"]]
 
-cache_package <- function (pkg) {
-  if (is.character(cache)) {
-    source <- system.file("", package = pkg)
-    target <- file.path(cache, pkg)
-    system(paste("gsutil", "cp", "-r", shQuote(source), shQuote(target)))
+cache_packages <- function () {
+  cached_entries <- system2("gsutil", c("ls", "gs://rstudio-cloudml/cache"), stdout = TRUE)
+  cached_entries <- as.character(lapply(strsplit(cached_entries, "/"), function(e) e[[length(e)]]))
+
+  for (pkg in installed) {
+    if (!pkg %in% cached_entries) {
+      source <- system.file("", package = pkg)
+      target <- file.path(cache, pkg)
+      system(paste("gsutil", "cp", "-r", shQuote(source), shQuote(target)))
+    }
   }
 }
 
@@ -82,7 +87,7 @@ for (pkg in CRAN) {
   if (pkg %in% installed)
     next
   install.packages(pkg)
-  cache_package(pkg)
+  cache_packages()
 }
 
 # install required GitHub packages
@@ -90,7 +95,7 @@ for (entry in GITHUB) {
   if (basename(entry$uri) %in% installed)
     next
   devtools::install_github(entry$uri, ref = entry$ref)
-  cache_package(strsplit(entry$uri, "/")[[1]][[2]])
+  cache_packages()
 }
 
 # Training ----
