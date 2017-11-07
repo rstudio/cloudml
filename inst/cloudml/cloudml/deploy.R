@@ -117,10 +117,15 @@ retrieve_cached_packages <- function() {
     message(paste0("Restoring package from ", tar_file, " cache into ", target_path, "."))
     system2("tar", c("-xf", tar_file, "-C", target_path))
   })
+
+  invisible(NULL)
 }
 
 # make use of cache
 retrieve_cached_packages()
+
+# discover available R packages
+installed <- rownames(installed.packages())
 
 # install required CRAN packages
 for (pkg in CRAN) {
