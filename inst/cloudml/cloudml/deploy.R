@@ -1,6 +1,6 @@
 # required R packages
 CRAN <- c("RCurl", "devtools", "readr")
-GITHUB <- c(
+GITHUB <- list(
   list(uri = "tidyverse/purrr",      ref = NULL),
   list(uri = "tidyverse/modelr",     ref = NULL),
   list(uri = "rstudio/tensorflow",   ref = NULL),
@@ -69,12 +69,20 @@ config <- yaml::yaml.load_file("cloudml.yml")
 cloudml <- config$cloudml
 cache <- cloudml[["cache"]]
 
-cache_packages <- function () {
+get_cached_packages <- function () {
   cached_entries <- system2("gsutil", c("ls", "gs://rstudio-cloudml/cache"), stdout = TRUE)
-  cached_entries <- as.character(lapply(strsplit(cached_entries, "/"), function(e) e[[length(e)]]))
+  as.character(lapply(strsplit(cached_entries, "/"), function(e) e[[length(e)]]))
+}
+
+store_cached_packages <- function () {
+  if (!is.character(cache)) return()
+
+  cached_entries <- get_cached_packages()
 
   for (pkg in installed) {
     if (!pkg %in% cached_entries) {
+      print(paste0("Adding '", pkg, "' package to ", target, " cache."))
+
       source <- system.file("", package = pkg)
       target <- file.path(cache, pkg)
       system(paste("gsutil", "cp", "-r", shQuote(source), shQuote(target)))
@@ -82,12 +90,25 @@ cache_packages <- function () {
   }
 }
 
+retrieve_cached_packages <- function() {
+  if (!is.character(cache)) return()
+
+  source <- file.path(cache, pkg)
+  target <- .libPaths()[[1]]
+
+  print(paste("Restoring packages from", source, "cache."))
+  system(paste("gsutil", "cp", "-r", shQuote(source), shQuote(target)))
+}
+
+# make use of cache
+retrieve_cached_packages()
+
 # install required CRAN packages
 for (pkg in CRAN) {
   if (pkg %in% installed)
     next
   install.packages(pkg)
-  cache_packages()
+  store_cached_packages()
 }
 
 # install required GitHub packages
@@ -95,7 +116,7 @@ for (entry in GITHUB) {
   if (basename(entry$uri) %in% installed)
     next
   devtools::install_github(entry$uri, ref = entry$ref)
-  cache_packages()
+  store_cached_packages()
 }
 
 # Training ----
