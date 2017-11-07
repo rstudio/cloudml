@@ -86,7 +86,7 @@ store_cached_packages <- function () {
       target <- file.path(cache, pkg)
 
       message(paste0("Adding '", pkg, "' package to ", target, " cache."))
-      system(paste("gsutil", "cp", "-r", shQuote(source), shQuote(target)))
+      system(paste("gsutil", "-m", "cp", "-r", shQuote(source), shQuote(target)))
     }
   }
 }
