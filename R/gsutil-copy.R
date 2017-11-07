@@ -37,14 +37,14 @@ gsutil_copy <- function(source, destination, recursive = FALSE) {
 #' file is returned. If a plain filesystem path is passed then it is also
 #' returned unchanged.
 #'
-#' @inheritParams gs_copy
+#' @inheritParams gsutil_copy
 #' @param local_dir Local directory to copy files into
 #'
 #' @return Path to data file (may be local or remote depending on the execution
 #'   context).
 #'
 #' @export
-gutil_data <- function(uri, local_dir = "gs") {
+gsutil_data <- function(uri, local_dir = "gs") {
   if (!is_gs_uri(uri))
     uri
   else {
