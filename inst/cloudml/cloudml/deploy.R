@@ -99,11 +99,13 @@ store_cached_packages <- function () {
 retrieve_cached_packages <- function() {
   if (!is.character(cache)) return()
 
-  compressed <- file.path(tempdir(), "cache")
+  compressed <- file.path(tempdir(), "cache/")
   if (!dir.exists(compressed)) dir.create(compressed, recursive = TRUE)
 
-  message(paste0("Retrieving packages from ", cache, " cache into ", compressed, "."))
-  system(paste("gsutil", "-m", "cp", "-r", shQuote(cache), shQuote(compressed)))
+  remote_path <- file.path(cache, "*")
+
+  message(paste0("Retrieving packages from ", remote_path, " cache into ", compressed, "."))
+  system(paste("gsutil", "-m", "cp", "-r", shQuote(remote_path), shQuote(compressed)))
 
   target <- .libPaths()[[1]]
   lapply(dir(compressed, full.names = TRUE, pattern = ".tar"), function(tar_file) {
