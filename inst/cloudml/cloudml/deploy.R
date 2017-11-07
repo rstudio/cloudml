@@ -78,13 +78,14 @@ store_cached_packages <- function () {
   if (!is.character(cache)) return()
 
   cached_entries <- get_cached_packages()
+  installed <- rownames(installed.packages())
 
   for (pkg in installed) {
     if (!pkg %in% cached_entries) {
-      print(paste0("Adding '", pkg, "' package to ", target, " cache."))
-
       source <- system.file("", package = pkg)
       target <- file.path(cache, pkg)
+
+      message(paste0("Adding '", pkg, "' package to ", target, " cache."))
       system(paste("gsutil", "cp", "-r", shQuote(source), shQuote(target)))
     }
   }
@@ -93,11 +94,10 @@ store_cached_packages <- function () {
 retrieve_cached_packages <- function() {
   if (!is.character(cache)) return()
 
-  source <- file.path(cache, pkg)
   target <- .libPaths()[[1]]
 
-  print(paste("Restoring packages from", source, "cache."))
-  system(paste("gsutil", "cp", "-r", shQuote(source), shQuote(target)))
+  message(paste0("Restoring packages from ", cache, " cache into ", target, "."))
+  system(paste("gsutil", "cp", "-r", shQuote(cache), shQuote(target)))
 }
 
 # make use of cache
