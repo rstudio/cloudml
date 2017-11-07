@@ -83,10 +83,15 @@ store_cached_packages <- function () {
   for (pkg in installed) {
     if (!pkg %in% cached_entries) {
       source <- system.file("", package = pkg)
-      target <- file.path(cache, pkg)
+      compressed <- file.path(tempdir(), paste0(pkg, ".tar"))
 
-      message(paste0("Adding '", pkg, "' package to ", target, " cache."))
-      system(paste("gsutil", "-m", "cp", "-r", shQuote(source), shQuote(target)))
+      message(paste0("Compressing '", pkg, "' package to ", compressed, " cache."))
+      system2("tar", c("-cf", compressed, "-C", source, "."))
+
+      target <- file.path(cache, paste0(pkg, ".tar"))
+
+      message(paste0("Adding '", compressed, "' to ", target, " cache."))
+      system(paste("gsutil", "cp", shQuote(compressed), shQuote(target)))
     }
   }
 }
@@ -94,10 +99,22 @@ store_cached_packages <- function () {
 retrieve_cached_packages <- function() {
   if (!is.character(cache)) return()
 
-  target <- .libPaths()[[1]]
+  compressed <- file.path(tempdir(), "cache")
+  if (!dir.exists(compressed)) dir.create(compressed, recursive = TRUE)
 
-  message(paste0("Restoring packages from ", cache, " cache into ", target, "."))
-  system(paste("gsutil", "cp", "-r", shQuote(cache), shQuote(target)))
+  message(paste0("Retrieving packages from ", cache, " cache into ", compressed, "."))
+  system(paste("gsutil", "-m", "cp", "-r", shQuote(cache), shQuote(compressed)))
+
+  target <- .libPaths()[[1]]
+  lapply(dir(compressed, full.names = TRUE, pattern = ".tar"), function(tar_file) {
+    target_package <- strsplit(basename(tar_file), "\\.")[[1]][[1]]
+    target_path <- file.path(target, target_package)
+
+    if (!dir.exists(target_path)) dir.create(target_path, recursive = TRUE)
+
+    message(paste0("Restoring package from ", tar_file, " cache into ", target_path, "."))
+    system2("tar", c("-xf", tar_file, "-C", target_path))
+  })
 }
 
 # make use of cache
