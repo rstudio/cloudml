@@ -70,8 +70,8 @@ cloudml <- config$cloudml
 cache <- cloudml[["cache"]]
 
 get_cached_packages <- function () {
-  cached_entries <- system2("gsutil", c("ls", "gs://rstudio-cloudml/cache"), stdout = TRUE)
-  as.character(lapply(strsplit(cached_entries, "/"), function(e) e[[length(e)]]))
+  cached_entries <- system2("gsutil", c("ls", cache), stdout = TRUE)
+  as.character(lapply(strsplit(basename(cached_entries), "\\."), function(e) e[[1]]))
 }
 
 store_cached_packages <- function () {
