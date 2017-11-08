@@ -7,7 +7,7 @@ GITHUB <- list(
   list(uri = "rstudio/cloudml",      ref = "feature/sdk"),
   list(uri = "rstudio/keras",        ref = NULL),
   list(uri = "rstudio/tfruns",       ref = NULL),
-  list(uri = "rstudio/tfestimators", ref = NULL)
+  list(uri = "rstudio/tfestimators", ref = "feature/train-debug-logging")
 )
 
 # save repository + download methods
