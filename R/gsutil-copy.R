@@ -65,9 +65,9 @@ gsutil_data <- function(uri, local_dir = "gs") {
       result <- tryCatch(suppressWarnings(download.file(public_url, local_path)),
                          error = function(e) 1)
 
-      # if that failed then try gs_copy (which requires auth)
+      # if that failed then try gsutil_copy (which requires auth)
       if (result != 0)
-        gs_copy(uri, local_path)
+        gsutil_copy(uri, local_path)
     }
 
     # return path
