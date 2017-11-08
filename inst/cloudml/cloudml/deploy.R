@@ -1,13 +1,13 @@
 # required R packages
 CRAN <- c("RCurl", "devtools", "readr")
-GITHUB <- c(
-  "tidyverse/purrr",
-  "tidyverse/modelr",
-  "rstudio/tensorflow",
-  "rstudio/cloudml",
-  "rstudio/keras",
-  "rstudio/tfruns",
-  "rstudio/tfestimators"
+GITHUB <- list(
+  list(uri = "tidyverse/purrr",      ref = NULL),
+  list(uri = "tidyverse/modelr",     ref = NULL),
+  list(uri = "rstudio/tensorflow",   ref = NULL),
+  list(uri = "rstudio/cloudml",      ref = "feature/sdk"),
+  list(uri = "rstudio/keras",        ref = NULL),
+  list(uri = "rstudio/tfruns",       ref = NULL),
+  list(uri = "rstudio/tfestimators", ref = "feature/train-debug-logging")
 )
 
 # save repository + download methods
@@ -63,18 +63,84 @@ if (file.exists("packrat/packrat.lock")) {
 # discover available R packages
 installed <- rownames(installed.packages())
 
+if (!"yaml" %in% installed) install.packages("yaml")
+
+config <- yaml::yaml.load_file("cloudml.yml")
+cloudml <- config$cloudml
+cache <- cloudml[["cache"]]
+
+get_cached_packages <- function () {
+  cached_entries <- system2("gsutil", c("ls", cache), stdout = TRUE)
+  as.character(lapply(strsplit(basename(cached_entries), "\\."), function(e) e[[1]]))
+}
+
+store_cached_packages <- function () {
+  if (!is.character(cache)) return()
+
+  cached_entries <- get_cached_packages()
+  installed <- rownames(installed.packages())
+
+  for (pkg in installed) {
+    if (!pkg %in% cached_entries) {
+      source <- system.file("", package = pkg)
+      compressed <- file.path(tempdir(), paste0(pkg, ".tar"))
+
+      message(paste0("Compressing '", pkg, "' package to ", compressed, " cache."))
+      system2("tar", c("-cf", compressed, "-C", source, "."))
+
+      target <- file.path(cache, paste0(pkg, ".tar"))
+
+      message(paste0("Adding '", compressed, "' to ", target, " cache."))
+      system(paste("gsutil", "cp", shQuote(compressed), shQuote(target)))
+    }
+  }
+}
+
+retrieve_cached_packages <- function() {
+  if (!is.character(cache)) return()
+
+  compressed <- file.path(tempdir(), "cache/")
+  if (!dir.exists(compressed)) dir.create(compressed, recursive = TRUE)
+
+  remote_path <- file.path(cache, "*")
+
+  message(paste0("Retrieving packages from ", remote_path, " cache into ", compressed, "."))
+  system(paste("gsutil", "-m", "cp", "-r", shQuote(remote_path), shQuote(compressed)))
+
+  target <- .libPaths()[[1]]
+  lapply(dir(compressed, full.names = TRUE, pattern = ".tar"), function(tar_file) {
+    target_package <- strsplit(basename(tar_file), "\\.")[[1]][[1]]
+    target_path <- file.path(target, target_package)
+
+    if (!dir.exists(target_path)) dir.create(target_path, recursive = TRUE)
+
+    message(paste0("Restoring package from ", tar_file, " cache into ", target_path, "."))
+    system2("tar", c("-xf", tar_file, "-C", target_path))
+  })
+
+  invisible(NULL)
+}
+
+# make use of cache
+retrieve_cached_packages()
+
+# discover available R packages
+installed <- rownames(installed.packages())
+
 # install required CRAN packages
 for (pkg in CRAN) {
   if (pkg %in% installed)
     next
   install.packages(pkg)
+  store_cached_packages()
 }
 
 # install required GitHub packages
-for (uri in GITHUB) {
-  if (basename(uri) %in% installed)
+for (entry in GITHUB) {
+  if (basename(entry$uri) %in% installed)
     next
-  devtools::install_github(uri)
+  devtools::install_github(entry$uri, ref = entry$ref)
+  store_cached_packages()
 }
 
 # Training ----
@@ -95,11 +161,9 @@ tfruns::training_run(file = deploy$entrypoint,
                      run_dir = run_dir)
 
 # upload run directory to requested bucket (if any)
-config <- yaml::yaml.load_file("cloudml.yml")
-cloudml <- config$cloudml
-storage <- cloudml[["storage-bucket"]]
+storage <- cloudml[["storage"]]
 if (is.character(storage)) {
   source <- run_dir
   target <- file.path(storage, run_dir)
-  system(paste(gsutil(), "cp", "-r", shQuote(source), shQuote(target)))
+  system(paste(gsutil_path(), "cp", "-r", shQuote(source), shQuote(target)))
 }

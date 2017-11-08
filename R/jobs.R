@@ -68,7 +68,7 @@ cloudml_train <- function(application = getwd(),
                 # ("--config=%s/%s", basename(application), overlay$hypertune)
 
   # submit job through command line interface
-  output <- gexec(gcloud(), arguments(), stdout = TRUE, stderr = TRUE)
+  gcloud_exec(args = arguments())
 
   # inform user of successful job submission
   template <- c(
@@ -92,11 +92,9 @@ cloudml_train <- function(application = getwd(),
                 ("describe")
                 (id))
 
-  sofile <- tempfile("stdout-")
-  sefile <- tempfile("stderr-")
-  output <- gexec(gcloud(), arguments(), stdout = sofile, stderr = sefile)
-  stdout <- readChar(sofile, file.info(sofile)$size, TRUE)
-  stderr <- readChar(sefile, file.info(sefile)$size, TRUE)
+  output <- gcloud_exec(args = arguments())
+  stdout <- output$stdout
+  stderr <- output$stderr
 
   # write stderr to the console
   message(stderr)
@@ -126,7 +124,7 @@ job_cancel <- function(job) {
                 ("cancel")
                 (job))
 
-  gexec(gcloud(), arguments())
+  gcloud_exec(args = arguments())
 }
 
 #' Describe a job
@@ -144,10 +142,10 @@ job_describe <- function(job) {
                 ("describe")
                 (job))
 
-  output <- gexec(gcloud(), arguments(), stdout = TRUE)
+  output <- gcloud_exec(args = arguments())
 
   # return as R list
-  yaml::yaml.load(paste(output, collapse = "\n"))
+  yaml::yaml.load(paste(output$stdout, collapse = "\n"))
 }
 
 #' List all jobs
@@ -195,10 +193,10 @@ job_list <- function(filter    = NULL,
     ("--sort-by=%s", sort_by)
     (if (uri) "--uri"))
 
-  output <- gexec(gcloud(), arguments(), stdout = TRUE, stderr = TRUE)
+  output <- gcloud_exec(args = arguments())
 
   if (!uri) {
-    pasted <- paste(output, collapse = "\n")
+    pasted <- paste(output$stdout, collapse = "\n")
     output <- readr::read_table2(pasted)
   }
 
@@ -242,7 +240,8 @@ job_stream <- function(job,
   if (allow_multiline_logs)
     arguments("--allow-multiline-logs")
 
-  gexec(gcloud(), arguments())
+  output <- gcloud_exec(args = arguments())
+  print(output$stdout)
 }
 
 #' Current status of a job
@@ -263,10 +262,10 @@ job_status <- function(job) {
                 (job))
 
   # request job description from gcloud
-  output <- gexec(gcloud(), arguments(), stdout = TRUE, stderr = FALSE)
+  output <- gcloud_exec(args = arguments())
 
   # parse as YAML and return
-  yaml::yaml.load(paste(output, collapse = "\n"))
+  yaml::yaml.load(paste(output$stdout, collapse = "\n"))
 }
 
 #' Collect job output
@@ -368,17 +367,17 @@ job_download <- function(job, destination = "jobs/cloudml") {
   # with this job -- 'gsutil ls' will return with
   # non-zero status when attempting to query a
   # non-existent gs URL
-  arguments <- (
-    ShellArgumentsBuilder()
-    ("ls")
-    (source))
+  result <- gsutil_exec("ls", source)
 
-  status <- gexec(gsutil(), arguments())
-  if (status) {
+  if (result$status) {
     fmt <- "no directory at path '%s'"
     stopf(fmt, source)
   }
 
   ensure_directory(destination)
-  gs_copy(source, destination)
+  gsutil_copy(source, destination, TRUE)
+}
+
+job_dir <- function(job) {
+  job$description$trainingInput$jobDir
 }

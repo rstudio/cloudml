@@ -6,8 +6,8 @@ source("model.R")
 # read in flags
 FLAGS <- flags(
 
-  flag_string("train_file", "gs://cloudml-public/census/data/adult.data.csv"),
-  flag_string("eval_file", "gs://cloudml-public/census/data/adult.test.csv"),
+  flag_string("train_file", "https://storage.googleapis.com/rstudio-cloudml/census/data/adult.data.csv"),
+  flag_string("eval_file", "https://storage.googleapis.com/rstudio-cloudml/census/data/adult.test.csv"),
 
   flag_integer("estimator_embedding_size", 8),
   flag_string("estimator_hidden_units", "[100, 70, 50, 25]"),
@@ -33,7 +33,7 @@ estimator <- build_estimator(
 )
 
 # define input function
-train_file <- cloudml::gs_data(FLAGS$train_file)
+train_file <- cloudml::gsutil_data(FLAGS$train_file)
 train_data <- readr::read_csv(
   train_file,
   col_names = CSV_COLUMNS,
@@ -50,4 +50,4 @@ train_input_fn <- input_fn(
   features = setdiff(names(train_data), LABEL_COLUMN)
 )
 
-train(estimator, input_fn = train_input_fn)
+train(estimator, input_fn = train_input_fn, verbose = FALSE, view_metrics = FALSE, debug_logging = TRUE)
