@@ -6,8 +6,8 @@ source("model.R")
 # read in flags
 FLAGS <- flags(
 
-  flag_string("train_file", "gs://cloudml-public/census/data/adult.data.csv"),
-  flag_string("eval_file", "gs://cloudml-public/census/data/adult.test.csv"),
+  flag_string("train_file", "gs://rstudio-cloudml/census/data/adult.data.csv"),
+  flag_string("eval_file", "gs://rstudio-cloudml/census/data/adult.test.csv"),
 
   flag_integer("estimator_embedding_size", 8),
   flag_string("estimator_hidden_units", "[100, 70, 50, 25]"),
