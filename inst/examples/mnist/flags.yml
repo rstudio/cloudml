@@ -1,0 +1,4 @@
+cloudml:
+
+  # Outputs
+  job_output               : "gs://rstudio-cloudml-demo-ml/mnist/jobs"
