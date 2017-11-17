@@ -50,4 +50,9 @@ train_input_fn <- input_fn(
   features = setdiff(names(train_data), LABEL_COLUMN)
 )
 
-train(estimator, input_fn = train_input_fn, verbose = FALSE, view_metrics = FALSE, debug_logging = TRUE)
+train(estimator,
+      input_fn = train_input_fn,
+      verbose = FALSE,
+      view_metrics = FALSE,
+      debug_logging = TRUE,
+      steps = 100)
