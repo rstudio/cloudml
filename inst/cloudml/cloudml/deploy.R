@@ -1,19 +1,23 @@
 # required R packages
 CRAN <- c("RCurl", "devtools", "readr")
 GITHUB <- list(
-  list(uri = "tidyverse/purrr",      ref = NULL),
-  list(uri = "tidyverse/modelr",     ref = NULL),
-  list(uri = "rstudio/tensorflow",   ref = NULL),
-  list(uri = "rstudio/cloudml",      ref = "feature/sdk"),
-  list(uri = "rstudio/keras",        ref = NULL),
-  list(uri = "rstudio/tfruns",       ref = NULL),
-  list(uri = "rstudio/tfestimators", ref = "feature/train-debug-logging")
+  list(uri = "javierluraschi/reticulate", ref = "feature/trace"),
+  list(uri = "tidyverse/purrr",           ref = NULL),
+  list(uri = "tidyverse/modelr",          ref = NULL),
+  list(uri = "rstudio/tensorflow",        ref = NULL),
+  list(uri = "rstudio/cloudml",           ref = "feature/sdk"),
+  list(uri = "rstudio/keras",             ref = NULL),
+  list(uri = "javierluraschi/tfruns",     ref = "bugfix/read-json-columns-empty"),
+  list(uri = "rstudio/tfestimators",      ref = NULL)
 )
 
 # save repository + download methods
 repos <- getOption("repos")
 download.file.method <- getOption("download.file.method")
 download.file.extra  <- getOption("download.file.extra")
+
+# enable tracing in reticulate
+Sys.setenv(RETICULATE_TRACE = 1000)
 
 # emit warnings as they occur
 options(warn = 1)
