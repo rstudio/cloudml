@@ -25,7 +25,6 @@ gsutil_path <- function() {
 #' @param ... Parameters to use specified based on position.
 #' @param args Parameters to use specified as a list.
 #'
-#' @export
 gsutil_exec <- function(..., args = NULL)
 {
   if (is.null(args))

@@ -4,7 +4,6 @@
 #'
 #' @param path Path to 'cloudml.yml' file; defaults to \code{getwd()}.
 #'
-#' @export
 gcloud_config <- function(path = getwd()) {
 
   file <- rprojroot::find_root_file(

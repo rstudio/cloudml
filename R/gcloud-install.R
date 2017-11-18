@@ -46,7 +46,6 @@ gcloud_path_default <- function() {
 #'
 #' Installs the Google Cloud SDK which enables CloudML operations.
 #'
-#' @export
 gcloud_install <- function(version = "178.0.0") {
   if (dir.exists(gcloud_path_default())) {
     message("SDK already installed.")
