@@ -22,4 +22,3 @@ Other job management: \code{\link{job_cancel}},
   \code{\link{job_describe}}, \code{\link{job_list}},
   \code{\link{job_status}}, \code{\link{job_stream}}
 }
-\concept{job management}
