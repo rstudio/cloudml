@@ -47,14 +47,13 @@ Application deployment is configured through the use of a top-level [YAML](http:
 
 ```{r echo=FALSE}
 config_yml <- system.file("examples/mnist/cloudml.yml", package = "cloudml")
+contents <- readLines(config_yml)
+writeLines(contents)
 
 result <- file.copy(config_yml, "cloudml.yml")
 
 config <- cloudml:::gcloud_config()
 if (config$account == "account@domain.com") stop("Please configure 'cloudml.yml'")
-
-contents <- readLines(config_yml)
-writeLines(contents)
 
 result <- file.copy("cloudml.yml", config_yml, overwrite = T)
 ```
