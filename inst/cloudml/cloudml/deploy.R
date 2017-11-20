@@ -70,9 +70,15 @@ if (!"yaml" %in% installed) install.packages("yaml")
 
 config <- yaml::yaml.load_file("cloudml.yml")
 cloudml <- config$cloudml
+
 cache <- cloudml[["cache"]]
 if (is.null(cache)) {
   cache <- file.path(cloudml[["storage"]], "cache")
+}
+
+use_packrat <- cloudml[["packrat"]]
+if (is.null(use_packrat)) {
+  use_packrat <- TRUE
 }
 
 get_cached_packages <- function () {
@@ -147,7 +153,8 @@ for (entry in GITHUB) {
   devtools::install_github(entry$uri, ref = entry$ref)
 }
 
-retrieve_packrat_packages();
+if (use_packrat)
+  retrieve_packrat_packages();
 
 store_cached_packages()
 
