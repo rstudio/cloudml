@@ -3,9 +3,6 @@ title  : "cloudml Package"
 output : github_document
 ---
 
-```{r setup, include=FALSE}
-```
-
 **[WIP]**
 
 The **cloudml** package provides an R interface to the Google Cloud Machine Learning platform. **cloudml** makes it easy to take machine learning applications built with R packages like [tensorflow](https://tensorflow.rstudio.com/), [Keras](https://keras.rstudio.com/), and [tfestimators](https://tensorflow.rstudio.com/tfestimators/), and use Google Cloud's machine learning platform for training, testing, and prediction.
@@ -31,17 +28,17 @@ Each **cloudml** application needs to be associated with an Google Cloud project
 
 After you've set this up, you might want to set up a default configuration for this account and project. You can do this from the command line with:
 
-```
-gcloud config set core.account <account>
-gcloud config set core.project <project>
-```
+    gcloud config set core.account <account>
+    gcloud config set core.project <project>
+   
+We'll show later how you can configure an application to deploy to multiple accounts / projects if so desired.
 
 ## Authentication
 
 After creating your account, you'll need to set up default application credentials to ensure that the Google Cloud SDK can securely communicate with Google and take actions with your project. Try running
 
     gcloud auth application-default login
-    
+
 from a terminal, to request these credentials.
 
 ## Configuration
@@ -53,7 +50,7 @@ config_yml <- system.file("examples/mnist/cloudml.yml", package = "cloudml")
 
 result <- file.copy(config_yml, "cloudml.yml")
 
-config <- gcloud_config()
+config <- cloudml:::gcloud_config()
 if (config$account == "account@domain.com") stop("Please configure 'cloudml.yml'")
 
 contents <- readLines(config_yml)
