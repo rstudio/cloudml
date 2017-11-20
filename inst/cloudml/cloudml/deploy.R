@@ -87,7 +87,7 @@ get_cached_packages <- function () {
 }
 
 store_cached_packages <- function () {
-  if (identica(cache, FALSE)) return()
+  if (identical(cache, FALSE)) return()
 
   cached_entries <- get_cached_packages()
   installed <- rownames(installed.packages())
@@ -109,7 +109,7 @@ store_cached_packages <- function () {
 }
 
 retrieve_cached_packages <- function() {
-  if (identica(cache, FALSE)) return()
+  if (identical(cache, FALSE)) return()
 
   compressed <- file.path(tempdir(), "cache/")
   if (!dir.exists(compressed)) dir.create(compressed, recursive = TRUE)
