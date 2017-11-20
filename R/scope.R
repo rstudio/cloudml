@@ -15,7 +15,25 @@ initialize_application <- function(application = getwd(),
     "cloudml"
   )
 
-  packrat::opts$ignored.packages("cloudml")
+  # We manage a set of packages during deploy that might require specific versions
+  IGNORED <- c(
+    # CRAN
+    "RCurl",
+    "devtools",
+    "readr",
+    "knitr",
+    # GitHUb
+    "purrr",
+    "modelr",
+    "tensorflow",
+    "cloudml",
+    "keras",
+    "tfruns",
+    "tfestimators",
+    "packrat"
+  )
+
+  packrat::opts$ignored.packages(IGNORED)
   packrat::.snapshotImpl(
     project = getwd(),
     ignore.stale = TRUE,

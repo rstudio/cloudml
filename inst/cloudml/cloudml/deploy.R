@@ -1,13 +1,14 @@
 # required R packages
-CRAN <- c("RCurl", "devtools", "readr")
+CRAN <- c("RCurl", "devtools", "readr", "knitr")
 GITHUB <- list(
   list(uri = "tidyverse/purrr",      ref = NULL),
   list(uri = "tidyverse/modelr",     ref = NULL),
   list(uri = "rstudio/tensorflow",   ref = NULL),
-  list(uri = "rstudio/cloudml",      ref = "feature/sdk"),
+  list(uri = "rstudio/cloudml",      ref = "feature/train-improvements"),
   list(uri = "rstudio/keras",        ref = NULL),
   list(uri = "rstudio/tfruns",       ref = NULL),
-  list(uri = "rstudio/tfestimators", ref = NULL)
+  list(uri = "rstudio/tfestimators", ref = NULL),
+  list(uri = "rstudio/packrat",      ref = NULL)
 )
 
 # save repository + download methods
@@ -59,7 +60,6 @@ retrieve_packrat_packages <- function() {
 
     # attempt a project restore
     packrat::restore()
-    packrat::on()
   }
 }
 
