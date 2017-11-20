@@ -355,8 +355,7 @@ job_collect <- function(job, destination = "jobs/cloudml") {
 }
 
 job_download <- function(job, destination = "jobs/cloudml") {
-  job <- as.cloudml_job(job)
-  source <- job_dir(job)
+  source <- job_output_dir(job)
 
   if (!is_gs_uri(source)) {
     fmt <- "job directory '%s' is not a Google Storage URI"
@@ -378,6 +377,7 @@ job_download <- function(job, destination = "jobs/cloudml") {
   gsutil_copy(source, destination, TRUE)
 }
 
-job_dir <- function(job) {
-  job$description$trainingInput$jobDir
+job_output_dir <- function(job) {
+  config <- cloudml_config()
+  file.path(config$storage, "runs", job$id)
 }

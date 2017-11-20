@@ -90,7 +90,8 @@ scope_deployment <- function(id,
                context = context,
                entrypoint = entrypoint,
                config = config,
-               overlay = overlay)
+               overlay = overlay,
+               id = id)
   ensure_directory("cloudml")
   saveRDS(info, file = "cloudml/deploy.rds")
 

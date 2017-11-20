@@ -151,7 +151,7 @@ library(cloudml)
 deploy <- readRDS("cloudml/deploy.rds")
 
 # source entrypoint
-run_dir <- tfruns::unique_run_dir()
+run_dir <- file.path("runs", deploy$id)
 tfruns::training_run(file = deploy$entrypoint,
                      context = deploy$environment,
                      flags = deploy$overlay,
