@@ -6,3 +6,4 @@ internal/
 index.html
 vignettes/*.html
 cloudml.yml
+jobs/

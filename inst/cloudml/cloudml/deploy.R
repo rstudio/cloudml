@@ -48,16 +48,19 @@ if (nzchar(Sys.which("curl"))) {
 if (file.exists("dependencies.R"))
   source("dependencies.R")
 
-# attempt to restore using a packrat lockfile
-if (file.exists("packrat/packrat.lock")) {
+retrieve_packrat_packages <- function() {
+  # attempt to restore using a packrat lockfile
+  if (file.exists("packrat/packrat.lock")) {
+    message("Restoring package using packrat lockfile")
 
-  # ensure packrat is installed
-  if (!"packrat" %in% rownames(installed.packages()))
-    install.packages("packrat")
+    # ensure packrat is installed
+    if (!"packrat" %in% rownames(installed.packages()))
+      install.packages("packrat")
 
-  # attempt a project restore
-  packrat::restore()
-  packrat::on()
+    # attempt a project restore
+    packrat::restore()
+    packrat::on()
+  }
 }
 
 # discover available R packages
@@ -132,7 +135,6 @@ for (pkg in CRAN) {
   if (pkg %in% installed)
     next
   install.packages(pkg)
-  store_cached_packages()
 }
 
 # install required GitHub packages
@@ -140,8 +142,11 @@ for (entry in GITHUB) {
   if (basename(entry$uri) %in% installed)
     next
   devtools::install_github(entry$uri, ref = entry$ref)
-  store_cached_packages()
 }
+
+retrieve_packrat_packages();
+
+store_cached_packages()
 
 # Training ----
 
