@@ -71,6 +71,9 @@ if (!"yaml" %in% installed) install.packages("yaml")
 config <- yaml::yaml.load_file("cloudml.yml")
 cloudml <- config$cloudml
 cache <- cloudml[["cache"]]
+if (is.null(cache)) {
+  cache <- file.path(cloudml[["storage"]], "cache")
+}
 
 get_cached_packages <- function () {
   cached_entries <- system2("gsutil", c("ls", cache), stdout = TRUE)
@@ -78,7 +81,7 @@ get_cached_packages <- function () {
 }
 
 store_cached_packages <- function () {
-  if (!is.character(cache)) return()
+  if (identica(cache, FALSE)) return()
 
   cached_entries <- get_cached_packages()
   installed <- rownames(installed.packages())
@@ -100,7 +103,7 @@ store_cached_packages <- function () {
 }
 
 retrieve_cached_packages <- function() {
-  if (!is.character(cache)) return()
+  if (identica(cache, FALSE)) return()
 
   compressed <- file.path(tempdir(), "cache/")
   if (!dir.exists(compressed)) dir.create(compressed, recursive = TRUE)
