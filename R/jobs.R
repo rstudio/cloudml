@@ -396,6 +396,9 @@ job_collect_async <- function(
     shQuote(destination)
   )
 
+  if (!dir.exists(destination))
+    dir.create(destination, recursive = TRUE)
+
   terminal_command <- paste(
     paste(gcloud_path(), paste(log_arguments(), collapse = " ")),
     paste(download_arguments, collapse = " "),
