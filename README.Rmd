@@ -79,6 +79,7 @@ If you've followed these steps, your application should now be ready to be train
 You can train your application with:
 
 ```{r eval=FALSE}
+library(cloudml)
 job <- cloudml_train(
   application = system.file(
     "examples/mnist/",

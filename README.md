@@ -46,13 +46,14 @@ Configuration
 Application deployment is configured through the use of a top-level [YAML](http://yaml.org/) file called `cloudml.yml`. See [here](https://github.com/rstudio/cloudml/blob/master/examples/census/cloudml.yml) for the associated file used in our census example, copy this file locally and modify appropiately to train models successfully.
 
     ## gcloud:
-    ##   project         : "project-name"
-    ##   account         : "account@domain.com"
+    ##   project         : "rstudio-cloudml"
+    ##   account         : "javier@rstudio.com"
     ##   region          : "us-central1"
     ##   runtime-version : "1.2"
     ## 
     ## cloudml:
-    ##   storage         : "gs://project-name/mnist"
+    ##   storage         : "gs://rstudio-cloudml/mnist"
+    ##   cache           : "gs://rstudio-cloudml/cache"
 
 The `gcloud` key is used for configuration specific to the Google Cloud SDK, and so contains items relevant to how applications are deployed.
 
@@ -76,6 +77,7 @@ If you've followed these steps, your application should now be ready to be train
 You can train your application with:
 
 ``` r
+library(cloudml)
 job <- cloudml_train(
   application = system.file(
     "examples/mnist/",
