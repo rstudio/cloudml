@@ -397,17 +397,25 @@ job_collect_async <- function(
     shQuote(destination)
   )
 
+  if (.Platform$OS.type == "windows") {
+    os_collapse <-  " & "
+    os_return   <- "\r\n"
+  } else {
+    os_collapse <- " ; "
+    os_return   <- "\n"
+  }
+
   terminal_command <- paste(
     c(
       paste(gcloud_path(), paste(log_arguments(), collapse = " ")),
       paste("mkdir -p", destination),
       paste(download_arguments, collapse = " ")
     ),
-    collapse = " ; "
+    collapse = os_collapse
   )
 
   terminal <- rstudioapi::terminalCreate()
-  rstudioapi::terminalSend(terminal, paste0(terminal_command, "\n"))
+  rstudioapi::terminalSend(terminal, paste0(terminal_command, os_return))
 }
 
 job_download <- function(job, destination = "jobs/cloudml") {

@@ -28,11 +28,15 @@ gcloud_path <- function() {
   candidates <- c(
     function() Sys.which("gcloud"),
     function() "~/google-cloud-sdk/bin/gcloud",
-    function() file.path(Sys.getenv("GCLOUD_INSTALL_PATH", "~/google-cloud-sdk"), "bin/gcloud"),
-    function() normalizePath(
-      file.path(Sys.getenv("localappdata"), "Google/Cloud SDK/google-cloud-sdk/bin/gcloud"),
-      mustWork = FALSE)
+    function() file.path(Sys.getenv("GCLOUD_INSTALL_PATH", "~/google-cloud-sdk"), "bin/gcloud")
   )
+
+  if (.Platform$OS.type == "windows") {
+    appdata <- normalizePath(Sys.getenv("localappdata"), winslash = "/")
+    win_path <- file.path(appdata, "Google/Cloud SDK/google-cloud-sdk/bin/gcloud")
+    if (file.exists(win_path))
+      return(file.path(appdata, "Google/\"Cloud SDK\"/google-cloud-sdk/bin/gcloud"))
+  }
 
   for (candidate in candidates)
     if (file.exists(candidate()))
