@@ -38,3 +38,25 @@ correct_prediction <- tf$equal(tf$argmax(y, 1L), tf$argmax(y_, 1L))
 accuracy <- tf$reduce_mean(tf$cast(correct_prediction, tf$float32))
 
 sess$run(accuracy, feed_dict=dict(x = mnist$test$images, y_ = mnist$test$labels))
+
+# Export model
+tensor_info_x <- tf$saved_model$utils$build_tensor_info(x)
+tensor_info_y <- tf$saved_model$utils$build_tensor_info(y)
+
+prediction_signature <- tf$saved_model$signature_def_utils$build_signature_def(
+  inputs=list(images = tensor_info_x),
+  outputs=list(scores = tensor_info_y),
+  method_name=tf$saved_model$signature_constants$PREDICT_METHOD_NAME)
+
+builder <- tf$saved_model$builder$SavedModelBuilder("savedmodel")
+builder$add_meta_graph_and_variables(
+  sess,
+  list(
+    tf$python$saved_model$tag_constants$SERVING
+  ),
+  signature_def_map = list(
+    predict_images = prediction_signature
+  )
+)
+
+builder$save()
