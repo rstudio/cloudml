@@ -371,7 +371,12 @@ job_collect <- function(job, destination = "jobs/cloudml") {
 #'   be downloaded. Defaults to `jobs/cloudml`.
 #'
 #' @family job management
-job_collect_async <- function(job, gcloud = NULL, destination = "jobs/cloudml") {
+job_collect_async <- function(
+  job,
+  gcloud = NULL,
+  destination = "jobs/cloudml",
+  polling_interval = getOption("cloudml.collect.polling", 10)
+) {
   if (!rstudioapi::isAvailable()) return()
 
   output_dir <- job_output_dir(job, gcloud)
@@ -381,7 +386,8 @@ job_collect_async <- function(job, gcloud = NULL, destination = "jobs/cloudml") 
   log_arguments <- (MLArgumentsBuilder()
                    ("jobs")
                    ("stream-logs")
-                   (id))
+                   (id)
+                   ("--polling-interval=%i", as.integer(polling_interval)))
 
   download_arguments <- paste(
     gsutil_path(),
