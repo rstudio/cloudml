@@ -397,13 +397,17 @@ job_collect_async <- function(
     shQuote(destination)
   )
 
+  mkdir_arguments <- NULL
   if (!dir.exists(destination))
-    dir.create(destination, recursive = TRUE)
+    mkdir_arguments <- paste("mkdir -p", destination)
 
   terminal_command <- paste(
-    paste(gcloud_path(), paste(log_arguments(), collapse = " ")),
-    paste(download_arguments, collapse = " "),
-    sep = " ; "
+    c(
+      mkdir_arguments,
+      paste(gcloud_path(), paste(log_arguments(), collapse = " ")),
+      paste(download_arguments, collapse = " ")
+    ),
+    collpase = " ; "
   )
 
   terminal <- rstudioapi::terminalCreate()
