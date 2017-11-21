@@ -105,7 +105,7 @@ cloudml_train <- function(application = getwd(),
   register_job(job)
 
   if (interactive())
-    job_collect_async(job, gcloud)
+    job_collect_async(job, cloudml)
 
   invisible(job)
 }
