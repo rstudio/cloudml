@@ -104,6 +104,9 @@ cloudml_train <- function(application = getwd(),
   job <- cloudml_job("train", id, description)
   register_job(job)
 
+  if (interactive())
+    job_collect_async(job, gcloud)
+
   invisible(job)
 }
 
@@ -354,6 +357,49 @@ job_collect <- function(job, destination = "jobs/cloudml") {
   stop("failed to receive job outputs")
 }
 
+#' Collect Job Output Asynchronously
+#'
+#' Collect the job outputs (e.g. fitted model) from a job asynchronously
+#' using the RStudio terminal, if available.
+#'
+#' @inheritParams job_status
+#'
+#' @param gcloud
+#'   Optional gcloud configuration.
+#' @param destination
+#'   The destination directory in which model outputs should
+#'   be downloaded. Defaults to `jobs/cloudml`.
+#'
+#' @family job management
+job_collect_async <- function(job, gcloud = NULL, destination = "jobs/cloudml") {
+  if (!rstudioapi::isAvailable()) return()
+
+  output_dir <- job_output_dir(job, gcloud)
+  job <- as.cloudml_job(job)
+  id <- job$id
+
+  log_arguments <- (MLArgumentsBuilder()
+                   ("jobs")
+                   ("stream-logs")
+                   (id))
+
+  download_arguments <- paste(
+    gsutil_path(),
+    "cp",
+    shQuote(output_dir),
+    shQuote(destination)
+  )
+
+  terminal_command <- paste(
+    paste(gcloud_path(), paste(log_arguments(), collapse = " ")),
+    paste(download_arguments, collapse = " "),
+    sep = " ; "
+  )
+
+  terminal <- rstudioapi::terminalCreate()
+  rstudioapi::terminalSend(terminal, paste0(terminal_command, "\n"))
+}
+
 job_download <- function(job, destination = "jobs/cloudml") {
   source <- job_output_dir(job)
 
@@ -377,7 +423,6 @@ job_download <- function(job, destination = "jobs/cloudml") {
   gsutil_copy(source, destination, TRUE)
 }
 
-job_output_dir <- function(job) {
-  config <- cloudml_config()
+job_output_dir <- function(job, config = cloudml_config()) {
   file.path(config$storage, "runs", job$id)
 }
