@@ -26,8 +26,8 @@ Each **cloudml** application needs to be associated with an Google Cloud project
 
 After you've set this up, you might want to set up a default configuration for this account and project. You can do this from the command line with:
 
-    gcloud config set core.account <account>
-    gcloud config set core.project <project>
+    gcloud config set core/account <account>
+    gcloud config set core/project <project>
 
 We'll show later how you can configure an application to deploy to multiple accounts / projects if so desired.
 

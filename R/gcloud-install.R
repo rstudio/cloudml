@@ -28,7 +28,10 @@ gcloud_path <- function() {
   candidates <- c(
     function() Sys.which("gcloud"),
     function() "~/google-cloud-sdk/bin/gcloud",
-    function() file.path(Sys.getenv("GCLOUD_INSTALL_PATH", "~/google-cloud-sdk"), "bin/gcloud")
+    function() file.path(Sys.getenv("GCLOUD_INSTALL_PATH", "~/google-cloud-sdk"), "bin/gcloud"),
+    function() normalizePath(
+      file.path(Sys.getenv("localappdata"), "Google/Cloud SDK/google-cloud-sdk/bin/gcloud"),
+      mustWork = FALSE)
   )
 
   for (candidate in candidates)
