@@ -1,9 +1,12 @@
 
 #' Read File from System Environment Variable
 #'
-#' To create an encoded file use: \code{jsonlite::base64_enc(serialize(readLines("<key.json>"), NULL))}
+#' To create an encoded file use: \code{gsub("\\n", "", jsonlite::base64_enc(serialize(readLines("<key.json>"), NULL)))}
 #'
 sysenv_file <- function(name, destination) {
+  if (file.exists(destination))
+    return()
+
   value_base64 <- Sys.getenv(name)
 
   if (nchar(value_base64) > 0) {

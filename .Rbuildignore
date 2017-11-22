@@ -10,3 +10,6 @@
 ^todo.Rmd$
 ^_pkgdown\.yml$
 ^\.travis\.yml$
+^runs\.*$
+^cloudml.yml$
+^.travis.R$
