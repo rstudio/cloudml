@@ -209,7 +209,7 @@ as_aliased_path <- function(path) {
 }
 
 shell_quote <- function(arguments) {
-  if (Sys.info()[["sysname"]] != "Windows") {
+  if (Sys.info()[["sysname"]] != "windows") {
     regex <- "^[[:alnum:]:/=_.-]*$"
 
     ascii <- grepl(regex, arguments)
