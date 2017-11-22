@@ -32,4 +32,4 @@ if (!is.null(account_file)) {
   )
 }
 
-sysenv_file("GCLOUD_CONFIGT_FILE", "cloudml.yml")
+sysenv_file("GCLOUD_CONFIG_FILE", "cloudml.yml")
