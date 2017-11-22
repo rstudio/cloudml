@@ -11,6 +11,7 @@ Imports:
   jsonlite,
   packrat,
   processx,
+  rprojroot,
   tensorflow,
   withr,
   yaml
