@@ -68,7 +68,7 @@ cloudml_train <- function(application = getwd(),
                 # ("--config=%s/%s", basename(application), overlay$hypertune)
 
   # submit job through command line interface
-  output <- gexec(gcloud(), arguments(), stdout = TRUE, stderr = TRUE)
+  gcloud_exec(args = arguments())
 
   # inform user of successful job submission
   template <- c(
@@ -92,11 +92,9 @@ cloudml_train <- function(application = getwd(),
                 ("describe")
                 (id))
 
-  sofile <- tempfile("stdout-")
-  sefile <- tempfile("stderr-")
-  output <- gexec(gcloud(), arguments(), stdout = sofile, stderr = sefile)
-  stdout <- readChar(sofile, file.info(sofile)$size, TRUE)
-  stderr <- readChar(sefile, file.info(sefile)$size, TRUE)
+  output <- gcloud_exec(args = arguments())
+  stdout <- output$stdout
+  stderr <- output$stderr
 
   # write stderr to the console
   message(stderr)
@@ -105,6 +103,9 @@ cloudml_train <- function(application = getwd(),
   description <- yaml::yaml.load(stdout)
   job <- cloudml_job("train", id, description)
   register_job(job)
+
+  if (interactive())
+    job_collect_async(job, cloudml)
 
   invisible(job)
 }
@@ -126,7 +127,7 @@ job_cancel <- function(job) {
                 ("cancel")
                 (job))
 
-  gexec(gcloud(), arguments())
+  gcloud_exec(args = arguments())
 }
 
 #' Describe a job
@@ -144,10 +145,10 @@ job_describe <- function(job) {
                 ("describe")
                 (job))
 
-  output <- gexec(gcloud(), arguments(), stdout = TRUE)
+  output <- gcloud_exec(args = arguments())
 
   # return as R list
-  yaml::yaml.load(paste(output, collapse = "\n"))
+  yaml::yaml.load(paste(output$stdout, collapse = "\n"))
 }
 
 #' List all jobs
@@ -195,10 +196,10 @@ job_list <- function(filter    = NULL,
     ("--sort-by=%s", sort_by)
     (if (uri) "--uri"))
 
-  output <- gexec(gcloud(), arguments(), stdout = TRUE, stderr = TRUE)
+  output <- gcloud_exec(args = arguments())
 
   if (!uri) {
-    pasted <- paste(output, collapse = "\n")
+    pasted <- paste(output$stdout, collapse = "\n")
     output <- readr::read_table2(pasted)
   }
 
@@ -242,7 +243,8 @@ job_stream <- function(job,
   if (allow_multiline_logs)
     arguments("--allow-multiline-logs")
 
-  gexec(gcloud(), arguments())
+  output <- gcloud_exec(args = arguments())
+  print(output$stdout)
 }
 
 #' Current status of a job
@@ -263,10 +265,10 @@ job_status <- function(job) {
                 (job))
 
   # request job description from gcloud
-  output <- gexec(gcloud(), arguments(), stdout = TRUE, stderr = FALSE)
+  output <- gcloud_exec(args = arguments())
 
   # parse as YAML and return
-  yaml::yaml.load(paste(output, collapse = "\n"))
+  yaml::yaml.load(paste(output$stdout, collapse = "\n"))
 }
 
 #' Collect job output
@@ -355,9 +357,69 @@ job_collect <- function(job, destination = "jobs/cloudml") {
   stop("failed to receive job outputs")
 }
 
-job_download <- function(job, destination = "jobs/cloudml") {
+#' Collect Job Output Asynchronously
+#'
+#' Collect the job outputs (e.g. fitted model) from a job asynchronously
+#' using the RStudio terminal, if available.
+#'
+#' @inheritParams job_status
+#'
+#' @param gcloud
+#'   Optional gcloud configuration.
+#' @param destination
+#'   The destination directory in which model outputs should
+#'   be downloaded. Defaults to `jobs/cloudml`.
+#'
+#' @family job management
+job_collect_async <- function(
+  job,
+  gcloud = NULL,
+  destination = "jobs/cloudml",
+  polling_interval = getOption("cloudml.collect.polling", 10)
+) {
+  if (!rstudioapi::isAvailable()) return()
+
+  output_dir <- job_output_dir(job, gcloud)
   job <- as.cloudml_job(job)
-  source <- job_dir(job)
+  id <- job$id
+
+  log_arguments <- (MLArgumentsBuilder()
+                   ("jobs")
+                   ("stream-logs")
+                   (id)
+                   ("--polling-interval=%i", as.integer(polling_interval)))
+
+  download_arguments <- paste(
+    gsutil_path(),
+    "cp",
+    "-r",
+    shQuote(output_dir),
+    shQuote(destination)
+  )
+
+  if (.Platform$OS.type == "windows") {
+    os_collapse <-  " & "
+    os_return   <- "\r\n"
+  } else {
+    os_collapse <- " ; "
+    os_return   <- "\n"
+  }
+
+  terminal_command <- paste(
+    c(
+      paste(gcloud_path(), paste(log_arguments(), collapse = " ")),
+      paste("mkdir -p", destination),
+      paste(download_arguments, collapse = " ")
+    ),
+    collapse = os_collapse
+  )
+
+  terminal <- rstudioapi::terminalCreate()
+  rstudioapi::terminalSend(terminal, paste0(terminal_command, os_return))
+}
+
+job_download <- function(job, destination = "jobs/cloudml") {
+  source <- job_output_dir(job)
 
   if (!is_gs_uri(source)) {
     fmt <- "job directory '%s' is not a Google Storage URI"
@@ -368,17 +430,17 @@ job_download <- function(job, destination = "jobs/cloudml") {
   # with this job -- 'gsutil ls' will return with
   # non-zero status when attempting to query a
   # non-existent gs URL
-  arguments <- (
-    ShellArgumentsBuilder()
-    ("ls")
-    (source))
+  result <- gsutil_exec("ls", source)
 
-  status <- gexec(gsutil(), arguments())
-  if (status) {
+  if (result$status) {
     fmt <- "no directory at path '%s'"
     stopf(fmt, source)
   }
 
   ensure_directory(destination)
-  gs_copy(source, destination)
+  gsutil_copy(source, destination, TRUE)
+}
+
+job_output_dir <- function(job, config = cloudml_config()) {
+  file.path(config$storage, "runs", job$id)
 }

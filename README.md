@@ -26,8 +26,8 @@ Each **cloudml** application needs to be associated with an Google Cloud project
 
 After you've set this up, you might want to set up a default configuration for this account and project. You can do this from the command line with:
 
-    gcloud config set core.account <account>
-    gcloud config set core.project <project>
+    gcloud config set core/account <account>
+    gcloud config set core/project <project>
 
 We'll show later how you can configure an application to deploy to multiple accounts / projects if so desired.
 
@@ -43,16 +43,17 @@ from a terminal, to request these credentials.
 Configuration
 -------------
 
-Application deployment is configured through the use of a top-level [YAML](http://yaml.org/) file called `cloudml.yml`. See [here](https://github.com/rstudio/cloudml/blob/master/examples/census/cloudml.yml) for the associated file used in our census example -- we'll explore the fields used here.
+Application deployment is configured through the use of a top-level [YAML](http://yaml.org/) file called `cloudml.yml`. See [here](https://github.com/rstudio/cloudml/blob/master/examples/census/cloudml.yml) for the associated file used in our census example, copy this file locally and modify appropiately to train models successfully.
 
     ## gcloud:
     ##   project         : "rstudio-cloudml"
-    ##   account         : "kevin@rstudio.com"
+    ##   account         : "javier@rstudio.com"
     ##   region          : "us-central1"
     ##   runtime-version : "1.2"
     ## 
     ## cloudml:
-    ##   storage         : "gs://rstudio-cloudml/census"
+    ##   storage         : "gs://rstudio-cloudml/mnist"
+    ##   cache           : "gs://rstudio-cloudml/cache"
 
 The `gcloud` key is used for configuration specific to the Google Cloud SDK, and so contains items relevant to how applications are deployed.
 
@@ -68,22 +69,27 @@ The `storage` field in the `cloudml` section indicates where various artefacts u
 
 -   `<storage>/runs/<timestamp>`: training outputs will be copied to this directory.
 
-Deployment
-----------
+Training
+--------
 
-If you've followed these steps, your application should now be ready to be deployed to Google Cloud.
-
-### Training
+If you've followed these steps, your application should now be ready to be trainned in Google Cloud.
 
 You can train your application with:
 
 ``` r
-job <- cloudml::cloudml_train(entrypoint = "train.R")
+library(cloudml)
+job <- cloudml_train(
+  application = system.file(
+    "examples/mnist/",
+    package = "cloudml"
+  ),
+  entrypoint = "train.R"
+)
 ```
 
 This function will submit your application to Google Cloud, and request that it train your application by sourcing the training script `"train.R"`. You should see output of the form:
 
-    > job <- with_census(cloudml::cloudml_train())
+    > job <- with_census(cloudml_train())
     Job 'census_cloudml_2017_10_26_172932520' successfully submitted.
 
     Check status and collect output with:
@@ -99,7 +105,7 @@ This function will submit your application to Google Cloud, and request that it 
 After submitting this job, you can tell the R session to wait for training to complete, and pull the generated models back to your local filesystem with:
 
 ``` r
-collected <- cloudml::job_collect(job)
+collected <- job_collect(job)
 ```
 
 The R session will wait and continue polling Google Cloud until your application has finished running; if the application trained successfully, then the trained models will be copied to disk.

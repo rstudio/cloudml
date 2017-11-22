@@ -33,7 +33,7 @@ estimator <- build_estimator(
 )
 
 # define input function
-train_file <- cloudml::gs_data(FLAGS$train_file)
+train_file <- cloudml::gsutil_data(FLAGS$train_file)
 train_data <- readr::read_csv(
   train_file,
   col_names = CSV_COLUMNS,

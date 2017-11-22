@@ -15,22 +15,32 @@ initialize_application <- function(application = getwd(),
     "cloudml"
   )
 
-  # TODO: where should this be specified?
-  # # use packrat for deployment when specified
-  # if (isTRUE(config$packrat_enabled)) {
-  #
-  #   # ignore 'cloudml' for now since it will usually be
-  #   # installed from source and we'll want to just reinstall
-  #   # from github anyhow -- we can probably change this later
-  #   packrat::opts$ignored.packages("cloudml")
-  #   packrat::.snapshotImpl(
-  #     project = getwd(),
-  #     ignore.stale = TRUE,
-  #     prompt = FALSE,
-  #     snapshot.sources = FALSE,
-  #     verbose = FALSE
-  #   )
-  # }
+  # We manage a set of packages during deploy that might require specific versions
+  IGNORED <- c(
+    # CRAN
+    "RCurl",
+    "devtools",
+    "readr",
+    "knitr",
+    # GitHUb
+    "purrr",
+    "modelr",
+    "tensorflow",
+    "cloudml",
+    "keras",
+    "tfruns",
+    "tfestimators",
+    "packrat"
+  )
+
+  packrat::opts$ignored.packages(IGNORED)
+  packrat::.snapshotImpl(
+    project = getwd(),
+    ignore.stale = TRUE,
+    prompt = FALSE,
+    snapshot.sources = FALSE,
+    verbose = FALSE
+  )
 
   # ensure sub-directories contain an '__init__.py'
   # script, so that they're all included in tarball
@@ -90,7 +100,8 @@ scope_deployment <- function(id,
                context = context,
                entrypoint = entrypoint,
                config = config,
-               overlay = overlay)
+               overlay = overlay,
+               id = id)
   ensure_directory("cloudml")
   saveRDS(info, file = "cloudml/deploy.rds")
 

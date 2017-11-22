@@ -8,7 +8,6 @@ Authors@R: c(
 Description: An R Interface to the Google Cloud Machine Learning Platform.
 Depends: R (>= 3.1.0)
 Imports:
-  config (>= 0.2),
   jsonlite,
   packrat,
   processx,
@@ -19,7 +18,5 @@ License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 6.0.1
+RoxygenNote: 6.0.1.9000
 Remotes: rstudio/tensorflow
-
-

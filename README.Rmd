@@ -3,10 +3,6 @@ title  : "cloudml Package"
 output : github_document
 ---
 
-```{r setup}
-
-```
-
 **[WIP]**
 
 The **cloudml** package provides an R interface to the Google Cloud Machine Learning platform. **cloudml** makes it easy to take machine learning applications built with R packages like [tensorflow](https://tensorflow.rstudio.com/), [Keras](https://keras.rstudio.com/), and [tfestimators](https://tensorflow.rstudio.com/tfestimators/), and use Google Cloud's machine learning platform for training, testing, and prediction.
@@ -32,11 +28,10 @@ Each **cloudml** application needs to be associated with an Google Cloud project
 
 After you've set this up, you might want to set up a default configuration for this account and project. You can do this from the command line with:
 
-    gcloud config set core.account <account>
-    gcloud config set core.project <project>
-
+    gcloud config set core/account <account>
+    gcloud config set core/project <project>
+   
 We'll show later how you can configure an application to deploy to multiple accounts / projects if so desired.
-
 
 ## Authentication
 
@@ -46,14 +41,21 @@ After creating your account, you'll need to set up default application credentia
 
 from a terminal, to request these credentials.
 
-
 ## Configuration
 
-Application deployment is configured through the use of a top-level [YAML](http://yaml.org/) file called `cloudml.yml`. See [here](https://github.com/rstudio/cloudml/blob/master/examples/census/cloudml.yml) for the associated file used in our census example -- we'll explore the fields used here.
+Application deployment is configured through the use of a top-level [YAML](http://yaml.org/) file called `cloudml.yml`. See [here](https://github.com/rstudio/cloudml/blob/master/examples/census/cloudml.yml) for the associated file used in our census example, copy this file locally and modify appropiately to train models successfully.
 
 ```{r echo=FALSE}
-contents <- readLines("examples/census/cloudml.yml")
+config_yml <- system.file("examples/mnist/cloudml.yml", package = "cloudml")
+contents <- readLines(config_yml)
 writeLines(contents)
+
+result <- file.copy(config_yml, "cloudml.yml")
+
+config <- cloudml:::gcloud_config()
+if (config$account == "account@domain.com") stop("Please configure 'cloudml.yml'")
+
+result <- file.copy("cloudml.yml", config_yml, overwrite = T)
 ```
 
 The `gcloud` key is used for configuration specific to the Google Cloud SDK, and so contains items relevant to how applications are deployed.
@@ -70,23 +72,27 @@ The `storage` field in the `cloudml` section indicates where various artefacts u
 
 - `<storage>/runs/<timestamp>`: training outputs will be copied to this directory.
 
+## Training
 
-## Deployment
-
-If you've followed these steps, your application should now be ready to be deployed to Google Cloud.
-
-### Training
+If you've followed these steps, your application should now be ready to be trainned in Google Cloud.
 
 You can train your application with:
 
 ```{r eval=FALSE}
-job <- cloudml::cloudml_train(entrypoint = "train.R")
+library(cloudml)
+job <- cloudml_train(
+  application = system.file(
+    "examples/mnist/",
+    package = "cloudml"
+  ),
+  entrypoint = "train.R"
+)
 ```
 
 This function will submit your application to Google Cloud, and request that it train your application by sourcing the training script `"train.R"`. You should see output of the form:
 
 ```
-> job <- with_census(cloudml::cloudml_train())
+> job <- with_census(cloudml_train())
 Job 'census_cloudml_2017_10_26_172932520' successfully submitted.
 
 Check status and collect output with:
@@ -103,7 +109,7 @@ https://console.cloud.google.com/logs?resource=ml.googleapis.com%2Fjob_id%2Fcens
 After submitting this job, you can tell the R session to wait for training to complete, and pull the generated models back to your local filesystem with:
 
 ```{r eval=FALSE}
-collected <- cloudml::job_collect(job)
+collected <- job_collect(job)
 ```
 
 The R session will wait and continue polling Google Cloud until your application has finished running; if the application trained successfully, then the trained models will be copied to disk.

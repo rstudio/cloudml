@@ -6,7 +6,7 @@ source("model.R")
 
 # read in the data to use for predictions
 data <- read.table(
-  cloudml::gs_data("gs://rstudio-cloudml-demo-ml/census/data/local.adult.test"),
+  cloudml::gsutil_data("gs://rstudio-cloudml-demo-ml/census/data/local.adult.test"),
   col.names = CSV_COLUMNS,
   header = FALSE,
   sep = ",",
@@ -29,7 +29,7 @@ cat(yaml::as.yaml(predictions))
 
 # estimator and input_fn for predction
 estimator <- build_estimator("jobs/local")
-filename <- cloudml::gs_data("gs://rstudio-cloudml-demo-ml/census/data/local.adult.test")
+filename <- cloudml::gsutil_data("gs://rstudio-cloudml-demo-ml/census/data/local.adult.test")
 input_fn <- predict_input_fn(filename)
 
 # generate predictions

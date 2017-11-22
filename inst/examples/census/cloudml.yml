@@ -1,0 +1,9 @@
+gcloud:
+  project         : "project-name"
+  account         : "account@domain.com"
+  region          : "us-central1"
+  runtime-version : "1.2"
+
+cloudml:
+  storage         : "gs://project-name/census"
+  cache           : "gs://project-name/cache"
