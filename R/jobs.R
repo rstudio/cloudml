@@ -281,12 +281,12 @@ job_status <- function(job) {
 #'
 #' @param destination
 #'   The destination directory in which model outputs should
-#'   be downloaded. Defaults to `jobs/cloudml`.
+#'   be downloaded. Defaults to `runs`.
 #'
 #' @family job management
 #'
 #' @export
-job_collect <- function(job, destination = "jobs/cloudml") {
+job_collect <- function(job, destination = "runs") {
   job <- as.cloudml_job(job)
   id <- job$id
 

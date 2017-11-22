@@ -18,7 +18,7 @@ data$fnlwgt <- NULL
 data[[LABEL_COLUMN]] <- NULL
 
 # generate predictions
-predictions <- cloudml::local_predict("jobs/local", data)
+predictions <- cloudml::local_predict("runs", data)
 
 # print predictions
 cat(yaml::as.yaml(predictions))
@@ -28,7 +28,7 @@ cat(yaml::as.yaml(predictions))
 ### Predict using TF estimator ----------------------------------------------
 
 # estimator and input_fn for predction
-estimator <- build_estimator("jobs/local")
+estimator <- build_estimator("runs")
 filename <- cloudml::gsutil_data("gs://rstudio-cloudml-demo-ml/census/data/local.adult.test")
 input_fn <- predict_input_fn(filename)
 
