@@ -30,7 +30,7 @@ gsutil_copy <- function(source, destination, recursive = FALSE) {
   gsutil_exec(args = arguments)
 }
 
-#' Get a path to data within Google Storage
+#' Get local path to data within Google Storage
 #'
 #' When running on Google Cloud the path is returned unchanged. When running in
 #' other contexts the file is copied to the local system and a path to the local
@@ -38,6 +38,8 @@ gsutil_copy <- function(source, destination, recursive = FALSE) {
 #' returned unchanged.
 #'
 #' @inheritParams gsutil_copy
+#'
+#' @param uri Path to Google Storage data
 #' @param local_dir Local directory to copy files into
 #'
 #' @return Path to data file (may be local or remote depending on the execution

@@ -7,6 +7,9 @@
 #'
 #' @inheritParams cloudml_train
 #'
+#' @param entrypoint
+#'   File to be used as entrypoint for training.
+#'
 #' @export
 local_train <- function(application = getwd(),
                         config      = "default",

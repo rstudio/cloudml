@@ -16,6 +16,9 @@
 #'   Named arguments, used to supply runtime configuration
 #'   settings to your TensorFlow application.
 #'
+#' @param entrypoint
+#'   File to be used as entrypoint for training.
+#'
 #' @seealso [job_describe()], [job_collect()], [job_cancel()]
 #'
 #' @export
@@ -366,15 +369,20 @@ job_collect <- function(job, destination = "runs") {
 #'
 #' @param gcloud
 #'   Optional gcloud configuration.
+#'
 #' @param destination
 #'   The destination directory in which model outputs should
-#'   be downloaded. Defaults to `jobs/cloudml`.
+#'   be downloaded. Defaults to `runs`.
+#'
+#' @param polling_interval
+#'   Number of seconds to wait between efforts to fetch the
+#'   latest log messages.
 #'
 #' @family job management
 job_collect_async <- function(
   job,
   gcloud = NULL,
-  destination = "jobs/cloudml",
+  destination = "runs",
   polling_interval = getOption("cloudml.collect.polling", 10)
 ) {
   if (!rstudioapi::isAvailable()) return()
@@ -418,7 +426,7 @@ job_collect_async <- function(
   rstudioapi::terminalSend(terminal, paste0(terminal_command, os_return))
 }
 
-job_download <- function(job, destination = "jobs/cloudml") {
+job_download <- function(job, destination = "runs") {
   source <- job_output_dir(job)
 
   if (!is_gs_uri(source)) {
