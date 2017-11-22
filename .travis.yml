@@ -3,3 +3,9 @@
 language: r
 sudo: false
 cache: packages
+after_failure:
+  - |
+    cd tests
+    export NOT_CRAN=true
+    Rscript ../.travis.R
+    sleep 2
