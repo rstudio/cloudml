@@ -14,7 +14,7 @@ gcloud_account_file <- function() {
     ))
 
     account_file <- tempfile(fileext = ".json")
-    jsonlite::write_json(account_secrets, account_file)
+    jsonlite::write_json(account_contents, account_file)
   }
 
   account_file
