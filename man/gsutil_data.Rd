@@ -2,11 +2,13 @@
 % Please edit documentation in R/gsutil-copy.R
 \name{gsutil_data}
 \alias{gsutil_data}
-\title{Get a path to data within Google Storage}
+\title{Get local path to data within Google Storage}
 \usage{
 gsutil_data(uri, local_dir = "gs")
 }
 \arguments{
+\item{uri}{Path to Google Storage data}
+
 \item{local_dir}{Local directory to copy files into}
 }
 \value{
