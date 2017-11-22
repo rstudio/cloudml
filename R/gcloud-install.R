@@ -69,7 +69,7 @@ gcloud_install <- function(version = "180.0.1") {
     sysname <- "linux"
 
   cloudsdk_url <- "https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/"
-  cloudsdk_tar <- paste0("google-cloud-sdk-", version, "-", darwin, "-x86_64.tar.gz")
+  cloudsdk_tar <- paste0("google-cloud-sdk-", version, "-", sysname, "-x86_64.tar.gz")
 
   download_dir <- tempdir()
   download_file <- file.path(download_dir, cloudsdk_tar)
