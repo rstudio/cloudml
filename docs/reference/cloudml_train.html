@@ -23,14 +23,17 @@
 <link href="../pkgdown.css" rel="stylesheet">
 <script src="../jquery.sticky-kit.min.js"></script>
 <script src="../pkgdown.js"></script>
-
+  
+  
 <!-- mathjax -->
-<script src='https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
+<script src='https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
 
 <!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 <![endif]-->
+
+
   </head>
 
   <body>
@@ -49,22 +52,43 @@
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
-  <a href="../projects.html">Projects</a>
+  <a href="../index.html">Home</a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Guides
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="../articles/guides-training.html">Training</a>
+    </li>
+    <li>
+      <a href="../articles/guides-jobs.html">Jobs</a>
+    </li>
+    <li>
+      <a href="../articles/guides-tuning.html">Tuning</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Examples
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="../articles/examples-mnist.html">MNIST</a>
+    </li>
+    <li>
+      <a href="../articles/examples-keras.html">Keras</a>
+    </li>
+  </ul>
 </li>
 <li>
-  <a href="../training.html">Training</a>
-</li>
-<li>
-  <a href="../tuning.html">Tuning</a>
-</li>
-<li>
-  <a href="../prediction.html">Prediction</a>
-</li>
-<li>
-  <a href="../jobs.html">Jobs</a>
-</li>
-<li>
-  <a href="../reference.html">Reference</a>
+  <a href="../reference/index.html">Reference</a>
 </li>
       </ul>
       
@@ -94,22 +118,32 @@
 train a model.</p>
     
 
-    <pre><span class='fu'>cloudml_train</span>(<span class='kw'>application</span> <span class='kw'>=</span> <span class='fu'>getwd</span>(), <span class='kw'>config</span> <span class='kw'>=</span> <span class='st'>"cloudml"</span>, <span class='no'>...</span>)</pre>
+    <pre class="usage"><span class='fu'>cloudml_train</span>(<span class='kw'>application</span> <span class='kw'>=</span> <span class='fu'>getwd</span>(), <span class='kw'>config</span> <span class='kw'>=</span> <span class='st'>"cloudml"</span>,
+  <span class='kw'>entrypoint</span> <span class='kw'>=</span> <span class='st'>"train.R"</span>, <span class='no'>...</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
-    <dl class="dl-horizontal">
-      <dt>application</dt>
-      <dd>The path to a TensorFlow application. Defaults to
-the current working directory.</dd>
-      <dt>config</dt>
-      <dd>The name of the configuration to be used. Defaults to
-the <code>&quot;cloudml&quot;</code> configuration.</dd>
-      <dt>...</dt>
-      <dd>Named arguments, used to supply runtime configuration
-settings to your TensorFlow application. When
-<code>cloudml::project_config()</code> is called, these values will effectively
-be overlayed on top of the configuration requested.</dd>
-    </dl>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>application</th>
+      <td><p>The path to a TensorFlow application. Defaults to
+the current working directory.</p></td>
+    </tr>
+    <tr>
+      <th>config</th>
+      <td><p>The name of the configuration to be used. Defaults to
+the <code>"cloudml"</code> configuration.</p></td>
+    </tr>
+    <tr>
+      <th>entrypoint</th>
+      <td><p>File to be used as entrypoint for training.</p></td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td><p>Named arguments, used to supply runtime configuration
+settings to your TensorFlow application.</p></td>
+    </tr>
+    </table>
     
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 

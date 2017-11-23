@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Collect job output — job_collect • cloudml</title>
+<title>Executes a Google Cloud Command — gcloud_exec • cloudml</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -110,37 +110,27 @@
       <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Collect job output</h1>
+    <h1>Executes a Google Cloud Command</h1>
     </div>
 
     
-    <p>Collect the job outputs (e.g. fitted model) from a job.
-If the job has not yet finished running, <code>job_collect()</code>
-will block and wait until the job has finished.</p>
+    <p>Executes a Google Cloud command with the given parameters.</p>
     
 
-    <pre class="usage"><span class='fu'>job_collect</span>(<span class='no'>job</span>, <span class='kw'>destination</span> <span class='kw'>=</span> <span class='st'>"runs"</span>)</pre>
+    <pre class="usage"><span class='fu'>gcloud_exec</span>(<span class='no'>...</span>, <span class='kw'>args</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>job</th>
-      <td><p>Job name or job object.</p></td>
+      <th>...</th>
+      <td><p>Parameters to use specified based on position.</p></td>
     </tr>
     <tr>
-      <th>destination</th>
-      <td><p>The destination directory in which model outputs should
-be downloaded. Defaults to <code>runs</code>.</p></td>
+      <th>args</th>
+      <td><p>Parameters to use specified as a list.</p></td>
     </tr>
     </table>
-    
-    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
-
-    <p>Other job management: <code><a href='job_cancel.html'>job_cancel</a></code>,
-  <code><a href='job_collect_async.html'>job_collect_async</a></code>,
-  <code><a href='job_describe.html'>job_describe</a></code>, <code><a href='job_list.html'>job_list</a></code>,
-  <code><a href='job_status.html'>job_status</a></code>, <code><a href='job_stream.html'>job_stream</a></code></p>
     
 
   </div>
@@ -148,9 +138,7 @@ be downloaded. Defaults to <code>runs</code>.</p></td>
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
-      
-      <li><a href="#see-also">See also</a></li>
-          </ul>
+                </ul>
 
   </div>
 </div>

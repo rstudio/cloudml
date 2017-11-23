@@ -8,8 +8,6 @@
 #'
 #' @param data
 #'   The dataset to be used for prediction.
-#'
-#' @export
 local_predict <- function(model_dir, data) {
   model_dir <- discover_model_dir(model_dir)
 

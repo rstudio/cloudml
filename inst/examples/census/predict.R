@@ -18,7 +18,7 @@ data$fnlwgt <- NULL
 data[[LABEL_COLUMN]] <- NULL
 
 # generate predictions
-predictions <- cloudml::local_predict("runs", data)
+predictions <- cloudml:::local_predict("runs", data)
 
 # print predictions
 cat(yaml::as.yaml(predictions))

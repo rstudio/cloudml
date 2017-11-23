@@ -1,5 +1,4 @@
-
-templates:
+template:
   params:
     bootswatch: cosmo
 
@@ -7,44 +6,56 @@ navbar:
   title: "Cloud ML interface for R"
   type: inverse
   left:
-    - text: "Projects"
-      href: projects.html
-    - text: "Training"
-      href: training.html
-    - text: "Tuning"
-      href: tuning.html
-    - text: "Prediction"
-      href: prediction.html
-    - text: "Jobs"
-      href: jobs.html
+    - text: "Home"
+      href: index.html
+    - text: "Guides"
+      menu:
+      - text: "Training"
+        href: articles/guides-training.html
+      - text: "Jobs"
+        href: articles/guides-jobs.html
+      - text: "Tuning"
+        href: articles/guides-tuning.html
+    - text: "Examples"
+      menu:
+        - text: "MNIST"
+          href: articles/examples-mnist.html
+        - text: "Keras"
+          href: articles/examples-keras.html
     - text: "Reference"
-      href: "reference.html"
+      href: reference/index.html
   right:
    - icon: fa-github
      href: https://github.com/rstudio/cloudml
 
 reference:
-  - title: "Training and Prediction "
+  - title: "Training"
     desc: >
       Functions for model training and prediction.
     contents:
       - cloudml_train
-      - cloudml_tune
       - local_train
-      - local_predict
-  - title: "Job Management"
+      - cloudml_tune
+  - title: "Configuration"
+    desc: >
+      Functions to configure Cloud ML.
+    contents:
+      - cloudml_init
+  - title: "Jobs"
     desc: >
       Functions for managing remote Cloud ML Jobs.
     contents:
-      - starts_with("job_")
-  - title: "Configuration"
+      - job_cancel
+      - job_collect
+      - job_describe
+      - job_list
+      - job_status
+      - job_stream
+  - title: "Utils"
     desc: >
-      Functions for project configuration.
+      Functions for interacting with Google Cloud.
     contents:
-      - project_config
-      - unique_job_dir
-  - title: "Google Storage"
-    desc: >
-      Functions for interacting with Google Storage.
-    contents:
-      - starts_with("gs_")
+      - gcloud_path
+      - gsutil_copy
+      - gsutil_data
+      - gsutil_path

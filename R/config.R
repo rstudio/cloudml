@@ -11,14 +11,14 @@ cloudml_config <- function(path = getwd()) {
 
 }
 
-#' Creates Default Configuration File
+#' Initializes Default Configuration File
 #'
-#' Creates a default 'cloudml.yml' configuration file to simplify the
+#' Creates a default 'cloudml.yml' configuration file to initialize the
 #' configuration process. This file is created in the current directory,
 #' open this file to configure this further.
 #'
 #' @export
-cloudml_create_config <- function() {
+cloudml_init <- function() {
   if (file.exists("cloudml.yml")) {
     warning("cloudml.yml already exists.")
     return()

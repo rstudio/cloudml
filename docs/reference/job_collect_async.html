@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Collect job output — job_collect • cloudml</title>
+<title>Collect Job Output Asynchronously — job_collect_async • cloudml</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -110,16 +110,16 @@
       <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Collect job output</h1>
+    <h1>Collect Job Output Asynchronously</h1>
     </div>
 
     
-    <p>Collect the job outputs (e.g. fitted model) from a job.
-If the job has not yet finished running, <code>job_collect()</code>
-will block and wait until the job has finished.</p>
+    <p>Collect the job outputs (e.g. fitted model) from a job asynchronously
+using the RStudio terminal, if available.</p>
     
 
-    <pre class="usage"><span class='fu'>job_collect</span>(<span class='no'>job</span>, <span class='kw'>destination</span> <span class='kw'>=</span> <span class='st'>"runs"</span>)</pre>
+    <pre class="usage"><span class='fu'>job_collect_async</span>(<span class='no'>job</span>, <span class='kw'>gcloud</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>destination</span> <span class='kw'>=</span> <span class='st'>"runs"</span>,
+  <span class='kw'>polling_interval</span> <span class='kw'>=</span> <span class='fu'>getOption</span>(<span class='st'>"cloudml.collect.polling"</span>, <span class='fl'>10</span>))</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
@@ -129,18 +129,27 @@ will block and wait until the job has finished.</p>
       <td><p>Job name or job object.</p></td>
     </tr>
     <tr>
+      <th>gcloud</th>
+      <td><p>Optional gcloud configuration.</p></td>
+    </tr>
+    <tr>
       <th>destination</th>
       <td><p>The destination directory in which model outputs should
 be downloaded. Defaults to <code>runs</code>.</p></td>
+    </tr>
+    <tr>
+      <th>polling_interval</th>
+      <td><p>Number of seconds to wait between efforts to fetch the
+latest log messages.</p></td>
     </tr>
     </table>
     
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
     <p>Other job management: <code><a href='job_cancel.html'>job_cancel</a></code>,
-  <code><a href='job_collect_async.html'>job_collect_async</a></code>,
-  <code><a href='job_describe.html'>job_describe</a></code>, <code><a href='job_list.html'>job_list</a></code>,
-  <code><a href='job_status.html'>job_status</a></code>, <code><a href='job_stream.html'>job_stream</a></code></p>
+  <code><a href='job_collect.html'>job_collect</a></code>, <code><a href='job_describe.html'>job_describe</a></code>,
+  <code><a href='job_list.html'>job_list</a></code>, <code><a href='job_status.html'>job_status</a></code>,
+  <code><a href='job_stream.html'>job_stream</a></code></p>
     
 
   </div>

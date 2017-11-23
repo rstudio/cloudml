@@ -1,38 +1,33 @@
-cloudml Package
+Cloud ML interface for R
 ================
 
-**\[WIP\]**
+[![Build Status](https://travis-ci.org/rstudio/cloudml.svg?branch=master)](https://travis-ci.org/rstudio/cloudml) [![CRAN\_Status\_Badge](https://www.r-pkg.org/badges/version/cloudml)](https://cran.r-project.org/package=cloudml)
 
-The **cloudml** package provides an R interface to the Google Cloud Machine Learning platform. **cloudml** makes it easy to take machine learning applications built with R packages like [tensorflow](https://tensorflow.rstudio.com/), [Keras](https://keras.rstudio.com/), and [tfestimators](https://tensorflow.rstudio.com/tfestimators/), and use Google Cloud's machine learning platform for training, testing, and prediction.
+The **cloudml** package provides an R interface to [Google Cloud Machine Learning](https://cloud.google.com/ml-engine/). **cloudml** makes it easy to take machine learning applications built with R packages like [tensorflow](https://tensorflow.rstudio.com/), [Keras](https://keras.rstudio.com/), and [tfestimators](https://tensorflow.rstudio.com/tfestimators/), and use Google Cloud's machine learning platform for training, testing, and prediction.
 
-Workflow
---------
+Installation
+------------
 
-The **cloudml** package seeks to automate the process of taking a machine learning model, and training / testing / predicting with that model on Google Cloud. We're aiming for an iterative workflow of the form:
+To get started, install the cloudml R package from GitHub as follows:
 
-1.  Start by building a TensorFlow application that trains and runs locally on sample data.
-2.  Tweak the application to accept model inputs through the use of configurable [flags](https://tensorflow.rstudio.com/tools/training_flags.html),
-3.  Generate a `flags.yml` file that encodes the different training parameters to be used in your cloud training configuration,
-4.  Use the various **cloudml** APIs to request this training of your model on Google Cloud.
+``` r
+devtools::install_github("rstudio/cloudml")
+```
 
-We'll use the [census example](https://github.com/rstudio/cloudml/tree/master/examples/census) as we walk through the steps needed to get set up with Google Cloud. We use this application to build a model that predicts an individual's income category using the United Stated Census Income Dataset.
+Configuration
+-------------
 
-Setting Up
-----------
+Before training in Google Cloud, one needs to configure: tools, projects, authentication and configuration files; which this section describes in detail.
 
-Before using the **cloudml** package, you'll need to make sure you're set up with an account and project on Google Cloud. In addition, the **cloudml** package makes use of the [Google Cloud SDK](https://cloud.google.com/sdk/) for communication with the Google Cloud machine learning platform. You can follow the instructions [here](https://cloud.google.com/sdk/downloads) to get the SDK installed on your machine.
+### Tools
 
-Each **cloudml** application needs to be associated with an Google Cloud project + account. If you haven't already, you can [create an account](https://console.cloud.google.com) following the instructions online, and then [create a project](https://cloud.google.com/resource-manager/docs/creating-managing-projects) after that. You'll also want to provision a [bucket](https://cloud.google.com/storage/docs/creating-buckets), to be used as a storage / staging space for applications trained in the cloud.
+The **cloudml** package makes use of the [Google Cloud SDK](https://cloud.google.com/sdk/) for communication with Google Cloud Machine Learning. This SDK can be download and installed by following the instructions from [cloud.google.com/sdk/downloads](https://cloud.google.com/sdk/downloads).
 
-After you've set this up, you might want to set up a default configuration for this account and project. You can do this from the command line with:
+### Projects
 
-    gcloud config set core/account <account>
-    gcloud config set core/project <project>
+Before using the **cloudml** package, you'll need to make sure you're set up with an account and project on Google Cloud. Each **cloudml** application needs to be associated with a Google Cloud project and account. If you haven't already, you can [create an account](https://console.cloud.google.com) following the instructions online, and then [create a project](https://cloud.google.com/resource-manager/docs/creating-managing-projects) after that. You'll also want to provision a [bucket](https://cloud.google.com/storage/docs/creating-buckets), to be used as a storage space for applications trained in the cloud.
 
-We'll show later how you can configure an application to deploy to multiple accounts / projects if so desired.
-
-Authentication
---------------
+### Authentication
 
 After creating your account, you'll need to set up default application credentials to ensure that the Google Cloud SDK can securely communicate with Google and take actions with your project. Try running
 
@@ -40,20 +35,27 @@ After creating your account, you'll need to set up default application credentia
 
 from a terminal, to request these credentials.
 
-Configuration
--------------
+### Configuration Files
 
-Application deployment is configured through the use of a top-level [YAML](http://yaml.org/) file called `cloudml.yml`. See [here](https://github.com/rstudio/cloudml/blob/master/examples/census/cloudml.yml) for the associated file used in our census example, copy this file locally and modify appropiately to train models successfully.
+Application deployment is configured through the use of a top-level [YAML](http://yaml.org/) file called `cloudml.yml`. To create a default configuration file run:
 
-    ## gcloud:
-    ##   project         : "rstudio-cloudml"
-    ##   account         : "javier@rstudio.com"
-    ##   region          : "us-central1"
-    ##   runtime-version : "1.2"
-    ## 
-    ## cloudml:
-    ##   storage         : "gs://rstudio-cloudml/mnist"
-    ##   cache           : "gs://rstudio-cloudml/cache"
+``` r
+library(cloudml)
+cloudml_create_config()
+```
+
+Then modify this default file with the appropiate `project`, `account`, `region` and `sotage`:
+
+``` yml
+gcloud:
+  project         : "project-name"
+  account         : "account@domain.com"
+  region          : "us-central1"
+  runtime-version : "1.2"
+
+cloudml:
+  storage         : "gs://project-name/mnist"
+```
 
 The `gcloud` key is used for configuration specific to the Google Cloud SDK, and so contains items relevant to how applications are deployed.
 
@@ -72,63 +74,24 @@ The `storage` field in the `cloudml` section indicates where various artefacts u
 Training
 --------
 
+We'll use the [MNIST example](https://github.com/rstudio/cloudml/tree/master/inst/examples/mnist/train.R) as we walk through the steps needed to get set up with Google Cloud. We use this application to build a model that classifies digits from the MNIST Dataset.
+
 If you've followed these steps, your application should now be ready to be trainned in Google Cloud.
 
 You can train your application with:
 
 ``` r
-library(cloudml)
-job <- cloudml_train(
-  application = system.file(
-    "examples/mnist/",
-    package = "cloudml"
-  ),
-  entrypoint = "train.R"
-)
+cloudml_train()
 ```
 
-This function will submit your application to Google Cloud, and request that it train your application by sourcing the training script `"train.R"`. You should see output of the form:
+This function will submit your application to Google Cloud, and request that it train your application by sourcing the training script `"train.R"`.
 
-    > job <- with_census(cloudml_train())
-    Job 'census_cloudml_2017_10_26_172932520' successfully submitted.
+When using RStudio, a terminal window is used to stream the logs and download the job when it finializes.
 
-    Check status and collect output with:
-    - job_status("census_cloudml_2017_10_26_172932520")
-    - job_collect("census_cloudml_2017_10_26_172932520")
-
-    View job in the Cloud Console at:
-    https://console.cloud.google.com/ml/jobs/census_cloudml_2017_10_26_172932520?project=rstudio-cloudml
-
-    View logs at:
-    https://console.cloud.google.com/logs?resource=ml.googleapis.com%2Fjob_id%2Fcensus_cloudml_2017_10_26_172932520&project=rstudio-cloudml
-
-After submitting this job, you can tell the R session to wait for training to complete, and pull the generated models back to your local filesystem with:
+When not using RStudio, you can ask the R session to wait for training to complete, and pull the generated models back to your local filesystem with:
 
 ``` r
 collected <- job_collect(job)
 ```
 
 The R session will wait and continue polling Google Cloud until your application has finished running; if the application trained successfully, then the trained models will be copied to disk.
-
-**TODO**: <https://cloud.google.com/ml-engine/docs/prediction-overview> suggests that one may need to explicitly call into [SavedModel](https://www.tensorflow.org/api_docs/python/tf/saved_model) APIs to produce a model that can be used for prediction.
-
-> The "model" that you deploy to Cloud ML Engine as a model version is a TensorFlow SavedModel. You export a SavedModel in your trainer. It doesn't matter whether you trained your model in the cloud using Cloud ML Engine or elsewhere as long as you have a SavedModel with the serving signature set to serving\_default.
-
-### Prediction
-
-**TODO**:
-
-    gcloud ml-engine jobs submit prediction <job> \
-        --model-dir <model-dir>                   \
-        --data-format <tf-record>                 \
-        --input-paths <paths>
-
-### Models
-
-**TODO**:
-
-Define a model (give it a name): - `gcloud ml-engine models create <model>`
-
-Assign a particular instance of a model a version: - `gcloud ml-engine versions create <version> --model <model> --origin <model-dir>`
-
-Use that model for prediction: - `gcloud ml-engine predict --model <model> --version <version>`
