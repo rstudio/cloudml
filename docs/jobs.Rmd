@@ -1,8 +1,0 @@
----
-title: "Managing Cloud ML Jobs"
----
-
-
-`project_config()`
-
-

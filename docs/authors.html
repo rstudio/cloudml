@@ -23,14 +23,17 @@
 <link href="pkgdown.css" rel="stylesheet">
 <script src="jquery.sticky-kit.min.js"></script>
 <script src="pkgdown.js"></script>
-
+  
+  
 <!-- mathjax -->
-<script src='https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
+<script src='https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
 
 <!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 <![endif]-->
+
+
   </head>
 
   <body>
@@ -49,22 +52,43 @@
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
-  <a href="projects.html">Projects</a>
+  <a href="index.html">Home</a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Guides
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="articles/guides-training.html">Training</a>
+    </li>
+    <li>
+      <a href="articles/guides-jobs.html">Jobs</a>
+    </li>
+    <li>
+      <a href="articles/guides-tuning.html">Tuning</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Examples
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="articles/examples-mnist.html">MNIST</a>
+    </li>
+    <li>
+      <a href="articles/examples-keras.html">Keras</a>
+    </li>
+  </ul>
 </li>
 <li>
-  <a href="training.html">Training</a>
-</li>
-<li>
-  <a href="tuning.html">Tuning</a>
-</li>
-<li>
-  <a href="prediction.html">Prediction</a>
-</li>
-<li>
-  <a href="jobs.html">Jobs</a>
-</li>
-<li>
-  <a href="reference.html">Reference</a>
+  <a href="reference/index.html">Reference</a>
 </li>
       </ul>
       
