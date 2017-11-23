@@ -14,7 +14,7 @@ test_that("cloudml_train() can train and collect savedmodel", {
 
   expect_gt(nchar(job$id), 0)
   expect_gt(length(job$description), 0)
-  expect_equal(job$description$state, "PREPARING")
+  expect_gt(nchar(job$description$state), 0)
 
   collected <- job_collect(job)
 
