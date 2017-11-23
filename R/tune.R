@@ -6,6 +6,8 @@
 #'   be tuned. See
 #'   https://cloud.google.com/ml/reference/rest/v1/projects.jobs
 #'   for more details.
+#'
+#' @export
 cloudml_tune <- function(application = getwd(),
                          config = "cloudml",
                          hypertune = "hypertune.yml",
