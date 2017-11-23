@@ -20,6 +20,8 @@ sysenv_file <- function(name, destination) {
 
 cloudml:::gcloud_install()
 
+options(repos = c(CRAN = "http://cran.rstudio.com"))
+
 account_file <- tempfile(fileext = ".json")
 sysenv_file("GCLOUD_ACCOUNT_FILE", account_file)
 
