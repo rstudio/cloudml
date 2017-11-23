@@ -14,6 +14,8 @@ the current working directory.}
 \item{config}{The name of the configuration to be used. Defaults to
 the \code{"cloudml"} configuration.}
 
+\item{entrypoint}{File to be used as entrypoint for training.}
+
 \item{...}{Named arguments, used to supply runtime configuration
 settings to your TensorFlow application.}
 }

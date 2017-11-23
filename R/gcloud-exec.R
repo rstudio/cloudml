@@ -16,7 +16,7 @@ gexec <- function(command,
 
   if (result$status != 0) {
     output <- c(
-      sprintf("ERROR: gcloud invocation failed [exit status %i]", status),
+      sprintf("ERROR: gcloud invocation failed [exit status %i]", result$status),
 
       "",
       "[command]",

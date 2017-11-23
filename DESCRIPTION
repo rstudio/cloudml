@@ -11,9 +11,14 @@ Imports:
   jsonlite,
   packrat,
   processx,
+  readr,
+  rprojroot,
+  rstudioapi,
   tensorflow,
   withr,
   yaml
+Suggests:
+  testthat
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
