@@ -1,5 +1,6 @@
 from setuptools import setup
 
+import sys
 import platform
 import subprocess
 from setuptools import find_packages
@@ -35,6 +36,8 @@ class CustomCommands(install):
 
   """A setuptools Command class able to run arbitrary commands."""
   def RunCustomCommand(self, commands):
+    print "Running custom command %s" % commands
+    print >> sys.stderr, "Running custom command %s" % commands
 
     process = subprocess.Popen(
         commands,
