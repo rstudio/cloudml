@@ -81,7 +81,7 @@ If you've followed these steps, your application should now be ready to be train
 You can train your application with:
 
 ``` r
-cloudml_train()
+job <- cloudml_train()
 ```
 
 This function will submit your application to Google Cloud, and request that it train your application by sourcing the training script `"train.R"`.
