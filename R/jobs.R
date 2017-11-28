@@ -417,7 +417,9 @@ job_collect_async <- function(
     c(
       paste(gcloud_path(), paste(log_arguments(), collapse = " ")),
       paste("mkdir -p", destination),
-      paste(download_arguments, collapse = " ")
+      paste(download_arguments, collapse = " "),
+      paste("echo \"\""),
+      paste("echo \"To view the results, run from R: tfruns::view_run()\"")
     ),
     collapse = os_collapse
   )

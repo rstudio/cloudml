@@ -158,8 +158,11 @@
 <p>This function will submit your application to Google Cloud, and request that it train your application by sourcing the training script <code>"train.R"</code>.</p>
 <p>When using RStudio, a terminal window is used to stream the logs and download the job when it finializes.</p>
 <p>When not using RStudio, you can ask the R session to wait for training to complete, and pull the generated models back to your local filesystem with:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">collected &lt;-<span class="st"> </span><span class="kw"><a href="reference/job_collect.html">job_collect</a></span>(job)</code></pre></div>
-<p>The R session will wait and continue polling Google Cloud until your application has finished running; if the application trained successfully, then the trained models will be copied to disk.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="reference/job_collect.html">job_collect</a></span>(job)</code></pre></div>
+<p>The R session will wait and continue polling Google Cloud until your application has finished running; if the application trained successfully, then the trained models will be copied to disk under the <code>runs</code> directory.</p>
+<p>Once the job is collected, you can use <a href="https://tensorflow.rstudio.com/tools/tfruns/">tfruns</a> to view the results of the last run:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(tfruns)
+<span class="kw"><a href="http://www.rdocumentation.org/packages/tfruns/topics/view_run">view_run</a></span>()</code></pre></div>
 </div>
 </div>
   </div>

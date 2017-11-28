@@ -1,8 +1,8 @@
 gcloud:
-  project         : "project-name"
-  account         : "account@domain.com"
+  project         : "rstudio-cloudml"
+  account         : "javier@rstudio.com"
   region          : "us-central1"
   runtime-version : "1.2"
 
 cloudml:
-  storage         : "gs://project-name/mnist"
+  storage         : "gs://rstudio-cloudml/mnist"

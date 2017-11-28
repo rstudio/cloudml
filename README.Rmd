@@ -92,7 +92,14 @@ When using RStudio, a terminal window is used to stream the logs and download th
 When not using RStudio, you can ask the R session to wait for training to complete, and pull the generated models back to your local filesystem with:
 
 ```{r eval=FALSE}
-collected <- job_collect(job)
+job_collect(job)
 ```
 
-The R session will wait and continue polling Google Cloud until your application has finished running; if the application trained successfully, then the trained models will be copied to disk.
+The R session will wait and continue polling Google Cloud until your application has finished running; if the application trained successfully, then the trained models will be copied to disk under the `runs` directory.
+
+Once the job is collected, you can use [tfruns](https://tensorflow.rstudio.com/tools/tfruns/) to view the results of the last run:
+
+```{r eval=FALSE}
+library(tfruns)
+view_run()
+```
