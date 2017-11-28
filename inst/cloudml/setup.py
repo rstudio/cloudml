@@ -11,6 +11,7 @@ from setuptools.command.install import install
 #
 # First, note that there is no need to use the sudo command because the setup
 # script runs with appropriate access.
+#
 # Second, if apt-get tool is used then the first command needs to be "apt-get
 # update" so the tool refreshes itself and initializes links to download
 # repositories.  Without this initial step the other apt-get install commands
@@ -21,14 +22,20 @@ from setuptools.command.install import install
 # worker-startup log.
 
 CUSTOM_COMMANDS = [
-    # Update repositories and install R + dependencies
+    # Update repositories
     ["apt-get", "-qq", "-m", "-y", "update"],
-    ["apt-get", "-qq", "-m", "-y", "upgrade"],
+
+    # Upgrading packages could be useful but takes about 30-60s additional seconds
+    # ["apt-get", "-qq", "-m", "-y", "upgrade"],
+
+    # Install R + dependencies
     ["apt-get", "-qq", "-m", "-y", "install", "libcurl4-openssl-dev", "libxml2-dev", "libxslt-dev", "libssl-dev", "r-base", "r-base-dev"],
 
-    # These are here just because ml-engine doesn't provide TensorFlow 1.3 yet
-    ["pip", "install", "keras", "--upgrade"],
-    ["pip", "install", "tensorflow", "--upgrade"]
+    # ml-engine doesn't provide TensorFlow 1.3 yet but they could be potentially
+    # upgraded; however, we've found out some components (e.g. tfestimators) hang even
+    # under python when upgrading TensorFlow versions.
+    # ["pip", "install", "keras", "--upgrade"],
+    # ["pip", "install", "tensorflow", "--upgrade"]
 ]
 
 class CustomCommands(install):
