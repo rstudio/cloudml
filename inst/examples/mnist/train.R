@@ -1,14 +1,12 @@
 library(tensorflow)
 library(optparse)
 
-# Prepare hyperparameter tunning
-option_list = list(
-  make_option(c("--gradient-descent-optimizer"), type="double", default=0.5,
-              help="Gradient Descent Optimizer", metavar="character")
-);
-opt_parser = OptionParser(option_list = option_list);
-opts = parse_args(opt_parser);
-gradient_descent_optimizer <- opts$`gradient-descent-optimizer`
+message("Command Arguments: ", paste(commandArgs(trailingOnly = TRUE), collapse = " "))
+
+opts <- commandArgs(trailingOnly = TRUE)
+opts_gdo <- which(opts == "--gradient-descent-optimizer")
+
+gradient_descent_optimizer <- if (length(opts_gdo) > 0) as.double(opts[[opts_grad + 1]]) else 0.5
 
 # read in flags
 FLAGS <- flags(
