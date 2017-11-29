@@ -1,7 +1,8 @@
 # Deploy an R application to Google Cloud, using the 'cloudml' package.
+import argparse
+import os
 import subprocess
 import sys
-import os
 
 # Construct absolute path to 'deploy.R'.
 path, filename = os.path.split(os.path.realpath(__file__))
@@ -15,7 +16,7 @@ os.chdir(os.path.dirname(path))
 # Run 'Rscript' with this entrypoint. We don't forward command line arguments,
 # as 'gcloud' will append a '--job-dir' argument (when specified) which can
 # confuse the tfruns flags system.
-commands = [sys.argv[1], deploy]
+commands = [sys.argv[1], deploy] + sys.argv
 
 process = subprocess.Popen(
   commands,
