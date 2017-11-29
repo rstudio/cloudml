@@ -60,15 +60,9 @@ cloudml_train <- function(application = getwd(),
                 ("--staging-bucket=%s", gcloud[["staging-bucket"]])
                 ("--runtime-version=%s", gcloud[["runtime-version"]])
                 ("--region=%s", gcloud[["region"]])
+                ("--config=%s/%s", basename(application), overlay$hypertune)
                 ("--")
                 ("Rscript"))
-
-                # TODO: re-enable these
-                # ("--job-dir=%s", overlay$job_dir)
-                # ("--staging-bucket=%s", overlay$staging_bucket)
-                # ("--region=%s", overlay$region)
-                # ("--runtime-version=%s", overlay$runtime_version)
-                # ("--config=%s/%s", basename(application), overlay$hypertune)
 
   # submit job through command line interface
   gcloud_exec(args = arguments())
