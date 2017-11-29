@@ -1,15 +1,17 @@
 library(tensorflow)
 
-message("Command Arguments: ", paste(commandArgs(trailingOnly = TRUE), collapse = " "))
-
-opts <- commandArgs(trailingOnly = TRUE)
-opts_gdo <- which(opts == "--gradient-descent-optimizer")
-
-gradient_descent_optimizer <- if (length(opts_gdo) > 0) as.double(opts[[opts_grad + 1]]) else 0.5
+message("Command Arguments: ", paste(commandArgs(TRUE), collapse = " "))
 
 # read in flags
 FLAGS <- flags(
+  flag_string("args", ""),
+  flag_string("hypertune", ""),
+  flag_string("job_dir", ""),
+  flag_numeric("gradient_descent_optimizer", 0.5),
+  arguments = commandArgs(TRUE)
 )
+
+message("FLAGS: ", jsonlite::toJSON(as.data.frame(FLAGS)))
 
 sess <- tf$Session()
 
@@ -26,8 +28,8 @@ y <- tf$nn$softmax(tf$matmul(x, W) + b)
 y_ <- tf$placeholder(tf$float32, shape(NULL, 10L))
 cross_entropy <- tf$reduce_mean(-tf$reduce_sum(y_ * tf$log(y), reduction_indices=1L))
 
-message("Using gradient-descent-optimizer set to: ", gradient_descent_optimizer)
-optimizer <- tf$train$GradientDescentOptimizer(gradient_descent_optimizer)
+message("Using gradient-descent-optimizer set to: ", FLAGS$gradient_descent_optimizer)
+optimizer <- tf$train$GradientDescentOptimizer(FLAGS$gradient_descent_optimizer)
 
 train_step <- optimizer$minimize(cross_entropy)
 
