@@ -1,5 +1,4 @@
 library(tensorflow)
-library(optparse)
 
 message("Command Arguments: ", paste(commandArgs(trailingOnly = TRUE), collapse = " "))
 
