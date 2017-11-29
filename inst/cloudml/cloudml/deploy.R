@@ -178,10 +178,17 @@ tfruns::training_run(file = deploy$entrypoint,
                      view = FALSE,
                      run_dir = run_dir)
 
+tf_config <- jsonlite::fromJSON(Sys.getenv("TF_CONFIG", "{}"))
+
+trial_id <- NULL
+if (!is.null(deploy$overlay$hypertune) && !is.null(tf_config$task)) {
+  trial_id <- tf_config$task$trial
+}
+
 # upload run directory to requested bucket (if any)
 storage <- cloudml[["storage"]]
 if (is.character(storage)) {
   source <- run_dir
-  target <- file.path(storage, run_dir)
+  target <- do.call("file.path", as.list(c(storage, run_dir, trial_id)))
   system(paste(gsutil_path(), "cp", "-r", shQuote(source), shQuote(target)))
 }
