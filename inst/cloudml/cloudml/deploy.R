@@ -74,6 +74,9 @@ cloudml <- config$cloudml
 cache <- cloudml[["cache"]]
 if (is.null(cache)) {
   cache <- file.path(cloudml[["storage"]], "cache")
+  message(paste0("Cache entry not found, defaulting to: ", cache))
+} else {
+  message(paste0("Cache entry found: ", cache))
 }
 
 use_packrat <- cloudml[["packrat"]]
