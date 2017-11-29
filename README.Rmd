@@ -129,5 +129,5 @@ Then you can tune and collect the optimal model as follows:
 
 ```{r eval=FALSE}
 job <- cloudml_tune()
-collect_job(job)
+job_collect(job)
 ```
