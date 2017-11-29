@@ -1,5 +1,5 @@
 ---
-title  : "Cloud ML interface for R"
+title  : "Cloud ML Interface for R"
 output : github_document
 ---
 
@@ -102,4 +102,32 @@ Once the job is collected, you can use [tfruns](https://tensorflow.rstudio.com/t
 ```{r eval=FALSE}
 library(tfruns)
 view_run()
+```
+
+## Tuning
+
+Tuning your model's parameters can be easily accomplished using a `hypertune.yml` file
+which specifies how to parameterized your model across multiple runs. For MNIST,
+this file can look like:
+
+```{yml}
+trainingInput:
+  hyperparameters:
+    goal: MAXIMIZE
+    hyperparameterMetricTag: accuracy
+    maxTrials: 2
+    maxParallelTrials: 2
+    params:
+      - parameterName: gradient-descent-optimizer
+        type: DOUBLE
+        minValue: 0.4
+        maxValue: 0.5
+        scaleType: UNIT_LINEAR_SCALE
+```
+
+Then you can tune and collect the optimal model as follows:
+
+```{r eval=FALSE}
+job <- cloudml_tune()
+collect_job(job)
 ```
