@@ -450,7 +450,7 @@ job_download <- function(job, destination = "runs") {
 job_output_dir <- function(job, config = cloudml_config()) {
   output_path <- file.path(config$storage, "runs", job$id)
 
-  if (job_is_tuning(job)) {
+  if (job_is_tuning(job) && !is.null(job$trainingOutput$finalMetric)) {
     output_path <- file.path(output_path, job$trainingOutput$finalMetric$trainingStep)
   }
 
