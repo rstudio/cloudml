@@ -16,7 +16,7 @@ os.chdir(os.path.dirname(path))
 # Run 'Rscript' with this entrypoint. We don't forward command line arguments,
 # as 'gcloud' will append a '--job-dir' argument (when specified) which can
 # confuse the tfruns flags system.
-commands = [sys.argv[1], deploy] + sys.argv
+commands = [sys.argv[1], deploy] + ['--args'] + sys.argv[1:]
 
 process = subprocess.Popen(
   commands,
