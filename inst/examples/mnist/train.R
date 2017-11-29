@@ -48,7 +48,15 @@ for (i in 1:1000) {
 correct_prediction <- tf$equal(tf$argmax(y, 1L), tf$argmax(y_, 1L))
 accuracy <- tf$reduce_mean(tf$cast(correct_prediction, tf$float32))
 
-sess$run(accuracy, feed_dict=dict(x = mnist$test$images, y_ = mnist$test$labels))
+tf$summary$scalar("accuracy", accuracy)
+merged_summary_op <- tf$summary$merge_all()
+
+result <- sess$run(
+  c(accuracy, merged_summary_op),
+  feed_dict=dict(x = mnist$test$images, y_ = mnist$test$labels)
+)
+
+message("Accuracy: ", result[[1]])
 
 # Export model
 tensor_info_x <- tf$saved_model$utils$build_tensor_info(x)
