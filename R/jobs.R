@@ -409,14 +409,34 @@ job_collect_async <- function(
     os_return   <- "\n"
   }
 
-  terminal_command <- paste(
-    c(
-      paste(gcloud_path(), paste(log_arguments(), collapse = " ")),
+  terminal_steps <- c(
+    paste(gcloud_path(), paste(log_arguments(), collapse = " "))
+  )
+
+  if (!job_is_tuning(job)) {
+    terminal_steps <- c(
+      terminal_steps,
       paste("mkdir -p", destination),
       paste(download_arguments, collapse = " "),
       paste("echo \"\""),
       paste("echo \"To view the results, run from R: tfruns::view_run()\"")
-    ),
+    )
+  }
+  else {
+    terminal_steps <- c(
+      terminal_steps,
+      paste("echo \"\""),
+      paste(
+        "echo \"To collect this job, run from R: job_collect('",
+        job$id,
+        "')\"",
+        sep = ""
+      )
+    )
+  }
+
+  terminal_command <- paste(
+    terminal_steps,
     collapse = os_collapse
   )
 
@@ -455,4 +475,8 @@ job_output_dir <- function(job, config = cloudml_config()) {
   }
 
   output_path
+}
+
+job_is_tuning <- function(job) {
+  !is.null(job$description$trainingInput$hyperparameters)
 }
