@@ -265,7 +265,9 @@ job_status <- function(job) {
   output <- gcloud_exec(args = arguments())
 
   # parse as YAML and return
-  yaml::yaml.load(paste(output$stdout, collapse = "\n"))
+  status <- yaml::yaml.load(paste(output$stdout, collapse = "\n"))
+
+  invisible(status)
 }
 
 #' Collect job output
