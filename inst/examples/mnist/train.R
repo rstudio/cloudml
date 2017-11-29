@@ -1,4 +1,14 @@
 library(tensorflow)
+library(optparse)
+
+# Prepare hyperparameter tunning
+option_list = list(
+  make_option(c("--gradient-descent-optimizer"), type="double", default=0.5,
+              help="Gradient Descent Optimizer", metavar="character")
+);
+opt_parser = OptionParser(option_list = option_list);
+opts = parse_args(opt_parser);
+gradient_descent_optimizer <- opts$`gradient-descent-optimizer`
 
 # read in flags
 FLAGS <- flags(
@@ -19,7 +29,9 @@ y <- tf$nn$softmax(tf$matmul(x, W) + b)
 y_ <- tf$placeholder(tf$float32, shape(NULL, 10L))
 cross_entropy <- tf$reduce_mean(-tf$reduce_sum(y_ * tf$log(y), reduction_indices=1L))
 
-optimizer <- tf$train$GradientDescentOptimizer(0.5)
+message("Using gradient-descent-optimizer set to: ", gradient_descent_optimizer)
+optimizer <- tf$train$GradientDescentOptimizer(gradient_descent_optimizer)
+
 train_step <- optimizer$minimize(cross_entropy)
 
 init <- tf$global_variables_initializer()
