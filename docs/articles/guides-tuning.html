@@ -5,7 +5,7 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Tuning Models • cloudml</title>
+<title>Tuning • cloudml</title>
 <!-- jquery --><script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script><!-- Bootstrap --><link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/cosmo/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script><!-- Font Awesome icons --><link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
 <!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
@@ -87,18 +87,72 @@
       </header><div class="row">
   <div class="col-md-9">
     <div class="page-header toc-ignore">
-      <h1>Tuning Models</h1>
+      <h1>Tuning</h1>
             
           </div>
 
     
     
 <div class="contents">
-
+<p>Hyperparameter tuning is the automated model enhancer provided by Cloud Machine Learning Engine. Hyperparameter tuning takes advantage of the processing infrastructure of Google Cloud Platform to test different hyperparameter configurations when training your model. It can give you optimized values for hyperparameters, which maximizes your model’s predictive accuracy.</p>
+<div id="whats-a-hyperparameter" class="section level2">
+<h2 class="hasAnchor">
+<a href="#whats-a-hyperparameter" class="anchor"></a>What’s a hyperparameter?</h2>
+<p>If you’re new to machine learning, you may have never encountered the term hyperparameters before. Your trainer handles three categories of data as it trains your model:</p>
+<ul>
+<li>Your input data (also called training data) is a collection of individual records (instances) containing the features important to your machine learning problem. This data is used during training to configure your model to accurately make predictions about new instances of similar data. However, the actual values in your input data never directly become part of your model.</li>
+<li>Your model’s parameters are the variables that your chosen machine learning technique uses to adjust to your data. For example, a deep neural network (DNN) is composed of processing nodes (neurons), each with an operation performed on data as it travels through the network. When your DNN is trained, each node has a weight value that tells your model how much impact it has on the final prediction. Those weights are an example of your model’s parameters. In many ways, your model’s parameters are the model—they are what distinguishes your particular model from other models of the same type working on similar data.</li>
+<li>If model parameters are variables that get adjusted by training with existing data, your hyperparameters are the variables about the training process itself. For example, part of setting up a deep neural network is deciding how many “hidden” layers of nodes to use between the input layer and the output layer, as well as how many nodes each layer should use. These variables are not directly related to the training data at all. They are configuration variables. Another difference is that parameters change during a training job, while the hyperparameters are usually constant during a job. Your model parameters are optimized (you could say “tuned”) by the training process: you run data through the operations of the model, compare the resulting prediction with the actual value for each data instance, evaluate the accuracy, and adjust until you find the best values. Hyperparameters are similarly tuned by running your whole training job, looking at the aggregate accuracy, and adjusting. In both cases you are modifying the composition of your model in an effort to find the best combination to handle your problem.</li>
+</ul>
+<p>Without an automated technology like Cloud ML Engine hyperparameter tuning, you need to make manual adjustments to the hyperparameters over the course of many training runs to arrive at the optimal values. Hyperparameter tuning makes the process of determining the best hyperparameter settings easier and less tedious.</p>
+</div>
+<div id="how-it-works" class="section level2">
+<h2 class="hasAnchor">
+<a href="#how-it-works" class="anchor"></a>How it works</h2>
+<p>Hyperparameter tuning works by running multiple trials in a single training job. Each trial is a complete execution of your training application with values for your chosen hyperparameters set within limits you specify. The Cloud ML Engine training service keeps track of the results of each trial and makes adjustments for subsequent trials. When the job is finished, you can get a summary of all the trials along with the most effective configuration of values according to the criteria you specify.</p>
+<p>Hyperparameter tuning requires more explicit communication between the Cloud ML Engine training service and your training application. You define all the information that your model needs in your training application. The best way to think about this interaction is that you define the hyperparameters (variables) that you want to adjust and you define a target value.</p>
+</div>
+<div id="what-it-optimizes" class="section level2">
+<h2 class="hasAnchor">
+<a href="#what-it-optimizes" class="anchor"></a>What it optimizes</h2>
+<p>Hyperparameter tuning optimizes a single target variable (also called the hyperparameter metric) that you specify. The accuracy of the model, as calculated from an evaluation pass, is a common metric. The metric must be a numeric value, and you can specify whether you want to tune your model to maximize or minimize your metric.</p>
+<p>When you start a job with hyperparameter tuning, you establish the name of your hyperparameter metric. This is the name you assign to the scalar summary that you add to your trainer. You can use a custom name if you want, or you can use the default name of <code>training/hptuning/metric</code>. The only functional difference is that if you use a custom name you must set the <code>hyperparameterMetricTag</code> value in <code>hyperparam.yml</code> to match your chosen name.</p>
+</div>
+<div id="example" class="section level2">
+<h2 class="hasAnchor">
+<a href="#example" class="anchor"></a>Example</h2>
+<p>Tuning your model’s parameters can be easily accomplished using a <code>hypertune.yml</code> file which specifies how to parameterized your model across multiple runs. In addition, the model requires <a href="guides-tunning.html">training</a> to be configured correctly.</p>
+<p>For MNIST, <code>hypertune.yml</code> can look like:</p>
+<div class="sourceCode"><pre class="sourceCode yml"><code class="sourceCode yaml"><span class="fu">trainingInput:</span>
+  <span class="fu">hyperparameters:</span>
+    <span class="fu">goal:</span><span class="at"> MAXIMIZE</span>
+    <span class="fu">hyperparameterMetricTag:</span><span class="at"> accuracy</span>
+    <span class="fu">maxTrials:</span><span class="at"> 2</span>
+    <span class="fu">maxParallelTrials:</span><span class="at"> 2</span>
+    <span class="fu">params:</span>
+      <span class="kw">-</span> <span class="fu">parameterName:</span><span class="at"> gradient-descent-optimizer</span>
+        <span class="fu">type:</span><span class="at"> DOUBLE</span>
+        <span class="fu">minValue:</span><span class="at"> 0.4</span>
+        <span class="fu">maxValue:</span><span class="at"> 0.5</span>
+        <span class="fu">scaleType:</span><span class="at"> UNIT_LINEAR_SCALE</span></code></pre></div>
+<p>Then you can tune and collect the optimal model as follows:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">job &lt;-<span class="st"> </span><span class="kw"><a href="../reference/cloudml_tune.html">cloudml_tune</a></span>()
+<span class="kw"><a href="../reference/job_collect.html">job_collect</a></span>(job)</code></pre></div>
+</div>
 </div>
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
+        <div id="tocnav">
+      <h2 class="hasAnchor">
+<a href="#tocnav" class="anchor"></a>Contents</h2>
+      <ul class="nav nav-pills nav-stacked">
+<li><a href="#whats-a-hyperparameter">What’s a hyperparameter?</a></li>
+      <li><a href="#how-it-works">How it works</a></li>
+      <li><a href="#what-it-optimizes">What it optimizes</a></li>
+      <li><a href="#example">Example</a></li>
+      </ul>
+</div>
       </div>
 
 </div>
