@@ -4,7 +4,7 @@ GITHUB <- list(
   list(uri = "tidyverse/purrr",      ref = NULL),
   list(uri = "tidyverse/modelr",     ref = NULL),
   list(uri = "rstudio/tensorflow",   ref = NULL),
-  list(uri = "rstudio/cloudml",      ref = "feature/train-improvements"),
+  list(uri = "rstudio/cloudml",      ref = "feature/tuning"),
   list(uri = "rstudio/keras",        ref = NULL),
   list(uri = "rstudio/tfruns",       ref = NULL),
   list(uri = "rstudio/tfestimators", ref = NULL),
@@ -74,6 +74,9 @@ cloudml <- config$cloudml
 cache <- cloudml[["cache"]]
 if (is.null(cache)) {
   cache <- file.path(cloudml[["storage"]], "cache")
+  message(paste0("Cache entry not found, defaulting to: ", cache))
+} else {
+  message(paste0("Cache entry found: ", cache))
 }
 
 use_packrat <- cloudml[["packrat"]]
@@ -175,10 +178,17 @@ tfruns::training_run(file = deploy$entrypoint,
                      view = FALSE,
                      run_dir = run_dir)
 
+tf_config <- jsonlite::fromJSON(Sys.getenv("TF_CONFIG", "{}"))
+
+trial_id <- NULL
+if (!is.null(deploy$overlay$hypertune) && !is.null(tf_config$task)) {
+  trial_id <- tf_config$task$trial
+}
+
 # upload run directory to requested bucket (if any)
 storage <- cloudml[["storage"]]
 if (is.character(storage)) {
   source <- run_dir
-  target <- file.path(storage, run_dir)
+  target <- do.call("file.path", as.list(c(storage, run_dir, trial_id)))
   system(paste(gsutil_path(), "cp", "-r", shQuote(source), shQuote(target)))
 }

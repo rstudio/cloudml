@@ -1,8 +1,17 @@
 library(tensorflow)
 
+message("Command Arguments: ", paste(commandArgs(TRUE), collapse = " "))
+
 # read in flags
 FLAGS <- flags(
+  flag_string("args", ""),
+  flag_string("hypertune", ""),
+  flag_string("job_dir", ""),
+  flag_numeric("gradient_descent_optimizer", 0.5),
+  arguments = commandArgs(TRUE)
 )
+
+message("FLAGS: ", jsonlite::toJSON(as.data.frame(FLAGS)))
 
 sess <- tf$Session()
 
@@ -19,7 +28,9 @@ y <- tf$nn$softmax(tf$matmul(x, W) + b)
 y_ <- tf$placeholder(tf$float32, shape(NULL, 10L))
 cross_entropy <- tf$reduce_mean(-tf$reduce_sum(y_ * tf$log(y), reduction_indices=1L))
 
-optimizer <- tf$train$GradientDescentOptimizer(0.5)
+message("Using gradient-descent-optimizer set to: ", FLAGS$gradient_descent_optimizer)
+optimizer <- tf$train$GradientDescentOptimizer(FLAGS$gradient_descent_optimizer)
+
 train_step <- optimizer$minimize(cross_entropy)
 
 init <- tf$global_variables_initializer()
@@ -37,7 +48,15 @@ for (i in 1:1000) {
 correct_prediction <- tf$equal(tf$argmax(y, 1L), tf$argmax(y_, 1L))
 accuracy <- tf$reduce_mean(tf$cast(correct_prediction, tf$float32))
 
-sess$run(accuracy, feed_dict=dict(x = mnist$test$images, y_ = mnist$test$labels))
+tf$summary$scalar("accuracy", accuracy)
+merged_summary_op <- tf$summary$merge_all()
+
+result <- sess$run(
+  c(accuracy, merged_summary_op),
+  feed_dict=dict(x = mnist$test$images, y_ = mnist$test$labels)
+)
+
+message("Accuracy: ", result[[1]])
 
 # Export model
 tensor_info_x <- tf$saved_model$utils$build_tensor_info(x)

@@ -1,11 +1,12 @@
 Package: cloudml
-Title: R Interface to the Google Cloud Machine Learning Platform
+Title: Interface to the Google Cloud Machine Learning Platform
 Version: 0.1.0
 Authors@R: c(
     person("JJ", "Allaire", email = "jj@rstudio.com", role = c("aut", "cre")),
     person("Kevin", "Ushey", email = "kevin@rstudio.com", role = c("aut"))
     )
-Description: An R Interface to the Google Cloud Machine Learning Platform.
+Description: Interface to the Google Cloud Machine Learning Platform which provides
+  support to train and tune machine learning models at scale under Cloud ML.
 Depends: R (>= 3.1.0)
 Imports:
   jsonlite,

@@ -60,15 +60,9 @@ cloudml_train <- function(application = getwd(),
                 ("--staging-bucket=%s", gcloud[["staging-bucket"]])
                 ("--runtime-version=%s", gcloud[["runtime-version"]])
                 ("--region=%s", gcloud[["region"]])
+                ("--config=%s/%s", basename(application), overlay$hypertune)
                 ("--")
                 ("Rscript"))
-
-                # TODO: re-enable these
-                # ("--job-dir=%s", overlay$job_dir)
-                # ("--staging-bucket=%s", overlay$staging_bucket)
-                # ("--region=%s", overlay$region)
-                # ("--runtime-version=%s", overlay$runtime_version)
-                # ("--config=%s/%s", basename(application), overlay$hypertune)
 
   # submit job through command line interface
   gcloud_exec(args = arguments())
@@ -271,7 +265,9 @@ job_status <- function(job) {
   output <- gcloud_exec(args = arguments())
 
   # parse as YAML and return
-  yaml::yaml.load(paste(output$stdout, collapse = "\n"))
+  status <- yaml::yaml.load(paste(output$stdout, collapse = "\n"))
+
+  invisible(status)
 }
 
 #' Collect job output
@@ -413,14 +409,34 @@ job_collect_async <- function(
     os_return   <- "\n"
   }
 
-  terminal_command <- paste(
-    c(
-      paste(gcloud_path(), paste(log_arguments(), collapse = " ")),
+  terminal_steps <- c(
+    paste(gcloud_path(), paste(log_arguments(), collapse = " "))
+  )
+
+  if (!job_is_tuning(job)) {
+    terminal_steps <- c(
+      terminal_steps,
       paste("mkdir -p", destination),
       paste(download_arguments, collapse = " "),
       paste("echo \"\""),
       paste("echo \"To view the results, run from R: tfruns::view_run()\"")
-    ),
+    )
+  }
+  else {
+    terminal_steps <- c(
+      terminal_steps,
+      paste("echo \"\""),
+      paste(
+        "echo \"To collect this job, run from R: job_collect('",
+        job$id,
+        "')\"",
+        sep = ""
+      )
+    )
+  }
+
+  terminal_command <- paste(
+    terminal_steps,
     collapse = os_collapse
   )
 
@@ -452,5 +468,15 @@ job_download <- function(job, destination = "runs") {
 }
 
 job_output_dir <- function(job, config = cloudml_config()) {
-  file.path(config$storage, "runs", job$id)
+  output_path <- file.path(config$storage, "runs", job$id)
+
+  if (job_is_tuning(job) && !is.null(job$trainingOutput$finalMetric)) {
+    output_path <- file.path(output_path, job$trainingOutput$finalMetric$trainingStep)
+  }
+
+  output_path
+}
+
+job_is_tuning <- function(job) {
+  !is.null(job$description$trainingInput$hyperparameters)
 }
