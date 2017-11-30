@@ -18,23 +18,29 @@ sysenv_file <- function(name, destination) {
   }
 }
 
-cloudml:::gcloud_install()
-
-options(repos = c(CRAN = "http://cran.rstudio.com"))
-
-account_file <- tempfile(fileext = ".json")
-sysenv_file("GCLOUD_ACCOUNT_FILE", account_file)
-
-if (!is.null(account_file)) {
-  gcloud_exec(
-    "auth",
-    "activate-service-account",
-    paste(
-      "--key-file",
-      account_file,
-      sep = "="
-    )
-  )
+cloudml_tests_configured <- function() {
+  nchar(Sys.getenv("GCLOUD_ACCOUNT_FILE")) > 0
 }
 
-sysenv_file("GCLOUD_CONFIG_FILE", "cloudml.yml")
+if (cloudml_tests_configured()) {
+  cloudml:::gcloud_install()
+
+  options(repos = c(CRAN = "http://cran.rstudio.com"))
+
+  account_file <- tempfile(fileext = ".json")
+  sysenv_file("GCLOUD_ACCOUNT_FILE", account_file)
+
+  if (!is.null(account_file)) {
+    gcloud_exec(
+      "auth",
+      "activate-service-account",
+      paste(
+        "--key-file",
+        account_file,
+        sep = "="
+      )
+    )
+  }
+
+  sysenv_file("GCLOUD_CONFIG_FILE", "cloudml.yml")
+}
