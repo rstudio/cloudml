@@ -1,6 +1,133 @@
 ---
-title: "Training Models"
+title: "Training"
 output: 
   html_document:
     toc_depth: 3
 ---
+
+Cloud Machine Learning Engine enables you to easily run your TensorFlow training applications in the cloud. This page describes that capability and some of the key concepts you'll need to understand to make the most of your model training.
+
+## How training works
+
+Your training application, implemented in R and TensorFlow, is the core of the training process. Cloud ML Engine runs your trainer on computing resources in the cloud. Here's an overview of the process:
+
+1. You create a TensorFlow application that defines your computation graph and trains your model. Cloud ML Engine has almost no specific requirements of your application during the training process, so you build it as you would to run locally in your development environment.
+2. You get your training and verification data into a source that Cloud ML Engine can access. This usually means putting it in Google Cloud Storage, Cloud Bigtable, or another Google Cloud Platform storage service associated with the same Google Cloud Platform project that you're using for Cloud ML Engine.
+3. When your application is ready to run, it must be packaged and transferred to a Google Cloud Storage bucket that your project can access. This is automated with `cloudml_train()`.
+4. The Cloud ML Engine training service sets up resources for your job. It allocates one or more virtual machines (sometimes called training instances) based on your job configuration. Each training instance is set up by:
+    - Applying the standard machine image for the version of Cloud ML Engine your job uses.
+    - Loading your trainer package and installing.
+    - Installing any additional packages that `packrat` detects.
+5. The training service runs your trainer.
+6. You can get information about your running job in three ways:
+    - On Stackdriver Logging.
+    - By requesting job details or running log streaming with the gcloud command-line tool.
+    - By programmatically making status requests to the training service using `job_status()`.
+7. When your trainer succeeds or encounters an unrecoverable error, Cloud ML Engine halts all job processes and cleans up the resources.
+
+If you run a distributed TensorFlow job with Cloud ML Engine, you'll specify multiple machines (nodes) in a training cluster. The training service allocates the resources for the machine types you specify and performs step 4 above on each. Your running trainer on a given node is called a replica. In accordance with the distributed TensorFlow model, each replica in the training cluster is given a single role or task in distributed training:
+
+- Exactly one replica is designated the master. This task manages the others and reports status for the job as a whole. It's asserted in the previous list that the training service runs until "your trainer" succeeds or encounters an unrecoverable error. In the distributed case, it is the status of the master replica that signals the overall job status. If you are running a single-process job, the sole replica is the master for the job.
+- One or more replicas may be designated as workers. These replicas do their portion of the work as you designate in your trainer.
+- One or more replicas may be designated as parameter servers. These replicas coordinate shared model state between the workers.
+
+## The typical case
+
+There are steps in the description above where you might assume that a machine learning service would intervene or control processing but where Cloud ML Engine doesn't. The training service is designed to have as little an impact on your trainer as possible. This means you can focus on the TensorFlow code that makes the model you want instead of being confined by a rigid structure. Essentially this means that Cloud ML Engine doesn't know or take interest in your application's implementation.
+
+While it's true that the training service imposes almost no restriction on your trainer's architecture, that doesn't mean that there isn't any guidance to follow. Most machine learning trainers:
+
+- Provide a way to get training data and evaluation data.
+- Process data instances in batches.
+- Use evaluation data to test the accuracy of the model (how often it predicts the right value).
+- Provide a way to output checkpoints at intervals in the process to get a snapshot of the model's progress.
+- Provide a way to export the trained model when the trainer finishes.
+
+## Configuring your trainer
+
+If you've never made a Python package before, this process can feel daunting. The good news is that you can rely on the gcloud command-line tool to do the heavy lifting for you. This section covers some of the specifics in more detail.
+
+### Configuration
+
+A `cloudml.yml` file must be specified in the current directory to configure: project,
+account, region, runtime and storage parameters used to configure Cloud ML while
+traininig. 
+
+A simple configuration file looks as follows:
+
+```{yml}
+gcloud:
+  project         : "project-name"
+  account         : "account@domain.com"
+  region          : "us-central1"
+  runtime-version : "1.2"
+
+cloudml:
+  storage         : "gs://project-name/mnist"
+```
+
+### Scale tier
+
+You must tell Cloud ML Engine the number and type of machines to run your training job on. To make the process easier, you can pick from a set of predefined cluster specifications called scale tiers.
+
+You can read more about the availaible tiers in [Trainning Overview - Scale Tiers](https://cloud.google.com/ml-engine/docs/training-overview#scale_tier).
+
+### Region
+
+Google Cloud Platform uses [zones and regions](https://cloud.google.com/compute/docs/regions-zones/regions-zones) to define the geographic locations of physical computing resources. Cloud ML Engine uses regions to designate its processing. When you run a training job, you specify the region that you want it to run in.
+
+If you store your training dataset on Google Cloud Storage, you should run your training job in the same region as the bucket you're using. If you must run your job in a different region from your data bucket, your job may take longer.
+
+Additional configuration options can be found udner [Trainning Overview](https://cloud.google.com/ml-engine/docs/training-overview).
+
+### Dependencies
+
+All package dependencies are automatically detected with a [packrat](http://rstudio.github.io/packrat/) snapshot; this snapshot contains
+a list of packages and versions that, once training starts, is used to restore
+the state of the packages in each Cloud ML instance.
+
+#### Caching
+
+Caching R package dependencies is enabled by default, this allows subsequent training runs
+to save several minutes of initialization time. The package cache is stored under `storage`;
+it can be disabled by setting this property to `false` in `cloudml.yml`:
+
+```{yml}
+cloudml:
+  storage         : "gs://project-name/mnist"
+  cache           : false
+```
+
+The cache can also be shared among many projects by setting the `cache` path as
+follows:
+
+```{yml}
+cloudml:
+  storage         : "gs://project-name/mnist"
+  cache           : "gs://project-name/cache"
+```
+
+## Deploying your trainer
+
+To package and deploy youy job, simply run:
+
+```{r eval=F}
+library(cloudml)
+job <- cloudml_train()
+```
+
+this will start the training process and return a job object you can use to collect
+the training resuts:
+
+```{r eval=F}
+job_collect(job)
+```
+
+To view the run results, you can use `tfruns` as follows:
+
+```{r eval=F}
+library(tfruns)
+view_run()
+```
+
+To understand additional job related operations, please consult the [Jobs Guide](guides-jobs.html).

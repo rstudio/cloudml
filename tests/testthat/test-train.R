@@ -1,6 +1,8 @@
 context("train")
 
 test_that("cloudml_train() can train and collect savedmodel", {
+  if (!cloudml_tests_configured()) return()
+
   config_yml <- system.file("examples/mnist/cloudml.yml", package = "cloudml")
   file.copy("cloudml.yml", config_yml, overwrite = TRUE)
 
