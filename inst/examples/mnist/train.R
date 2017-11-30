@@ -35,28 +35,30 @@ train_step <- optimizer$minimize(cross_entropy)
 
 init <- tf$global_variables_initializer()
 
+correct_prediction <- tf$equal(tf$argmax(y, 1L), tf$argmax(y_, 1L))
+accuracy <- tf$reduce_mean(tf$cast(correct_prediction, tf$float32))
+
+tf$summary$scalar("accuracy", accuracy)
+tf$summary$scalar("cross_entropy", cross_entropy)
+merged_summary_op <- tf$summary$merge_all()
+
 sess$run(init)
+
+summary_writer <- tf$summary$FileWriter("", graph = tf$get_default_graph())
 
 for (i in 1:1000) {
   batches <- mnist$train$next_batch(100L)
   batch_xs <- batches[[1]]
   batch_ys <- batches[[2]]
-  sess$run(train_step,
-           feed_dict = dict(x = batch_xs, y_ = batch_ys))
+  result <- sess$run(
+    c(train_step, merged_summary_op),
+    feed_dict = dict(x = batch_xs, y_ = batch_ys)
+  )
+
+  summary_writer$add_summary(result[[2]], i)
 }
 
-correct_prediction <- tf$equal(tf$argmax(y, 1L), tf$argmax(y_, 1L))
-accuracy <- tf$reduce_mean(tf$cast(correct_prediction, tf$float32))
-
-tf$summary$scalar("accuracy", accuracy)
-merged_summary_op <- tf$summary$merge_all()
-
-result <- sess$run(
-  c(accuracy, merged_summary_op),
-  feed_dict=dict(x = mnist$test$images, y_ = mnist$test$labels)
-)
-
-message("Accuracy: ", result[[1]])
+summary_writer$close()
 
 # Export model
 tensor_info_x <- tf$saved_model$utils$build_tensor_info(x)
