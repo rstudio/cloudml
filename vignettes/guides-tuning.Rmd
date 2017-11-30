@@ -1,6 +1,62 @@
 ---
-title: "Tuning Models"
+title: "Tuning"
 output: 
   html_document:
     toc_depth: 3
 ---
+
+Hyperparameter tuning is the automated model enhancer provided by Cloud Machine Learning Engine. Hyperparameter tuning takes advantage of the processing infrastructure of Google Cloud Platform to test different hyperparameter configurations when training your model. It can give you optimized values for hyperparameters, which maximizes your model's predictive accuracy.
+
+## What's a hyperparameter?
+
+If you're new to machine learning, you may have never encountered the term hyperparameters before. Your trainer handles three categories of data as it trains your model:
+
+- Your input data (also called training data) is a collection of individual records (instances) containing the features important to your machine learning problem. This data is used during training to configure your model to accurately make predictions about new instances of similar data. However, the actual values in your input data never directly become part of your model.
+- Your model's parameters are the variables that your chosen machine learning technique uses to adjust to your data. For example, a deep neural network (DNN) is composed of processing nodes (neurons), each with an operation performed on data as it travels through the network. When your DNN is trained, each node has a weight value that tells your model how much impact it has on the final prediction. Those weights are an example of your model's parameters. In many ways, your model's parameters are the model—they are what distinguishes your particular model from other models of the same type working on similar data.
+- If model parameters are variables that get adjusted by training with existing data, your hyperparameters are the variables about the training process itself. For example, part of setting up a deep neural network is deciding how many "hidden" layers of nodes to use between the input layer and the output layer, as well as how many nodes each layer should use. These variables are not directly related to the training data at all. They are configuration variables. Another difference is that parameters change during a training job, while the hyperparameters are usually constant during a job.
+Your model parameters are optimized (you could say "tuned") by the training process: you run data through the operations of the model, compare the resulting prediction with the actual value for each data instance, evaluate the accuracy, and adjust until you find the best values. Hyperparameters are similarly tuned by running your whole training job, looking at the aggregate accuracy, and adjusting. In both cases you are modifying the composition of your model in an effort to find the best combination to handle your problem.
+
+Without an automated technology like Cloud ML Engine hyperparameter tuning, you need to make manual adjustments to the hyperparameters over the course of many training runs to arrive at the optimal values. Hyperparameter tuning makes the process of determining the best hyperparameter settings easier and less tedious.
+
+## How it works
+
+Hyperparameter tuning works by running multiple trials in a single training job. Each trial is a complete execution of your training application with values for your chosen hyperparameters set within limits you specify. The Cloud ML Engine training service keeps track of the results of each trial and makes adjustments for subsequent trials. When the job is finished, you can get a summary of all the trials along with the most effective configuration of values according to the criteria you specify.
+
+Hyperparameter tuning requires more explicit communication between the Cloud ML Engine training service and your training application. You define all the information that your model needs in your training application. The best way to think about this interaction is that you define the hyperparameters (variables) that you want to adjust and you define a target value.
+
+## What it optimizes
+
+Hyperparameter tuning optimizes a single target variable (also called the hyperparameter metric) that you specify. The accuracy of the model, as calculated from an evaluation pass, is a common metric. The metric must be a numeric value, and you can specify whether you want to tune your model to maximize or minimize your metric.
+
+When you start a job with hyperparameter tuning, you establish the name of your hyperparameter metric. This is the name you assign to the scalar summary that you add to your trainer. You can use a custom name if you want, or you can use the default name of `training/hptuning/metric`. The only functional difference is that if you use a custom name you must set the `hyperparameterMetricTag` value in
+`hyperparam.yml` to match your chosen name.
+
+## Example
+
+Tuning your model's parameters can be easily accomplished using a `hypertune.yml` file
+which specifies how to parameterized your model across multiple runs. In addition,
+the model requires [training](guides-tunning.html) to be configured correctly.
+
+For MNIST, `hypertune.yml` can look like:
+
+```{yml}
+trainingInput:
+  hyperparameters:
+    goal: MAXIMIZE
+    hyperparameterMetricTag: accuracy
+    maxTrials: 2
+    maxParallelTrials: 2
+    params:
+      - parameterName: gradient-descent-optimizer
+        type: DOUBLE
+        minValue: 0.4
+        maxValue: 0.5
+        scaleType: UNIT_LINEAR_SCALE
+```
+
+Then you can tune and collect the optimal model as follows:
+
+```{r eval=FALSE}
+job <- cloudml_tune()
+job_collect(job)
+```
