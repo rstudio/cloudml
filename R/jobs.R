@@ -445,7 +445,11 @@ job_collect_async <- function(
 }
 
 job_download <- function(job, destination = "runs") {
-  source <- job_output_dir(job)
+  status <- job_status(job)
+
+  trial_paths <- job_status_trial_dir(status, destination)
+  source <- trial_paths$source
+  destination <- trial_paths$destination
 
   if (!is_gs_uri(source)) {
     fmt <- "job directory '%s' is not a Google Storage URI"
@@ -477,6 +481,31 @@ job_output_dir <- function(job, config = cloudml_config()) {
   output_path
 }
 
+job_status_trial_dir <- function(status, destination, config = cloudml_config()) {
+  output_path <- list(
+    source = file.path(config$storage, "runs", status$jobId),
+    destination = destination
+  )
+
+  if (job_status_is_tuning(job) && !is.null(status$trainingInput$hyperparameters$goal)) {
+    decreasing <- if (status$trainingInput$hyperparameters$goal == "MINIMIZE") FALSE else TRUE
+    ordered <- order(sapply(status$trainingOutput$trials, function(e) e$finalMetric$objectiveValue), decreasing = TRUE)
+    if (length(ordered) > 0) {
+
+      output_path <- list(
+        source = file.path(output_path$source, status$trainingOutput$trials[[ordered[[1]]]]$trialId, "*"),
+        destination = file.path(destination, status$jobId)
+      )
+    }
+  }
+
+  output_path
+}
+
 job_is_tuning <- function(job) {
   !is.null(job$description$trainingInput$hyperparameters)
+}
+
+job_status_is_tuning <- function(status) {
+  !identical(status$trainingOutput$isHyperparameterTuningJob, TRUE)
 }
