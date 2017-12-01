@@ -23,8 +23,8 @@ gsutil_copy <- function(source, destination, recursive = FALSE) {
   arguments <- c(
     "cp",
     if (recursive) "-r",
-    shell_quote(source),
-    shell_quote(destination)
+    source,
+    destination
   )
 
   gsutil_exec(args = arguments)
