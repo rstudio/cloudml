@@ -33,8 +33,6 @@ optimizer <- tf$train$GradientDescentOptimizer(FLAGS$gradient_descent_optimizer)
 
 train_step <- optimizer$minimize(cross_entropy)
 
-init <- tf$global_variables_initializer()
-
 correct_prediction <- tf$equal(tf$argmax(y, 1L), tf$argmax(y_, 1L))
 accuracy <- tf$reduce_mean(tf$cast(correct_prediction, tf$float32))
 
@@ -42,20 +40,25 @@ tf$summary$scalar("accuracy", accuracy)
 tf$summary$scalar("cross_entropy", cross_entropy)
 merged_summary_op <- tf$summary$merge_all()
 
+init <- tf$global_variables_initializer()
 sess$run(init)
 
-summary_writer <- tf$summary$FileWriter("", graph = tf$get_default_graph())
+summary_writer <- tf$summary$FileWriter("", graph = sess$graph)
 
 for (i in 1:1000) {
   batches <- mnist$train$next_batch(100L)
   batch_xs <- batches[[1]]
   batch_ys <- batches[[2]]
   result <- sess$run(
-    c(train_step, merged_summary_op),
+    c(train_step, merged_summary_op, accuracy),
     feed_dict = dict(x = batch_xs, y_ = batch_ys)
   )
 
-  summary_writer$add_summary(result[[2]], i)
+  # summary_writer$add_summary(result[[2]], i)
+
+  summary <- tf$Summary()
+  summary$value$add(tag = "accuracy", simple_value = result[[3]])
+  summary_writer$add_summary(summary, i)
 }
 
 summary_writer$close()
