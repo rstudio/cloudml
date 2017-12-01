@@ -54,8 +54,6 @@ for (i in 1:1000) {
     feed_dict = dict(x = batch_xs, y_ = batch_ys)
   )
 
-  # summary_writer$add_summary(result[[2]], i)
-
   summary <- tf$Summary()
   summary$value$add(tag = "accuracy", simple_value = result[[3]])
   summary_writer$add_summary(summary, i)
