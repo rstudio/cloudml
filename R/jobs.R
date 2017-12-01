@@ -487,7 +487,7 @@ job_status_trial_dir <- function(status, destination, config = cloudml_config())
     destination = destination
   )
 
-  if (job_status_is_tuning(job) && !is.null(status$trainingInput$hyperparameters$goal)) {
+  if (job_status_is_tuning(status) && !is.null(status$trainingInput$hyperparameters$goal)) {
     decreasing <- if (status$trainingInput$hyperparameters$goal == "MINIMIZE") FALSE else TRUE
     ordered <- order(sapply(status$trainingOutput$trials, function(e) e$finalMetric$objectiveValue), decreasing = TRUE)
     if (length(ordered) > 0) {
