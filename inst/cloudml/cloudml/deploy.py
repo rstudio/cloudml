@@ -38,3 +38,5 @@ if process.returncode != 0:
   print fmt % (commands, process.returncode)
 else:
   print "Command %s ran successfully." % (commands, )
+
+sys.exit(process.returncode)
