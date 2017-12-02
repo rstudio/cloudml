@@ -34,7 +34,7 @@ CUSTOM_COMMANDS = [
     # ml-engine doesn't provide TensorFlow 1.3 yet but they could be potentially
     # upgraded; however, we've found out some components (e.g. tfestimators) hang even
     # under python when upgrading TensorFlow versions.
-    # ["pip", "install", "keras", "--upgrade"],
+    ["pip", "install", "keras", "--upgrade"]
     # ["pip", "install", "tensorflow", "--upgrade"]
 ]
 
