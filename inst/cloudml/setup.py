@@ -35,7 +35,7 @@ CUSTOM_COMMANDS = [
     ["pip", "install", "keras", "--upgrade"],
 
     # Install additional keras dependencies
-    ["pip", "install", "h5py pyyaml requests Pillow scipy", "--upgrade"]
+    ["pip", "install", "h5py", "pyyaml", "requests", "Pillow", "scipy", "--upgrade"]
 
     # ml-engine doesn't provide TensorFlow 1.3 yet but they could be potentially
     # upgraded; however, we've found out some components (e.g. tfestimators) hang even
