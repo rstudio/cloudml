@@ -1,4 +1,5 @@
 library(keras)
+library(tensorflow)
 
 mnist <- dataset_mnist()
 x_train <- mnist$train$x
