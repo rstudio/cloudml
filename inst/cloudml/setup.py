@@ -31,10 +31,15 @@ CUSTOM_COMMANDS = [
     # Install R + dependencies
     ["apt-get", "-qq", "-m", "-y", "install", "libcurl4-openssl-dev", "libxml2-dev", "libxslt-dev", "libssl-dev", "r-base", "r-base-dev"],
 
+    # Install keras
+    ["pip", "install", "keras", "--upgrade"],
+
+    # Install additional keras dependencies
+    ["pip", "install", "h5py pyyaml requests Pillow scipy", "--upgrade"]
+
     # ml-engine doesn't provide TensorFlow 1.3 yet but they could be potentially
     # upgraded; however, we've found out some components (e.g. tfestimators) hang even
     # under python when upgrading TensorFlow versions.
-    ["pip", "install", "keras", "--upgrade"]
     # ["pip", "install", "tensorflow", "--upgrade"]
 ]
 
