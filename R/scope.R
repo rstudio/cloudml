@@ -77,8 +77,11 @@ scope_deployment <- function(id,
   # similarily for inclusions?
   exclude <- c("gs", "jobs", ".git", ".svn")
 
+  # use generic name to avoid overriding package names, using a dir named
+  # keras will override the actual keras package!
+  directory <- file.path(root, "cloudml-model")
+
   # build deployment bundle
-  directory <- file.path(root, basename(application))
   copy_directory(application,
                  directory,
                  exclude = exclude)
