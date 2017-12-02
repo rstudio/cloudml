@@ -1,10 +1,8 @@
 gcloud:
-  project         : "rstudio-cloudml"
-  account         : "javier@rstudio.com"
+  project         : "project-name"
+  account         : "account@domain.com"
   region          : "us-east1"
   runtime-version : "1.2"
 
 cloudml:
-  storage         : "gs://rstudio-cloudml/keras"
-  cache           : "gs://rstudio-cloudml/cache"
-  packrat         : false
+  storage         : "gs://project-name/keras"
