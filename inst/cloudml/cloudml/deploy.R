@@ -4,7 +4,7 @@ GITHUB <- list(
   list(uri = "tidyverse/purrr",      ref = NULL),
   list(uri = "tidyverse/modelr",     ref = NULL),
   list(uri = "rstudio/tensorflow",   ref = NULL),
-  list(uri = "rstudio/cloudml",      ref = "feature/tuning"),
+  list(uri = "rstudio/cloudml",      ref = NULL),
   list(uri = "rstudio/keras",        ref = NULL),
   list(uri = "rstudio/tfruns",       ref = NULL),
   list(uri = "rstudio/tfestimators", ref = NULL),
