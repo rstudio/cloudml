@@ -11,6 +11,11 @@ GITHUB <- list(
   list(uri = "rstudio/packrat",      ref = NULL)
 )
 
+# validate resources
+r_version <- paste(R.Version()$major, R.Version()$minor, sep = ".")
+if (compareVersion(r_version, "3.4.0") < 0)
+  stop("Found R version ", r_version, " but 3.4.0 or newer is expected.")
+
 # save repository + download methods
 repos <- getOption("repos")
 download.file.method <- getOption("download.file.method")
@@ -115,7 +120,7 @@ retrieve_cached_packages <- function() {
   if (identical(cache, FALSE)) return()
 
   compressed <- file.path(tempdir(), "cache/")
-  if (!dir.exists(compressed)) dir.create(compressed, recursive = TRUE)
+  if (!file_test("-d", compressed)) dir.create(compressed, recursive = TRUE)
 
   remote_path <- file.path(cache, "*")
 
@@ -127,7 +132,7 @@ retrieve_cached_packages <- function() {
     target_package <- strsplit(basename(tar_file), "\\.")[[1]][[1]]
     target_path <- file.path(target, target_package)
 
-    if (!dir.exists(target_path)) dir.create(target_path, recursive = TRUE)
+    if (!file_test("-d", target_path)) dir.create(target_path, recursive = TRUE)
 
     message(paste0("Restoring package from ", tar_file, " cache into ", target_path, "."))
     system2("tar", c("-xf", tar_file, "-C", target_path))

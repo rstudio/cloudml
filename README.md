@@ -41,7 +41,7 @@ Application deployment is configured through the use of a top-level [YAML](http:
 
 ``` r
 library(cloudml)
-cloudml_create_config()
+cloudml_init()
 ```
 
 Then modify this default file with the appropiate `project`, `account`, `region` and `sotage`:
@@ -51,10 +51,10 @@ gcloud:
   project         : "project-name"
   account         : "account@domain.com"
   region          : "us-central1"
-  runtime-version : "1.2"
 
 cloudml:
   storage         : "gs://project-name/mnist"
+  runtime-version : "1.2"
 ```
 
 The `gcloud` key is used for configuration specific to the Google Cloud SDK, and so contains items relevant to how applications are deployed.
@@ -63,13 +63,13 @@ The `gcloud` key is used for configuration specific to the Google Cloud SDK, and
 
 -   Instances provisioned for training will be launched in the region specified by `region`,
 
--   The TensorFlow version to be used during training is configured using the `runtime-version` field.
-
 The `storage` field in the `cloudml` section indicates where various artefacts used during provisioning and training are stored. Some useful paths to know:
 
 -   `<storage>/staging`: applications will be 'staged' in this directory; that is, your deployed application will be uploaded and built in this location;
 
 -   `<storage>/runs/<timestamp>`: training outputs will be copied to this directory.
+
+The TensorFlow version to be used during training is configured using the `runtime-version` field within the `cloudml` section.
 
 Training
 --------

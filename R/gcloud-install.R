@@ -57,7 +57,7 @@ gcloud_path_default <- function() {
 #'
 #' @importFrom utils untar
 gcloud_install <- function(version = "180.0.1") {
-  if (dir.exists(gcloud_path_default())) {
+  if (file_test("-d", gcloud_path_default())) {
     message("SDK already installed.")
     return(invisible(NULL))
   }
@@ -77,7 +77,7 @@ gcloud_install <- function(version = "180.0.1") {
   download_dir <- tempdir()
   download_file <- file.path(download_dir, cloudsdk_tar)
 
-  if (!dir.exists(download_dir)) dir.create(download_dir)
+  if (!file_test("-d", download_dir)) dir.create(download_dir)
 
   download.file(
     file.path(cloudsdk_url, cloudsdk_tar),
