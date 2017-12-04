@@ -28,8 +28,15 @@ CUSTOM_COMMANDS = [
     # Upgrading packages could be useful but takes about 30-60s additional seconds
     # ["apt-get", "-qq", "-m", "-y", "upgrade"],
 
-    # Install R + dependencies
-    ["apt-get", "-qq", "-m", "-y", "install", "libcurl4-openssl-dev", "libxml2-dev", "libxslt-dev", "libssl-dev", "r-base", "r-base-dev"],
+    # Upgrade R
+    ["apt-key", "adv", "--keyserver", "keyserver.ubuntu.com", "--recv-keys", "E298A3A825C0D65DFD57CBB651716619E084DAB9"],
+    ["apt-get", "-qq", "-m", "-y", "install", "software-properties-common", "apt-transport-https"],
+    ["add-apt-repository", "deb [arch=amd64,i386] https://cran.rstudio.com/bin/linux/ubuntu xenial/"],
+    ["apt-get", "-qq", "-m", "-y", "update"],
+    ["apt-get", "-qq", "-m", "-y", "install", "r-base"],
+
+    # Install R dependencies
+    ["apt-get", "-qq", "-m", "-y", "install", "libcurl4-openssl-dev", "libxml2-dev", "libxslt-dev", "libssl-dev", "r-base-dev"],
 
     # ml-engine doesn't provide TensorFlow 1.3 yet but they could be potentially
     # upgraded; however, we've found out some components (e.g. tfestimators) hang even
@@ -42,6 +49,7 @@ class CustomCommands(install):
 
   """A setuptools Command class able to run arbitrary commands."""
   def RunCustomCommand(self, commands):
+    print "Running command: %s" % " ".join(commands)
 
     process = subprocess.Popen(
         commands,

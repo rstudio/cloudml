@@ -11,6 +11,11 @@ GITHUB <- list(
   list(uri = "rstudio/packrat",      ref = NULL)
 )
 
+# validate resources
+r_version <- paste(R.Version()$major, R.Version()$minor, sep = ".")
+if (compareVersion(r_version, "3.4.0") < 0)
+  stop("Found R version ", r_version, " but 3.4.0 or newer is expected.")
+
 # save repository + download methods
 repos <- getOption("repos")
 download.file.method <- getOption("download.file.method")
