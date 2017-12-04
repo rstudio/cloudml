@@ -20,7 +20,7 @@ test_that("cloudml_train() can train and collect savedmodel", {
 
   collected <- job_collect(job)
 
-  expect_true(dir.exists("runs"))
+  expect_true(file_test("-d", "runs"))
 
   saved_model <- dir(
     "runs",
