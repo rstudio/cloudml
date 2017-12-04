@@ -58,7 +58,7 @@ cloudml_train <- function(application = getwd(),
                 ("--package-path=%s", basename(directory))
                 ("--module-name=%s.cloudml.deploy", basename(directory))
                 ("--staging-bucket=%s", gcloud[["staging-bucket"]])
-                ("--runtime-version=%s", gcloud[["runtime-version"]])
+                ("--runtime-version=%s", cloudml[["runtime-version"]])
                 ("--region=%s", gcloud[["region"]])
                 ("--config=%s/%s", basename(application), overlay$hypertune)
                 ("--")

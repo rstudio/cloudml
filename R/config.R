@@ -28,11 +28,11 @@ cloudml_init <- function() {
     gcloud = list(
       project = "project-name",
       account = "account@domain.com",
-      region  = "us-central1",
-      "runtime-version" = "1.2"
+      region  = "us-central1"
     ),
     cloudml = list(
-      storage = "gs://project-name/mnist"
+      storage = "gs://project-name/mnist",
+      "runtime-version" = "1.2"
     )
   )
 
