@@ -7,7 +7,6 @@
 ^README\.R?md
 ^_pkgdown.yml$
 ^index\..*$
-^todo.Rmd$
 ^_pkgdown\.yml$
 ^\.travis\.yml$
 ^runs\.*$
