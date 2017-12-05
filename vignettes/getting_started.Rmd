@@ -97,6 +97,7 @@ setwd("hellocloudml")
 cloudml_train()
 ```
 
+The very first time you train a new project will take a fair amount of time (in the neighborhood of 20 minutes). This is because a large number of R packages are compiled from source as part of their installation. The good news is that all of these package installations are cached, so subsequent training runs will not have this installation overhead.
 
 
 
