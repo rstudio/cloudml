@@ -5,3 +5,4 @@ internal/
 **/.DS_Store
 /cloudml.yml
 runs/
+scratch

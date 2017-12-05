@@ -2,6 +2,7 @@
 ^\.Rproj\.user$
 ^examples/
 ^internal/
+^scratch/
 ^man-roxygen/
 ^docs/
 ^README\.R?md
