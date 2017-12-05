@@ -23,7 +23,6 @@ resolve_job <- function(id, registry = job_registry()) {
 
   # if we have a 'trainingInput' field, this was a training
   # job (as opposed to a prediction job)
-  # TODO: handle predict jobs
   class <- if ("trainingInput" %in% names(description))
     "train"
   else
