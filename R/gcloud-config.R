@@ -17,7 +17,7 @@ gcloud_config <- function(path = getwd()) {
   # provide default account
   if (is.null(config$gcloud$account)) {
     config$gcloud$account <-
-      capture.output(cloudml:::gcloud_exec("config", "get-value", "account"))
+      capture.output(gcloud_exec("config", "get-value", "account"))
   }
 
   # validate required 'gcloud' fields
