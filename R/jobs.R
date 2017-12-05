@@ -286,10 +286,13 @@ job_status <- function(job) {
 #'   The destination directory in which model outputs should
 #'   be downloaded. Defaults to `runs`.
 #'
+#' @param timeout
+#'   Give up collecting job after the specified minutes.
+#'
 #' @family job management
 #'
 #' @export
-job_collect <- function(job, destination = "runs") {
+job_collect <- function(job, destination = "runs", timeout = NULL) {
   job <- as.cloudml_job(job)
   id <- job$id
 
@@ -331,7 +334,8 @@ job_collect <- function(job, destination = "runs") {
 
   write_status(status, time)
 
-  # TODO: should we give up after a while? (user can always interrupt)
+  start_time <- Sys.time()
+
   repeat {
 
     # get the job status
@@ -355,6 +359,8 @@ job_collect <- function(job, destination = "runs") {
     # job isn't ready yet; sleep for a while and try again
     Sys.sleep(30)
 
+    if (!is.null(timeout) && time - start_time > timeout * 60)
+      stop("Giving up after ", timeout, " minutes with job in status ", status$state)
   }
 
   stop("failed to receive job outputs")

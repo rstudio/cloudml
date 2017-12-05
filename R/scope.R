@@ -52,9 +52,9 @@ initialize_application <- function(application = getwd(),
   TRUE
 }
 
-validate_application <- function(application) {
-  # TODO: what checks should we perform here?
-  TRUE
+validate_application <- function(application, entrypoint) {
+  if (!file.exists(file.path(application, entrypoint)))
+    stop("Entrypoint ", entrypoing, " not found under ", application, entrypoint)
 }
 
 scope_deployment <- function(id,
@@ -66,16 +66,17 @@ scope_deployment <- function(id,
 {
   application <- normalizePath(application, winslash = "/")
 
-  validate_application(application)
+  validate_application(application, entrypoint)
 
   # generate deployment directory
   prefix <- sprintf("cloudml-deploy-%s-", basename(application))
   root <- tempfile(pattern = prefix)
   ensure_directory(root)
 
-  # TODO: where should we draw exclusions from?
+  user_exclusions <- strsplit(Sys.getenv("CLOUDML_APPLICATION_EXCLUSIONS", ""), ",")[[1]]
+
   # similarily for inclusions?
-  exclude <- c("gs", "jobs", ".git", ".svn")
+  exclude <- c("gs", "jobs", ".git", ".svn", user_exclusions)
 
   # use generic name to avoid overriding package names, using a dir named
   # keras will override the actual keras package!
