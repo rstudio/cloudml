@@ -14,6 +14,12 @@ gcloud_config <- function(path = getwd()) {
 
   config <- yaml::yaml.load_file(file)
 
+  # provide default account
+  if (is.null(config$gcloud$account)) {
+    config$gcloud$account <-
+      capture.output(gcloud_exec("config", "get-value", "account"))
+  }
+
   # validate required 'gcloud' fields
   gcloud <- config$gcloud
   for (field in c("project", "account")) {
