@@ -1,5 +1,23 @@
 context("train")
 
+expect_train_succeeds <- function(job) {
+  expect_gt(nchar(job$id), 0)
+  expect_gt(length(job$description), 0)
+  expect_gt(nchar(job$description$state), 0)
+
+  collected <- job_collect(job)
+
+  expect_true(dir.exists("runs"))
+
+  saved_model <- dir(
+    "runs",
+    recursive = TRUE,
+    full.names = TRUE,
+    pattern = "saved_model")
+
+  expect_gte(length(saved_model), 1)
+}
+
 test_that("cloudml_train() can train and collect savedmodel", {
   if (!cloudml_tests_configured()) return()
 
@@ -14,19 +32,22 @@ test_that("cloudml_train() can train and collect savedmodel", {
     entrypoint = "train.R"
   )
 
-  expect_gt(nchar(job$id), 0)
-  expect_gt(length(job$description), 0)
-  expect_gt(nchar(job$description$state), 0)
+  expect_train_succeeds(job)
+})
 
-  collected <- job_collect(job)
+test_that("cloudml_train() can train keras model", {
+  if (!cloudml_tests_configured()) return()
 
-  expect_true(file_test("-d", "runs"))
+  config_yml <- system.file("examples/keras/cloudml.yml", package = "cloudml")
+  file.copy("cloudml.yml", config_yml, overwrite = TRUE)
 
-  saved_model <- dir(
-    "runs",
-    recursive = TRUE,
-    full.names = TRUE,
-    pattern = "saved_model")
+  job <- cloudml_train(
+    application = system.file(
+      "examples/keras/",
+      package = "cloudml"
+    ),
+    entrypoint = "train.R"
+  )
 
-  expect_gte(length(saved_model), 1)
+  expect_train_succeeds(job)
 })
