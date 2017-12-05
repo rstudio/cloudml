@@ -1,7 +1,10 @@
 from setuptools import setup
 
+import os
 import platform
 import subprocess
+import yaml
+
 from setuptools import find_packages
 from setuptools import setup
 from setuptools.command.install import install
@@ -53,6 +56,7 @@ PIP_INSTALL = [
 ]
 
 class CustomCommands(install):
+  cache = ""
 
   """A setuptools Command class able to run arbitrary commands."""
   def RunCustomCommand(self, commands):
@@ -72,6 +76,24 @@ class CustomCommands(install):
       message = "Command %s failed: exit code %s" % (commands, status)
       raise RuntimeError(message)
 
+  """Retrieves path to cache or empty string."""
+  def GetCachePath(self):
+    path, filename = os.path.split(os.path.realpath(__file__))
+
+    cloudmlpath = os.path.join(path, "cloudml-model", "cloudml.yml")
+    stream = open(cloudmlpath, "r")
+    config = yaml.load(stream)
+    storage = config["cloudml"]["storage"]
+
+    cache = storage
+    if "cache" in config["cloudml"]:
+      cache = config["cloudml"]["cache"]
+
+    if cache == False:
+      cache = ""
+
+    return cache
+
   """Restores a pip install cache."""
   def RestoreCache(self):
     print "Restoring Python Cache from " + self.cache
@@ -84,12 +106,18 @@ class CustomCommands(install):
     distro = platform.linux_distribution()
     print "linux_distribution: %s" % (distro,)
 
+    self.cache = self.GetCachePath()
+
     # Run custom commands
     for command in CUSTOM_COMMANDS:
       self.RunCustomCommand(command)
 
     # Restores the pip cache
     self.RestoreCache()
+
+    # Run pip install
+    for pipinstall in PIP_INSTALL:
+      self.RunCustomCommand(pipinstall)
 
     # Updates the pip cache
     self.UpdateCache()
