@@ -83,6 +83,9 @@ if (is.null(cache)) {
 } else {
   message(paste0("Cache entry found: ", cache))
 }
+if (!identical(cache, FALSE)) {
+  cache <- file.path(cache, "r")
+}
 
 use_packrat <- cloudml[["packrat"]]
 if (is.null(use_packrat)) {
