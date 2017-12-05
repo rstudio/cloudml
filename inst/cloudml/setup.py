@@ -37,7 +37,9 @@ CUSTOM_COMMANDS = [
 
     # Install R dependencies
     ["apt-get", "-qq", "-m", "-y", "install", "libcurl4-openssl-dev", "libxml2-dev", "libxslt-dev", "libssl-dev", "r-base-dev"],
+]
 
+PIP_INSTALL = [
     # Install keras
     ["pip", "install", "keras", "--upgrade"],
 
@@ -70,6 +72,14 @@ class CustomCommands(install):
       message = "Command %s failed: exit code %s" % (commands, status)
       raise RuntimeError(message)
 
+  """Restores a pip install cache."""
+  def RestoreCache(self):
+    print "Restoring Python Cache from " + self.cache
+
+  """Update the pip install cache."""
+  def UpdateCache(self):
+    print "Updating the Python Cache in " + self.cache
+
   def run(self):
     distro = platform.linux_distribution()
     print "linux_distribution: %s" % (distro,)
@@ -77,6 +87,12 @@ class CustomCommands(install):
     # Run custom commands
     for command in CUSTOM_COMMANDS:
       self.RunCustomCommand(command)
+
+    # Restores the pip cache
+    self.RestoreCache()
+
+    # Updates the pip cache
+    self.UpdateCache()
 
     # Run regular install
     install.run(self)
