@@ -2,7 +2,9 @@ from setuptools import setup
 
 import os
 import platform
+import site
 import subprocess
+import tempfile
 import yaml
 
 from setuptools import find_packages
@@ -91,8 +93,13 @@ class CustomCommands(install):
 
     if cache == False:
       cache = ""
+    else:
+      cache = os.path.join(cache, "python")
 
     return cache
+
+  def GetPackagesSource():
+    return site.getsitepackages()[0]
 
   """Restores a pip install cache."""
   def RestoreCache(self):
@@ -100,7 +107,20 @@ class CustomCommands(install):
 
   """Update the pip install cache."""
   def UpdateCache(self):
-    print "Updating the Python Cache in " + self.cache
+    source = self.GetPackagesSource()
+    print "Updating the Python Cache in " + self.cache + " from " + source
+
+    upload = os.path.join(tempfile.gettempdir(), "cloudml-python-pkgs")
+    if not os.path.exists(upload):
+      os.makedirs(upload)
+
+    for package in os.listdir(source):
+      subdir = os.path.join(source, package)
+      compressed = os.path.join(upload, package + ".tar")
+      self.RunCustomCommand("tar", "-cf", compressed, "-C", subdir, ".")
+
+      target = os.path.join(self.cache, package + ".tar")
+      self.RunCustomCommand("gsutil", "cp", compressed, target)
 
   def run(self):
     distro = platform.linux_distribution()
