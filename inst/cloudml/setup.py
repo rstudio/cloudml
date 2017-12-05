@@ -61,7 +61,7 @@ class CustomCommands(install):
   cache = ""
 
   """A setuptools Command class able to run arbitrary commands."""
-  def RunCustomCommand(self, commands):
+  def RunCustomCommand(self, commands, throws):
     print "Running command: %s" % " ".join(commands)
 
     process = subprocess.Popen(
@@ -74,7 +74,7 @@ class CustomCommands(install):
     stdout, stderr = process.communicate()
     print "Command output: %s" % stdout
     status = process.returncode
-    if status != 0:
+    if throws and status != 0:
       message = "Command %s failed: exit code %s" % (commands, status)
       raise RuntimeError(message)
 
@@ -89,38 +89,57 @@ class CustomCommands(install):
 
     cache = storage
     if "cache" in config["cloudml"]:
-      cache = config["cloudml"]["cache"]
+      cache = os.path.join(config["cloudml"]["cache"], "python")
 
     if cache == False:
       cache = ""
     else:
-      cache = os.path.join(cache, "python")
+      cache = os.path.join(cache, "cache", "python")
 
     return cache
 
-  def GetPackagesSource():
+  def GetPackagesSource(self):
     return site.getsitepackages()[0]
+
+  def GetTempDir(self, name):
+    tempdir = os.path.join(tempfile.gettempdir(), name)
+    if not os.path.exists(tempdir):
+      os.makedirs(tempdir)
+    return tempdir
 
   """Restores a pip install cache."""
   def RestoreCache(self):
-    print "Restoring Python Cache from " + self.cache
+    destination = self.GetPackagesSource()
+    print "Restoring Python Cache from " + self.cache + " to " + destination
+
+    download = self.GetTempDir("cloudml-python-upload")
+    self.RunCustomCommand(["gsutil", "cp", self.cache, download], False)
+
+    print "Python Cache Contents: [" + ",".join(os.listdir(download)) + "]"
+
+    for package in os.listdir(download):
+      tar_path = os.path.join(download, package)
+      print "Restoring package from " + tar_path + " into " + destination
+      self.RunCustomCommand(["tar", "-xf", tar_path, "-C", destination])
+
 
   """Update the pip install cache."""
   def UpdateCache(self):
     source = self.GetPackagesSource()
     print "Updating the Python Cache in " + self.cache + " from " + source
 
-    upload = os.path.join(tempfile.gettempdir(), "cloudml-python-pkgs")
-    if not os.path.exists(upload):
-      os.makedirs(upload)
+    upload = self.GetTempDir("cloudml-python-upload")
 
     for package in os.listdir(source):
       subdir = os.path.join(source, package)
+      if not os.path.isdir(subdir):
+        continue
+
       compressed = os.path.join(upload, package + ".tar")
-      self.RunCustomCommand("tar", "-cf", compressed, "-C", subdir, ".")
+      self.RunCustomCommand(["tar", "-cf", compressed, "-C", subdir, "."], True)
 
       target = os.path.join(self.cache, package + ".tar")
-      self.RunCustomCommand("gsutil", "cp", compressed, target)
+      self.RunCustomCommand(["gsutil", "cp", compressed, target], True)
 
   def run(self):
     distro = platform.linux_distribution()
@@ -130,14 +149,14 @@ class CustomCommands(install):
 
     # Run custom commands
     for command in CUSTOM_COMMANDS:
-      self.RunCustomCommand(command)
+      self.RunCustomCommand(command, True)
 
     # Restores the pip cache
     self.RestoreCache()
 
     # Run pip install
     for pipinstall in PIP_INSTALL:
-      self.RunCustomCommand(pipinstall)
+      self.RunCustomCommand(pipinstall, True)
 
     # Updates the pip cache
     self.UpdateCache()
