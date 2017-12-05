@@ -6,8 +6,6 @@ initialize_application <- function(application = getwd(),
   application <- normalizePath(application, winslash = "/", mustWork = TRUE)
   scope_dir(application)
 
-  validate_application(application)
-
   # copy in 'cloudml' helpers (e.g. the files that act as
   # entrypoints for deployment)
   copy_directory(
