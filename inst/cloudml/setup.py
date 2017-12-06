@@ -34,22 +34,21 @@ CUSTOM_COMMANDS = [
     # ["apt-get", "-qq", "-m", "-y", "upgrade"],
 
     # Upgrade R
-    ["apt-key", "adv", "--keyserver", "keyserver.ubuntu.com", "--recv-keys", "E298A3A825C0D65DFD57CBB651716619E084DAB9"],
-    ["apt-get", "-qq", "-m", "-y", "install", "software-properties-common", "apt-transport-https"],
-    ["add-apt-repository", "deb [arch=amd64,i386] https://cran.rstudio.com/bin/linux/ubuntu xenial/"],
-    ["apt-get", "-qq", "-m", "-y", "update"],
-    ["apt-get", "-qq", "-m", "-y", "install", "r-base"],
+    # ["apt-key", "adv", "--keyserver", "keyserver.ubuntu.com", "--recv-keys", "E298A3A825C0D65DFD57CBB651716619E084DAB9"],
+    # ["apt-get", "-qq", "-m", "-y", "install", "software-properties-common", "apt-transport-https"],
+    # ["add-apt-repository", "deb [arch=amd64,i386] https://cran.rstudio.com/bin/linux/ubuntu xenial/"],
+    # ["apt-get", "-qq", "-m", "-y", "update"],
 
     # Install R dependencies
-    ["apt-get", "-qq", "-m", "-y", "install", "libcurl4-openssl-dev", "libxml2-dev", "libxslt-dev", "libssl-dev", "r-base-dev"],
+    ["apt-get", "-qq", "-m", "-y", "install", "libcurl4-openssl-dev", "libxml2-dev", "libxslt-dev", "libssl-dev", "r-base", "r-base-dev"],
 ]
 
 PIP_INSTALL = [
     # Install keras
-    ["pip", "install", "keras", "--upgrade"],
+    # ["pip", "install", "keras", "--upgrade"],
 
     # Install additional keras dependencies
-    ["pip", "install", "h5py", "pyyaml", "requests", "Pillow", "scipy", "--upgrade"]
+    # ["pip", "install", "h5py", "pyyaml", "requests", "Pillow", "scipy", "--upgrade"]
 
     # ml-engine doesn't provide TensorFlow 1.3 yet but they could be potentially
     # upgraded; however, we've found out some components (e.g. tfestimators) hang even
@@ -108,25 +107,24 @@ class CustomCommands(install):
     return tempdir
 
   """Restores a pip install cache."""
-  def RestoreCache(self):
-    destination = self.GetPackagesSource()
-    print "Restoring Python Cache from " + self.cache + " to " + destination
+  def RestoreCache(self, destination):
+    print "Restoring Python Cache from " + self.cache["path"] + " to " + destination
 
     download = self.GetTempDir("cloudml-python-upload")
-    self.RunCustomCommand(["gsutil", "cp", self.cache, download], False)
+    self.RunCustomCommand(["gsutil", "cp", self.cache["path"], download], False)
 
     print "Python Cache Contents: [" + ",".join(os.listdir(download)) + "]"
 
     for package in os.listdir(download):
       tar_path = os.path.join(download, package)
       print "Restoring package from " + tar_path + " into " + destination
-      self.RunCustomCommand(["tar", "-xf", tar_path, "-C", destination])
+      self.RunCustomCommand(["tar", "-xf", tar_path, "-C", destination], True)
+      self.cache["packages"][os.path.basename(package)] = True
 
 
   """Update the pip install cache."""
-  def UpdateCache(self):
-    source = self.GetPackagesSource()
-    print "Updating the Python Cache in " + self.cache + " from " + source
+  def UpdateCache(self, source):
+    print "Updating the Python Cache in " + self.cache["path"] + " from " + source
 
     upload = self.GetTempDir("cloudml-python-upload")
 
@@ -135,31 +133,49 @@ class CustomCommands(install):
       if not os.path.isdir(subdir):
         continue
 
+      if package in self.cache["packages"]:
+        continue
+
       compressed = os.path.join(upload, package + ".tar")
       self.RunCustomCommand(["tar", "-cf", compressed, "-C", subdir, "."], True)
 
-      target = os.path.join(self.cache, package + ".tar")
+      target = os.path.join(self.cache["path"], package + ".tar")
       self.RunCustomCommand(["gsutil", "cp", compressed, target], True)
 
   def run(self):
     distro = platform.linux_distribution()
     print "linux_distribution: %s" % (distro,)
 
-    self.cache = self.GetCachePath()
+    self.cache = {
+      "path": self.GetCachePath(),
+      "packages": {}
+    }
 
     # Run custom commands
     for command in CUSTOM_COMMANDS:
       self.RunCustomCommand(command, True)
 
+    # Only cache new packages
+    pipcache = self.GetTempDir("site-packages-cache")
+    print "Creating Cache Path: " + pipcache
+    # with open(os.path.join(site.getsitepackages()[0], "cloudml-cache.pth"), "w") as pathsfile:
+    #  pathsfile.write(pipcache)
+
+    print "Site Packages Files: " + ",".join(os.listdir(site.getsitepackages()[0]))
+
     # Restores the pip cache
-    self.RestoreCache()
+    # self.RestoreCache(pipcache)
 
     # Run pip install
     for pipinstall in PIP_INSTALL:
-      self.RunCustomCommand(pipinstall, True)
+      pipwithloc = pipinstall
+      pipwithloc.append("--target=" + pipcache)
+      self.RunCustomCommand(pipwithloc, True)
+
+    print "PIP Cache Files: " + ",".join(pipcache)
 
     # Updates the pip cache
-    self.UpdateCache()
+    # self.UpdateCache(pipcache)
 
     # Run regular install
     install.run(self)
