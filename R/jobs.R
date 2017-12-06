@@ -49,7 +49,7 @@ cloudml_train <- function(application = getwd(),
   setwd(dirname(directory))
 
   cloudml_version <- cloudml[["runtime-version"]] %||% "1.2"
-  if (compareVersion(cloudml_version, "1.2") < 0)
+  if (utils::compareVersion(cloudml_version, "1.2") < 0)
     stop("CloudML version ", cloudml_version, " is unsupported, use 1.2 or newer.")
 
   # generate deployment script

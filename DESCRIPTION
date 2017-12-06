@@ -16,6 +16,7 @@ Imports:
   rprojroot,
   rstudioapi,
   tensorflow,
+  utils,
   withr,
   yaml
 Suggests:

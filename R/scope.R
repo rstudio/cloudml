@@ -52,7 +52,7 @@ initialize_application <- function(application = getwd(),
 
 validate_application <- function(application, entrypoint) {
   if (!file.exists(file.path(application, entrypoint)))
-    stop("Entrypoint ", entrypoing, " not found under ", application, entrypoint)
+    stop("Entrypoint ", entrypoint, " not found under ", application, entrypoint)
 }
 
 scope_deployment <- function(id,

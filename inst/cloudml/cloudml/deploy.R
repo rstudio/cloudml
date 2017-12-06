@@ -19,7 +19,7 @@ GITHUB <- list(
 
 # validate resources
 r_version <- paste(R.Version()$major, R.Version()$minor, sep = ".")
-if (compareVersion(r_version, "3.4.0") < 0)
+if (utils::compareVersion(r_version, "3.4.0") < 0)
   warning("Found R version ", r_version, " but 3.4.0 or newer is expected.")
 
 # save repository + download methods
