@@ -54,12 +54,6 @@ PIP_INSTALL_KERAS = [
 ]
 
 PIP_INSTALL = [
-    # Install keras
-    # ["pip", "install", "keras", "--upgrade"],
-
-    # Install additional keras dependencies
-    # ["pip", "install", "h5py", "pyyaml", "requests", "Pillow", "scipy", "--upgrade"]
-
     # ml-engine doesn't provide TensorFlow 1.3 yet but they could be potentially
     # upgraded; however, we've found out some components (e.g. tfestimators) hang even
     # under python when upgrading TensorFlow versions.
@@ -121,18 +115,22 @@ class CustomCommands(install):
 
   """Restores a pip install cache."""
   def RestoreCache(self, destination):
-    print "Restoring Python Cache from " + self.cache["path"] + " to " + destination
+    source = os.path.join(self.cache["path"], "*")
+    print "Restoring Python Cache from " + source + " to " + destination
 
     download = self.GetTempDir("cloudml-python-upload")
-    self.RunCustomCommand(["gsutil", "cp", self.cache["path"], download], False)
+    self.RunCustomCommand(["gsutil", "-m", "cp", "-r", source, download], False)
 
     print "Python Cache Contents: [" + ",".join(os.listdir(download)) + "]"
 
     for package in os.listdir(download):
       tar_path = os.path.join(download, package)
-      print "Restoring package from " + tar_path + " into " + destination
-      self.RunCustomCommand(["tar", "-xf", tar_path, "-C", destination], True)
-      self.cache["packages"][os.path.basename(package)] = True
+      print "Restoring from " + tar_path + " into " + destination
+      if package.split(".")[-1] == "tar":
+        self.RunCustomCommand(["tar", "-xf", tar_path, "-C", destination], True)
+      else:
+        self.RunCustomCommand(["cp", tar_path, destination], True)
+      self.cache["files"][os.path.basename(package)] = True
 
 
   """Update the pip install cache."""
@@ -142,18 +140,20 @@ class CustomCommands(install):
     upload = self.GetTempDir("cloudml-python-upload")
 
     for package in os.listdir(source):
-      subdir = os.path.join(source, package)
-      if not os.path.isdir(subdir):
+      if package in self.cache["files"]:
         continue
 
-      if package in self.cache["packages"]:
-        continue
+      packagepath = os.path.join(source, package)
 
-      compressed = os.path.join(upload, package + ".tar")
-      self.RunCustomCommand(["tar", "-cf", compressed, "-C", subdir, "."], True)
+      if not os.path.isdir(packagepath):
+        local = packagepath
+        target = os.path.join(self.cache["path"], package)
+      else:
+        local = os.path.join(upload, package + ".tar")
+        self.RunCustomCommand(["tar", "-cf", local, "-C", packagepath, "."], True)
+        target = os.path.join(self.cache["path"], package + ".tar")
 
-      target = os.path.join(self.cache["path"], package + ".tar")
-      self.RunCustomCommand(["gsutil", "cp", compressed, target], True)
+      self.RunCustomCommand(["gsutil", "cp", local, target], True)
 
   def RunCustomCommandList(self, commands):
     for command in commands:
@@ -167,7 +167,7 @@ class CustomCommands(install):
 
     self.cache = {
       "path": self.GetCachePath(),
-      "packages": {}
+      "files": {}
     }
 
     # Upgrade r if latestr is set in cloudml.yaml
@@ -181,10 +181,8 @@ class CustomCommands(install):
     # Only cache new packages
     pipcache = self.GetTempDir("site-packages-cache")
     print "Creating Cache Path: " + pipcache
-    # with open(os.path.join(site.getsitepackages()[0], "cloudml-cache.pth"), "w") as pathsfile:
-    #  pathsfile.write(pipcache)
-
-    print "Site Packages Files: " + ",".join(os.listdir(site.getsitepackages()[0]))
+    with open(os.path.join(site.getsitepackages()[0], "cloudml-cache.pth"), "w") as pathsfile:
+      pathsfile.write(pipcache)
 
     # Restores the pip cache
     # self.RestoreCache(pipcache)
@@ -199,7 +197,7 @@ class CustomCommands(install):
     pip_install_cmds = map(lambda e : e + ["--target=" + pipcache], PIP_INSTALL)
     self.RunCustomCommandList(pip_install_cmds)
 
-    print "PIP Cache Files: " + ",".join(pipcache)
+    print "PIP Cache Files: " + ",".join(os.listdir(pipcache))
 
     # Updates the pip cache
     # self.UpdateCache(pipcache)
