@@ -14,7 +14,7 @@ GITHUB <- list(
 # validate resources
 r_version <- paste(R.Version()$major, R.Version()$minor, sep = ".")
 if (compareVersion(r_version, "3.4.0") < 0)
-  stop("Found R version ", r_version, " but 3.4.0 or newer is expected.")
+  warning("Found R version ", r_version, " but 3.4.0 or newer is expected.")
 
 # save repository + download methods
 repos <- getOption("repos")
@@ -119,7 +119,7 @@ store_cached_packages <- function () {
   }
 }
 
-retrieve_cached_packages <- function() {
+retrieve_cached_packages <- function(target) {
   if (identical(cache, FALSE)) return()
 
   compressed <- file.path(tempdir(), "cache/")
@@ -130,7 +130,6 @@ retrieve_cached_packages <- function() {
   message(paste0("Retrieving packages from ", remote_path, " cache into ", compressed, "."))
   system(paste("gsutil", "-m", "cp", "-r", shQuote(remote_path), shQuote(compressed)))
 
-  target <- .libPaths()[[1]]
   lapply(dir(compressed, full.names = TRUE, pattern = ".tar"), function(tar_file) {
     target_package <- strsplit(basename(tar_file), "\\.")[[1]][[1]]
     target_path <- file.path(target, target_package)
@@ -144,8 +143,12 @@ retrieve_cached_packages <- function() {
   invisible(NULL)
 }
 
+cache_path <- if (use_packrat) .libPaths()[[1]] else tempfile()
+
 # make use of cache
-retrieve_cached_packages()
+retrieve_cached_packages(cache_path)
+
+if (use_packrat) retrieve_packrat_packages(cache_path);
 
 # discover available R packages
 installed <- rownames(installed.packages())
@@ -163,9 +166,6 @@ for (entry in GITHUB) {
     next
   devtools::install_github(entry$uri, ref = entry$ref)
 }
-
-if (use_packrat)
-  retrieve_packrat_packages();
 
 store_cached_packages()
 
