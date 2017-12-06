@@ -5,3 +5,5 @@ gcloud:
 
 cloudml:
   storage         : "gs://project-name/mnist"
+  latestr         : False
+  keras           : False

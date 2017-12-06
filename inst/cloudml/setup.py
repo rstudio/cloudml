@@ -26,6 +26,14 @@ from setuptools.command.install import install
 # The output of custom commands (including failures) will be logged in the
 # worker-startup log.
 
+UPGRADE_R_COMMANDS = [
+    # Upgrade R
+    ["apt-get", "-qq", "-m", "-y", "update"],
+    ["apt-key", "adv", "--keyserver", "keyserver.ubuntu.com", "--recv-keys", "E298A3A825C0D65DFD57CBB651716619E084DAB9"],
+    ["apt-get", "-qq", "-m", "-y", "install", "software-properties-common", "apt-transport-https"],
+    ["add-apt-repository", "deb [arch=amd64,i386] https://cran.rstudio.com/bin/linux/ubuntu xenial/"],
+]
+
 CUSTOM_COMMANDS = [
     # Update repositories
     ["apt-get", "-qq", "-m", "-y", "update"],
@@ -33,14 +41,16 @@ CUSTOM_COMMANDS = [
     # Upgrading packages could be useful but takes about 30-60s additional seconds
     # ["apt-get", "-qq", "-m", "-y", "upgrade"],
 
-    # Upgrade R
-    # ["apt-key", "adv", "--keyserver", "keyserver.ubuntu.com", "--recv-keys", "E298A3A825C0D65DFD57CBB651716619E084DAB9"],
-    # ["apt-get", "-qq", "-m", "-y", "install", "software-properties-common", "apt-transport-https"],
-    # ["add-apt-repository", "deb [arch=amd64,i386] https://cran.rstudio.com/bin/linux/ubuntu xenial/"],
-    # ["apt-get", "-qq", "-m", "-y", "update"],
-
     # Install R dependencies
     ["apt-get", "-qq", "-m", "-y", "install", "libcurl4-openssl-dev", "libxml2-dev", "libxslt-dev", "libssl-dev", "r-base", "r-base-dev"],
+]
+
+PIP_INSTALL_KERAS = [
+    # Install keras
+    ["pip", "install", "keras", "--upgrade"],
+
+    # Install additional keras dependencies
+    ["pip", "install", "h5py", "pyyaml", "requests", "Pillow", "scipy", "--upgrade"]
 ]
 
 PIP_INSTALL = [
@@ -58,6 +68,7 @@ PIP_INSTALL = [
 
 class CustomCommands(install):
   cache = ""
+  config = {}
 
   """A setuptools Command class able to run arbitrary commands."""
   def RunCustomCommand(self, commands, throws):
@@ -77,18 +88,20 @@ class CustomCommands(install):
       message = "Command %s failed: exit code %s" % (commands, status)
       raise RuntimeError(message)
 
-  """Retrieves path to cache or empty string."""
-  def GetCachePath(self):
+  """Loads the cloudml.yml config"""
+  def LoadCloudML(self):
     path, filename = os.path.split(os.path.realpath(__file__))
-
     cloudmlpath = os.path.join(path, "cloudml-model", "cloudml.yml")
     stream = open(cloudmlpath, "r")
-    config = yaml.load(stream)
-    storage = config["cloudml"]["storage"]
+    self.config = yaml.load(stream)
+
+  """Retrieves path to cache or empty string."""
+  def GetCachePath(self):
+    storage = self.config["cloudml"]["storage"]
 
     cache = storage
-    if "cache" in config["cloudml"]:
-      cache = os.path.join(config["cloudml"]["cache"], "python")
+    if "cache" in self.config["cloudml"]:
+      cache = os.path.join(self.config["cloudml"]["cache"], "python")
 
     if cache == False:
       cache = ""
@@ -142,18 +155,28 @@ class CustomCommands(install):
       target = os.path.join(self.cache["path"], package + ".tar")
       self.RunCustomCommand(["gsutil", "cp", compressed, target], True)
 
+  def RunCustomCommandList(self, commands):
+    for command in commands:
+      self.RunCustomCommand(command, True)
+
   def run(self):
     distro = platform.linux_distribution()
     print "linux_distribution: %s" % (distro,)
+
+    self.LoadCloudML()
 
     self.cache = {
       "path": self.GetCachePath(),
       "packages": {}
     }
 
+    # Upgrade r if latestr is set in cloudml.yaml
+    print "Upgrade R: " + str(self.config["cloudml"]["latestr"])
+    if ("latestr" in self.config["cloudml"] and self.config["cloudml"]["latestr"] != False):
+      self.RunCustomCommandList(UPGRADE_R_COMMANDS)
+
     # Run custom commands
-    for command in CUSTOM_COMMANDS:
-      self.RunCustomCommand(command, True)
+    self.RunCustomCommandList(CUSTOM_COMMANDS)
 
     # Only cache new packages
     pipcache = self.GetTempDir("site-packages-cache")
@@ -166,11 +189,15 @@ class CustomCommands(install):
     # Restores the pip cache
     # self.RestoreCache(pipcache)
 
+    # Install Keras
+    print "Install Keras: " + str(self.config["cloudml"]["keras"])
+    if ("keras" in self.config["cloudml"] and self.config["cloudml"]["keras"] != False):
+      pip_install_keras_cmds = map(lambda e : e + ["--target=" + pipcache], PIP_INSTALL_KERAS)
+      self.RunCustomCommandList(pip_install_keras_cmds)
+
     # Run pip install
-    for pipinstall in PIP_INSTALL:
-      pipwithloc = pipinstall
-      pipwithloc.append("--target=" + pipcache)
-      self.RunCustomCommand(pipwithloc, True)
+    pip_install_cmds = map(lambda e : e + ["--target=" + pipcache], PIP_INSTALL)
+    self.RunCustomCommandList(pip_install_cmds)
 
     print "PIP Cache Files: " + ",".join(pipcache)
 
