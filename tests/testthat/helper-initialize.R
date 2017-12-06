@@ -22,7 +22,8 @@ cloudml_write_config <- function(base = NULL, destination = "cloudml.yml") {
   config = list(
     gcloud = list(
       project = Sys.getenv("GCLOUD_PROJECT"),
-      account = Sys.getenv("GCLOUD_ACCOUNT")
+      account = Sys.getenv("GCLOUD_ACCOUNT"),
+      region  = Sys.getenv("CLOUDSDK_COMPUTE_REGION", "us-east1")
     ),
     cloudml = list(
       storage = paste("gs://", Sys.getenv("GCLOUD_ACCOUNT"), "/travis", sep = "")
@@ -32,6 +33,7 @@ cloudml_write_config <- function(base = NULL, destination = "cloudml.yml") {
   if (!is.null(base)) {
     base$gcloud$project <- config$gcloud$project
     base$gcloud$account <- config$gcloud$account
+    base$gcloud$region <- config$gcloud$region
     base$cloudml$storage <- config$cloudml$storage
     config <- base
   }
