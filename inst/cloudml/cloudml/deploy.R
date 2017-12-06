@@ -54,7 +54,7 @@ if (nzchar(Sys.which("curl"))) {
 if (file.exists("dependencies.R"))
   source("dependencies.R")
 
-retrieve_packrat_packages <- function() {
+retrieve_packrat_packages <- function(cache_path) {
   # attempt to restore using a packrat lockfile
   if (file.exists("packrat/packrat.lock")) {
     message("Restoring package using packrat lockfile")
