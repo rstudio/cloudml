@@ -18,6 +18,27 @@ sysenv_file <- function(name, destination) {
   }
 }
 
+cloudml_write_config <- function(base = NULL) {
+  config = list(
+    gcloud = list(
+      project = Sys.getenv("GCLOUD_ACCOUNT"),
+      account = Sys.getenv("GCLOUD_PROJECT")
+    ),
+    cloudml = list(
+      storage = paste("gs://", Sys.getenv("GCLOUD_ACCOUNT"), "/travis", sep = "")
+    )
+  )
+
+  if (!is.null(base)) {
+    base$gcloud$project <- config$gcloud$project
+    base$gcloud$account <- config$gcloud$account
+    base$cloudml$storage <- config$cloudml$storage
+    config <- base
+  }
+
+  yaml::write_yaml(config, "cloudml.yml")
+}
+
 cloudml_tests_configured <- function() {
   nchar(Sys.getenv("GCLOUD_ACCOUNT_FILE")) > 0
 }
@@ -42,5 +63,5 @@ if (cloudml_tests_configured()) {
     )
   }
 
-  sysenv_file("GCLOUD_CONFIG_FILE", "cloudml.yml")
+  cloudml_write_config()
 }

@@ -6,3 +6,4 @@ gcloud:
 
 cloudml:
   storage         : "gs://project-name/keras"
+  packrat         : False

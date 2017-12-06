@@ -21,8 +21,8 @@ expect_train_succeeds <- function(job) {
 test_that("cloudml_train() can train and collect savedmodel", {
   if (!cloudml_tests_configured()) return()
 
-  config_yml <- system.file("examples/mnist/cloudml.yml", package = "cloudml")
-  file.copy("cloudml.yml", config_yml, overwrite = TRUE)
+  mnist_config <- yaml::yaml.load(system.file("examples/mnist/cloudml.yml", package = "cloudml"))
+  cloudml_write_config(mnist_config)
 
   job <- cloudml_train(
     application = system.file(
@@ -38,8 +38,8 @@ test_that("cloudml_train() can train and collect savedmodel", {
 test_that("cloudml_train() can train keras model", {
   if (!cloudml_tests_configured()) return()
 
-  config_yml <- system.file("examples/keras/cloudml.yml", package = "cloudml")
-  file.copy("cloudml.yml", config_yml, overwrite = TRUE)
+  keras_config <- yaml::yaml.load(system.file("examples/keras/cloudml.yml", package = "cloudml"))
+  cloudml_write_config(keras_config)
 
   job <- cloudml_train(
     application = system.file(
