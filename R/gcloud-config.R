@@ -6,18 +6,21 @@
 #'
 gcloud_config <- function(path = getwd()) {
 
-  file <- rprojroot::find_root_file(
-    "cloudml.yml",
-    criterion = "cloudml.yml",
-    path = path
-  )
-
-  config <- yaml::yaml.load_file(file)
+  file <- find_cloudml_config(path)
+  if (!is.null(file)) {
+    config <- yaml::yaml.load_file(file)
+  } else {
+    config <- list(gcloud = list(), cloudml = list())
+  }
 
   # provide default account
   if (is.null(config$gcloud$account)) {
-    config$gcloud$account <-
-      capture.output(gcloud_exec("config", "get-value", "account"))
+    config$gcloud$account <- gcloud_default_account()
+  }
+
+  # provide default project
+  if (is.null(config$gcloud$project)) {
+    config$gcloud$project <- gcloud_default_project()
   }
 
   # validate required 'gcloud' fields
@@ -38,3 +41,25 @@ gcloud_config <- function(path = getwd()) {
 
   gcloud
 }
+
+gcloud_default_account <- function() {
+  capture.output(gcloud_exec("config", "get-value", "account"))
+}
+
+gcloud_default_project <- function() {
+  capture.output(gcloud_exec("config", "get-value", "project"))
+}
+
+gcloud_project_has_bucket <- function(project = gcloud_default_project()) {
+  buckets <- capture.output(gsutil_exec("ls", "-p", project))
+  gcloud_project_bucket(project) %in% buckets
+}
+
+gcloud_project_create_bucket <- function(project = gcloud_default_project()) {
+  gsutil_exec("mb", "-p", project, gcloud_project_bucket(project))
+}
+
+gcloud_project_bucket <- function(project = gcloud_default_project()) {
+  sprintf("gs://%s/", project)
+}
+
