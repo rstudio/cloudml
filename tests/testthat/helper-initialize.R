@@ -21,8 +21,8 @@ sysenv_file <- function(name, destination) {
 cloudml_write_config <- function(base = NULL) {
   config = list(
     gcloud = list(
-      project = Sys.getenv("GCLOUD_ACCOUNT"),
-      account = Sys.getenv("GCLOUD_PROJECT")
+      project = Sys.getenv("GCLOUD_PROJECT"),
+      account = Sys.getenv("GCLOUD_ACCOUNT")
     ),
     cloudml = list(
       storage = paste("gs://", Sys.getenv("GCLOUD_ACCOUNT"), "/travis", sep = "")
