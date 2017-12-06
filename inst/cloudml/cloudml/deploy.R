@@ -1,5 +1,11 @@
 # required R packages
-CRAN <- c("RCurl", "devtools", "readr", "knitr")
+CRAN <- c(
+  "RCurl",
+  "devtools",
+  "readr",
+  "knitr"
+)
+
 GITHUB <- list(
   list(uri = "tidyverse/purrr",      ref = NULL),
   list(uri = "tidyverse/modelr",     ref = NULL),
@@ -59,12 +65,33 @@ retrieve_packrat_packages <- function(cache_path) {
   if (file.exists("packrat/packrat.lock")) {
     message("Restoring package using packrat lockfile")
 
+    if (!"devtools" %in% rownames(installed.packages()))
+      install.packages("devtools")
+
     # ensure packrat is installed
+    # need packrat devel to avoid 'Error: contains a blank line' in tfruns
     if (!"packrat" %in% rownames(installed.packages()))
-      install.packages("packrat")
+      devtools::install_github("rstudio/packrat")
+
+    Sys.setenv(
+      R_PACKRAT_CACHE_DIR = cache_path
+    )
+
+    options(packrat.verbose.cache = TRUE,
+            packrat.connect.timeout = 10)
+
+    packrat::set_opts(
+      auto.snapshot = FALSE,
+      use.cache = TRUE,
+      project = getwd(),
+      persist = FALSE
+    )
 
     # attempt a project restore
-    packrat::restore()
+    packrat::restore(overwrite.dirty = TRUE,
+                     prompt = FALSE,
+                     restart = FALSE)
+    packrat::on()
   }
 }
 
@@ -83,13 +110,14 @@ if (is.null(cache)) {
 } else {
   message(paste0("Cache entry found: ", cache))
 }
-if (!identical(cache, FALSE)) {
-  cache <- file.path(cache, "r")
-}
 
 use_packrat <- cloudml[["packrat"]]
 if (is.null(use_packrat)) {
   use_packrat <- TRUE
+}
+
+if (!identical(cache, FALSE)) {
+  cache <- file.path(cache, ifelse(use_packrat, "packrat", "r"))
 }
 
 get_cached_packages <- function () {
@@ -97,15 +125,15 @@ get_cached_packages <- function () {
   as.character(lapply(strsplit(basename(cached_entries), "\\."), function(e) e[[1]]))
 }
 
-store_cached_packages <- function () {
+store_cached_packages <- function (cache_path) {
   if (identical(cache, FALSE)) return()
 
   cached_entries <- get_cached_packages()
   installed <- rownames(installed.packages())
 
-  for (pkg in installed) {
+  for (pkg in dir(cache_path)) {
     if (!pkg %in% cached_entries) {
-      source <- system.file("", package = pkg)
+      source <- file.path(cache_path, pkg)
       compressed <- file.path(tempdir(), paste0(pkg, ".tar"))
 
       message(paste0("Compressing '", pkg, "' package to ", compressed, " cache."))
@@ -143,35 +171,37 @@ retrieve_cached_packages <- function(target) {
   invisible(NULL)
 }
 
-cache_path <- if (use_packrat) .libPaths()[[1]] else tempfile()
+retrieve_default_packages <- function() {
+  # discover available R packages
+  installed <- rownames(installed.packages())
 
-# make use of cache
-retrieve_cached_packages(cache_path)
+  # install required CRAN packages
+  for (pkg in CRAN) {
+    if (pkg %in% installed)
+      next
+    install.packages(pkg)
+  }
 
-if (use_packrat) retrieve_packrat_packages(cache_path);
-
-# discover available R packages
-installed <- rownames(installed.packages())
-
-# install required CRAN packages
-for (pkg in CRAN) {
-  if (pkg %in% installed)
-    next
-  install.packages(pkg)
+  # install required GitHub packages
+  for (entry in GITHUB) {
+    if (basename(entry$uri) %in% installed)
+      next
+    devtools::install_github(entry$uri, ref = entry$ref)
+  }
 }
 
-# install required GitHub packages
-for (entry in GITHUB) {
-  if (basename(entry$uri) %in% installed)
-    next
-  devtools::install_github(entry$uri, ref = entry$ref)
+cache_path <- if (use_packrat) tempfile() else .libPaths()[[1]]
+retrieve_cached_packages(cache_path);
+
+if (use_packrat) {
+  retrieve_packrat_packages(cache_path)
+} else {
+  retrieve_default_packages()
 }
 
-store_cached_packages()
+store_cached_packages(cache_path)
 
 # Training ----
-
-library(cloudml)
 
 # read deployment information
 deploy <- readRDS("cloudml/deploy.rds")
@@ -198,5 +228,5 @@ storage <- cloudml[["storage"]]
 if (is.character(storage)) {
   source <- run_dir
   target <- do.call("file.path", as.list(c(storage, run_dir, trial_id)))
-  system(paste(gsutil_path(), "cp", "-r", shQuote(source), shQuote(target)))
+  system(paste("gsutil", "cp", "-r", shQuote(source), shQuote(target)))
 }
