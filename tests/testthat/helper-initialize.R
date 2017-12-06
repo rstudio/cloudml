@@ -18,7 +18,7 @@ sysenv_file <- function(name, destination) {
   }
 }
 
-cloudml_write_config <- function(base = NULL) {
+cloudml_write_config <- function(base = NULL, destination = "cloudml.yml") {
   config = list(
     gcloud = list(
       project = Sys.getenv("GCLOUD_PROJECT"),
@@ -36,7 +36,7 @@ cloudml_write_config <- function(base = NULL) {
     config <- base
   }
 
-  yaml::write_yaml(config, "cloudml.yml")
+  yaml::write_yaml(config, destination)
 }
 
 cloudml_tests_configured <- function() {
