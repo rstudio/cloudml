@@ -26,7 +26,7 @@ cloudml_write_config <- function(base = NULL, destination = "cloudml.yml") {
       region  = Sys.getenv("CLOUDSDK_COMPUTE_REGION", "us-east1")
     ),
     cloudml = list(
-      storage = paste("gs://", Sys.getenv("GCLOUD_ACCOUNT"), "/travis", sep = "")
+      storage = paste("gs://", Sys.getenv("GCLOUD_PROJECT"), "/travis", sep = "")
     )
   )
 
