@@ -16,6 +16,16 @@ gcloud_config <- function(path = getwd()) {
   # provide default account
   if (is.null(config$gcloud$account)) {
     config$gcloud$account <- gcloud_default_account()
+    if (config$gcloud$account == "(unset)") {
+      message("Google Cloud SDK has not yet been initialized")
+      cat("\n")
+      if (have_rstudio_terminal()) {
+        message("Use the gcloud_init() function to initialize the SDK.")
+        cat("\n")
+      } else
+        gcloud_init_message()
+      stop("SDK not initialized")
+    }
   }
 
   # provide default project

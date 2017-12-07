@@ -53,16 +53,18 @@ gcloud_init <- function() {
   if (have_rstudio_terminal()) {
     gcloud_terminal("gcloud init")
   } else {
-    message("To intialize the Google Cloud SDK, launch a terminal and execute the following:")
-    cat("\n")
-    cat(gcloud_path(), "init\n\n")
+    gcloud_init_message()
   }
 }
 
-
+gcloud_init_message <- function() {
+  message("To initialize the Google Cloud SDK, launch a terminal and execute the following:")
+  cat("\n")
+  message("  $ ", gcloud_path(), " init\n")
+}
 
 have_rstudio_terminal <- function() {
-  !rstudioapi::hasFun("terminalCreate")
+  rstudioapi::hasFun("terminalCreate")
 }
 
 
