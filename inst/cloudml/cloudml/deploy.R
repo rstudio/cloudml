@@ -121,12 +121,12 @@ get_cached_bundles <- function (source) {
   as.character(lapply(strsplit(basename(cached_entries), "\\."), function(e) e[[1]]))
 }
 
-store_cached_data <- function (source, destination) {
+store_cached_data <- function (source, destination, replace_all) {
   cached_entries <- get_cached_bundles(destination)
   installed <- rownames(installed.packages())
 
   for (pkg in dir(source)) {
-    if (!pkg %in% cached_entries) {
+    if (!pkg %in% cached_entries || replace_all) {
       source_entry <- file.path(source, pkg)
       compressed <- file.path(tempdir(), paste0(pkg, ".tar"))
 
@@ -199,7 +199,7 @@ if (use_packrat) {
 }
 
 if (cache_enabled) {
-  store_cached_data(cache_local, cache_remote)
+  store_cached_data(cache_local, cache_remote, use_packrat)
   store_cached_data(cache_keras_local, cache_keras_remote)
 }
 
