@@ -64,6 +64,7 @@ retrieve_packrat_packages <- function(cache_path) {
   # attempt to restore using a packrat lockfile
   if (file.exists("packrat/packrat.lock")) {
     message("Restoring package using packrat lockfile")
+    message("Packrat lockfile:\n", paste(readLines("packrat/packrat.lock"), collapse = "\n"))
 
     if (!"devtools" %in% rownames(installed.packages()))
       install.packages("devtools")
