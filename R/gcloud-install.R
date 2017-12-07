@@ -28,7 +28,7 @@ gcloud_path <- function() {
   candidates <- c(
     function() Sys.which("gcloud"),
     function() "~/google-cloud-sdk/bin/gcloud",
-    function() file.path(Sys.getenv("GCLOUD_INSTALL_PATH", "~/google-cloud-sdk"), "bin/gcloud")
+    function() file.path(gcloud_path_default(), "bin/gcloud")
   )
 
   if (.Platform$OS.type == "windows") {
@@ -53,39 +53,85 @@ gcloud_path_default <- function() {
 #'
 #' Installs the Google Cloud SDK which enables CloudML operations.
 #'
-#' @param version Version of the Google Cloud SDK to be installed.
-#'
-#' @importFrom utils untar
-gcloud_install <- function(version = "180.0.1") {
-  if (file_test("-d", gcloud_path_default())) {
-    message("SDK already installed.")
-    return(invisible(NULL))
-  }
+#' @export
+gcloud_install <- function() {
 
-  if (.Platform$OS.type != "unix") {
-    stop("Currently, unix installations are only supported.")
-  }
-
-  if (Sys.info()["sysname"] == "Darwin")
-    sysname <- "darwin"
+  if (identical(.Platform$OS.type, "windows"))
+    gcloud_install_windows()
+  else if (identical(.Platform$OS.type, "unix"))
+    gcloud_install_unix()
   else
-    sysname <- "linux"
+    stop("This platform is not supported by the Google Cloud SDK")
+}
 
-  cloudsdk_url <- "https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/"
-  cloudsdk_tar <- paste0("google-cloud-sdk-", version, "-", sysname, "-x86_64.tar.gz")
+gcloud_install_unix <- function() {
 
-  download_dir <- tempdir()
-  download_file <- file.path(download_dir, cloudsdk_tar)
+  # download the interactive installer script and mark it executable
+  message("Downloading Google Cloud SDK...")
+  install_script <- tempfile("install_google_cloud_sdk-", fileext = ".bash")
+  utils::download.file("https://dl.google.com/dl/cloudsdk/channels/rapid/install_google_cloud_sdk.bash",
+                       install_script)
+  Sys.chmod(install_script, "755")
 
-  if (!file_test("-d", download_dir)) dir.create(download_dir)
+  # get gcloud path
+  gcloud_path <- gcloud_path_default()
 
-  download.file(
-    file.path(cloudsdk_url, cloudsdk_tar),
-    download_file
-  )
+  # if in rstudio then continue in the terminal
+  if (have_rstudio_terminal()) {
 
-  extract_dir <- "~/"
-  untar(tarfile = download_file,
-        exdir = extract_dir,
-        tar = "internal")
+    readline("Installation of the Google Cloud SDK will continue in a terminal [OK]: ")
+    install_args <- paste(shQuote(c(install_script,
+                              paste0("--install-dir=",
+                                     path.expand(dirname(gcloud_path))))),
+                          collapse = " ")
+    terminal_command <- paste(install_args, "&&", "gcloud", "init")
+    gcloud_terminal(terminal_command, clear = TRUE)
+
+  } else {
+
+    # remove existing installation if necessary
+    if (utils::file_test("-d", gcloud_path)) {
+      message(paste("Google Cloud SDK already installed at", gcloud_path))
+      cat("\n")
+      prompt <- readline("Remove existing installation of SDK? [Y/n]: ")
+      if (nzchar(prompt) && tolower(prompt) != 'y')
+        return(invisible(NULL))
+      else {
+        message("Removing existing installation of SDK")
+        unlink(gcloud_path, recursive = TRUE)
+      }
+    }
+
+    # build arguments to sdk
+    args <- c(paste0("--install-dir=", dirname(path.expand(gcloud_path))),
+              "--disable-prompts")
+
+    # execute with processx
+    message("Running Google Cloud SDK Installation...")
+    result <- processx::run(install_script, args, echo = TRUE)
+
+    # prompt to run gcloud init
+    message("Google Cloud SDK tools installed at ", gcloud_path)
+    cat("\n")
+    message("IMPORTANT: To complete the installation, launch a terminal and execute the following:")
+    cat("\n")
+    message("  $ ", file.path(path.expand(gcloud_path), "bin/gcloud init"))
+    cat("\n")
+  }
+
+  invisible(NULL)
+}
+
+
+gcloud_install_windows <- function() {
+
+  message("Downloading Google Cloud SDK...")
+  installer <- tempfile("GoogleCloudSDKInstaller-", fileext = ".exe")
+  utils::download.file("https://dl.google.com/dl/cloudsdk/channels/rapid/GoogleCloudSDKInstaller.exe",
+                       installer,
+                       mode = "wb")
+
+  shell.exec(installer)
+
+  invisible(NULL)
 }
