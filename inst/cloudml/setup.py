@@ -171,8 +171,8 @@ class CustomCommands(install):
     }
 
     # Upgrade r if latestr is set in cloudml.yaml
-    if ("latestr" in self.config["cloudml"] and self.config["cloudml"]["latestr"] != False):
-      print "Upgrade R: " + str(self.config["cloudml"]["latestr"])
+    if (not "latestr" in self.config["cloudml"] or self.config["cloudml"]["latestr"] == True):
+      print "Upgrading R"
       self.RunCustomCommandList(UPGRADE_R_COMMANDS)
 
     # Run custom commands
@@ -188,8 +188,8 @@ class CustomCommands(install):
     # self.RestoreCache(pipcache)
 
     # Install Keras
-    if ("keras" in self.config["cloudml"] and self.config["cloudml"]["keras"] != False):
-      print "Install Keras: " + str(self.config["cloudml"]["keras"])
+    if (not "keras" in self.config["cloudml"] or self.config["cloudml"]["keras"] == True):
+      print "Installing Keras"
       pip_install_keras_cmds = map(lambda e : e + ["--target=" + pipcache], PIP_INSTALL_KERAS)
       self.RunCustomCommandList(pip_install_keras_cmds)
 

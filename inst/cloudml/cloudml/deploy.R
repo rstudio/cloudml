@@ -106,7 +106,7 @@ cloudml <- config$cloudml
 cache <- cloudml[["cache"]]
 cache_enabled <- !identical(cloudml[["cache"]], FALSE)
 
-if (!cache_enabled) {
+if (is.null(cache)) {
   cache <- file.path(cloudml[["storage"]], "cache")
   message(paste0("Cache entry not found, defaulting to: ", cache))
 } else {
