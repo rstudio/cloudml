@@ -41,18 +41,14 @@ CloudML is designed to run your R TensorFlow training scripts with minimal alter
 
 Before you can begin training models with CloudML you need to have a **Google Cloud Account**. If you don't already have an account you can create one at <https://console.cloud.google.com>.
 
-Next, you need to download and install the **Google Cloud SDK**, a set of utilties that enable you to interact with your Google Cloud account from the terminal or from R when using the cloudml package. The instructions for doing this vary by platform:
+Next, you need to download, install, and configure the **Google Cloud SDK**, a set of utilties that enable you to interact with your Google Cloud account from the terminal or from R when using the cloudml package. 
 
-  - [Linux Installation](https://cloud.google.com/sdk/downloads#linux)
-  - [Mac OS X Installation](https://cloud.google.com/sdk/downloads#mac)
-  - [Windows Installation](https://cloud.google.com/sdk/downloads#windows)
-  
-A couple of important notes regarding Google Cloud SDK setup:
+You can install the SDK using the `gcloud_install()` function:
 
-1) You should accept the default installation location for the SDK (e.g. ~/google-cloud-sdk) so that the cloudml R package can locate the SDK.
+```{r}
+gcloud_install()
+```
 
-2) As part of SDK setup you should have run the `gcloud init` command. This command authenticates and conencts your local workstation with your Google Cloud account. If you haven't done this yet you should be sure to do so before proceeding.
-  
 ## Training on CloudML
 
 To train models on CloudML, first work on them locally (perhaps with a smaller sample of your dataset) until your training script is working correctly. Then, call the `cloudml_train()` function, specifying the R script to execute for training:
@@ -63,7 +59,6 @@ job <- cloudml_train("train.R")
 
 Note that all of the files within the directory that contains your training script will be bundled up and sent along with the script.
 
-The very first time you train a new project will take a fair amount of time (in the neighborhood of 20 minutes). This is because a large number of R packages are installed (which requires compilation from source). The good news is that all of these package compliations are cached, so subsequent training runs will not have this installation overhead.
 
 
 
