@@ -4,10 +4,12 @@
 \alias{gcloud_terminal}
 \title{Create an RStudio terminal with access to the Google Cloud SDK}
 \usage{
-gcloud_terminal(command = NULL)
+gcloud_terminal(command = NULL, clear = FALSE)
 }
 \arguments{
 \item{command}{Command to send to terminal}
+
+\item{clear}{Clear terminal buffer}
 }
 \value{
 Terminal id (invisibly)
