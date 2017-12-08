@@ -43,6 +43,16 @@ cloudml_train <- function(application = getwd(),
   gcloud <- gcloud_config()
   cloudml <- cloudml_config()
 
+  # create default storage bucket for project if not specified
+  if (is.null(cloudml[["storage"]])) {
+    project <- gcloud[["project"]]
+    project_bucket <- gcloud_project_bucket(project)
+    if (!gcloud_project_has_bucket(project)) {
+      gcloud_project_create_bucket(project)
+    }
+    cloudml$storage <- gcloud_project_bucket(project)
+  }
+
   # move to deployment parent directory and spray __init__.py
   directory <- deployment$directory
   scope_setup_py(directory)
