@@ -135,3 +135,11 @@ gcloud_install_windows <- function() {
 
   invisible(NULL)
 }
+
+gcloud_installed <- function() {
+  have_sdk <- !is.null(tryCatch(gcloud_path(), error = function(e) NULL))
+  if (have_sdk)
+    gcloud_default_account() != "(unset)"
+  else
+    FALSE
+}
