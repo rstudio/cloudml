@@ -27,6 +27,8 @@ cloudml_train <- function(application = getwd(),
                           entrypoint  = "train.R",
                           ...)
 {
+  message("Submitting training job to CloudML...")
+
   # prepare application for deployment
   id <- unique_job_name(config)
   overlay <- list(...)
@@ -87,18 +89,6 @@ cloudml_train <- function(application = getwd(),
   # submit job through command line interface
   gcloud_exec(args = arguments())
 
-  # inform user of successful job submission
-  template <- c(
-    "Job '%1$s' successfully submitted.",
-    "",
-    "Check status and collect output with:",
-    "- job_status(\"%1$s\")",
-    "- job_collect(\"%1$s\")"
-  )
-
-  rendered <- sprintf(paste(template, collapse = "\n"), id)
-  message(rendered)
-
   # call 'describe' to discover additional information related to
   # the job, and generate a 'job' object from that
   #
@@ -113,8 +103,15 @@ cloudml_train <- function(application = getwd(),
   stdout <- output$stdout
   stderr <- output$stderr
 
-  # write stderr to the console
-  message(stderr)
+  # inform user of successful job submission
+  template <- c(
+    "Job '%1$s' successfully submitted.",
+    "%2$s",
+    "Check job status with:   job_status(\"%1$s\")",
+    "Collect job output with: job_collect(\"%1$s\")"
+  )
+  rendered <- sprintf(paste(template, collapse = "\n"), id, stderr)
+  message(rendered)
 
   # create job object
   description <- yaml::yaml.load(stdout)
@@ -287,7 +284,15 @@ job_status <- function(job) {
   # parse as YAML and return
   status <- yaml::yaml.load(paste(output$stdout, collapse = "\n"))
 
-  invisible(status)
+  class(status) <- "cloudml_job_status"
+  attr(status, "messages") <- output$stderr
+  status
+}
+
+#' @export
+print.cloudml_job_status <- function(x, ...) {
+  str(x, give.attr = FALSE)
+  message(attr(x, "messages"))
 }
 
 #' Collect job output
@@ -305,10 +310,14 @@ job_status <- function(job) {
 #' @param timeout
 #'   Give up collecting job after the specified minutes.
 #'
+#' @param view View the job results after collecting it
+#'
 #' @family job management
 #'
 #' @export
-job_collect <- function(job, destination = "runs", timeout = NULL) {
+job_collect <- function(job, destination = "runs",
+                        timeout = NULL, view = interactive()) {
+
   job <- as.cloudml_job(job)
   id <- job$id
 
@@ -336,7 +345,7 @@ job_collect <- function(job, destination = "runs", timeout = NULL) {
 
   # if we're already done, attempt download of outputs
   if (status$state == "SUCCEEDED")
-    return(job_download(job, destination))
+    return(job_download(job, destination, view = view))
 
   # if the job has failed, report error
   if (status$state == "FAILED") {
@@ -445,7 +454,7 @@ job_collect_async <- function(
       paste("mkdir -p", destination),
       paste(download_arguments, collapse = " "),
       paste("echo \"\""),
-      paste("echo \"To view the results, run from R: tfruns::view_run()\"")
+      paste("echo \"To view the results, run from R: view_run()\"")
     )
   }
   else {
@@ -469,7 +478,8 @@ job_collect_async <- function(
   gcloud_terminal(terminal_command)
 }
 
-job_download <- function(job, destination = "runs") {
+job_download <- function(job, destination = "runs", view = interactive()) {
+
   status <- job_status(job)
 
   trial_paths <- job_status_trial_dir(status, destination)
@@ -480,6 +490,8 @@ job_download <- function(job, destination = "runs") {
     fmt <- "job directory '%s' is not a Google Storage URI"
     stopf(fmt, source)
   }
+
+  message(sprintf("Downloading job from %s...", source))
 
   # check that we have an output folder associated
   # with this job -- 'gsutil ls' will return with
@@ -493,7 +505,19 @@ job_download <- function(job, destination = "runs") {
   }
 
   ensure_directory(destination)
-  gsutil_copy(source, destination, TRUE)
+  gsutil_copy(source, destination, TRUE, echo = TRUE)
+
+  run_dir <- file.path(destination, basename(source))
+  cat("\n")
+  message("Job downloaded to ", run_dir)
+  cat("\n")
+  message(sprintf("View job with: view_run(\"%s\")",
+                  run_dir))
+
+  if (view)
+    view_run(run_dir)
+
+  invisible(NULL)
 }
 
 job_output_dir <- function(job) {

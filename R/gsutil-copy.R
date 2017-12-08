@@ -18,7 +18,7 @@
 #'   copying directories.
 #'
 #' @export
-gsutil_copy <- function(source, destination, recursive = FALSE) {
+gsutil_copy <- function(source, destination, recursive = FALSE, echo = FALSE) {
 
   arguments <- c(
     "-m",
@@ -28,7 +28,7 @@ gsutil_copy <- function(source, destination, recursive = FALSE) {
     destination
   )
 
-  gsutil_exec(args = arguments)
+  gsutil_exec(args = arguments, echo = echo)
 }
 
 #' Get local path to data within Google Storage
