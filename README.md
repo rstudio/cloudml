@@ -13,11 +13,11 @@ Cloud ML Engine manages the computing resources that your training job needs to 
 Prerequisites
 -------------
 
-#### Google Cloud Account
+### Google Cloud Account
 
 Before you can begin training models with CloudML you need to have a **Google Cloud Account**. If you don't already have an account you can create one at <https://console.cloud.google.com>.
 
-#### CloudML R Package
+### CloudML R Package
 
 Next, install the cloudml R package from GitHub as follows:
 
@@ -25,7 +25,7 @@ Next, install the cloudml R package from GitHub as follows:
 devtools::install_github("rstudio/cloudml")
 ```
 
-#### Google Cloud SDK
+### Google Cloud SDK
 
 Finally, you need to install the **Google Cloud SDK**, a set of utilties that enable you to interact with your Google Cloud account from within R.
 
