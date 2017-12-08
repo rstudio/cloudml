@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Tune hyperparameters on Cloud ML — cloudml_tune • cloudml</title>
+<title>Create an RStudio terminal with access to the Google Cloud SDK — gcloud_terminal • cloudml</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -92,42 +92,27 @@
       <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Tune hyperparameters on Cloud ML</h1>
+    <h1>Create an RStudio terminal with access to the Google Cloud SDK</h1>
     </div>
 
     
-    <p>Tune hyperparameters on Cloud ML</p>
+    <p>Create an RStudio terminal with access to the Google Cloud SDK</p>
     
 
-    <pre class="usage"><span class='fu'>cloudml_tune</span>(<span class='kw'>application</span> <span class='kw'>=</span> <span class='fu'>getwd</span>(), <span class='kw'>config</span> <span class='kw'>=</span> <span class='st'>"cloudml"</span>,
-  <span class='kw'>hypertune</span> <span class='kw'>=</span> <span class='st'>"hypertune.yml"</span>, <span class='no'>...</span>)</pre>
+    <pre class="usage"><span class='fu'>gcloud_terminal</span>(<span class='kw'>command</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>application</th>
-      <td><p>The path to a TensorFlow application. Defaults to
-the current working directory.</p></td>
-    </tr>
-    <tr>
-      <th>config</th>
-      <td><p>The name of the configuration to be used. Defaults to
-the <code>"cloudml"</code> configuration.</p></td>
-    </tr>
-    <tr>
-      <th>hypertune</th>
-      <td><p>Path to a YAML file, defining how hyperparameters should
-be tuned. See
-https://cloud.google.com/ml/reference/rest/v1/projects.jobs
-for more details.</p></td>
-    </tr>
-    <tr>
-      <th>...</th>
-      <td><p>Named arguments, used to supply runtime configuration
-settings to your TensorFlow application.</p></td>
+      <th>command</th>
+      <td><p>Command to send to terminal</p></td>
     </tr>
     </table>
+    
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>Terminal id (invisibly)</p>
     
 
   </div>
@@ -135,7 +120,9 @@ settings to your TensorFlow application.</p></td>
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
-                </ul>
+      
+      <li><a href="#value">Value</a></li>
+          </ul>
 
   </div>
 </div>
