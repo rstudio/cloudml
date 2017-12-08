@@ -28,7 +28,7 @@ cloudml_train <- function(application = getwd(),
                           ...)
 {
   # prepare application for deployment
-  id <- unique_job_name(application, config)
+  id <- unique_job_name(config)
   overlay <- list(...)
   deployment <- scope_deployment(
     id = id,
@@ -495,10 +495,6 @@ job_download <- function(job, destination = "runs") {
 
   ensure_directory(destination)
   gsutil_copy(source, destination, TRUE)
-
-  # rename to unique_run_dir
-  file.rename(file.path(destination, basename(source)),
-              tfruns::unique_run_dir(runs_dir = destination))
 }
 
 job_output_dir <- function(job) {
