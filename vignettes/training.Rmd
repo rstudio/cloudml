@@ -8,6 +8,12 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, eval=FALSE)
+```
+
+
 Cloud Machine Learning Engine enables you to easily run your TensorFlow training applications in the cloud. This page describes that capability and some of the key concepts you'll need to understand to make the most of your model training.
 
 ## How training works
@@ -58,7 +64,7 @@ traininig.
 
 A simple configuration file looks as follows:
 
-```{yml}
+```yaml
 gcloud:
   project         : "project-name"
   account         : "account@domain.com"
@@ -95,7 +101,7 @@ Caching R package dependencies is enabled by default, this allows subsequent tra
 to save several minutes of initialization time. The package cache is stored under `storage`;
 it can be disabled by setting this property to `false` in `cloudml.yml`:
 
-```{yml}
+```yaml
 cloudml:
   storage         : "gs://project-name/mnist"
   cache           : false
@@ -104,11 +110,13 @@ cloudml:
 The cache can also be shared among many projects by setting the `cache` path as
 follows:
 
-```{yml}
+```yaml
 cloudml:
   storage         : "gs://project-name/mnist"
   cache           : "gs://project-name/cache"
 ```
+
+
 
 ## Deploying your trainer
 

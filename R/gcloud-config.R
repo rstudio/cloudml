@@ -53,15 +53,15 @@ gcloud_config <- function(path = getwd()) {
 }
 
 gcloud_default_account <- function() {
-  capture.output(gcloud_exec("config", "get-value", "account"))
+  utils::capture.output(gcloud_exec("config", "get-value", "account"))
 }
 
 gcloud_default_project <- function() {
-  capture.output(gcloud_exec("config", "get-value", "project"))
+  utils::capture.output(gcloud_exec("config", "get-value", "project"))
 }
 
 gcloud_project_has_bucket <- function(project = gcloud_default_project()) {
-  buckets <- capture.output(gsutil_exec("ls", "-p", project))
+  buckets <- utils::capture.output(gsutil_exec("ls", "-p", project))
   gcloud_project_bucket(project) %in% buckets
 }
 

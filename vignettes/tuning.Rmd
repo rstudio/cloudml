@@ -8,6 +8,12 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, eval=FALSE)
+```
+
+
 Hyperparameter tuning is the automated model enhancer provided by Cloud Machine Learning Engine. Hyperparameter tuning takes advantage of the processing infrastructure of Google Cloud Platform to test different hyperparameter configurations when training your model. It can give you optimized values for hyperparameters, which maximizes your model's predictive accuracy.
 
 ## What's a hyperparameter?
@@ -42,7 +48,7 @@ the model requires [training](guides-tunning.html) to be configured correctly.
 
 For MNIST, `hypertune.yml` can look like:
 
-```{yml}
+```yaml
 trainingInput:
   hyperparameters:
     goal: MAXIMIZE
