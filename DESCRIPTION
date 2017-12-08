@@ -9,7 +9,7 @@ Authors@R: c(
     )
 Description: Interface to the Google Cloud Machine Learning Platform which provides
   support to train and tune machine learning models at scale under Cloud ML.
-Depends: R (>= 3.1.0), tfruns
+Depends: R (>= 3.1.0), tfruns (>= 1.0.0.9001)
 Imports:
   jsonlite,
   packrat,
@@ -23,6 +23,7 @@ Imports:
 Suggests:
   testthat, 
   knitr
+Remotes: rstudio/tfruns
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
