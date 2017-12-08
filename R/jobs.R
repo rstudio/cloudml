@@ -466,8 +466,7 @@ job_collect_async <- function(
     collapse = os_collapse
   )
 
-  terminal <- rstudioapi::terminalCreate()
-  rstudioapi::terminalSend(terminal, paste0(terminal_command, os_return))
+  gcloud_terminal(terminal_command)
 }
 
 job_download <- function(job, destination = "runs") {
