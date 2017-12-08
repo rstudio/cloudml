@@ -23,7 +23,6 @@ cloudml_tests_configured <- function() {
 }
 
 if (cloudml_tests_configured()) {
-  cloudml:::gcloud_install()
 
   options(repos = c(CRAN = "http://cran.rstudio.com"))
 
