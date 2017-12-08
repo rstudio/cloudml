@@ -1,8 +1,11 @@
 ---
-title: "Training"
+title: "Training with CloudML"
 output: 
-  html_document:
-    toc_depth: 3
+  rmarkdown::html_vignette: default
+vignette: >
+  %\VignetteIndexEntry{Training with CloudML}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
 ---
 
 Cloud Machine Learning Engine enables you to easily run your TensorFlow training applications in the cloud. This page describes that capability and some of the key concepts you'll need to understand to make the most of your model training.
