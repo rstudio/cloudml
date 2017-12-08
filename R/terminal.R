@@ -22,7 +22,7 @@ gcloud_terminal <- function(command = NULL, clear = FALSE) {
   }
 
   # check for existing gcloud sdk terminal and use it if found
-  gcloud_sdk_terminal <- "Google Cloud SDK"
+  gcloud_sdk_terminal <- "Google Cloud"
   terminals <- rstudioapi::terminalList()
   for (terminal in terminals) {
     terminal <- rstudioapi::terminalContext(terminal)
@@ -37,7 +37,7 @@ gcloud_terminal <- function(command = NULL, clear = FALSE) {
 
   # launch terminal with cloud sdk on the PATH
   withr::with_path(gcloud_path(), {
-    id <- rstudioapi::terminalCreate("Google Cloud SDK")
+    id <- rstudioapi::terminalCreate("Google Cloud")
     init_terminal(id)
   })
 
