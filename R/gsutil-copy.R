@@ -21,6 +21,7 @@
 gsutil_copy <- function(source, destination, recursive = FALSE) {
 
   arguments <- c(
+    "-m",
     "cp",
     if (recursive) "-r",
     source,

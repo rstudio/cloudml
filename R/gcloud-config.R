@@ -62,14 +62,18 @@ gcloud_default_project <- function() {
 
 gcloud_project_has_bucket <- function(project = gcloud_default_project()) {
   buckets <- utils::capture.output(gsutil_exec("ls", "-p", project))
-  gcloud_project_bucket(project) %in% buckets
+  gcloud_project_bucket(project, TRUE) %in% buckets
 }
 
 gcloud_project_create_bucket <- function(project = gcloud_default_project()) {
   gsutil_exec("mb", "-p", project, gcloud_project_bucket(project))
 }
 
-gcloud_project_bucket <- function(project = gcloud_default_project()) {
-  sprintf("gs://%s/", project)
+gcloud_project_bucket <- function(project = gcloud_default_project(),
+                                  trailing_slash = FALSE) {
+  bucket <- sprintf("gs://%s", project)
+  if (trailing_slash)
+    bucket <- paste0(bucket, "/")
+  bucket
 }
 

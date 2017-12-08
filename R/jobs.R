@@ -53,6 +53,12 @@ cloudml_train <- function(application = getwd(),
     cloudml$storage <- gcloud_project_bucket(project)
   }
 
+  # write cloud.yml file to deployment directory if we
+  # don't already have one there
+  cloudml_yml <- file.path(deployment$directory, "cloudml.yml")
+  if (!file.exists(cloudml_yml))
+    yaml::write_yaml(list(gcloud = gcloud, cloudml = cloudml), cloudml_yml)
+
   # move to deployment parent directory and spray __init__.py
   directory <- deployment$directory
   scope_setup_py(directory)
@@ -403,7 +409,7 @@ job_collect_async <- function(
 ) {
   if (!rstudioapi::isAvailable()) return()
 
-  output_dir <- job_output_dir(job, gcloud)
+  output_dir <- job_output_dir(job)
   job <- as.cloudml_job(job)
   id <- job$id
 
@@ -482,17 +488,26 @@ job_download <- function(job, destination = "runs") {
   # non-existent gs URL
   result <- gsutil_exec("ls", source)
 
-  if (result$status) {
+  if (result$status != 0) {
     fmt <- "no directory at path '%s'"
     stopf(fmt, source)
   }
 
   ensure_directory(destination)
   gsutil_copy(source, destination, TRUE)
+
+  # rename to unique_run_dir
+  file.rename(file.path(destination, basename(source)),
+              tfruns::unique_run_dir(runs_dir = destination))
 }
 
-job_output_dir <- function(job, config = cloudml_config()) {
-  output_path <- file.path(config$storage, "runs", job$id)
+job_output_dir <- function(job) {
+
+  # determine storage from job
+  job <- as.cloudml_job(job)
+  storage <- dirname(job$description$trainingInput$jobDir)
+
+  output_path <- file.path(storage, "runs", job$id)
 
   if (job_is_tuning(job) && !is.null(job$trainingOutput$finalMetric)) {
     output_path <- file.path(output_path, job$trainingOutput$finalMetric$trainingStep)
@@ -501,9 +516,13 @@ job_output_dir <- function(job, config = cloudml_config()) {
   output_path
 }
 
-job_status_trial_dir <- function(status, destination, config = cloudml_config()) {
+job_status_trial_dir <- function(status, destination) {
+
+  # determine storage from job
+  storage <- dirname(status$trainingInput$jobDir)
+
   output_path <- list(
-    source = file.path(config$storage, "runs", status$jobId),
+    source = file.path(storage, "runs", status$jobId, fsep = "/"),
     destination = destination
   )
 

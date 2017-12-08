@@ -73,12 +73,9 @@ installed <- rownames(installed.packages())
 
 if (!"yaml" %in% installed) install.packages("yaml")
 
-if (file.exists("cloudml.yml")) {
-  config <- yaml::yaml.load_file("cloudml.yml")
-  cloudml <- config$cloudml
-} else {
-  cloudml <- list()
-}
+
+config <- yaml::yaml.load_file("cloudml.yml")
+cloudml <- config$cloudml
 
 cache <- cloudml[["cache"]]
 if (is.null(cache)) {
