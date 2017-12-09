@@ -17,6 +17,7 @@ Imports:
   readr,
   rprojroot,
   rstudioapi,
+  tensorflow,
   utils,
   withr,
   yaml
@@ -24,6 +25,10 @@ Suggests:
   keras,
   knitr,
   testthat
+Remotes:
+  rstudio/keras,
+  rstudio/tensorflow,
+  rstudio/tfruns
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
