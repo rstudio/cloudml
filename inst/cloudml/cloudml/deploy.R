@@ -249,5 +249,5 @@ storage <- cloudml[["storage"]]
 if (is.character(storage)) {
   source <- run_dir
   target <- do.call("file.path", as.list(c(storage, run_dir, trial_id)))
-  system(paste("gsutil", "cp", "-r", shQuote(source), shQuote(target)))
+  system(paste("gsutil", "-m", "cp", "-r", shQuote(source), shQuote(target)))
 }
