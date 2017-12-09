@@ -132,7 +132,7 @@ get_cached_bundles <- function (source) {
   as.character(lapply(strsplit(basename(cached_entries), "\\."), function(e) e[[1]]))
 }
 
-store_cached_data <- function (source, destination, replace_all) {
+store_cached_data <- function (source, destination, replace_all = FALSE) {
   cached_entries <- get_cached_bundles(destination)
   installed <- rownames(installed.packages())
 
@@ -193,6 +193,11 @@ retrieve_default_packages <- function() {
   }
 }
 
+if (cache_enabled && use_packrat) {
+  # line can be removed once packrat is on CRAN
+  retrieve_cached_data(file.path(cache, "r"), .libPaths()[[1]])
+}
+
 cache_local <- if (use_packrat) tempfile() else .libPaths()[[1]]
 cache_keras_local <- "~/.keras/"
 cache_remote <- file.path(cache, ifelse(use_packrat, "packrat", "r"))
@@ -212,6 +217,11 @@ if (use_packrat) {
 if (cache_enabled) {
   store_cached_data(cache_local, cache_remote, use_packrat)
   store_cached_data(cache_keras_local, cache_keras_remote)
+
+  if (use_packrat) {
+    # line can be removed once packrat is on CRAN
+    store_cached_data(.libPaths()[[1]], file.path(cache, "r"))
+  }
 }
 
 # Training ----
