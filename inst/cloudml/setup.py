@@ -45,7 +45,7 @@ CUSTOM_COMMANDS = [
     ["apt-get", "-qq", "-m", "-y", "install", "libcurl4-openssl-dev", "libxml2-dev", "libxslt-dev", "libssl-dev", "r-base", "r-base-dev"],
 ]
 
-PIP_INSTALL = [
+PIP_INSTALL_KERAS = [
     # Install keras
     ["pip", "install", "keras", "--upgrade"],
 
@@ -102,7 +102,9 @@ class CustomCommands(install):
     self.RunCustomCommandList(CUSTOM_COMMANDS)
 
     # Run pip install
-    self.RunCustomCommandList(PIP_INSTALL)
+    if (not "keras" in self.config["cloudml"] or self.config["cloudml"]["keras"] == True):
+      print "Installing Keras"
+      self.RunCustomCommandList(PIP_INSTALL_KERAS)
 
     # Run regular install
     install.run(self)
