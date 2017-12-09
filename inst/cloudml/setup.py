@@ -125,9 +125,13 @@ class CustomCommands(install):
 
     for package in os.listdir(download):
       tar_path = os.path.join(download, package)
+
       print "Restoring from " + tar_path + " into " + destination
       if package.split(".")[-1] == "tar":
-        self.RunCustomCommand(["tar", "-xf", tar_path, "-C", destination], True)
+        destinationpkg = os.path.join(destination, package.split(".")[0])
+        if not os.path.exists(destinationpkg):
+          os.makedirs(destinationpkg)
+        self.RunCustomCommand(["tar", "-xf", tar_path, "-C", destinationpkg], True)
       else:
         self.RunCustomCommand(["cp", tar_path, destination], True)
       self.cache["files"][os.path.basename(package)] = True
