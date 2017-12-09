@@ -145,7 +145,7 @@ store_cached_data <- function (source, destination, replace_all = FALSE) {
       target <- file.path(destination, paste0(pkg, ".tar"))
 
       message(paste0("Adding '", compressed, "' to ", target, " cache."))
-      system(paste("gsutil", "cp", shQuote(compressed), shQuote(target)))
+      system(paste("gsutil", "-m", "cp", shQuote(compressed), shQuote(target)))
     }
   }
 }

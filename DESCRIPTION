@@ -1,6 +1,6 @@
 Package: cloudml
 Title: Interface to the Google Cloud Machine Learning Platform
-Version: 0.2.0.9000
+Version: 0.2.0.9001
 Authors@R: c(
     person("Javier", "Luraschi", email = "javier@rstudio.com", role = c("aut", "cre")),
     person("JJ", "Allaire", role = c("aut")),
