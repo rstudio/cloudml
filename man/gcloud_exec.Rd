@@ -4,12 +4,14 @@
 \alias{gcloud_exec}
 \title{Executes a Google Cloud Command}
 \usage{
-gcloud_exec(..., args = NULL)
+gcloud_exec(..., args = NULL, echo = FALSE)
 }
 \arguments{
 \item{...}{Parameters to use specified based on position.}
 
 \item{args}{Parameters to use specified as a list.}
+
+\item{echo}{Echo command output to console}
 }
 \description{
 Executes a Google Cloud command with the given parameters.

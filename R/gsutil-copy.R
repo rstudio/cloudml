@@ -4,6 +4,8 @@
 #' the cloud, copy data within the cloud, and copy data between cloud storage
 #' providers.
 #'
+#' @inheritParams gcloud_exec
+#'
 #' @param source
 #'   The file to be copied. This can be either a path on the local
 #'   filesystem, or a Google Storage URI (e.g. `gs://[BUCKET_NAME]/[FILENAME.CSV]`).

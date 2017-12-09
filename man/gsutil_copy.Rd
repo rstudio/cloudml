@@ -4,7 +4,7 @@
 \alias{gsutil_copy}
 \title{Copy files to / from Google Storage}
 \usage{
-gsutil_copy(source, destination, recursive = FALSE)
+gsutil_copy(source, destination, recursive = FALSE, echo = FALSE)
 }
 \arguments{
 \item{source}{The file to be copied. This can be either a path on the local
@@ -16,6 +16,8 @@ either a path on the local filesystem, or a Google Storage URI (e.g.
 
 \item{recursive}{Boolean; perform a recursive copy? This must be specified if you intend on
 copying directories.}
+
+\item{echo}{Echo command output to console}
 }
 \description{
 Use the \code{gsutil cp} command to copy data between your local file system and

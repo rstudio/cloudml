@@ -4,7 +4,8 @@
 \alias{job_collect}
 \title{Collect job output}
 \usage{
-job_collect(job, destination = "runs", timeout = NULL)
+job_collect(job, destination = "runs", timeout = NULL,
+  view = interactive())
 }
 \arguments{
 \item{job}{Job name or job object.}
@@ -13,6 +14,8 @@ job_collect(job, destination = "runs", timeout = NULL)
 be downloaded. Defaults to \code{runs}.}
 
 \item{timeout}{Give up collecting job after the specified minutes.}
+
+\item{view}{View the job results after collecting it}
 }
 \description{
 Collect the job outputs (e.g. fitted model) from a job.

@@ -29,6 +29,8 @@ gsutil_path <- function() {
 #'
 #' Executes a Google Utils command with the given parameters.
 #'
+#' @inheritParams gcloud_exec
+#'
 #' @param ... Parameters to use specified based on position.
 #' @param args Parameters to use specified as a list.
 #'

@@ -291,7 +291,7 @@ job_status <- function(job) {
 
 #' @export
 print.cloudml_job_status <- function(x, ...) {
-  str(x, give.attr = FALSE)
+  utils::str(x, give.attr = FALSE)
   message(attr(x, "messages"))
 }
 
@@ -515,7 +515,7 @@ job_download <- function(job, destination = "runs", view = interactive()) {
                   run_dir))
 
   if (view)
-    view_run(run_dir)
+    tfruns::view_run(run_dir)
 
   invisible(NULL)
 }

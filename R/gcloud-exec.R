@@ -53,6 +53,7 @@ gexec <- function(command,
 #'
 #' @param ... Parameters to use specified based on position.
 #' @param args Parameters to use specified as a list.
+#' @param echo Echo command output to console
 #'
 gcloud_exec <- function(..., args = NULL, echo = FALSE)
 {
