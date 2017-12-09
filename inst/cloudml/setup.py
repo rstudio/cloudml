@@ -189,22 +189,23 @@ class CustomCommands(install):
       pathsfile.write(pipcache)
 
     # Restores the pip cache
-    # self.RestoreCache(pipcache)
+    self.RestoreCache(pipcache)
 
-    # Install Keras
-    if (not "keras" in self.config["cloudml"] or self.config["cloudml"]["keras"] == True):
-      print "Installing Keras"
-      pip_install_keras_cmds = map(lambda e : e + ["--target=" + pipcache], PIP_INSTALL_KERAS)
-      self.RunCustomCommandList(pip_install_keras_cmds)
+    # If the pip cache is empty
+    if (len(self.cache["files"]) == 0):
+      # Pip Install Keras
+      if (not "keras" in self.config["cloudml"] or self.config["cloudml"]["keras"] == True):
+        print "Installing Keras"
+        pip_install_keras_cmds = map(lambda e : e + ["--target=" + pipcache], PIP_INSTALL_KERAS)
+        self.RunCustomCommandList(pip_install_keras_cmds)
 
-    # Run pip install
-    pip_install_cmds = map(lambda e : e + ["--target=" + pipcache], PIP_INSTALL)
-    self.RunCustomCommandList(pip_install_cmds)
-
-    print "PIP Cache Files: " + ",".join(os.listdir(pipcache))
+      # Pip Install Other
+      pip_install_cmds = PIP_INSTALL
+      pip_install_cmds = map(lambda e : e + ["--target=" + pipcache], PIP_INSTALL)
+      self.RunCustomCommandList(pip_install_cmds)
 
     # Updates the pip cache
-    # self.UpdateCache(pipcache)
+    self.UpdateCache(pipcache)
 
     # Run regular install
     install.run(self)
