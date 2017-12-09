@@ -430,6 +430,7 @@ job_collect_async <- function(
 
   download_arguments <- paste(
     gsutil_path(),
+    "-m",
     "cp",
     "-r",
     shQuote(output_dir),
