@@ -476,7 +476,7 @@ job_collect_async <- function(
     collapse = os_collapse
   )
 
-  gcloud_terminal(terminal_command)
+  gcloud_terminal(terminal_command, clear = TRUE)
 }
 
 job_download <- function(job, destination = "runs", view = interactive()) {
