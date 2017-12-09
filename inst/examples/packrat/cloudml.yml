@@ -4,7 +4,6 @@ gcloud:
   region          : "us-east1"
 
 cloudml:
-  storage         : "gs://project-name/mnist"
+  storage         : "gs://project-name/packrat"
   latestr         : False
   keras           : False
-  packrat         : False

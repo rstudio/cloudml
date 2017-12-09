@@ -22,7 +22,8 @@ test_that("cloudml_train() can train and collect savedmodel", {
   if (!cloudml_tests_configured()) return()
 
   config_yml <- system.file("examples/mnist/cloudml.yml", package = "cloudml")
-  file.copy("cloudml.yml", config_yml, overwrite = TRUE)
+  mnist_config <- yaml::yaml.load(readLines(config_yml))
+  cloudml_write_config(mnist_config, config_yml)
 
   job <- cloudml_train(
     application = system.file(
@@ -39,15 +40,15 @@ test_that("cloudml_train() can train keras model", {
   if (!cloudml_tests_configured()) return()
 
   config_yml <- system.file("examples/keras/cloudml.yml", package = "cloudml")
-  file.copy("cloudml.yml", config_yml, overwrite = TRUE)
+  mnist_config <- yaml::yaml.load(readLines(config_yml))
+  cloudml_write_config(mnist_config, config_yml)
 
-  job <- cloudml_train(
-    application = system.file(
-      "examples/keras/",
-      package = "cloudml"
-    ),
-    entrypoint = "train.R"
-  )
+  # Since this test uses packrat, change dir to detect dependencies correctly
+  oldwd <- getwd()
+  on.exit(setwd(oldwd))
+  setwd(dirname(config_yml))
+
+  job <- cloudml_train()
 
   expect_train_succeeds(job)
 })

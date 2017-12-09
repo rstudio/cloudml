@@ -16,19 +16,19 @@ initialize_application <- function(application = getwd(),
   # We manage a set of packages during deploy that might require specific versions
   IGNORED <- c(
     # CRAN
-    "RCurl",
-    "devtools",
-    "readr",
-    "knitr",
-    # GitHUb
-    "purrr",
-    "modelr",
-    "tensorflow",
-    "cloudml",
-    "keras",
-    "tfruns",
-    "tfestimators",
-    "packrat"
+    # "RCurl",
+    # "devtools",
+    # "readr",
+    # "knitr",
+    # GitHub
+    # "purrr",
+    # "modelr",
+    # "tensorflow",
+    "cloudml"
+    # "keras",
+    # "tfruns",
+    # "tfestimators",
+    # "packrat"
   )
 
   packrat::opts$ignored.packages(IGNORED)

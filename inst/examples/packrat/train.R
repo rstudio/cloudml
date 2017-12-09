@@ -1,0 +1,2 @@
+library(janeaustenr)
+NROW(emma)
