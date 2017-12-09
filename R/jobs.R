@@ -118,8 +118,11 @@ cloudml_train <- function(application = getwd(),
   job <- cloudml_job("train", id, description)
   register_job(job)
 
-  if (interactive())
-    job_collect_async(job, cloudml)
+  if (interactive()) {
+    job_collect_async(job,
+                      cloudml,
+                      destination = file.path(application, "runs"))
+  }
 
   invisible(job)
 }
