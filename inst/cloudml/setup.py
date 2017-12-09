@@ -45,19 +45,12 @@ CUSTOM_COMMANDS = [
     ["apt-get", "-qq", "-m", "-y", "install", "libcurl4-openssl-dev", "libxml2-dev", "libxslt-dev", "libssl-dev", "r-base", "r-base-dev"],
 ]
 
-PIP_INSTALL_KERAS = [
+PIP_INSTALL = [
     # Install keras
     ["pip", "install", "keras", "--upgrade"],
 
     # Install additional keras dependencies
     ["pip", "install", "h5py", "pyyaml", "requests", "Pillow", "scipy", "--upgrade"]
-]
-
-PIP_INSTALL = [
-    # ml-engine doesn't provide TensorFlow 1.3 yet but they could be potentially
-    # upgraded; however, we've found out some components (e.g. tfestimators) hang even
-    # under python when upgrading TensorFlow versions.
-    # ["pip", "install", "tensorflow", "--upgrade"]
 ]
 
 class CustomCommands(install):
@@ -89,76 +82,7 @@ class CustomCommands(install):
     stream = open(cloudmlpath, "r")
     self.config = yaml.load(stream)
 
-  """Retrieves path to cache or empty string."""
-  def GetCachePath(self):
-    storage = self.config["cloudml"]["storage"]
-
-    cache = storage
-    if "cache" in self.config["cloudml"]:
-      cache = os.path.join(self.config["cloudml"]["cache"], "python")
-
-    if cache == False:
-      cache = ""
-    else:
-      cache = os.path.join(cache, "cache", "python")
-
-    return cache
-
-  def GetPackagesSource(self):
-    return site.getsitepackages()[0]
-
-  def GetTempDir(self, name):
-    tempdir = os.path.join(tempfile.gettempdir(), name)
-    if not os.path.exists(tempdir):
-      os.makedirs(tempdir)
-    return tempdir
-
-  """Restores a pip install cache."""
-  def RestoreCache(self, destination):
-    source = os.path.join(self.cache["path"], "*")
-    print "Restoring Python Cache from " + source + " to " + destination
-
-    download = self.GetTempDir("cloudml-python-upload")
-    self.RunCustomCommand(["gsutil", "-m", "cp", "-r", source, download], False)
-
-    print "Python Cache Contents: [" + ",".join(os.listdir(download)) + "]"
-
-    for package in os.listdir(download):
-      tar_path = os.path.join(download, package)
-
-      print "Restoring from " + tar_path + " into " + destination
-      if package.split(".")[-1] == "tar":
-        destinationpkg = os.path.join(destination, package.split(".")[0])
-        if not os.path.exists(destinationpkg):
-          os.makedirs(destinationpkg)
-        self.RunCustomCommand(["tar", "-xf", tar_path, "-C", destinationpkg], True)
-      else:
-        self.RunCustomCommand(["cp", tar_path, destination], True)
-      self.cache["files"][os.path.basename(package)] = True
-
-
-  """Update the pip install cache."""
-  def UpdateCache(self, source):
-    print "Updating the Python Cache in " + self.cache["path"] + " from " + source
-
-    upload = self.GetTempDir("cloudml-python-upload")
-
-    for package in os.listdir(source):
-      if package in self.cache["files"]:
-        continue
-
-      packagepath = os.path.join(source, package)
-
-      if not os.path.isdir(packagepath):
-        local = packagepath
-        target = os.path.join(self.cache["path"], package)
-      else:
-        local = os.path.join(upload, package + ".tar")
-        self.RunCustomCommand(["tar", "-cf", local, "-C", packagepath, "."], True)
-        target = os.path.join(self.cache["path"], package + ".tar")
-
-      self.RunCustomCommand(["gsutil", "cp", local, target], True)
-
+  """Runs a list of arbitrary commands"""
   def RunCustomCommandList(self, commands):
     for command in commands:
       self.RunCustomCommand(command, True)
@@ -169,11 +93,6 @@ class CustomCommands(install):
 
     self.LoadCloudML()
 
-    self.cache = {
-      "path": self.GetCachePath(),
-      "files": {}
-    }
-
     # Upgrade r if latestr is set in cloudml.yaml
     if (not "latestr" in self.config["cloudml"] or self.config["cloudml"]["latestr"] == True):
       print "Upgrading R"
@@ -182,30 +101,8 @@ class CustomCommands(install):
     # Run custom commands
     self.RunCustomCommandList(CUSTOM_COMMANDS)
 
-    # Only cache new packages
-    pipcache = self.GetTempDir("site-packages-cache")
-    print "Creating Cache Path: " + pipcache
-    with open(os.path.join(site.getsitepackages()[0], "cloudml-cache.pth"), "w") as pathsfile:
-      pathsfile.write(pipcache)
-
-    # Restores the pip cache
-    self.RestoreCache(pipcache)
-
-    # If the pip cache is empty
-    if (len(self.cache["files"]) == 0):
-      # Pip Install Keras
-      if (not "keras" in self.config["cloudml"] or self.config["cloudml"]["keras"] == True):
-        print "Installing Keras"
-        pip_install_keras_cmds = map(lambda e : e + ["--target=" + pipcache], PIP_INSTALL_KERAS)
-        self.RunCustomCommandList(pip_install_keras_cmds)
-
-      # Pip Install Other
-      pip_install_cmds = PIP_INSTALL
-      pip_install_cmds = map(lambda e : e + ["--target=" + pipcache], PIP_INSTALL)
-      self.RunCustomCommandList(pip_install_cmds)
-
-    # Updates the pip cache
-    self.UpdateCache(pipcache)
+    # Run pip install
+    self.RunCustomCommandList(PIP_INSTALL)
 
     # Run regular install
     install.run(self)
@@ -224,6 +121,3 @@ setup(
     requires         = [],
     cmdclass         = { "install": CustomCommands }
 )
-
-#if __name__ == "__main__":
-#  setup(name="introduction", packages=["introduction"])
