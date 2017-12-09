@@ -1,9 +1,6 @@
 # required R packages
 CRAN <- c(
-  "RCurl",
-  "devtools",
-  "readr",
-  "knitr"
+  "devtools"
 )
 
 GITHUB <- list(
