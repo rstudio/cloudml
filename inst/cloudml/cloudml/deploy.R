@@ -234,7 +234,7 @@ tfruns::training_run(file = deploy$entrypoint,
                      flags = deploy$overlay,
                      encoding = "UTF-8",
                      echo = TRUE,
-                     view = FALSE,
+                     view = "save",
                      run_dir = run_dir)
 
 tf_config <- jsonlite::fromJSON(Sys.getenv("TF_CONFIG", "{}"))
