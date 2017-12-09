@@ -8,10 +8,8 @@ gexec <- function(command,
     quoted_args <- shell_quote(args)
 
   result <- processx::run(
-    commandline = paste(
-      command,
-      paste(quoted_args, collapse = " ")
-    ),
+    command = command,
+    args = as.character(args),
     echo = echo
   )
 
@@ -62,7 +60,7 @@ gcloud_exec <- function(..., args = NULL, echo = FALSE)
 
   command <- gcloud_path()
   if (.Platform$OS.type != "windows")
-    command <- shQuote(normalizePath(gcloud_path()))
+    command <- normalizePath(gcloud_path())
 
   gexec(
     command,
