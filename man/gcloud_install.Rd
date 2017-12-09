@@ -4,10 +4,7 @@
 \alias{gcloud_install}
 \title{Install the Google Cloud SDK}
 \usage{
-gcloud_install(version = "180.0.1")
-}
-\arguments{
-\item{version}{Version of the Google Cloud SDK to be installed.}
+gcloud_install()
 }
 \description{
 Installs the Google Cloud SDK which enables CloudML operations.

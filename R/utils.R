@@ -119,11 +119,9 @@ timestamp_string <- function() {
   gsub(".", "", time, fixed = TRUE)
 }
 
-unique_job_name <- function(application = getwd(), config = "default") {
-  application <- normalizePath(application, mustWork = TRUE)
+unique_job_name <- function(config) {
   sprintf(
-    "%s_%s_%s",
-    basename(application),
+    "%s_%s",
     config,
     timestamp_string()
   )

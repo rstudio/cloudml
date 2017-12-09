@@ -4,13 +4,15 @@
 \alias{job_collect}
 \title{Collect job output}
 \usage{
-job_collect(job, destination = "runs")
+job_collect(job, destination = "runs", timeout = NULL)
 }
 \arguments{
 \item{job}{Job name or job object.}
 
 \item{destination}{The destination directory in which model outputs should
 be downloaded. Defaults to \code{runs}.}
+
+\item{timeout}{Give up collecting job after the specified minutes.}
 }
 \description{
 Collect the job outputs (e.g. fitted model) from a job.

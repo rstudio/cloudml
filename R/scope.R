@@ -74,7 +74,7 @@ scope_deployment <- function(id,
   user_exclusions <- strsplit(Sys.getenv("CLOUDML_APPLICATION_EXCLUSIONS", ""), ",")[[1]]
 
   # similarily for inclusions?
-  exclude <- c("gs", "jobs", ".git", ".svn", user_exclusions)
+  exclude <- c("gs", "runs", ".git", ".svn", user_exclusions)
 
   # use generic name to avoid overriding package names, using a dir named
   # keras will override the actual keras package!

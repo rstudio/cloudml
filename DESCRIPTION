@@ -1,13 +1,15 @@
 Package: cloudml
 Title: Interface to the Google Cloud Machine Learning Platform
-Version: 0.1.0
+Version: 0.2.0.9000
 Authors@R: c(
-    person("JJ", "Allaire", email = "jj@rstudio.com", role = c("aut", "cre")),
-    person("Kevin", "Ushey", email = "kevin@rstudio.com", role = c("aut"))
+    person("Javier", "Luraschi", email = "javier@rstudio.com", role = c("aut", "cre")),
+    person("JJ", "Allaire", role = c("aut")),
+    person("Kevin", "Ushey", role = c("aut")),
+    person(family = "RStudio", role = c("cph"))
     )
 Description: Interface to the Google Cloud Machine Learning Platform which provides
   support to train and tune machine learning models at scale under Cloud ML.
-Depends: R (>= 3.1.0)
+Depends: R (>= 3.2.0), tfruns (>= 1.0.0.9001)
 Imports:
   jsonlite,
   packrat,
@@ -20,13 +22,16 @@ Imports:
   withr,
   yaml
 Suggests:
-  testthat,
-  keras
+  keras,
+  knitr,
+  testthat
+Remotes:
+  rstudio/keras,
+  rstudio/tensorflow,
+  rstudio/tfruns
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 6.0.1.9000
-Remotes:
-  rstudio/tensorflow,
-  rstudio/keras
+VignetteBuilder: knitr

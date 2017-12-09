@@ -1,6 +1,7 @@
 # execute a gcloud command
 gexec <- function(command,
-                  args = character())
+                  args = character(),
+                  echo = TRUE)
 {
   quoted_args <- args
   if (.Platform$OS.type != "windows")
@@ -11,7 +12,7 @@ gexec <- function(command,
       command,
       paste(quoted_args, collapse = " ")
     ),
-    echo = TRUE
+    echo = echo
   )
 
   if (result$status != 0) {
@@ -53,7 +54,7 @@ gexec <- function(command,
 #' @param ... Parameters to use specified based on position.
 #' @param args Parameters to use specified as a list.
 #'
-gcloud_exec <- function(..., args = NULL)
+gcloud_exec <- function(..., args = NULL, echo = FALSE)
 {
   if (is.null(args))
     args <- list(...)
@@ -64,6 +65,7 @@ gcloud_exec <- function(..., args = NULL)
 
   gexec(
     command,
-    args
+    args,
+    echo
   )
 }

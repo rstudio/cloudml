@@ -32,13 +32,14 @@ gsutil_path <- function() {
 #' @param ... Parameters to use specified based on position.
 #' @param args Parameters to use specified as a list.
 #'
-gsutil_exec <- function(..., args = NULL)
+gsutil_exec <- function(..., args = NULL, echo = FALSE)
 {
   if (is.null(args))
     args <- list(...)
 
   gexec(
     normalizePath(gsutil_path()),
-    args
+    args,
+    echo = echo
   )
 }

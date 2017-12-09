@@ -27,8 +27,10 @@ cloudml_train <- function(application = getwd(),
                           entrypoint  = "train.R",
                           ...)
 {
+  message("Submitting training job to CloudML...")
+
   # prepare application for deployment
-  id <- unique_job_name(application, config)
+  id <- unique_job_name(config)
   overlay <- list(...)
   deployment <- scope_deployment(
     id = id,
@@ -42,6 +44,22 @@ cloudml_train <- function(application = getwd(),
   # read configuration
   gcloud <- gcloud_config()
   cloudml <- cloudml_config()
+
+  # create default storage bucket for project if not specified
+  if (is.null(cloudml[["storage"]])) {
+    project <- gcloud[["project"]]
+    project_bucket <- gcloud_project_bucket(project)
+    if (!gcloud_project_has_bucket(project)) {
+      gcloud_project_create_bucket(project)
+    }
+    cloudml$storage <- gcloud_project_bucket(project)
+  }
+
+  # write cloud.yml file to deployment directory if we
+  # don't already have one there
+  cloudml_yml <- file.path(deployment$directory, "cloudml.yml")
+  if (!file.exists(cloudml_yml))
+    yaml::write_yaml(list(gcloud = gcloud, cloudml = cloudml), cloudml_yml)
 
   # move to deployment parent directory and spray __init__.py
   directory <- deployment$directory
@@ -71,18 +89,6 @@ cloudml_train <- function(application = getwd(),
   # submit job through command line interface
   gcloud_exec(args = arguments())
 
-  # inform user of successful job submission
-  template <- c(
-    "Job '%1$s' successfully submitted.",
-    "",
-    "Check status and collect output with:",
-    "- job_status(\"%1$s\")",
-    "- job_collect(\"%1$s\")"
-  )
-
-  rendered <- sprintf(paste(template, collapse = "\n"), id)
-  message(rendered)
-
   # call 'describe' to discover additional information related to
   # the job, and generate a 'job' object from that
   #
@@ -97,8 +103,15 @@ cloudml_train <- function(application = getwd(),
   stdout <- output$stdout
   stderr <- output$stderr
 
-  # write stderr to the console
-  message(stderr)
+  # inform user of successful job submission
+  template <- c(
+    "Job '%1$s' successfully submitted.",
+    "%2$s",
+    "Check job status with:   job_status(\"%1$s\")",
+    "Collect job output with: job_collect(\"%1$s\")"
+  )
+  rendered <- sprintf(paste(template, collapse = "\n"), id, stderr)
+  message(rendered)
 
   # create job object
   description <- yaml::yaml.load(stdout)
@@ -271,7 +284,15 @@ job_status <- function(job) {
   # parse as YAML and return
   status <- yaml::yaml.load(paste(output$stdout, collapse = "\n"))
 
-  invisible(status)
+  class(status) <- "cloudml_job_status"
+  attr(status, "messages") <- output$stderr
+  status
+}
+
+#' @export
+print.cloudml_job_status <- function(x, ...) {
+  str(x, give.attr = FALSE)
+  message(attr(x, "messages"))
 }
 
 #' Collect job output
@@ -289,10 +310,14 @@ job_status <- function(job) {
 #' @param timeout
 #'   Give up collecting job after the specified minutes.
 #'
+#' @param view View the job results after collecting it
+#'
 #' @family job management
 #'
 #' @export
-job_collect <- function(job, destination = "runs", timeout = NULL) {
+job_collect <- function(job, destination = "runs",
+                        timeout = NULL, view = interactive()) {
+
   job <- as.cloudml_job(job)
   id <- job$id
 
@@ -320,7 +345,7 @@ job_collect <- function(job, destination = "runs", timeout = NULL) {
 
   # if we're already done, attempt download of outputs
   if (status$state == "SUCCEEDED")
-    return(job_download(job, destination))
+    return(job_download(job, destination, view = view))
 
   # if the job has failed, report error
   if (status$state == "FAILED") {
@@ -393,7 +418,7 @@ job_collect_async <- function(
 ) {
   if (!rstudioapi::isAvailable()) return()
 
-  output_dir <- job_output_dir(job, gcloud)
+  output_dir <- job_output_dir(job)
   job <- as.cloudml_job(job)
   id <- job$id
 
@@ -429,7 +454,7 @@ job_collect_async <- function(
       paste("mkdir -p", destination),
       paste(download_arguments, collapse = " "),
       paste("echo \"\""),
-      paste("echo \"To view the results, run from R: tfruns::view_run()\"")
+      paste("echo \"To view the results, run from R: view_run()\"")
     )
   }
   else {
@@ -450,11 +475,11 @@ job_collect_async <- function(
     collapse = os_collapse
   )
 
-  terminal <- rstudioapi::terminalCreate()
-  rstudioapi::terminalSend(terminal, paste0(terminal_command, os_return))
+  gcloud_terminal(terminal_command)
 }
 
-job_download <- function(job, destination = "runs") {
+job_download <- function(job, destination = "runs", view = interactive()) {
+
   status <- job_status(job)
 
   trial_paths <- job_status_trial_dir(status, destination)
@@ -466,23 +491,42 @@ job_download <- function(job, destination = "runs") {
     stopf(fmt, source)
   }
 
+  message(sprintf("Downloading job from %s...", source))
+
   # check that we have an output folder associated
   # with this job -- 'gsutil ls' will return with
   # non-zero status when attempting to query a
   # non-existent gs URL
   result <- gsutil_exec("ls", source)
 
-  if (result$status) {
+  if (result$status != 0) {
     fmt <- "no directory at path '%s'"
     stopf(fmt, source)
   }
 
   ensure_directory(destination)
-  gsutil_copy(source, destination, TRUE)
+  gsutil_copy(source, destination, TRUE, echo = TRUE)
+
+  run_dir <- file.path(destination, basename(source))
+  cat("\n")
+  message("Job downloaded to ", run_dir)
+  cat("\n")
+  message(sprintf("View job with: view_run(\"%s\")",
+                  run_dir))
+
+  if (view)
+    view_run(run_dir)
+
+  invisible(NULL)
 }
 
-job_output_dir <- function(job, config = cloudml_config()) {
-  output_path <- file.path(config$storage, "runs", job$id)
+job_output_dir <- function(job) {
+
+  # determine storage from job
+  job <- as.cloudml_job(job)
+  storage <- dirname(job$description$trainingInput$jobDir)
+
+  output_path <- file.path(storage, "runs", job$id)
 
   if (job_is_tuning(job) && !is.null(job$trainingOutput$finalMetric)) {
     output_path <- file.path(output_path, job$trainingOutput$finalMetric$trainingStep)
@@ -491,9 +535,13 @@ job_output_dir <- function(job, config = cloudml_config()) {
   output_path
 }
 
-job_status_trial_dir <- function(status, destination, config = cloudml_config()) {
+job_status_trial_dir <- function(status, destination) {
+
+  # determine storage from job
+  storage <- dirname(status$trainingInput$jobDir)
+
   output_path <- list(
-    source = file.path(config$storage, "runs", status$jobId),
+    source = file.path(storage, "runs", status$jobId, fsep = "/"),
     destination = destination
   )
 

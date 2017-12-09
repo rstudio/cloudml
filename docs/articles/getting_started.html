@@ -5,17 +5,17 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Interface to the Google Cloud Machine Learning Platform • cloudml</title>
+<title>R Interface to CloudML • cloudml</title>
 <!-- jquery --><script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script><!-- Bootstrap --><link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/cosmo/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script><!-- Font Awesome icons --><link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
-<!-- pkgdown --><link href="pkgdown.css" rel="stylesheet">
-<script src="jquery.sticky-kit.min.js"></script><script src="pkgdown.js"></script><!-- mathjax --><script src="https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!--[if lt IE 9]>
+<!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
+<script src="../jquery.sticky-kit.min.js"></script><script src="../pkgdown.js"></script><!-- mathjax --><script src="https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 <![endif]-->
 </head>
 <body>
-    <div class="container template-home">
+    <div class="container template-vignette">
       <header><div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
   <div class="container">
     <div class="navbar-header">
@@ -24,12 +24,12 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="index.html">CloudML for R</a>
+      <a class="navbar-brand" href="../index.html">CloudML for R</a>
     </div>
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
 <li>
-  <a href="index.html">Home</a>
+  <a href="../index.html">Home</a>
 </li>
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
@@ -39,15 +39,15 @@
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
-      <a href="articles/training.html">Training</a>
+      <a href="../articles/training.html">Training</a>
     </li>
     <li>
-      <a href="articles/tuning.html">Tuning</a>
+      <a href="../articles/tuning.html">Tuning</a>
     </li>
   </ul>
 </li>
 <li>
-  <a href="reference/index.html">Reference</a>
+  <a href="../reference/index.html">Reference</a>
 </li>
       </ul>
 <ul class="nav navbar-nav navbar-right">
@@ -67,11 +67,16 @@
 
       
       </header><div class="row">
-  <div class="contents col-md-9">
-    <div id="r-interface-to-cloudml" class="section level1">
-<div class="page-header"><h1 class="hasAnchor">
-<a href="#r-interface-to-cloudml" class="anchor"></a>R Interface to CloudML</h1></div>
+  <div class="col-md-9">
+    <div class="page-header toc-ignore">
+      <h1>R Interface to CloudML</h1>
+            
+          </div>
 
+    
+    
+<div class="contents">
+<p><a href="https://travis-ci.org/rstudio/cloudml"><img src="https://travis-ci.org/rstudio/cloudml.svg?branch=master" alt="Build Status"></a> <a href="https://cran.r-project.org/package=cloudml"><img src="https://www.r-pkg.org/badges/version/cloudml" alt="CRAN_Status_Badge"></a></p>
 <div id="overview" class="section level2">
 <h2 class="hasAnchor">
 <a href="#overview" class="anchor"></a>Overview</h2>
@@ -95,20 +100,20 @@
 <div id="google-cloud-sdk" class="section level4">
 <h4 class="hasAnchor">
 <a href="#google-cloud-sdk" class="anchor"></a>Google Cloud SDK</h4>
-<p>Finally, you need to install the <strong>Google Cloud SDK</strong>, a set of utilties that enable you to interact with your Google Cloud account from within R. You can install the SDK using the <code><a href="reference/gcloud_install.html">gcloud_install()</a></code> function:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="reference/gcloud_install.html">gcloud_install</a></span>()</code></pre></div>
+<p>Finally, you need to install the <strong>Google Cloud SDK</strong>, a set of utilties that enable you to interact with your Google Cloud account from within R. You can install the SDK using the <code><a href="../reference/gcloud_install.html">gcloud_install()</a></code> function:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/gcloud_install.html">gcloud_install</a></span>()</code></pre></div>
 <p>Once you’ve completed these steps you are ready to train models with CloudML!</p>
 </div>
 </div>
 <div id="training-on-cloudml" class="section level2">
 <h2 class="hasAnchor">
 <a href="#training-on-cloudml" class="anchor"></a>Training on CloudML</h2>
-<p>To train models on CloudML, first work on them locally (perhaps with a smaller sample of your dataset) until your training script is working correctly. Then, call the <code><a href="reference/cloudml_train.html">cloudml_train()</a></code> function, specifying the R script to execute for training:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">job &lt;-<span class="st"> </span><span class="kw"><a href="reference/cloudml_train.html">cloudml_train</a></span>(<span class="st">"train.R"</span>)</code></pre></div>
+<p>To train models on CloudML, first work on them locally (perhaps with a smaller sample of your dataset) until your training script is working correctly. Then, call the <code><a href="../reference/cloudml_train.html">cloudml_train()</a></code> function, specifying the R script to execute for training:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">job &lt;-<span class="st"> </span><span class="kw"><a href="../reference/cloudml_train.html">cloudml_train</a></span>(<span class="st">"train.R"</span>)</code></pre></div>
 <p>Note that all of the files within the current working directory will be bundled up and sent along with the script.</p>
 <p>When using RStudio, a terminal window is used to stream the logs and download the job when it finializes.</p>
 <p>When not using RStudio, you can ask the R session to wait for training to complete, and pull the generated models back to your local filesystem with:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="reference/job_collect.html">job_collect</a></span>(job)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/job_collect.html">job_collect</a></span>(job)</code></pre></div>
 <p>The R session will wait and continue polling Google Cloud until your application has finished running; if the application trained successfully, then the trained models will be copied to disk under the <code>runs</code> directory.</p>
 <p>Once the job is collected, you can use <a href="https://tensorflow.rstudio.com/tools/tfruns/">tfruns</a> to view the results of the last run:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(tfruns)
@@ -117,20 +122,18 @@
 </div>
   </div>
 
-  <div class="col-md-3" id="sidebar">
-    <h2>License</h2>
-<p><a href="https://opensource.org/licenses/mit-license.php">MIT</a> + file <a href="LICENSE.html">LICENSE</a></p>
-<h2>Developers</h2>
-<ul class="list-unstyled">
-<li>JJ Allaire <br><small class="roles"> Author, maintainer </small> </li>
-<li>Kevin Ushey <br><small class="roles"> Author </small> </li>
-</ul>
-<h2>Dev status</h2>
-<ul class="list-unstyled">
-<li><a href="https://travis-ci.org/rstudio/cloudml"><img src="https://travis-ci.org/rstudio/cloudml.svg?branch=master" alt="Build Status"></a></li>
-<li><a href="https://cran.r-project.org/package=cloudml"><img src="https://www.r-pkg.org/badges/version/cloudml" alt="CRAN_Status_Badge"></a></li>
-</ul>
+  <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
+        <div id="tocnav">
+      <h2 class="hasAnchor">
+<a href="#tocnav" class="anchor"></a>Contents</h2>
+      <ul class="nav nav-pills nav-stacked">
+<li><a href="#overview">Overview</a></li>
+      <li><a href="#prerequisites">Prerequisites</a></li>
+      <li><a href="#training-on-cloudml">Training on CloudML</a></li>
+      </ul>
 </div>
+      </div>
+
 </div>
 
 

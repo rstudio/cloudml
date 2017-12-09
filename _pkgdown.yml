@@ -3,7 +3,7 @@ template:
     bootswatch: cosmo
 
 navbar:
-  title: "Cloud ML interface for R"
+  title: "CloudML for R"
   type: inverse
   left:
     - text: "Home"
@@ -11,17 +11,9 @@ navbar:
     - text: "Guides"
       menu:
       - text: "Training"
-        href: articles/guides-training.html
-      - text: "Jobs"
-        href: articles/guides-jobs.html
+        href: articles/training.html
       - text: "Tuning"
-        href: articles/guides-tuning.html
-    - text: "Examples"
-      menu:
-        - text: "MNIST"
-          href: articles/examples-mnist.html
-        - text: "Keras"
-          href: articles/examples-keras.html
+        href: articles/tuning.html
     - text: "Reference"
       href: reference/index.html
   right:
@@ -34,13 +26,7 @@ reference:
       Functions for model training and prediction.
     contents:
       - cloudml_train
-      - local_train
       - cloudml_tune
-  - title: "Configuration"
-    desc: >
-      Functions to configure Cloud ML.
-    contents:
-      - cloudml_init
   - title: "Jobs"
     desc: >
       Functions for managing remote Cloud ML Jobs.
@@ -55,6 +41,9 @@ reference:
     desc: >
       Functions for interacting with Google Cloud.
     contents:
+      - gcloud_install
+      - gcloud_init
+      - gcloud_terminal
       - gcloud_path
       - gsutil_copy
       - gsutil_data
