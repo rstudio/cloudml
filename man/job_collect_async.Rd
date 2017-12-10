@@ -18,6 +18,8 @@ be downloaded. Defaults to \code{runs}.}
 
 \item{polling_interval}{Number of seconds to wait between efforts to fetch the
 latest log messages.}
+
+\item{view}{View the job after collecting it.}
 }
 \description{
 Collect the job outputs (e.g. fitted model) from a job asynchronously
