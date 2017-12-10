@@ -121,7 +121,8 @@ cloudml_train <- function(application = getwd(),
   if (interactive()) {
     job_collect_async(job,
                       cloudml,
-                      destination = file.path(application, "runs"))
+                      destination = file.path(application, "runs"),
+                      view = TRUE)
   }
 
   invisible(job)
@@ -417,7 +418,8 @@ job_collect_async <- function(
   job,
   gcloud = NULL,
   destination = "runs",
-  polling_interval = getOption("cloudml.collect.polling", 10)
+  polling_interval = getOption("cloudml.collect.polling", 2),
+  view = interactive()
 ) {
   if (!rstudioapi::isAvailable()) return()
 
@@ -457,9 +459,11 @@ job_collect_async <- function(
       terminal_steps,
       paste("mkdir -p", destination),
       paste(download_arguments, collapse = " "),
-      paste("echo \"\""),
-      paste("echo \"To view the results, run from R: view_run()\"")
+      paste("echo \"\"")
     )
+
+    if (view)
+      terminal_steps <- c(terminal_steps, view_job_step(destination, job$id))
   }
   else {
     terminal_steps <- c(
@@ -570,4 +574,14 @@ job_is_tuning <- function(job) {
 
 job_status_is_tuning <- function(status) {
   !identical(status$trainingOutput$isHyperparameterTuningJob, TRUE)
+}
+
+view_job_step <- function(destination, jobId) {
+  paste(
+    paste0("\"", file.path(R.home("bin"), "Rscript"), "\""),
+    "-e",
+    paste0("\"utils::browseURL('",
+           file.path(destination, jobId, "tfruns.d", "view.html"),
+           "')\"")
+  )
 }
