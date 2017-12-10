@@ -4,23 +4,22 @@
 \alias{cloudml_tune}
 \title{Tune hyperparameters on Cloud ML}
 \usage{
-cloudml_tune(application = getwd(), config = "cloudml",
+cloudml_tune(file = "train.R", config = "cloudml",
   hypertune = "hypertune.yml", ...)
 }
 \arguments{
-\item{application}{The path to a TensorFlow application. Defaults to
-the current working directory.}
+\item{file}{File to be used as entrypoint for training.}
 
-\item{config}{The name of the configuration to be used. Defaults to
-the \code{"cloudml"} configuration.}
+\item{config}{The name of the configuration to be used. Defaults to the
+\code{"cloudml"} configuration.}
 
 \item{hypertune}{Path to a YAML file, defining how hyperparameters should
 be tuned. See
 https://cloud.google.com/ml/reference/rest/v1/projects.jobs
 for more details.}
 
-\item{...}{Named arguments, used to supply runtime configuration
-settings to your TensorFlow application.}
+\item{...}{Named arguments, used to supply runtime configuration settings to
+your TensorFlow application.}
 }
 \description{
 Tune hyperparameters on Cloud ML

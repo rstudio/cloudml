@@ -4,20 +4,21 @@
 \alias{cloudml_train}
 \title{Train a model using Cloud ML}
 \usage{
-cloudml_train(application = getwd(), config = "cloudml",
-  entrypoint = "train.R", ...)
+cloudml_train(file = "train.R", config = "cloudml", collect = "ask", ...)
 }
 \arguments{
-\item{application}{The path to a TensorFlow application. Defaults to
-the current working directory.}
+\item{file}{File to be used as entrypoint for training.}
 
-\item{config}{The name of the configuration to be used. Defaults to
-the \code{"cloudml"} configuration.}
+\item{config}{The name of the configuration to be used. Defaults to the
+\code{"cloudml"} configuration.}
 
-\item{entrypoint}{File to be used as entrypoint for training.}
+\item{collect}{Collect job output after submission. Defaults to "ask" which
+will prompt within interactive environments. Within versions of RStudio
+that support terminals (>= v1.1), the waiting and collection will be done
+within a terminal.}
 
-\item{...}{Named arguments, used to supply runtime configuration
-settings to your TensorFlow application.}
+\item{...}{Named arguments, used to supply runtime configuration settings to
+your TensorFlow application.}
 }
 \description{
 Upload a TensorFlow application to Google Cloud, and use that application to

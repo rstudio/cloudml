@@ -21,34 +21,44 @@ expect_train_succeeds <- function(job) {
 test_that("cloudml_train() can train and collect savedmodel", {
   if (!cloudml_tests_configured()) return()
 
-  config_yml <- system.file("examples/mnist/cloudml.yml", package = "cloudml")
-  mnist_config <- yaml::yaml.load(readLines(config_yml))
-  cloudml_write_config(mnist_config, config_yml)
+  with_temp_training_dir(system.file("examples/mnist", package = "cloudml"), {
+    config_yml <- "cloudml.yml"
+    mnist_config <- yaml::yaml.load(readLines(config_yml))
+    cloudml_write_config(mnist_config, config_yml)
 
-  job <- cloudml_train(
-    application = system.file(
-      "examples/mnist/",
-      package = "cloudml"
-    ),
-    entrypoint = "train.R"
-  )
+    job <- cloudml_train(
+      application = system.file(
+        "examples/mnist/",
+        package = "cloudml"
+      ),
+      entrypoint = "train.R"
+    )
 
-  expect_train_succeeds(job)
+    expect_train_succeeds(job)
+  })
 })
 
 test_that("cloudml_train() can train keras model", {
   if (!cloudml_tests_configured()) return()
 
-  config_yml <- system.file("examples/keras/cloudml.yml", package = "cloudml")
-  mnist_config <- yaml::yaml.load(readLines(config_yml))
-  cloudml_write_config(mnist_config, config_yml)
+  with_temp_training_dir(system.file("examples/keras", package = "cloudml"), {
+    config_yml <- "cloudml.yml"
+    mnist_config <- yaml::yaml.load(readLines(config_yml))
+    cloudml_write_config(mnist_config, config_yml)
 
-  # Since this test uses packrat, change dir to detect dependencies correctly
-  oldwd <- getwd()
-  on.exit(setwd(oldwd))
-  setwd(dirname(config_yml))
+    job <- cloudml_train()
 
-  job <- cloudml_train()
+    expect_train_succeeds(job)
+  })
 
-  expect_train_succeeds(job)
 })
+
+with_temp_training_dir <- function(training_dir, expr) {
+
+  # create temp directory and copy training_dir to it
+  temp_training_dir <- tempfile("training-dir", fileext = ".dir")
+  dir.create(temp_training_dir)
+  on.exit(unlink(temp_training_dir, recursive = TRUE), add = TRUE)
+  file.copy(training_dir, temp_training_dir, recursive = TRUE)
+  withr::with_dir(temp_training_dir, expr)
+}

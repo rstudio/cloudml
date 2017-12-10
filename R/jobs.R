@@ -4,32 +4,32 @@
 #' Upload a TensorFlow application to Google Cloud, and use that application to
 #' train a model.
 #'
-#' @param application The path to a TensorFlow application. Defaults to the
-#'   current working directory.
+#' @param file File to be used as entrypoint for training.
 #'
 #' @param config The name of the configuration to be used. Defaults to the
 #'   `"cloudml"` configuration.
-#'
-#' @param ... Named arguments, used to supply runtime configuration settings to
-#'   your TensorFlow application.
-#'
-#' @param entrypoint File to be used as entrypoint for training.
 #'
 #' @param collect Collect job output after submission. Defaults to "ask" which
 #'   will prompt within interactive environments. Within versions of RStudio
 #'   that support terminals (>= v1.1), the waiting and collection will be done
 #'   within a terminal.
 #'
+#' @param ... Named arguments, used to supply runtime configuration settings to
+#'   your TensorFlow application.
+#'
 #' @seealso [job_describe()], [job_collect()], [job_cancel()]
 #'
 #' @export
-cloudml_train <- function(application = getwd(),
+cloudml_train <- function(file = "train.R",
                           config      = "cloudml",
-                          entrypoint  = "train.R",
                           collect = "ask",
                           ...)
 {
   message("Submitting training job to CloudML...")
+
+  # set application and entrypoint
+  application <- getwd()
+  entrypoint <- file
 
   # prepare application for deployment
   id <- unique_job_name(config)
@@ -439,6 +439,8 @@ job_collect <- function(job, destination = "runs",
 #' @param destination
 #'   The destination directory in which model outputs should
 #'   be downloaded. Defaults to `runs`.
+#'
+#' @param view View the job after collecting it.
 #'
 #' @param polling_interval
 #'   Number of seconds to wait between efforts to fetch the
