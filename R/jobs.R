@@ -4,20 +4,21 @@
 #' Upload a TensorFlow application to Google Cloud, and use that application to
 #' train a model.
 #'
-#' @param application
-#'   The path to a TensorFlow application. Defaults to
-#'   the current working directory.
+#' @param application The path to a TensorFlow application. Defaults to the
+#'   current working directory.
 #'
-#' @param config
-#'   The name of the configuration to be used. Defaults to
-#'   the `"cloudml"` configuration.
+#' @param config The name of the configuration to be used. Defaults to the
+#'   `"cloudml"` configuration.
 #'
-#' @param ...
-#'   Named arguments, used to supply runtime configuration
-#'   settings to your TensorFlow application.
+#' @param ... Named arguments, used to supply runtime configuration settings to
+#'   your TensorFlow application.
 #'
-#' @param entrypoint
-#'   File to be used as entrypoint for training.
+#' @param entrypoint File to be used as entrypoint for training.
+#'
+#' @param collect Collect job output after submission. Defaults to "ask" which
+#'   will prompt within interactive environments. Within versions of RStudio
+#'   that support terminals (>= v1.1), the waiting and collection will be done
+#'   within a terminal.
 #'
 #' @seealso [job_describe()], [job_collect()], [job_cancel()]
 #'
@@ -25,6 +26,7 @@
 cloudml_train <- function(application = getwd(),
                           config      = "cloudml",
                           entrypoint  = "train.R",
+                          collect = "ask",
                           ...)
 {
   message("Submitting training job to CloudML...")
@@ -107,8 +109,12 @@ cloudml_train <- function(application = getwd(),
   template <- c(
     "Job '%1$s' successfully submitted.",
     "%2$s",
-    "Check job status with:   job_status(\"%1$s\")",
-    "Collect job output with: job_collect(\"%1$s\")"
+    "Check job status with:     job_status(\"%1$s\")",
+    "",
+    "Collect job output with:   job_collect(\"%1$s\")",
+    "",
+    "After collect, view with:  view_run(\"runs/%1$s\")",
+    ""
   )
   rendered <- sprintf(paste(template, collapse = "\n"), id, stderr)
   message(rendered)
@@ -118,11 +124,36 @@ cloudml_train <- function(application = getwd(),
   job <- cloudml_job("train", id, description)
   register_job(job)
 
-  if (interactive()) {
-    job_collect_async(job,
-                      cloudml,
-                      destination = file.path(application, "runs"),
-                      view = TRUE)
+  # resolve collect
+  if (identical(collect, "ask")) {
+    if (interactive()) {
+      if (have_rstudio_terminal())
+        response <- readline("Monitor and collect job in RStudio Terminal? [Y/n]: ")
+      else
+        response <- readline("Wait and collect job when completed? [Y/n]: ")
+      collect <- !nzchar(response) || (tolower(response) == 'y')
+    } else {
+      collect <- FALSE
+    }
+  }
+
+  # perform collect if required
+  destination <- file.path(application, "runs")
+  if (collect) {
+    if (have_rstudio_terminal()) {
+      job_collect_async(
+        job,
+        cloudml,
+        destination = destination,
+        view = identical(rstudioapi::versionInfo()$mode, "desktop")
+      )
+    } else {
+      job_collect(
+        job,
+        destination = destination,
+        view = interactive()
+      )
+    }
   }
 
   invisible(job)
@@ -421,7 +452,9 @@ job_collect_async <- function(
   polling_interval = getOption("cloudml.collect.polling", 2),
   view = interactive()
 ) {
-  if (!rstudioapi::isAvailable()) return()
+
+  if (!have_rstudio_terminal())
+    stop("job_collect_async requires a version of RStudio with terminals (>= v1.1)")
 
   output_dir <- job_output_dir(job)
   job <- as.cloudml_job(job)
