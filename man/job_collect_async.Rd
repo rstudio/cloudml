@@ -5,7 +5,7 @@
 \title{Collect Job Output Asynchronously}
 \usage{
 job_collect_async(job, gcloud = NULL, destination = "runs",
-  polling_interval = getOption("cloudml.collect.polling", 5),
+  polling_interval = getOption("cloudml.stream_logs.polling", 5),
   view = interactive())
 }
 \arguments{
@@ -29,6 +29,6 @@ using the RStudio terminal, if available.
 Other job management: \code{\link{job_cancel}},
   \code{\link{job_collect}}, \code{\link{job_describe}},
   \code{\link{job_list}}, \code{\link{job_status}},
-  \code{\link{job_stream}}
+  \code{\link{job_stream_logs}}
 }
 \concept{job management}

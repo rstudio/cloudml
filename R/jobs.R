@@ -283,10 +283,10 @@ job_list <- function(filter    = NULL,
 #' @family job management
 #'
 #' @export
-job_stream <- function(job,
-                       polling_interval = getOption("cloudml.collect.polling", 5),
-                       task_name = NULL,
-                       allow_multiline_logs = FALSE)
+job_stream_logs <- function(job,
+                            polling_interval = getOption("cloudml.stream_logs.polling", 5),
+                            task_name = NULL,
+                            allow_multiline_logs = FALSE)
 {
   job <- as.cloudml_job(job)
 
@@ -460,7 +460,7 @@ job_collect_async <- function(
   job,
   gcloud = NULL,
   destination = "runs",
-  polling_interval = getOption("cloudml.collect.polling", 5),
+  polling_interval = getOption("cloudml.stream_logs.polling", 5),
   view = interactive()
 ) {
 
