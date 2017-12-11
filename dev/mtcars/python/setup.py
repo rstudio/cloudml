@@ -45,7 +45,7 @@ class CustomCommands(install):
     )
 
     stdout, stderr = process.communicate()
-    print "Command output: %s" % stdout
+    print("Command output: %s" % stdout)
     status = process.returncode
     if status != 0:
       message = "Command %s failed: exit code %s" % (commands, status)
@@ -53,7 +53,7 @@ class CustomCommands(install):
 
   def run(self):
     distro = platform.linux_distribution()
-    print "linux_distribution: %s" % (distro,)
+    print("linux_distribution: %s" % (distro,))
 
     # Run custom commands
     for command in CUSTOM_COMMANDS:

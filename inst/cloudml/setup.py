@@ -59,7 +59,7 @@ class CustomCommands(install):
 
   """A setuptools Command class able to run arbitrary commands."""
   def RunCustomCommand(self, commands, throws):
-    print "Running command: %s" % " ".join(commands)
+    print("Running command: %s" % " ".join(commands))
 
     process = subprocess.Popen(
         commands,
@@ -69,7 +69,7 @@ class CustomCommands(install):
     )
 
     stdout, stderr = process.communicate()
-    print "Command output: %s" % stdout
+    print("Command output: %s" % stdout)
     status = process.returncode
     if throws and status != 0:
       message = "Command %s failed: exit code %s" % (commands, status)
@@ -89,13 +89,13 @@ class CustomCommands(install):
 
   def run(self):
     distro = platform.linux_distribution()
-    print "linux_distribution: %s" % (distro,)
+    print("linux_distribution: %s" % (distro,))
 
     self.LoadCloudML()
 
     # Upgrade r if latestr is set in cloudml.yaml
     if (not "latestr" in self.config["cloudml"] or self.config["cloudml"]["latestr"] == True):
-      print "Upgrading R"
+      print("Upgrading R")
       self.RunCustomCommandList(UPGRADE_R_COMMANDS)
 
     # Run custom commands
@@ -103,7 +103,7 @@ class CustomCommands(install):
 
     # Run pip install
     if (not "keras" in self.config["cloudml"] or self.config["cloudml"]["keras"] == True):
-      print "Installing Keras"
+      print("Installing Keras")
       self.RunCustomCommandList(PIP_INSTALL_KERAS)
 
     # Run regular install

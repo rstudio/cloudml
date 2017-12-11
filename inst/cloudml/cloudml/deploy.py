@@ -35,8 +35,8 @@ stdout, stderr = process.communicate()
 # Detect a non-zero exit code.
 if process.returncode != 0:
   fmt = "Command %s failed: exit code %s"
-  print fmt % (commands, process.returncode)
+  print(fmt % (commands, process.returncode))
 else:
-  print "Command %s ran successfully." % (commands, )
+  print("Command %s ran successfully." % (commands, ))
 
 sys.exit(process.returncode)
