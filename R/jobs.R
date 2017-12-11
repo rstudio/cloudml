@@ -92,7 +92,7 @@ cloudml_train <- function(file = "train.R",
                 ("--staging-bucket=%s", gcloud[["staging-bucket"]])
                 ("--runtime-version=%s", cloudml_version)
                 ("--region=%s", gcloud[["region"]])
-                ("--config=%s/%s", basename(application), hypertune)
+                ("--config=%s/%s", "cloudml-model", hypertune)
                 ("--")
                 ("Rscript"))
 
