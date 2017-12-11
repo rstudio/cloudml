@@ -11,6 +11,12 @@
 #' @param config The name of the configuration to be used. Defaults to the
 #'   `"cloudml"` configuration.
 #'
+#' @param scale_tier Machine type for training. "basic" provides a single
+#'   worker instance suitable for learning how to use Cloud ML Engine,
+#'   and for experimenting with new models using small datasets; "basic-gpu"
+#'   provides a single worker instance with a GPU. "basic-tpu" provides a
+#'   single worker instance with a TPU.
+#'
 #' @param hypertune
 #'   Path to a YAML file, defining how hyperparameters should
 #'   be tuned. See
@@ -30,6 +36,7 @@
 #' @export
 cloudml_train <- function(file = "train.R",
                           config = "cloudml",
+                          scale_tier = c("basic", "basic-gpu", "basic-tpu"),
                           flags = NULL,
                           hypertune = NULL,
                           collect = "ask")
@@ -92,6 +99,7 @@ cloudml_train <- function(file = "train.R",
                 ("--staging-bucket=%s", gcloud[["staging-bucket"]])
                 ("--runtime-version=%s", cloudml_version)
                 ("--region=%s", gcloud[["region"]])
+                ("--scale-tier=%s", match.arg(scale_tier))
                 ("--config=%s/%s", basename(application), hypertune)
                 ("--")
                 ("Rscript"))

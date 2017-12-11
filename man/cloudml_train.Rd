@@ -4,7 +4,8 @@
 \alias{cloudml_train}
 \title{Train a model using Cloud ML}
 \usage{
-cloudml_train(file = "train.R", config = "cloudml", flags = NULL,
+cloudml_train(file = "train.R", config = "cloudml",
+  scale_tier = c("basic", "basic-gpu", "basic-tpu"), flags = NULL,
   hypertune = NULL, collect = "ask")
 }
 \arguments{
@@ -12,6 +13,12 @@ cloudml_train(file = "train.R", config = "cloudml", flags = NULL,
 
 \item{config}{The name of the configuration to be used. Defaults to the
 \code{"cloudml"} configuration.}
+
+\item{scale_tier}{Machine type for training. "basic" provides a single
+worker instance suitable for learning how to use Cloud ML Engine,
+and for experimenting with new models using small datasets; "basic-gpu"
+provides a single worker instance with a GPU. "basic-tpu" provides a
+single worker instance with a TPU.}
 
 \item{flags}{Named list with flag values (see \code{\link[=flags]{flags()}}) or path
 to YAML file containing flag values.}

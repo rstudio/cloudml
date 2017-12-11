@@ -5,6 +5,7 @@
 #' @export
 cloudml_tune <- function(file = "train.R",
                          config = "cloudml",
+                         scale_tier = c("basic", "basic-gpu", "basic-tpu"),
                          flags = NULL,
                          hypertune = "hypertune.yml")
 {
@@ -18,6 +19,7 @@ cloudml_tune <- function(file = "train.R",
   # delegate to cloudml_train
   cloudml_train(file = file,
                 config = config,
+                scale_tier = scale_tier,
                 flags = flags,
                 hypertune = hypertune)
 }
