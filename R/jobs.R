@@ -73,7 +73,8 @@ cloudml_train <- function(file = "train.R",
   }
 
   # region is required
-  if (is.null(gcloud$region)) gcloud$region <- "us-east1"
+  default_region <- gcloud_default_region()
+  gcloud$region <- if (nchar(default_region) == 0) "us-east1" else default_region
 
   # write cloud.yml file to deployment directory if we
   # don't already have one there

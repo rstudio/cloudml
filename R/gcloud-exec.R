@@ -1,8 +1,12 @@
 # execute a gcloud command
 gexec <- function(command,
                   args = character(),
-                  echo = TRUE)
+                  echo = TRUE,
+                  throws = TRUE)
 {
+  if (.Platform$OS.type != "windows")
+    command <- normalizePath(command)
+
   quoted_args <- args
   if (.Platform$OS.type != "windows")
     quoted_args <- shell_quote(args)
@@ -13,7 +17,7 @@ gexec <- function(command,
     echo = echo
   )
 
-  if (result$status != 0) {
+  if (result$status != 0 && throws) {
     output <- c(
       sprintf("ERROR: gcloud invocation failed [exit status %i]", result$status),
 
@@ -60,12 +64,8 @@ gcloud_exec <- function(..., args = NULL, echo = FALSE)
   if (is.null(args))
     args <- list(...)
 
-  command <- gcloud_path()
-  if (.Platform$OS.type != "windows")
-    command <- normalizePath(gcloud_path())
-
   gexec(
-    command,
+    gcloud_path(),
     args,
     echo
   )

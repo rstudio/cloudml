@@ -42,7 +42,7 @@ gsutil_exec <- function(..., args = NULL, echo = FALSE)
     args <- list(...)
 
   gexec(
-    normalizePath(gsutil_path()),
+    gsutil_path(),
     args,
     echo = echo
   )

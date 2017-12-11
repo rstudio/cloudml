@@ -60,6 +60,17 @@ gcloud_default_project <- function() {
   trimws(gcloud_exec("config", "get-value", "project")$stdout)
 }
 
+gcloud_default_region <- function() {
+  trimws(
+    gexec(
+      gcloud_path(),
+      c("config", "get-value", "region"),
+      echo = FALSE,
+      throws = FALSE
+    )$stdout
+  )
+}
+
 gcloud_project_has_bucket <- function(project = gcloud_default_project()) {
   buckets <- strsplit(gsutil_exec("ls", "-p", project)$stdout, "\n")[[1]]
   gcloud_project_bucket(project, TRUE) %in% buckets
