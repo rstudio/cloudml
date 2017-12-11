@@ -20,15 +20,19 @@ sysenv_file <- function(name, destination) {
 
 cloudml_write_config <- function(destination = "cloudml.yml") {
   config = list(
-    gcloud = list(
-      project = Sys.getenv("GCLOUD_PROJECT"),
-      account = Sys.getenv("GCLOUD_ACCOUNT"),
-      region  = Sys.getenv("CLOUDSDK_COMPUTE_REGION", "us-east1")
-    ),
-    cloudml = list(
-      storage = paste("gs://", Sys.getenv("GCLOUD_PROJECT"), "/travis", sep = "")
-    )
+    gcloud = list(),
+    cloudml = list()
   )
+
+  if (nchar(Sys.getenv("GCLOUD_PROJECT")) > 0)
+    config$gcloud$project <- Sys.getenv("GCLOUD_PROJECT")
+
+  if (nchar(Sys.getenv("GCLOUD_ACCOUNT")) > 0)
+    config$gcloud$account <- Sys.getenv("GCLOUD_ACCOUNT")
+
+  if (nchar(Sys.getenv("GCLOUD_PROJECT")) > 0)
+    config$gcloud$storage <- paste("gs://", Sys.getenv("GCLOUD_PROJECT"), "/travis", sep = "")
+
   yaml::write_yaml(config, destination)
 }
 
