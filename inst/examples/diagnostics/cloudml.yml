@@ -1,7 +1,0 @@
-gcloud:
-  project         : "rstudio-cloudml"
-  account         : "kevin@rstudio.com"
-  region          : "us-central1"
-
-cloudml:
-  runtime-version : "1.2"
