@@ -82,7 +82,7 @@ cloudml_train <- function(application = getwd(),
                 ("--staging-bucket=%s", gcloud[["staging-bucket"]])
                 ("--runtime-version=%s", cloudml_version)
                 ("--region=%s", gcloud[["region"]])
-                ("--config=%s/%s", basename(application), overlay$hypertune)
+                ("--config=%s/%s", "cloudml-model", overlay$hypertune)
                 ("--")
                 ("Rscript"))
 
