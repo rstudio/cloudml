@@ -22,15 +22,8 @@ test_that("cloudml_train() can train and collect savedmodel", {
   if (!cloudml_tests_configured()) return()
 
   with_temp_training_dir(system.file("examples/mnist", package = "cloudml"), {
-    config_yml <- "cloudml.yml"
-    if (file.exists("cloudml.yml"))
-      config <- yaml::yaml.load(readLines(config_yml))
-    else
-      config <- NULL
-    cloudml_write_config(config, config_yml)
-
+    cloudml_write_config()
     job <- cloudml_train()
-
     expect_train_succeeds(job)
   })
 })
@@ -39,15 +32,8 @@ test_that("cloudml_train() can train keras model", {
   if (!cloudml_tests_configured()) return()
 
   with_temp_training_dir(system.file("examples/keras", package = "cloudml"), {
-    config_yml <- "cloudml.yml"
-    if (file.exists("cloudml.yml"))
-      config <- yaml::yaml.load(readLines(config_yml))
-    else
-      config <- NULL
-    cloudml_write_config(config, config_yml)
-
+    cloudml_write_config()
     job <- cloudml_train()
-
     expect_train_succeeds(job)
   })
 
