@@ -53,6 +53,8 @@ gexec <- function(command,
 #' @param args Parameters to use specified as a list.
 #' @param echo Echo command output to console
 #'
+#' @keywords internal
+#' @export
 gcloud_exec <- function(..., args = NULL, echo = FALSE)
 {
   if (is.null(args))
