@@ -14,7 +14,8 @@ gexec <- function(command,
   result <- processx::run(
     command = command,
     args = as.character(args),
-    echo = echo
+    echo = echo,
+    error_on_status = FALSE
   )
 
   if (result$status != 0 && throws) {
