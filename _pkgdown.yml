@@ -27,7 +27,7 @@ reference:
     contents:
       - cloudml_train
       - cloudml_tune
-  - title: "Jobs"
+  - title: "Managing Jobs"
     desc: >
       Functions for managing remote Cloud ML Jobs.
     contents:
@@ -36,8 +36,8 @@ reference:
       - job_describe
       - job_list
       - job_status
-      - job_stream
-  - title: "Utils"
+      - job_stream_logs
+  - title: "Google Cloud"
     desc: >
       Functions for interacting with Google Cloud.
     contents:

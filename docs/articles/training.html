@@ -131,7 +131,7 @@
 <a href="#configuration" class="anchor"></a>Configuration</h3>
 <p>A <code>cloudml.yml</code> file must be specified in the current directory to configure: project, account, region, runtime and storage parameters used to configure Cloud ML while traininig.</p>
 <p>A simple configuration file looks as follows:</p>
-<div class="sourceCode"><pre class="sourceCode yml"><code class="sourceCode yaml"><span class="fu">gcloud:</span>
+<div class="sourceCode"><pre class="sourceCode yaml"><code class="sourceCode yaml"><span class="fu">gcloud:</span>
   <span class="fu">project         :</span><span class="at"> </span><span class="st">"project-name"</span>
   <span class="fu">account         :</span><span class="at"> </span><span class="st">"account@domain.com"</span>
   <span class="fu">region          :</span><span class="at"> </span><span class="st">"us-central1"</span>
@@ -161,11 +161,11 @@
 <h4 class="hasAnchor">
 <a href="#caching" class="anchor"></a>Caching</h4>
 <p>Caching R package dependencies is enabled by default, this allows subsequent training runs to save several minutes of initialization time. The package cache is stored under <code>storage</code>; it can be disabled by setting this property to <code>false</code> in <code>cloudml.yml</code>:</p>
-<div class="sourceCode"><pre class="sourceCode yml"><code class="sourceCode yaml"><span class="fu">cloudml:</span>
+<div class="sourceCode"><pre class="sourceCode yaml"><code class="sourceCode yaml"><span class="fu">cloudml:</span>
   <span class="fu">storage         :</span><span class="at"> </span><span class="st">"gs://project-name/mnist"</span>
   <span class="fu">cache           :</span><span class="at"> false</span></code></pre></div>
 <p>The cache can also be shared among many projects by setting the <code>cache</code> path as follows:</p>
-<div class="sourceCode"><pre class="sourceCode yml"><code class="sourceCode yaml"><span class="fu">cloudml:</span>
+<div class="sourceCode"><pre class="sourceCode yaml"><code class="sourceCode yaml"><span class="fu">cloudml:</span>
   <span class="fu">storage         :</span><span class="at"> </span><span class="st">"gs://project-name/mnist"</span>
   <span class="fu">cache           :</span><span class="at"> </span><span class="st">"gs://project-name/cache"</span></code></pre></div>
 </div>
@@ -204,7 +204,7 @@ job &lt;-<span class="st"> </span><span class="kw"><a href="../reference/cloudml
 
 
       <footer><div class="copyright">
-  <p>Developed by JJ Allaire, Kevin Ushey.</p>
+  <p>Developed by Javier Luraschi, JJ Allaire, Kevin Ushey.</p>
 </div>
 
 <div class="pkgdown">
