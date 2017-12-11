@@ -72,6 +72,9 @@ cloudml_train <- function(file = "train.R",
     cloudml$storage <- gcloud_project_bucket(project)
   }
 
+  # region is required
+  if (is.null(gcloud$region)) gcloud$region <- "us-east1"
+
   # write cloud.yml file to deployment directory if we
   # don't already have one there
   cloudml_yml <- file.path(deployment$directory, "cloudml.yml")
