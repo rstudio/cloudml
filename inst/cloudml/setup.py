@@ -113,7 +113,7 @@ REQUIRED_PACKAGES = []
 
 setup(
     name             = "cloudml",
-    version          = "0.0.0.1",
+    version          = "1.0.0.0",
     author           = "Author",
     author_email     = "author@example.com",
     install_requires = REQUIRED_PACKAGES,
