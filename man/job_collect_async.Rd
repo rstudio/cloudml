@@ -5,7 +5,7 @@
 \title{Collect Job Output Asynchronously}
 \usage{
 job_collect_async(job, gcloud = NULL, destination = "runs",
-  polling_interval = getOption("cloudml.collect.polling", 2),
+  polling_interval = getOption("cloudml.collect.polling", 5),
   view = interactive())
 }
 \arguments{

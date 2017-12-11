@@ -276,7 +276,7 @@ job_list <- function(filter    = NULL,
 #'
 #' @export
 job_stream <- function(job,
-                       polling_interval = 60,
+                       polling_interval = getOption("cloudml.collect.polling", 5),
                        task_name = NULL,
                        allow_multiline_logs = FALSE)
 {
@@ -286,14 +286,15 @@ job_stream <- function(job,
     MLArgumentsBuilder()
     ("jobs")
     ("stream-logs")
+    (job$id)
     ("--polling-interval=%i", as.integer(polling_interval))
     ("--task-name=%s", task_name))
 
   if (allow_multiline_logs)
     arguments("--allow-multiline-logs")
 
-  output <- gcloud_exec(args = arguments())
-  print(output$stdout)
+  gcloud_exec(args = arguments(), echo = TRUE)
+  invisible(NULL)
 }
 
 #' Current status of a job
@@ -451,7 +452,7 @@ job_collect_async <- function(
   job,
   gcloud = NULL,
   destination = "runs",
-  polling_interval = getOption("cloudml.collect.polling", 2),
+  polling_interval = getOption("cloudml.collect.polling", 5),
   view = interactive()
 ) {
 

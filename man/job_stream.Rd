@@ -4,8 +4,8 @@
 \alias{job_stream}
 \title{Show job log stream}
 \usage{
-job_stream(job, polling_interval = 60, task_name = NULL,
-  allow_multiline_logs = FALSE)
+job_stream(job, polling_interval = getOption("cloudml.collect.polling", 5),
+  task_name = NULL, allow_multiline_logs = FALSE)
 }
 \arguments{
 \item{job}{Job name or job object.}
