@@ -45,5 +45,5 @@ reference:
       - gcloud_install
       - gcloud_init
       - gcloud_terminal
-      - gsutil_copy
+      - gcloud_copy
       - gsutil_data

@@ -20,7 +20,7 @@
 #'   copying directories.
 #'
 #' @export
-gsutil_copy <- function(source, destination, recursive = FALSE, echo = FALSE) {
+gcloud_copy <- function(source, destination, recursive = FALSE, echo = FALSE) {
 
   arguments <- c(
     "-m",
@@ -40,7 +40,7 @@ gsutil_copy <- function(source, destination, recursive = FALSE, echo = FALSE) {
 #' file is returned. If a plain filesystem path is passed then it is also
 #' returned unchanged.
 #'
-#' @inheritParams gsutil_copy
+#' @inheritParams gcloud_copy
 #'
 #' @param uri Path to Google Storage data
 #' @param local_dir Local directory to copy files into
@@ -70,9 +70,9 @@ gsutil_data <- function(uri, local_dir = "gs") {
       result <- tryCatch(suppressWarnings(download.file(public_url, local_path)),
                          error = function(e) 1)
 
-      # if that failed then try gsutil_copy (which requires auth)
+      # if that failed then try gcloud_copy (which requires auth)
       if (result != 0)
-        gsutil_copy(uri, local_path)
+        gcloud_copy(uri, local_path)
     }
 
     # return path

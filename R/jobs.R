@@ -557,7 +557,7 @@ job_download <- function(job, destination = "runs", view = interactive()) {
   }
 
   ensure_directory(destination)
-  gsutil_copy(source, destination, TRUE, echo = TRUE)
+  gcloud_copy(source, destination, TRUE, echo = TRUE)
 
   run_dir <- file.path(destination, basename(source))
   cat("\n")
