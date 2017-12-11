@@ -4,40 +4,50 @@
 #' Upload a TensorFlow application to Google Cloud, and use that application to
 #' train a model.
 #'
-#' @param application
-#'   The path to a TensorFlow application. Defaults to
-#'   the current working directory.
+#' @inheritParams tfruns::training_run
 #'
-#' @param config
-#'   The name of the configuration to be used. Defaults to
-#'   the `"cloudml"` configuration.
+#' @param file File to be used as entrypoint for training.
 #'
-#' @param ...
-#'   Named arguments, used to supply runtime configuration
-#'   settings to your TensorFlow application.
+#' @param config The name of the configuration to be used. Defaults to the
+#'   `"cloudml"` configuration.
 #'
-#' @param entrypoint
-#'   File to be used as entrypoint for training.
+#' @param hypertune
+#'   Path to a YAML file, defining how hyperparameters should
+#'   be tuned. See
+#'   https://cloud.google.com/ml/reference/rest/v1/projects.jobs
+#'   for more details.
+#'
+#' @param collect Collect job output after submission. Defaults to "ask" which
+#'   will prompt within interactive environments. Within versions of RStudio
+#'   that support terminals (>= v1.1), the waiting and collection will be done
+#'   within a terminal.
+#'
+#' @param ... Named arguments, used to supply runtime configuration settings to
+#'   your TensorFlow application.
 #'
 #' @seealso [job_describe()], [job_collect()], [job_cancel()]
 #'
 #' @export
-cloudml_train <- function(application = getwd(),
-                          config      = "cloudml",
-                          entrypoint  = "train.R",
-                          ...)
+cloudml_train <- function(file = "train.R",
+                          config = "cloudml",
+                          flags = NULL,
+                          hypertune = NULL,
+                          collect = "ask")
 {
   message("Submitting training job to CloudML...")
 
+  # set application and entrypoint
+  application <- getwd()
+  entrypoint <- file
+
   # prepare application for deployment
   id <- unique_job_name(config)
-  overlay <- list(...)
   deployment <- scope_deployment(
     id = id,
     application = application,
     context = "cloudml",
     config = config,
-    overlay = overlay,
+    overlay = flags,
     entrypoint = entrypoint
   )
 
@@ -82,7 +92,7 @@ cloudml_train <- function(application = getwd(),
                 ("--staging-bucket=%s", gcloud[["staging-bucket"]])
                 ("--runtime-version=%s", cloudml_version)
                 ("--region=%s", gcloud[["region"]])
-                ("--config=%s/%s", "cloudml-model", overlay$hypertune)
+                ("--config=%s/%s", "cloudml-model", hypertune)
                 ("--")
                 ("Rscript"))
 
@@ -107,8 +117,12 @@ cloudml_train <- function(application = getwd(),
   template <- c(
     "Job '%1$s' successfully submitted.",
     "%2$s",
-    "Check job status with:   job_status(\"%1$s\")",
-    "Collect job output with: job_collect(\"%1$s\")"
+    "Check job status with:     job_status(\"%1$s\")",
+    "",
+    "Collect job output with:   job_collect(\"%1$s\")",
+    "",
+    "After collect, view with:  view_run(\"runs/%1$s\")",
+    ""
   )
   rendered <- sprintf(paste(template, collapse = "\n"), id, stderr)
   message(rendered)
@@ -118,8 +132,37 @@ cloudml_train <- function(application = getwd(),
   job <- cloudml_job("train", id, description)
   register_job(job)
 
-  if (interactive())
-    job_collect_async(job, cloudml)
+  # resolve collect
+  if (identical(collect, "ask")) {
+    if (interactive()) {
+      if (have_rstudio_terminal())
+        response <- readline("Monitor and collect job in RStudio Terminal? [Y/n]: ")
+      else
+        response <- readline("Wait and collect job when completed? [Y/n]: ")
+      collect <- !nzchar(response) || (tolower(response) == 'y')
+    } else {
+      collect <- FALSE
+    }
+  }
+
+  # perform collect if required
+  destination <- file.path(application, "runs")
+  if (collect) {
+    if (have_rstudio_terminal()) {
+      job_collect_async(
+        job,
+        cloudml,
+        destination = destination,
+        view = identical(rstudioapi::versionInfo()$mode, "desktop")
+      )
+    } else {
+      job_collect(
+        job,
+        destination = destination,
+        view = interactive()
+      )
+    }
+  }
 
   invisible(job)
 }
@@ -240,10 +283,10 @@ job_list <- function(filter    = NULL,
 #' @family job management
 #'
 #' @export
-job_stream <- function(job,
-                       polling_interval = 60,
-                       task_name = NULL,
-                       allow_multiline_logs = FALSE)
+job_stream_logs <- function(job,
+                            polling_interval = getOption("cloudml.stream_logs.polling", 5),
+                            task_name = NULL,
+                            allow_multiline_logs = FALSE)
 {
   job <- as.cloudml_job(job)
 
@@ -251,14 +294,15 @@ job_stream <- function(job,
     MLArgumentsBuilder()
     ("jobs")
     ("stream-logs")
+    (job$id)
     ("--polling-interval=%i", as.integer(polling_interval))
     ("--task-name=%s", task_name))
 
   if (allow_multiline_logs)
     arguments("--allow-multiline-logs")
 
-  output <- gcloud_exec(args = arguments())
-  print(output$stdout)
+  gcloud_exec(args = arguments(), echo = TRUE)
+  invisible(NULL)
 }
 
 #' Current status of a job
@@ -405,6 +449,8 @@ job_collect <- function(job, destination = "runs",
 #'   The destination directory in which model outputs should
 #'   be downloaded. Defaults to `runs`.
 #'
+#' @param view View the job after collecting it.
+#'
 #' @param polling_interval
 #'   Number of seconds to wait between efforts to fetch the
 #'   latest log messages.
@@ -414,9 +460,12 @@ job_collect_async <- function(
   job,
   gcloud = NULL,
   destination = "runs",
-  polling_interval = getOption("cloudml.collect.polling", 10)
+  polling_interval = getOption("cloudml.stream_logs.polling", 5),
+  view = interactive()
 ) {
-  if (!rstudioapi::isAvailable()) return()
+
+  if (!have_rstudio_terminal())
+    stop("job_collect_async requires a version of RStudio with terminals (>= v1.1)")
 
   output_dir <- job_output_dir(job)
   job <- as.cloudml_job(job)
@@ -430,6 +479,7 @@ job_collect_async <- function(
 
   download_arguments <- paste(
     gsutil_path(),
+    "-m",
     "cp",
     "-r",
     shQuote(output_dir),
@@ -453,9 +503,11 @@ job_collect_async <- function(
       terminal_steps,
       paste("mkdir -p", destination),
       paste(download_arguments, collapse = " "),
-      paste("echo \"\""),
-      paste("echo \"To view the results, run from R: view_run()\"")
+      paste("echo \"\"")
     )
+
+    if (view)
+      terminal_steps <- c(terminal_steps, view_job_step(destination, job$id))
   }
   else {
     terminal_steps <- c(
@@ -475,7 +527,7 @@ job_collect_async <- function(
     collapse = os_collapse
   )
 
-  gcloud_terminal(terminal_command)
+  gcloud_terminal(terminal_command, clear = TRUE)
 }
 
 job_download <- function(job, destination = "runs", view = interactive()) {
@@ -505,7 +557,7 @@ job_download <- function(job, destination = "runs", view = interactive()) {
   }
 
   ensure_directory(destination)
-  gsutil_copy(source, destination, TRUE, echo = TRUE)
+  gcloud_copy(source, destination, TRUE, echo = TRUE)
 
   run_dir <- file.path(destination, basename(source))
   cat("\n")
@@ -566,4 +618,14 @@ job_is_tuning <- function(job) {
 
 job_status_is_tuning <- function(status) {
   !identical(status$trainingOutput$isHyperparameterTuningJob, TRUE)
+}
+
+view_job_step <- function(destination, jobId) {
+  paste(
+    paste0("\"", file.path(R.home("bin"), "Rscript"), "\""),
+    "-e",
+    paste0("\"utils::browseURL('",
+           file.path(destination, jobId, "tfruns.d", "view.html"),
+           "')\"")
+  )
 }

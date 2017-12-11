@@ -99,21 +99,25 @@
     <p>Tune hyperparameters on Cloud ML</p>
     
 
-    <pre class="usage"><span class='fu'>cloudml_tune</span>(<span class='kw'>application</span> <span class='kw'>=</span> <span class='fu'>getwd</span>(), <span class='kw'>config</span> <span class='kw'>=</span> <span class='st'>"cloudml"</span>,
-  <span class='kw'>hypertune</span> <span class='kw'>=</span> <span class='st'>"hypertune.yml"</span>, <span class='no'>...</span>)</pre>
+    <pre class="usage"><span class='fu'>cloudml_tune</span>(<span class='kw'>file</span> <span class='kw'>=</span> <span class='st'>"train.R"</span>, <span class='kw'>config</span> <span class='kw'>=</span> <span class='st'>"cloudml"</span>, <span class='kw'>flags</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>hypertune</span> <span class='kw'>=</span> <span class='st'>"hypertune.yml"</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>application</th>
-      <td><p>The path to a TensorFlow application. Defaults to
-the current working directory.</p></td>
+      <th>file</th>
+      <td><p>File to be used as entrypoint for training.</p></td>
     </tr>
     <tr>
       <th>config</th>
-      <td><p>The name of the configuration to be used. Defaults to
-the <code>"cloudml"</code> configuration.</p></td>
+      <td><p>The name of the configuration to be used. Defaults to the
+<code>"cloudml"</code> configuration.</p></td>
+    </tr>
+    <tr>
+      <th>flags</th>
+      <td><p>Named list with flag values (see <code>flags()</code>) or path
+to YAML file containing flag values.</p></td>
     </tr>
     <tr>
       <th>hypertune</th>
@@ -121,11 +125,6 @@ the <code>"cloudml"</code> configuration.</p></td>
 be tuned. See
 https://cloud.google.com/ml/reference/rest/v1/projects.jobs
 for more details.</p></td>
-    </tr>
-    <tr>
-      <th>...</th>
-      <td><p>Named arguments, used to supply runtime configuration
-settings to your TensorFlow application.</p></td>
     </tr>
     </table>
     
@@ -142,7 +141,7 @@ settings to your TensorFlow application.</p></td>
 
       <footer>
       <div class="copyright">
-  <p>Developed by JJ Allaire, Kevin Ushey.</p>
+  <p>Developed by Javier Luraschi, JJ Allaire, Kevin Ushey.</p>
 </div>
 
 <div class="pkgdown">

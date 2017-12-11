@@ -16,6 +16,6 @@ Cancel a job.
 Other job management: \code{\link{job_collect_async}},
   \code{\link{job_collect}}, \code{\link{job_describe}},
   \code{\link{job_list}}, \code{\link{job_status}},
-  \code{\link{job_stream}}
+  \code{\link{job_stream_logs}}
 }
 \concept{job management}

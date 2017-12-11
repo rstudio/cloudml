@@ -4,11 +4,7 @@ message("Command Arguments: ", paste(commandArgs(TRUE), collapse = " "))
 
 # read in flags
 FLAGS <- flags(
-  flag_string("args", ""),
-  flag_string("hypertune", ""),
-  flag_string("job_dir", ""),
-  flag_numeric("gradient_descent_optimizer", 0.5),
-  arguments = commandArgs(TRUE)
+  flag_numeric("gradient_descent_optimizer", 0.5)
 )
 
 message("FLAGS: ", jsonlite::toJSON(as.data.frame(FLAGS)))

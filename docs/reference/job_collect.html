@@ -101,7 +101,8 @@ If the job has not yet finished running, <code>job_collect()</code>
 will block and wait until the job has finished.</p>
     
 
-    <pre class="usage"><span class='fu'>job_collect</span>(<span class='no'>job</span>, <span class='kw'>destination</span> <span class='kw'>=</span> <span class='st'>"runs"</span>, <span class='kw'>timeout</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
+    <pre class="usage"><span class='fu'>job_collect</span>(<span class='no'>job</span>, <span class='kw'>destination</span> <span class='kw'>=</span> <span class='st'>"runs"</span>, <span class='kw'>timeout</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>view</span> <span class='kw'>=</span> <span class='fu'>interactive</span>())</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
@@ -119,6 +120,10 @@ be downloaded. Defaults to <code>runs</code>.</p></td>
       <th>timeout</th>
       <td><p>Give up collecting job after the specified minutes.</p></td>
     </tr>
+    <tr>
+      <th>view</th>
+      <td><p>View the job results after collecting it</p></td>
+    </tr>
     </table>
     
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
@@ -126,7 +131,7 @@ be downloaded. Defaults to <code>runs</code>.</p></td>
     <p>Other job management: <code><a href='job_cancel.html'>job_cancel</a></code>,
   <code><a href='job_collect_async.html'>job_collect_async</a></code>,
   <code><a href='job_describe.html'>job_describe</a></code>, <code><a href='job_list.html'>job_list</a></code>,
-  <code><a href='job_status.html'>job_status</a></code>, <code><a href='job_stream.html'>job_stream</a></code></p>
+  <code><a href='job_status.html'>job_status</a></code>, <code><a href='job_stream_logs.html'>job_stream_logs</a></code></p>
     
 
   </div>
@@ -143,7 +148,7 @@ be downloaded. Defaults to <code>runs</code>.</p></td>
 
       <footer>
       <div class="copyright">
-  <p>Developed by JJ Allaire, Kevin Ushey.</p>
+  <p>Developed by Javier Luraschi, JJ Allaire, Kevin Ushey.</p>
 </div>
 
 <div class="pkgdown">

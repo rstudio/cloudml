@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Initializes Default Configuration File — cloudml_init • cloudml</title>
+<title>Copy files to / from Google Storage — gcloud_copy • cloudml</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -47,7 +47,7 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="../index.html">Cloud ML interface for R</a>
+      <a class="navbar-brand" href="../index.html">CloudML for R</a>
     </div>
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
@@ -62,28 +62,10 @@
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/guides-training.html">Training</a>
+      <a href="../articles/training.html">Training</a>
     </li>
     <li>
-      <a href="../articles/guides-jobs.html">Jobs</a>
-    </li>
-    <li>
-      <a href="../articles/guides-tuning.html">Tuning</a>
-    </li>
-  </ul>
-</li>
-<li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    Examples
-     
-    <span class="caret"></span>
-  </a>
-  <ul class="dropdown-menu" role="menu">
-    <li>
-      <a href="../articles/examples-mnist.html">MNIST</a>
-    </li>
-    <li>
-      <a href="../articles/examples-keras.html">Keras</a>
+      <a href="../articles/tuning.html">Tuning</a>
     </li>
   </ul>
 </li>
@@ -110,22 +92,48 @@
       <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Initializes Default Configuration File</h1>
+    <h1>Copy files to / from Google Storage</h1>
     </div>
 
     
-    <p>Creates a default 'cloudml.yml' configuration file to initialize the
-configuration process. This file is created in the current directory,
-open this file to configure this further.</p>
+    <p>Use the <code>gsutil cp</code> command to copy data between your local file system and
+the cloud, copy data within the cloud, and copy data between cloud storage
+providers.</p>
     
 
-    <pre class="usage"><span class='fu'>cloudml_init</span>()</pre>
-        
+    <pre class="usage"><span class='fu'>gcloud_copy</span>(<span class='no'>source</span>, <span class='no'>destination</span>, <span class='kw'>recursive</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>echo</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
+    
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>source</th>
+      <td><p>The file to be copied. This can be either a path on the local
+filesystem, or a Google Storage URI (e.g. <code>gs://[BUCKET_NAME]/[FILENAME.CSV]</code>).</p></td>
+    </tr>
+    <tr>
+      <th>destination</th>
+      <td><p>The location where the <code>source</code> file should be copied to. This can be
+either a path on the local filesystem, or a Google Storage URI (e.g.
+<code>gs://[BUCKET_NAME]/[FILENAME.CSV]</code>).</p></td>
+    </tr>
+    <tr>
+      <th>recursive</th>
+      <td><p>Boolean; perform a recursive copy? This must be specified if you intend on
+copying directories.</p></td>
+    </tr>
+    <tr>
+      <th>echo</th>
+      <td><p>Echo command output to console</p></td>
+    </tr>
+    </table>
+    
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
+      <li><a href="#arguments">Arguments</a></li>
                 </ul>
 
   </div>
@@ -133,7 +141,7 @@ open this file to configure this further.</p>
 
       <footer>
       <div class="copyright">
-  <p>Developed by JJ Allaire, Kevin Ushey.</p>
+  <p>Developed by Javier Luraschi, JJ Allaire, Kevin Ushey.</p>
 </div>
 
 <div class="pkgdown">

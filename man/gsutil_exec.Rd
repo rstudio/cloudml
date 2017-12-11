@@ -16,3 +16,4 @@ gsutil_exec(..., args = NULL, echo = FALSE)
 \description{
 Executes a Google Utils command with the given parameters.
 }
+\keyword{internal}

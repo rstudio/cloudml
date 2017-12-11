@@ -145,7 +145,7 @@ store_cached_data <- function (source, destination, replace_all = FALSE) {
       target <- file.path(destination, paste0(pkg, ".tar"))
 
       message(paste0("Adding '", compressed, "' to ", target, " cache."))
-      system(paste("gsutil", "cp", shQuote(compressed), shQuote(target)))
+      system(paste("gsutil", "-m", "cp", shQuote(compressed), shQuote(target)))
     }
   }
 }
@@ -234,7 +234,7 @@ tfruns::training_run(file = deploy$entrypoint,
                      flags = deploy$overlay,
                      encoding = "UTF-8",
                      echo = TRUE,
-                     view = FALSE,
+                     view = "save",
                      run_dir = run_dir)
 
 tf_config <- jsonlite::fromJSON(Sys.getenv("TF_CONFIG", "{}"))
@@ -249,5 +249,5 @@ storage <- cloudml[["storage"]]
 if (is.character(storage)) {
   source <- run_dir
   target <- do.call("file.path", as.list(c(storage, run_dir, trial_id)))
-  system(paste("gsutil", "cp", "-r", shQuote(source), shQuote(target)))
+  system(paste("gsutil", "-m", "cp", "-r", shQuote(source), shQuote(target)))
 }

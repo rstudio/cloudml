@@ -16,3 +16,4 @@ gcloud_exec(..., args = NULL, echo = FALSE)
 \description{
 Executes a Google Cloud command with the given parameters.
 }
+\keyword{internal}

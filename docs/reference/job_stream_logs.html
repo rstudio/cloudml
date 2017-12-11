@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Train a model locally — local_train • cloudml</title>
+<title>Show job log stream — job_stream_logs • cloudml</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -92,42 +92,45 @@
       <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Train a model locally</h1>
+    <h1>Show job log stream</h1>
     </div>
 
     
-    <p>Train a model locally, using the <code>gcloud</code> command line
-utility. This can be used as a testing bed for TensorFlow
-applications which you want to later run on Google Cloud,
-submitted using <code><a href='cloudml_train.html'>cloudml_train()</a></code>.</p>
+    <p>Show logs from a running Cloud ML Engine job.</p>
     
 
-    <pre class="usage"><span class='fu'>local_train</span>(<span class='kw'>application</span> <span class='kw'>=</span> <span class='fu'>getwd</span>(), <span class='kw'>config</span> <span class='kw'>=</span> <span class='st'>"default"</span>,
-  <span class='kw'>entrypoint</span> <span class='kw'>=</span> <span class='st'>"train.R"</span>, <span class='no'>...</span>)</pre>
+    <pre class="usage"><span class='fu'>job_stream_logs</span>(<span class='no'>job</span>,
+  <span class='kw'>polling_interval</span> <span class='kw'>=</span> <span class='fu'>getOption</span>(<span class='st'>"cloudml.stream_logs.polling"</span>, <span class='fl'>5</span>),
+  <span class='kw'>task_name</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>allow_multiline_logs</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>application</th>
-      <td><p>The path to a TensorFlow application. Defaults to
-the current working directory.</p></td>
+      <th>job</th>
+      <td><p>Job name or job object.</p></td>
     </tr>
     <tr>
-      <th>config</th>
-      <td><p>The name of the configuration to be used. Defaults to
-the <code>"cloudml"</code> configuration.</p></td>
+      <th>polling_interval</th>
+      <td><p>Number of seconds to wait between efforts to fetch the
+latest log messages.</p></td>
     </tr>
     <tr>
-      <th>entrypoint</th>
-      <td><p>File to be used as entrypoint for training.</p></td>
+      <th>task_name</th>
+      <td><p>If set, display only the logs for this particular task.</p></td>
     </tr>
     <tr>
-      <th>...</th>
-      <td><p>Named arguments, used to supply runtime configuration
-settings to your TensorFlow application.</p></td>
+      <th>allow_multiline_logs</th>
+      <td><p>Output multiline log messages as single records.</p></td>
     </tr>
     </table>
+    
+    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
+
+    <p>Other job management: <code><a href='job_cancel.html'>job_cancel</a></code>,
+  <code><a href='job_collect_async.html'>job_collect_async</a></code>,
+  <code><a href='job_collect.html'>job_collect</a></code>, <code><a href='job_describe.html'>job_describe</a></code>,
+  <code><a href='job_list.html'>job_list</a></code>, <code><a href='job_status.html'>job_status</a></code></p>
     
 
   </div>
@@ -135,14 +138,16 @@ settings to your TensorFlow application.</p></td>
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
-                </ul>
+      
+      <li><a href="#see-also">See also</a></li>
+          </ul>
 
   </div>
 </div>
 
       <footer>
       <div class="copyright">
-  <p>Developed by JJ Allaire, Kevin Ushey.</p>
+  <p>Developed by Javier Luraschi, JJ Allaire, Kevin Ushey.</p>
 </div>
 
 <div class="pkgdown">

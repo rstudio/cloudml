@@ -101,7 +101,8 @@ using the RStudio terminal, if available.</p>
     
 
     <pre class="usage"><span class='fu'>job_collect_async</span>(<span class='no'>job</span>, <span class='kw'>gcloud</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>destination</span> <span class='kw'>=</span> <span class='st'>"runs"</span>,
-  <span class='kw'>polling_interval</span> <span class='kw'>=</span> <span class='fu'>getOption</span>(<span class='st'>"cloudml.collect.polling"</span>, <span class='fl'>10</span>))</pre>
+  <span class='kw'>polling_interval</span> <span class='kw'>=</span> <span class='fu'>getOption</span>(<span class='st'>"cloudml.stream_logs.polling"</span>, <span class='fl'>5</span>),
+  <span class='kw'>view</span> <span class='kw'>=</span> <span class='fu'>interactive</span>())</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
@@ -124,6 +125,10 @@ be downloaded. Defaults to <code>runs</code>.</p></td>
       <td><p>Number of seconds to wait between efforts to fetch the
 latest log messages.</p></td>
     </tr>
+    <tr>
+      <th>view</th>
+      <td><p>View the job after collecting it.</p></td>
+    </tr>
     </table>
     
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
@@ -131,7 +136,7 @@ latest log messages.</p></td>
     <p>Other job management: <code><a href='job_cancel.html'>job_cancel</a></code>,
   <code><a href='job_collect.html'>job_collect</a></code>, <code><a href='job_describe.html'>job_describe</a></code>,
   <code><a href='job_list.html'>job_list</a></code>, <code><a href='job_status.html'>job_status</a></code>,
-  <code><a href='job_stream.html'>job_stream</a></code></p>
+  <code><a href='job_stream_logs.html'>job_stream_logs</a></code></p>
     
 
   </div>
@@ -148,7 +153,7 @@ latest log messages.</p></td>
 
       <footer>
       <div class="copyright">
-  <p>Developed by JJ Allaire, Kevin Ushey.</p>
+  <p>Developed by Javier Luraschi, JJ Allaire, Kevin Ushey.</p>
 </div>
 
 <div class="pkgdown">

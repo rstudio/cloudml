@@ -27,24 +27,23 @@ reference:
     contents:
       - cloudml_train
       - cloudml_tune
-  - title: "Jobs"
+  - title: "Managing Jobs"
     desc: >
       Functions for managing remote Cloud ML Jobs.
     contents:
-      - job_cancel
-      - job_collect
-      - job_describe
-      - job_list
       - job_status
-      - job_stream
-  - title: "Utils"
+      - job_stream_logs
+      - job_describe
+      - job_collect
+      - job_cancel
+      - job_list
+
+  - title: "Google Cloud"
     desc: >
       Functions for interacting with Google Cloud.
     contents:
       - gcloud_install
       - gcloud_init
       - gcloud_terminal
-      - gcloud_path
-      - gsutil_copy
+      - gcloud_copy
       - gsutil_data
-      - gsutil_path
