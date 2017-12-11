@@ -2,6 +2,7 @@
 ^\.Rproj\.user$
 ^examples/
 ^internal/
+^dev/
 ^scratch/
 ^man-roxygen/
 ^docs/
@@ -14,3 +15,4 @@
 ^cloudml.yml$
 ^.travis.R$
 ^docs$
+
