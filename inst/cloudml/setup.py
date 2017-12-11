@@ -75,10 +75,13 @@ class CustomCommands(install):
       message = "Command %s failed: exit code %s" % (commands, status)
       raise RuntimeError(message)
 
-  """Loads the cloudml.yml config"""
-  def LoadCloudML(self):
+  """Loads the job.yml config which is used to pass internal settings to cloudml jobs"""
+  def LoadJobConfig(self):
     path, filename = os.path.split(os.path.realpath(__file__))
-    cloudmlpath = os.path.join(path, "cloudml-model", "cloudml.yml")
+    cloudmlpath = os.path.join(path, "cloudml-model", "job.yml")
+    if (not os.path.isfile(cloudmlpath)):
+      raise ValueError('job.yml expected in job bundle but is missing')
+
     stream = open(cloudmlpath, "r")
     self.config = yaml.load(stream)
 
@@ -91,10 +94,10 @@ class CustomCommands(install):
     distro = platform.linux_distribution()
     print("linux_distribution: %s" % (distro,))
 
-    self.LoadCloudML()
+    self.LoadJobConfig()
 
     # Upgrade r if latestr is set in cloudml.yaml
-    if (not "latestr" in self.config["cloudml"] or self.config["cloudml"]["latestr"] == True):
+    if (not "latestr" in self.config or self.config["latestr"] == True):
       print("Upgrading R")
       self.RunCustomCommandList(UPGRADE_R_COMMANDS)
 
@@ -102,7 +105,7 @@ class CustomCommands(install):
     self.RunCustomCommandList(CUSTOM_COMMANDS)
 
     # Run pip install
-    if (not "keras" in self.config["cloudml"] or self.config["cloudml"]["keras"] == True):
+    if (not "keras" in self.config or self.config["keras"] == True):
       print("Installing Keras")
       self.RunCustomCommandList(PIP_INSTALL_KERAS)
 

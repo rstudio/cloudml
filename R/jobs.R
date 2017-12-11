@@ -72,11 +72,20 @@ cloudml_train <- function(file = "train.R",
     cloudml$storage <- gcloud_project_bucket(project)
   }
 
+  # region is required
+  default_region <- gcloud_default_region()
+  gcloud$region <- if (nchar(default_region) == 0) "us-east1" else default_region
+
   # write cloud.yml file to deployment directory if we
   # don't already have one there
   cloudml_yml <- file.path(deployment$directory, "cloudml.yml")
   if (!file.exists(cloudml_yml))
     yaml::write_yaml(list(gcloud = gcloud, cloudml = cloudml), cloudml_yml)
+
+  # pass parameters to the job
+  yaml::write_yaml(list(
+    storage = cloudml$storage
+  ), "job.yml")
 
   # move to deployment parent directory and spray __init__.py
   directory <- deployment$directory

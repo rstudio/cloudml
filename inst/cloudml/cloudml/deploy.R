@@ -99,14 +99,13 @@ installed <- rownames(installed.packages())
 if (!"yaml" %in% installed) install.packages("yaml")
 
 
-config <- yaml::yaml.load_file("cloudml.yml")
-cloudml <- config$cloudml
+job_config <- yaml::yaml.load_file("job.yml")
 
-cache <- cloudml[["cache"]]
-cache_enabled <- !identical(cloudml[["cache"]], FALSE)
+cache <- job_config[["cache"]]
+cache_enabled <- !identical(job_config[["cache"]], FALSE)
 
 if (is.null(cache)) {
-  cache <- file.path(cloudml[["storage"]], "cache")
+  cache <- file.path(job_config[["storage"]], "cache")
   message(paste0("Cache entry not found, defaulting to: ", cache))
 } else {
   message(paste0("Cache entry found: ", cache))
@@ -123,7 +122,7 @@ if (file.exists("/etc/issue")) {
   message(paste0("Versioning cache as: ", cache))
 }
 
-use_packrat <- !identical(cloudml[["packrat"]], FALSE)
+use_packrat <- !identical(job_config[["packrat"]], FALSE)
 
 get_cached_bundles <- function (source) {
   cached_entries <- system2("gsutil", c("ls", source), stdout = TRUE)
@@ -245,7 +244,7 @@ if (!is.null(deploy$overlay$hypertune) && !is.null(tf_config$task)) {
 }
 
 # upload run directory to requested bucket (if any)
-storage <- cloudml[["storage"]]
+storage <- job_config[["storage"]]
 if (is.character(storage)) {
   source <- run_dir
   target <- do.call("file.path", as.list(c(storage, run_dir, trial_id)))
