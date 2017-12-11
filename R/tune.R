@@ -2,6 +2,8 @@
 #'
 #' @inheritParams cloudml_train
 #'
+#' @seealso [job_trials()]
+#'
 #' @export
 cloudml_tune <- function(file = "train.R",
                          config = "cloudml",
