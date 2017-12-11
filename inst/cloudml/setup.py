@@ -114,8 +114,8 @@ REQUIRED_PACKAGES = []
 setup(
     name             = "cloudml",
     version          = "0.0.0.1",
-    author           = "Google and RStudio",
-    author_email     = "kevin@rstudio.com",
+    author           = "Author",
+    author_email     = "author@example.com",
     install_requires = REQUIRED_PACKAGES,
     packages         = find_packages(),
     package_data     = {"": ["*"]},
