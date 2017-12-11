@@ -4,10 +4,18 @@
 #' Upload a TensorFlow application to Google Cloud, and use that application to
 #' train a model.
 #'
+#' @inheritParams tfruns::training_run
+#'
 #' @param file File to be used as entrypoint for training.
 #'
 #' @param config The name of the configuration to be used. Defaults to the
 #'   `"cloudml"` configuration.
+#'
+#' @param hypertune
+#'   Path to a YAML file, defining how hyperparameters should
+#'   be tuned. See
+#'   https://cloud.google.com/ml/reference/rest/v1/projects.jobs
+#'   for more details.
 #'
 #' @param collect Collect job output after submission. Defaults to "ask" which
 #'   will prompt within interactive environments. Within versions of RStudio
@@ -21,9 +29,10 @@
 #'
 #' @export
 cloudml_train <- function(file = "train.R",
-                          config      = "cloudml",
-                          collect = "ask",
-                          ...)
+                          config = "cloudml",
+                          flags = NULL,
+                          hypertune = NULL,
+                          collect = "ask")
 {
   message("Submitting training job to CloudML...")
 
@@ -33,13 +42,12 @@ cloudml_train <- function(file = "train.R",
 
   # prepare application for deployment
   id <- unique_job_name(config)
-  overlay <- list(...)
   deployment <- scope_deployment(
     id = id,
     application = application,
     context = "cloudml",
     config = config,
-    overlay = overlay,
+    overlay = flags,
     entrypoint = entrypoint
   )
 
@@ -84,7 +92,7 @@ cloudml_train <- function(file = "train.R",
                 ("--staging-bucket=%s", gcloud[["staging-bucket"]])
                 ("--runtime-version=%s", cloudml_version)
                 ("--region=%s", gcloud[["region"]])
-                ("--config=%s/%s", basename(application), overlay$hypertune)
+                ("--config=%s/%s", basename(application), hypertune)
                 ("--")
                 ("Rscript"))
 
