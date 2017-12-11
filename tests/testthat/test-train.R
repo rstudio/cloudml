@@ -23,16 +23,13 @@ test_that("cloudml_train() can train and collect savedmodel", {
 
   with_temp_training_dir(system.file("examples/mnist", package = "cloudml"), {
     config_yml <- "cloudml.yml"
-    mnist_config <- yaml::yaml.load(readLines(config_yml))
-    cloudml_write_config(mnist_config, config_yml)
+    if (file.exists("cloudml.yml"))
+      config <- yaml::yaml.load(readLines(config_yml))
+    else
+      config <- NULL
+    cloudml_write_config(config, config_yml)
 
-    job <- cloudml_train(
-      application = system.file(
-        "examples/mnist/",
-        package = "cloudml"
-      ),
-      entrypoint = "train.R"
-    )
+    job <- cloudml_train()
 
     expect_train_succeeds(job)
   })
@@ -43,8 +40,11 @@ test_that("cloudml_train() can train keras model", {
 
   with_temp_training_dir(system.file("examples/keras", package = "cloudml"), {
     config_yml <- "cloudml.yml"
-    mnist_config <- yaml::yaml.load(readLines(config_yml))
-    cloudml_write_config(mnist_config, config_yml)
+    if (file.exists("cloudml.yml"))
+      config <- yaml::yaml.load(readLines(config_yml))
+    else
+      config <- NULL
+    cloudml_write_config(config, config_yml)
 
     job <- cloudml_train()
 
