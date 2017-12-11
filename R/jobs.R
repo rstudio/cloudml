@@ -82,6 +82,11 @@ cloudml_train <- function(file = "train.R",
   if (!file.exists(cloudml_yml))
     yaml::write_yaml(list(gcloud = gcloud, cloudml = cloudml), cloudml_yml)
 
+  # pass parameters to the job
+  yaml::write_yaml(list(
+    storage = cloudml$storage
+  ), "job.yml")
+
   # move to deployment parent directory and spray __init__.py
   directory <- deployment$directory
   scope_setup_py(directory)
