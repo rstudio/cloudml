@@ -31,7 +31,7 @@
 #' @param ... Named arguments, used to supply runtime configuration settings to
 #'   your TensorFlow application.
 #'
-#' @seealso [job_describe()], [job_collect()], [job_cancel()]
+#' @seealso [job_status()], [job_collect()], [job_cancel()]
 #'
 #' @export
 cloudml_train <- function(file = "train.R",
@@ -202,27 +202,6 @@ job_cancel <- function(job) {
                 (job))
 
   gcloud_exec(args = arguments())
-}
-
-#' Describe a job
-#'
-#' @inheritParams job_status
-#'
-#' @family job management
-#'
-#' @export
-job_describe <- function(job) {
-  job <- as.cloudml_job(job)
-
-  arguments <- (MLArgumentsBuilder()
-                ("jobs")
-                ("describe")
-                (job))
-
-  output <- gcloud_exec(args = arguments())
-
-  # return as R list
-  yaml::yaml.load(paste(output$stdout, collapse = "\n"))
 }
 
 #' List all jobs
