@@ -19,6 +19,7 @@ Imports:
   readr,
   rprojroot,
   rstudioapi,
+  tools,
   utils,
   withr,
   yaml

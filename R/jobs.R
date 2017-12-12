@@ -8,37 +8,26 @@
 #'
 #' @param file File to be used as entrypoint for training.
 #'
-#' @param config The name of the configuration to be used. Defaults to the
-#'   `"cloudml"` configuration.
-#'
 #' @param scale_tier Machine type for training. "basic" provides a single
 #'   worker instance suitable for learning how to use Cloud ML Engine,
 #'   and for experimenting with new models using small datasets; "basic-gpu"
 #'   provides a single worker instance with a GPU. "basic-tpu" provides a
 #'   single worker instance with a TPU.
 #'
-#' @param hypertune
-#'   Path to a YAML file, defining how hyperparameters should
-#'   be tuned. See
-#'   https://cloud.google.com/ml/reference/rest/v1/projects.jobs
-#'   for more details.
+#' @param cloudml A list, \code{YAML} or \code{JSON} configuration file as described
+#'   \url{https://cloud.google.com/ml-engine/reference/rest/v1/projects.jobs}.
 #'
-#' @param collect Collect job output after submission. Defaults to "ask" which
-#'   will prompt within interactive environments. Within versions of RStudio
-#'   that support terminals (>= v1.1), the waiting and collection will be done
-#'   within a terminal.
-#'
-#' @param ... Named arguments, used to supply runtime configuration settings to
-#'   your TensorFlow application.
+#' @param gcloud A list or \code{YAML} file with optional 'account' or 'project'
+#'   fields used to configure the GCloud environemnt.
 #'
 #' @seealso [job_status()], [job_collect()], [job_cancel()]
 #'
 #' @export
 cloudml_train <- function(file = "train.R",
-                          config = "cloudml",
                           scale_tier = c("basic", "basic-gpu", "basic-tpu"),
                           flags = NULL,
-                          hypertune = NULL,
+                          cloudml = NULL,
+                          gcloud = NULL,
                           collect = "ask")
 {
   message("Submitting training job to CloudML...")
@@ -53,39 +42,36 @@ cloudml_train <- function(file = "train.R",
     id = id,
     application = application,
     context = "cloudml",
-    config = config,
     overlay = flags,
-    entrypoint = entrypoint
+    entrypoint = entrypoint,
+    cloudml = cloudml,
+    gcloud = gcloud
   )
 
   # read configuration
   gcloud <- gcloud_config()
-  cloudml <- cloudml_config()
+  cloudml_file <- deployment$cloudml_file
 
   # create default storage bucket for project if not specified
-  if (is.null(cloudml[["storage"]])) {
+  storage <- getOption("cloudml.storage")
+  if (is.null(storage)) {
     project <- gcloud[["project"]]
     project_bucket <- gcloud_project_bucket(project)
     if (!gcloud_project_has_bucket(project)) {
       gcloud_project_create_bucket(project)
     }
-    cloudml$storage <- gcloud_project_bucket(project)
+    storage <- gcloud_project_bucket(project)
   }
 
   # region is required
   default_region <- gcloud_default_region()
   gcloud$region <- if (nchar(default_region) == 0) "us-east1" else default_region
 
-  # write cloud.yml file to deployment directory if we
-  # don't already have one there
-  cloudml_yml <- file.path(deployment$directory, "cloudml.yml")
-  if (!file.exists(cloudml_yml))
-    yaml::write_yaml(list(gcloud = gcloud, cloudml = cloudml), cloudml_yml)
-
   # pass parameters to the job
+  job_yml <- file.path(deployment$directory, "job.yml")
   yaml::write_yaml(list(
-    storage = cloudml$storage
-  ), "job.yml")
+    storage = storage
+  ), job_yml)
 
   # move to deployment parent directory and spray __init__.py
   directory <- deployment$directory
@@ -102,14 +88,13 @@ cloudml_train <- function(file = "train.R",
                 ("submit")
                 ("training")
                 (id)
-                ("--job-dir=%s", file.path(cloudml[["storage"]], "staging"))
+                ("--job-dir=%s", file.path(storage, "staging"))
                 ("--package-path=%s", basename(directory))
                 ("--module-name=%s.cloudml.deploy", basename(directory))
-                ("--staging-bucket=%s", gcloud[["staging-bucket"]])
                 ("--runtime-version=%s", cloudml_version)
                 ("--region=%s", gcloud[["region"]])
                 ("--scale-tier=%s", match.arg(scale_tier))
-                ("--config=%s/%s", "cloudml-model", hypertune)
+                ("--config=%s/%s", "cloudml-model", cloudml_file)
                 ("--")
                 ("Rscript"))
 
