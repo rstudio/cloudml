@@ -33,7 +33,7 @@ cloudml_write_config <- function(destination = "gcloud.yml") {
       paste("gs://", Sys.getenv("GCLOUD_PROJECT"), "/travis", sep = "")
     )
 
-  yaml::write_yaml(config, destination)
+  yaml::write_yaml(gcloud, destination)
 }
 
 cloudml_tests_configured <- function() {
@@ -42,7 +42,7 @@ cloudml_tests_configured <- function() {
 
 if (cloudml_tests_configured()) {
   if (identical(Sys.getenv("TRAVIS"), "true")) {
-    cloudml:::gcloud_install()
+    cloudml::gcloud_install()
   }
 
   options(repos = c(CRAN = "http://cran.rstudio.com"))
