@@ -100,7 +100,8 @@
 train a model.</p>
     
 
-    <pre class="usage"><span class='fu'>cloudml_train</span>(<span class='kw'>file</span> <span class='kw'>=</span> <span class='st'>"train.R"</span>, <span class='kw'>config</span> <span class='kw'>=</span> <span class='st'>"cloudml"</span>, <span class='kw'>flags</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+    <pre class="usage"><span class='fu'>cloudml_train</span>(<span class='kw'>file</span> <span class='kw'>=</span> <span class='st'>"train.R"</span>, <span class='kw'>config</span> <span class='kw'>=</span> <span class='st'>"cloudml"</span>,
+  <span class='kw'>scale_tier</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"basic"</span>, <span class='st'>"basic-gpu"</span>, <span class='st'>"basic-tpu"</span>), <span class='kw'>flags</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>hypertune</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>collect</span> <span class='kw'>=</span> <span class='st'>"ask"</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
@@ -114,6 +115,14 @@ train a model.</p>
       <th>config</th>
       <td><p>The name of the configuration to be used. Defaults to the
 <code>"cloudml"</code> configuration.</p></td>
+    </tr>
+    <tr>
+      <th>scale_tier</th>
+      <td><p>Machine type for training. "basic" provides a single
+worker instance suitable for learning how to use Cloud ML Engine,
+and for experimenting with new models using small datasets; "basic-gpu"
+provides a single worker instance with a GPU. "basic-tpu" provides a
+single worker instance with a TPU.</p></td>
     </tr>
     <tr>
       <th>flags</th>
@@ -143,7 +152,7 @@ your TensorFlow application.</p></td>
     
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
-    <p><code><a href='job_describe.html'>job_describe()</a></code>, <code><a href='job_collect.html'>job_collect()</a></code>, <code><a href='job_cancel.html'>job_cancel()</a></code></p>
+    <p><code><a href='job_status.html'>job_status()</a></code>, <code><a href='job_collect.html'>job_collect()</a></code>, <code><a href='job_cancel.html'>job_cancel()</a></code></p>
     
 
   </div>

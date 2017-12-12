@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Collect job output — job_collect • cloudml</title>
+<title>Synchronize content of two buckets/directories — gcloud_rsync • cloudml</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -92,50 +92,69 @@
       <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Collect job output</h1>
+    <h1>Synchronize content of two buckets/directories</h1>
     </div>
 
     
-    <p>Collect the job outputs (e.g. fitted model) from a job. If the job has not
-yet finished running, <code>job_collect()</code> will block and wait until the job has
-finished.</p>
+    <p>The <code>gcloud_rsync</code> function makes the contents under <code>destination</code> the same
+as the contents under <code>source</code>, by copying any missing files/objects (or
+those whose data has changed), and (if the <code>delete</code> option is specified)
+deleting any extra files/objects. <code>source</code> must specify a directory, bucket,
+or bucket subdirectory.</p>
     
 
-    <pre class="usage"><span class='fu'>job_collect</span>(<span class='no'>job</span>, <span class='kw'>trial</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>destination</span> <span class='kw'>=</span> <span class='st'>"runs"</span>, <span class='kw'>timeout</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>view</span> <span class='kw'>=</span> <span class='fu'>interactive</span>())</pre>
+    <pre class="usage"><span class='fu'>gcloud_rsync</span>(<span class='no'>source</span>, <span class='no'>destination</span>, <span class='kw'>delete</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>recursive</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>parallel</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>dry_run</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>options</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>echo</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>job</th>
-      <td><p>Job name or job object.</p></td>
-    </tr>
-    <tr>
-      <th>trial</th>
-      <td><p>Trial number to collect when under hyperparameter tuning.</p></td>
+      <th>source</th>
+      <td><p>The file to be copied. This can be either a path on the local
+filesystem, or a Google Storage URI (e.g. <code>gs://[BUCKET_NAME]/[FILENAME.CSV]</code>).</p></td>
     </tr>
     <tr>
       <th>destination</th>
-      <td><p>The destination directory in which model outputs should
-be downloaded. Defaults to <code>runs</code>.</p></td>
+      <td><p>The location where the <code>source</code> file should be copied to. This can be
+either a path on the local filesystem, or a Google Storage URI (e.g.
+<code>gs://[BUCKET_NAME]/[FILENAME.CSV]</code>).</p></td>
     </tr>
     <tr>
-      <th>timeout</th>
-      <td><p>Give up collecting job after the specified minutes.</p></td>
+      <th>delete</th>
+      <td><p>Delete extra files under <code>destination</code> not found under
+<code>source</code> By default extra files are not deleted.</p></td>
     </tr>
     <tr>
-      <th>view</th>
-      <td><p>View the job results after collecting it</p></td>
+      <th>recursive</th>
+      <td><p>Causes directories, buckets, and bucket subdirectories to
+be synchronized recursively. If you neglect to use this option
+<code>gcloud_rsync()</code> will make only the top-level directory in the source and
+destination URLs match, skipping any sub-directories.</p></td>
+    </tr>
+    <tr>
+      <th>parallel</th>
+      <td><p>Causes synchronization to run in parallel. This can
+significantly improve performance if you are performing operations on a
+large number of files over a reasonably fast network connection.</p></td>
+    </tr>
+    <tr>
+      <th>dry_run</th>
+      <td><p>Causes rsync to run in "dry run" mode, i.e., just outputting
+what would be copied or deleted without actually doing any
+copying/deleting.</p></td>
+    </tr>
+    <tr>
+      <th>options</th>
+      <td><p>Character vector of additional command line options to the
+gsutil rsync command (as specified at
+<a href='https://cloud.google.com/storage/docs/gsutil/commands/rsync'>https://cloud.google.com/storage/docs/gsutil/commands/rsync</a>).</p></td>
+    </tr>
+    <tr>
+      <th>echo</th>
+      <td><p>Echo command output to console</p></td>
     </tr>
     </table>
-    
-    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
-
-    <p>Other job management: <code><a href='job_cancel.html'>job_cancel</a></code>,
-  <code><a href='job_collect_async.html'>job_collect_async</a></code>, <code><a href='job_list.html'>job_list</a></code>,
-  <code><a href='job_status.html'>job_status</a></code>, <code><a href='job_stream_logs.html'>job_stream_logs</a></code>,
-  <code><a href='job_trials.html'>job_trials</a></code></p>
     
 
   </div>
@@ -143,9 +162,7 @@ be downloaded. Defaults to <code>runs</code>.</p></td>
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
-      
-      <li><a href="#see-also">See also</a></li>
-          </ul>
+                </ul>
 
   </div>
 </div>

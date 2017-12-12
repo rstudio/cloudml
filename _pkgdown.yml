@@ -32,9 +32,8 @@ reference:
       Functions for managing remote Cloud ML Jobs.
     contents:
       - job_status
-      - job_stream_logs
-      - job_describe
       - job_collect
+      - job_stream_logs
       - job_cancel
       - job_list
 

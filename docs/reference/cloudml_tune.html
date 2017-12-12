@@ -99,8 +99,8 @@
     <p>Tune hyperparameters on Cloud ML</p>
     
 
-    <pre class="usage"><span class='fu'>cloudml_tune</span>(<span class='kw'>file</span> <span class='kw'>=</span> <span class='st'>"train.R"</span>, <span class='kw'>config</span> <span class='kw'>=</span> <span class='st'>"cloudml"</span>, <span class='kw'>flags</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>hypertune</span> <span class='kw'>=</span> <span class='st'>"hypertune.yml"</span>)</pre>
+    <pre class="usage"><span class='fu'>cloudml_tune</span>(<span class='kw'>file</span> <span class='kw'>=</span> <span class='st'>"train.R"</span>, <span class='kw'>config</span> <span class='kw'>=</span> <span class='st'>"cloudml"</span>, <span class='kw'>scale_tier</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"basic"</span>,
+  <span class='st'>"basic-gpu"</span>, <span class='st'>"basic-tpu"</span>), <span class='kw'>flags</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>hypertune</span> <span class='kw'>=</span> <span class='st'>"hypertune.yml"</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
@@ -113,6 +113,14 @@
       <th>config</th>
       <td><p>The name of the configuration to be used. Defaults to the
 <code>"cloudml"</code> configuration.</p></td>
+    </tr>
+    <tr>
+      <th>scale_tier</th>
+      <td><p>Machine type for training. "basic" provides a single
+worker instance suitable for learning how to use Cloud ML Engine,
+and for experimenting with new models using small datasets; "basic-gpu"
+provides a single worker instance with a GPU. "basic-tpu" provides a
+single worker instance with a TPU.</p></td>
     </tr>
     <tr>
       <th>flags</th>
@@ -128,13 +136,19 @@ for more details.</p></td>
     </tr>
     </table>
     
+    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
+
+    <p><code><a href='job_trials.html'>job_trials()</a></code></p>
+    
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
-                </ul>
+      
+      <li><a href="#see-also">See also</a></li>
+          </ul>
 
   </div>
 </div>
