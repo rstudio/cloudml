@@ -29,6 +29,8 @@ with_temp_training_dir <- function(training_dir, expr) {
 }
 
 test_that("cloudml_train() can train and collect savedmodel", {
+  skip("plain tensorflow test is currently a subset of keras test")
+
   with_temp_training_dir(system.file("examples/mnist", package = "cloudml"), {
     cloudml_write_config()
     job <- cloudml_train()

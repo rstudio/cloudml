@@ -31,7 +31,7 @@
 #' @param ... Named arguments, used to supply runtime configuration settings to
 #'   your TensorFlow application.
 #'
-#' @seealso [job_describe()], [job_collect()], [job_cancel()]
+#' @seealso [job_status()], [job_collect()], [job_cancel()]
 #'
 #' @export
 cloudml_train <- function(file = "train.R",
@@ -204,27 +204,6 @@ job_cancel <- function(job) {
   gcloud_exec(args = arguments())
 }
 
-#' Describe a job
-#'
-#' @inheritParams job_status
-#'
-#' @family job management
-#'
-#' @export
-job_describe <- function(job) {
-  job <- as.cloudml_job(job)
-
-  arguments <- (MLArgumentsBuilder()
-                ("jobs")
-                ("describe")
-                (job))
-
-  output <- gcloud_exec(args = arguments())
-
-  # return as R list
-  yaml::yaml.load(paste(output$stdout, collapse = "\n"))
-}
-
 #' List all jobs
 #'
 #' List existing Google Cloud ML jobs.
@@ -352,8 +331,55 @@ job_status <- function(job) {
 
 #' @export
 print.cloudml_job_status <- function(x, ...) {
-  utils::str(x, give.attr = FALSE)
+  message("Job:    ", x$jobId, " (", x$state, ")")
+
+  if (!is.null(x$startTime)) message("Start:  ", x$startTime)
+  if (!is.null(x$endTime)) message("End:    ", x$endTime)
+
+  trails_data <- job_trials(x)
+  if (!is.null(trails_data)) {
+    message("")
+    message("Hyperparameter Trials:")
+    print(trails_data)
+  }
+
   message(attr(x, "messages"))
+}
+
+#' Current trials of a job
+#'
+#' Get the hyperparameter trials for job, as an \R data frame
+#'
+#' @param job Job name or job object.
+#'
+#' @family job management
+#'
+#' @export
+job_trials <- function(job) {
+  UseMethod("job_trials")
+}
+
+job_trials_from_status <- function(status) {
+  if (is.null(status$trainingOutput) || is.null(status$trainingOutput$trials))
+    return(NULL)
+
+  do.call("rbind", lapply(status$trainingOutput$trials, as.data.frame))
+}
+
+#' @export
+job_trials.character <- function(job) {
+  status <- job_status(job)
+  job_trials_from_status(status)
+}
+
+#' @export
+job_trials.cloudml_job <- function(job) {
+  job_trials_from_status(job$description)
+}
+
+#' @export
+job_trials.cloudml_job_status <- function(status) {
+  job_trials_from_status(status)
 }
 
 #' Collect job output
@@ -373,11 +399,16 @@ print.cloudml_job_status <- function(x, ...) {
 #'
 #' @param view View the job results after collecting it
 #'
+#' @param trial Trial number to collect when under hyperparameter tuning.
+#'
 #' @family job management
 #'
 #' @export
-job_collect <- function(job, destination = "runs",
-                        timeout = NULL, view = interactive()) {
+job_collect <- function(job,
+                        destination = "runs",
+                        timeout = NULL,
+                        view = interactive(),
+                        trial = NULL) {
 
   job <- as.cloudml_job(job)
   id <- job$id
@@ -406,7 +437,7 @@ job_collect <- function(job, destination = "runs",
 
   # if we're already done, attempt download of outputs
   if (status$state == "SUCCEEDED")
-    return(job_download(job, destination, view = view))
+    return(job_download(job, destination, view = view, trial = trial))
 
   # if the job has failed, report error
   if (status$state == "FAILED") {
@@ -547,11 +578,14 @@ job_collect_async <- function(
   gcloud_terminal(terminal_command, clear = TRUE)
 }
 
-job_download <- function(job, destination = "runs", view = interactive()) {
+job_download <- function(job,
+                         destination = "runs",
+                         view = interactive(),
+                         trial = NULL) {
 
   status <- job_status(job)
 
-  trial_paths <- job_status_trial_dir(status, destination)
+  trial_paths <- job_status_trial_dir(status, destination, trial)
   source <- trial_paths$source
   destination <- trial_paths$destination
 
@@ -586,7 +620,7 @@ job_download <- function(job, destination = "runs", view = interactive()) {
   if (view)
     tfruns::view_run(run_dir)
 
-  invisible(NULL)
+  status
 }
 
 job_output_dir <- function(job) {
@@ -604,7 +638,7 @@ job_output_dir <- function(job) {
   output_path
 }
 
-job_status_trial_dir <- function(status, destination) {
+job_status_trial_dir <- function(status, destination, trial) {
 
   # determine storage from job
   storage <- dirname(status$trainingInput$jobDir)
@@ -614,16 +648,24 @@ job_status_trial_dir <- function(status, destination) {
     destination = destination
   )
 
-  if (job_status_is_tuning(status) && !is.null(status$trainingInput$hyperparameters$goal)) {
-    decreasing <- if (status$trainingInput$hyperparameters$goal == "MINIMIZE") FALSE else TRUE
-    ordered <- order(sapply(status$trainingOutput$trials, function(e) e$finalMetric$objectiveValue), decreasing = TRUE)
-    if (length(ordered) > 0) {
+  if (is.null(trial)) {
+    if (job_status_is_tuning(status) && !is.null(status$trainingInput$hyperparameters$goal)) {
+      decreasing <- if (status$trainingInput$hyperparameters$goal == "MINIMIZE") FALSE else TRUE
+      ordered <- order(sapply(status$trainingOutput$trials, function(e) e$finalMetric$objectiveValue), decreasing = TRUE)
+      if (length(ordered) > 0) {
 
-      output_path <- list(
-        source = file.path(output_path$source, status$trainingOutput$trials[[ordered[[1]]]]$trialId, "*"),
-        destination = file.path(destination, status$jobId)
-      )
+        output_path <- list(
+          source = file.path(output_path$source, status$trainingOutput$trials[[ordered[[1]]]]$trialId),
+          destination = file.path(destination, status$jobId)
+        )
+      }
     }
+  }
+  else {
+    output_path <- list(
+      source = file.path(output_path$source, trial),
+      destination = file.path(destination, status$jobId)
+    )
   }
 
   output_path
@@ -634,7 +676,7 @@ job_is_tuning <- function(job) {
 }
 
 job_status_is_tuning <- function(status) {
-  !identical(status$trainingOutput$isHyperparameterTuningJob, TRUE)
+  identical(status$trainingOutput$isHyperparameterTuningJob, TRUE)
 }
 
 view_job_step <- function(destination, jobId) {
