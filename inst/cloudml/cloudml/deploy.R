@@ -239,7 +239,7 @@ tfruns::training_run(file = deploy$entrypoint,
 tf_config <- jsonlite::fromJSON(Sys.getenv("TF_CONFIG", "{}"))
 
 trial_id <- NULL
-if (!is.null(deploy$overlay$hypertune) && !is.null(tf_config$task)) {
+if (!is.null(tf_config$task) || !is.null(tf_config$task$trial)) {
   trial_id <- tf_config$task$trial
 }
 
