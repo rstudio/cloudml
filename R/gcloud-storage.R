@@ -84,52 +84,49 @@ gcloud_rsync <- function(source, destination,
   gsutil_exec(args = arguments, echo = echo)
 }
 
-#' Get local path to data within Google Storage
+
+
+#' Get a local path to the contents of Google Storage bucket
 #'
-#' When running on Google Cloud the path is returned unchanged. When running in
-#' other contexts the file is copied to the local system and a path to the local
-#' file is returned. If a plain filesystem path is passed then it is also
-#' returned unchanged.
+#' Provides a local filesystem interface to Google Storage buckets. Many
+#' package functions accept only local filesystem paths as input (rather than
+#' gs:// URLs). For these cases the `gcloud_bucket()` function will synchronize
+#' gs:// buckets to the local filesystem and provide a local path interface
+#' to their contents.
 #'
-#' @inheritParams gcloud_copy
+#' @inheritParams gcloud_exec
 #'
-#' @param uri Path to Google Storage data
-#' @param local_dir Local directory to copy files into
+#' @param url Google Storage bucket URL (e.g. `gs://<your-bucket>`).
+#' @param local_dir Local directory to synchonize Google Storage bucket(s) to.
 #'
-#' @return Path to data file (may be local or remote depending on the execution
-#'   context).
+#' @return Local path to contents of bucket.
+#'
+#' @details If you pass a local path as the `url` it will be returned
+#'   unmodified. This allows you to for example use a training flag for the
+#'   location of data which points to a local directory during
+#'   development and a Google Cloud bucket during cloud training.
 #'
 #' @export
-gsutil_data <- function(uri, local_dir = "gs") {
-  if (!is_gs_uri(uri))
-    uri
-  else {
+gcloud_bucket <- function(url, local_dir = "gs", echo = FALSE) {
+
+  # return url unmodified for non google-storage URIs
+  if (!is_gs_uri(url)) {
+    url
+  } else {
+
     # extract [BUCKET_NAME]/[OBJECT_NAME] and build local path
-    object_path <- substring(uri, nchar("gs://") + 1)
+    object_path <- substring(url, nchar("gs://") + 1)
     local_path <- file.path(local_dir, object_path)
 
-    # download if necessary
-    if (!file.exists(local_path)) {
-
-      # create the directory if necessary
-      local_dir <- dirname(local_path)
-      if (!utils::file_test("-d", local_dir))
-        dir.create(local_dir, recursive = TRUE)
-
-      # first attempt download via public api endpoint
-      public_url <- paste0("https://storage.googleapis.com/", object_path)
-      result <- tryCatch(suppressWarnings(download.file(public_url, local_path)),
-                         error = function(e) 1)
-
-      # if that failed then try gcloud_copy (which requires auth)
-      if (result != 0)
-        gcloud_copy(uri, local_path)
-    }
+    # synchronize
+    gcloud_rsync(url, local_path, delete = TRUE, recursive = TRUE, echo = echo)
 
     # return path
     local_path
   }
 }
+
+
 
 is_gs_uri <- function(file) {
   is.character(file) && grepl("^gs://.+$", file)
