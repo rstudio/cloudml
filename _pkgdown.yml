@@ -46,4 +46,4 @@ reference:
       - gcloud_init
       - gcloud_terminal
       - gcloud_copy
-      - gsutil_data
+      - gcloud_rsync
