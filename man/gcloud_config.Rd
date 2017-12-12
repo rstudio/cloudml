@@ -7,7 +7,7 @@
 gcloud_config(path = getwd())
 }
 \arguments{
-\item{path}{Path to 'cloudml.yml' file; defaults to \code{getwd()}.}
+\item{path}{Path to 'gcloud.yml' file; defaults to \code{getwd()}.}
 }
 \description{
 Reads the Google Cloud config file.

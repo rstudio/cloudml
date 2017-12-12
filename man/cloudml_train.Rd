@@ -4,15 +4,12 @@
 \alias{cloudml_train}
 \title{Train a model using Cloud ML}
 \usage{
-cloudml_train(file = "train.R", config = "cloudml",
-  scale_tier = c("basic", "basic-gpu", "basic-tpu"), flags = NULL,
-  hypertune = NULL, collect = "ask")
+cloudml_train(file = "train.R", scale_tier = c("basic", "basic-gpu",
+  "basic-tpu"), flags = NULL, cloudml = NULL, gcloud = NULL,
+  collect = "ask")
 }
 \arguments{
 \item{file}{File to be used as entrypoint for training.}
-
-\item{config}{The name of the configuration to be used. Defaults to the
-\code{"cloudml"} configuration.}
 
 \item{scale_tier}{Machine type for training. "basic" provides a single
 worker instance suitable for learning how to use Cloud ML Engine,
@@ -23,18 +20,11 @@ single worker instance with a TPU.}
 \item{flags}{Named list with flag values (see \code{\link[=flags]{flags()}}) or path
 to YAML file containing flag values.}
 
-\item{hypertune}{Path to a YAML file, defining how hyperparameters should
-be tuned. See
-https://cloud.google.com/ml/reference/rest/v1/projects.jobs
-for more details.}
+\item{cloudml}{A list, \code{YAML} or \code{JSON} configuration file as described
+\url{https://cloud.google.com/ml-engine/reference/rest/v1/projects.jobs}.}
 
-\item{collect}{Collect job output after submission. Defaults to "ask" which
-will prompt within interactive environments. Within versions of RStudio
-that support terminals (>= v1.1), the waiting and collection will be done
-within a terminal.}
-
-\item{...}{Named arguments, used to supply runtime configuration settings to
-your TensorFlow application.}
+\item{gcloud}{A list or \code{YAML} file with optional 'account' or 'project'
+fields used to configure the GCloud environemnt.}
 }
 \description{
 Upload a TensorFlow application to Google Cloud, and use that application to
