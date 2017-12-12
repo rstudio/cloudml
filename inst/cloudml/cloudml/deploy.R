@@ -116,7 +116,7 @@ if (file.exists("/etc/issue")) {
   linux_info <- gsub("[^a-zA-Z0-9 ]| *\\\\[a-z] *", "", readLines("/etc/issue")[[1]])
   linux_version <- tolower(gsub("[ .]", "_", linux_info))
 
-  r_version <- tolower(gsub("[ .]", "_", paste("r", R.version$minor, R.version$major)))
+  r_version <- tolower(gsub("[ .]", "_", paste("r", R.version$major, R.version$minor)))
   cache <- file.path(cache, linux_version, r_version)
 
   message(paste0("Versioning cache as: ", cache))
