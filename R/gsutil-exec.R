@@ -1,6 +1,5 @@
-#' @keywords internal
-#' @rdname gcloud-paths
-#' @export
+# @keywords internal
+# @rdname gcloud-paths
 gsutil_path <- function() {
   user_path <- user_setting("gsutil.binary.path")
   if (!is.null(user_path))

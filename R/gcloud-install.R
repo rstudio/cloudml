@@ -1,24 +1,23 @@
-#' Discover Path to Google Cloud SDK
-#'
-#' Discover the paths of the `gcloud` and `gsutil` executables.
-#'
-#' @details
-#' The path to the `gcloud` executable can be explicitly
-#' specified, using the `GCLOUD_BINARY_PATH` environment
-#' variable, or the `gcloud.binary.path` \R option.
-#'
-#' The path to the `gsutil` executable can be explicitly
-#' specified, using the `GSUTIL_BINARY_PATH` environment
-#' variable, or the `gsutil.binary.path` \R option.
-#'
-#' When none of the above are set, locations will instead be
-#' discovered either on the system `PATH`, or by looking
-#' in the default folders used for the Google Cloud SDK
-#' installation.
-#'
-#' @name gcloud-paths
-#' @keywords internal
-#' @export
+# Discover Path to Google Cloud SDK
+#
+# Discover the paths of the `gcloud` and `gsutil` executables.
+#
+# @details
+# The path to the `gcloud` executable can be explicitly
+# specified, using the `GCLOUD_BINARY_PATH` environment
+# variable, or the `gcloud.binary.path` \R option.
+#
+# The path to the `gsutil` executable can be explicitly
+# specified, using the `GSUTIL_BINARY_PATH` environment
+# variable, or the `gsutil.binary.path` \R option.
+#
+# When none of the above are set, locations will instead be
+# discovered either on the system `PATH`, or by looking
+# in the default folders used for the Google Cloud SDK
+# installation.
+#
+# @name gcloud-paths
+# @keywords internal
 gcloud_path <- function() {
 
   user_path <- user_setting("gcloud.binary.path")
