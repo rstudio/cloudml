@@ -15,7 +15,7 @@ Get the status of a job, as an \R list.
 \seealso{
 Other job management: \code{\link{job_cancel}},
   \code{\link{job_collect_async}},
-  \code{\link{job_collect}}, \code{\link{job_describe}},
-  \code{\link{job_list}}, \code{\link{job_stream_logs}}
+  \code{\link{job_collect}}, \code{\link{job_list}},
+  \code{\link{job_stream_logs}}, \code{\link{job_trials}}
 }
 \concept{job management}

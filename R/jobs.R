@@ -350,12 +350,12 @@ print.cloudml_job_status <- function(x, ...) {
 #'
 #' Get the hyperparameter trials for job, as an \R data frame
 #'
-#' @param job Job name or job object.
+#' @param x Job name or job object.
 #'
 #' @family job management
 #'
 #' @export
-job_trials <- function(job) {
+job_trials <- function(x) {
   UseMethod("job_trials")
 }
 
@@ -367,48 +367,47 @@ job_trials_from_status <- function(status) {
 }
 
 #' @export
-job_trials.character <- function(job) {
-  status <- job_status(job)
+job_trials.character <- function(x) {
+  status <- job_status(x)
   job_trials_from_status(status)
 }
 
 #' @export
-job_trials.cloudml_job <- function(job) {
-  job_trials_from_status(job$description)
+job_trials.cloudml_job <- function(x) {
+  job_trials_from_status(x$description)
 }
 
 #' @export
-job_trials.cloudml_job_status <- function(status) {
-  job_trials_from_status(status)
+job_trials.cloudml_job_status <- function(x) {
+  job_trials_from_status(x)
 }
 
 #' Collect job output
 #'
-#' Collect the job outputs (e.g. fitted model) from a job.
-#' If the job has not yet finished running, `job_collect()`
-#' will block and wait until the job has finished.
+#' Collect the job outputs (e.g. fitted model) from a job. If the job has not
+#' yet finished running, `job_collect()` will block and wait until the job has
+#' finished.
 #'
 #' @inheritParams job_status
 #'
-#' @param destination
-#'   The destination directory in which model outputs should
+#' @param trial Trial number to collect when under hyperparameter tuning.
+#'
+#' @param destination The destination directory in which model outputs should
 #'   be downloaded. Defaults to `runs`.
 #'
-#' @param timeout
-#'   Give up collecting job after the specified minutes.
+#' @param timeout Give up collecting job after the specified minutes.
 #'
 #' @param view View the job results after collecting it
 #'
-#' @param trial Trial number to collect when under hyperparameter tuning.
 #'
 #' @family job management
 #'
 #' @export
 job_collect <- function(job,
+                        trial = NULL,
                         destination = "runs",
                         timeout = NULL,
-                        view = interactive(),
-                        trial = NULL) {
+                        view = interactive()) {
 
   job <- as.cloudml_job(job)
   id <- job$id
@@ -437,7 +436,12 @@ job_collect <- function(job,
 
   # if we're already done, attempt download of outputs
   if (status$state == "SUCCEEDED")
-    return(job_download(job, destination, view = view, trial = trial))
+    return(job_download(
+      job,
+      trial = trial,
+      destination = destination,
+      view = view)
+    )
 
   # if the job has failed, report error
   if (status$state == "FAILED") {
@@ -463,7 +467,7 @@ job_collect <- function(job,
     # download outputs on success
     if (status$state == "SUCCEEDED") {
       printf("\n")
-      return(job_download(job, destination))
+      return(job_download(job, destination = destination))
     }
 
     # if the job has failed, report error
@@ -579,9 +583,9 @@ job_collect_async <- function(
 }
 
 job_download <- function(job,
+                         trial = NULL,
                          destination = "runs",
-                         view = interactive(),
-                         trial = NULL) {
+                         view = interactive()) {
 
   status <- job_status(job)
 

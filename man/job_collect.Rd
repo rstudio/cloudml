@@ -4,11 +4,13 @@
 \alias{job_collect}
 \title{Collect job output}
 \usage{
-job_collect(job, destination = "runs", timeout = NULL,
+job_collect(job, trial = NULL, destination = "runs", timeout = NULL,
   view = interactive())
 }
 \arguments{
 \item{job}{Job name or job object.}
+
+\item{trial}{Trial number to collect when under hyperparameter tuning.}
 
 \item{destination}{The destination directory in which model outputs should
 be downloaded. Defaults to \code{runs}.}
@@ -18,14 +20,14 @@ be downloaded. Defaults to \code{runs}.}
 \item{view}{View the job results after collecting it}
 }
 \description{
-Collect the job outputs (e.g. fitted model) from a job.
-If the job has not yet finished running, \code{job_collect()}
-will block and wait until the job has finished.
+Collect the job outputs (e.g. fitted model) from a job. If the job has not
+yet finished running, \code{job_collect()} will block and wait until the job has
+finished.
 }
 \seealso{
 Other job management: \code{\link{job_cancel}},
-  \code{\link{job_collect_async}},
-  \code{\link{job_describe}}, \code{\link{job_list}},
-  \code{\link{job_status}}, \code{\link{job_stream_logs}}
+  \code{\link{job_collect_async}}, \code{\link{job_list}},
+  \code{\link{job_status}}, \code{\link{job_stream_logs}},
+  \code{\link{job_trials}}
 }
 \concept{job management}

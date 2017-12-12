@@ -30,3 +30,6 @@ for more details.}
 \description{
 Tune hyperparameters on Cloud ML
 }
+\seealso{
+\code{\link[=job_trials]{job_trials()}}
+}

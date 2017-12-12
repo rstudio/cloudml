@@ -41,5 +41,5 @@ Upload a TensorFlow application to Google Cloud, and use that application to
 train a model.
 }
 \seealso{
-\code{\link[=job_describe]{job_describe()}}, \code{\link[=job_collect]{job_collect()}}, \code{\link[=job_cancel]{job_cancel()}}
+\code{\link[=job_status]{job_status()}}, \code{\link[=job_collect]{job_collect()}}, \code{\link[=job_cancel]{job_cancel()}}
 }

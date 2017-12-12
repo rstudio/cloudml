@@ -15,4 +15,5 @@
 ^cloudml.yml$
 ^.travis.R$
 ^docs$
+^.*/runs/.*$
 
