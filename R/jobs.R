@@ -48,7 +48,7 @@ cloudml_train <- function(file = "train.R",
   entrypoint <- file
 
   # prepare application for deployment
-  id <- unique_job_name(config)
+  id <- unique_job_name("cloudml")
   deployment <- scope_deployment(
     id = id,
     application = application,

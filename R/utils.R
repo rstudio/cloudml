@@ -119,10 +119,10 @@ timestamp_string <- function() {
   gsub(".", "", time, fixed = TRUE)
 }
 
-unique_job_name <- function(config) {
+unique_job_name <- function(prefix) {
   sprintf(
     "%s_%s",
-    config,
+    prefix,
     timestamp_string()
   )
 }
