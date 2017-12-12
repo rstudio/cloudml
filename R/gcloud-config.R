@@ -72,7 +72,7 @@ gcloud_default_region <- function() {
 }
 
 gcloud_project_has_bucket <- function(project = gcloud_default_project()) {
-  buckets <- strsplit(gsutil_exec("ls", "-p", project)$stdout, "\n")[[1]]
+  buckets <- strsplit(gsutil_exec("ls", "-p", project)$stdout, "\r|\n")[[1]]
   gcloud_project_bucket(project, TRUE) %in% buckets
 }
 

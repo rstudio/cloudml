@@ -4,8 +4,12 @@ gexec <- function(command,
                   echo = TRUE,
                   throws = TRUE)
 {
-  if (.Platform$OS.type != "windows")
-    command <- normalizePath(command)
+  command <- normalizePath(command)
+
+  if (.Platform$OS.type == "windows") {
+    args <- c("/c", command, args)
+    command <- "cmd"
+  }
 
   quoted_args <- args
   if (.Platform$OS.type != "windows")
