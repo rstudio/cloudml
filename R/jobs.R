@@ -331,16 +331,31 @@ job_status <- function(job) {
 
 #' @export
 print.cloudml_job_status <- function(x, ...) {
-  trails_data <- job_trials(x)
-  if (!is.null(trails_data))
-    x$trainingOutput$trials <- NULL
+  message("Job:    ", x$jobId)
+  if (!is.null(x$createTime)) message("Create: ", x$createTime)
+  if (!is.null(x$startTime)) message("Start:  ", x$startTime)
+  if (!is.null(x$endTime)) message("End:    ", x$endTime)
+  message("State:  ", x$state)
 
-  utils::str(x, give.attr = FALSE)
+  if (!is.null(x$trainingInput)) {
+    message()
+    message("Input:")
+    utils::str(x$trainingInput, give.attr = FALSE)
+  }
 
-  if (!is.null(trails_data)) {
-    message("")
-    message("Hyperparameter Tuning Trials using job_trials():")
-    print(trails_data)
+  if (!is.null(x$trainingOutput)) {
+    message()
+    message("Output:")
+    trails_data <- job_trials(x)
+    if (!is.null(trails_data))
+      x$trainingOutput$trials <- NULL
+    utils::str(x$trainingOutput, give.attr = FALSE)
+
+    if (!is.null(trails_data)) {
+      message("")
+      message("Hyperparameter Tuning Trials using job_trials():")
+      print(trails_data)
+    }
   }
 
   message(attr(x, "messages"))
