@@ -7,9 +7,12 @@
 #'
 gcloud_config <- function(gcloud = NULL) {
   if (is.list(gcloud)) return(gcloud)
-  if (is.null(gcloud)) {
+  else if (is.null(gcloud)) {
     path <- getwd()
     gcloud <- find_config_file(path, "gcloud.yml")
+  }
+  else if (file_test("-d", gcloud)) {
+    gcloud <- find_config_file(gcloud, "gcloud.yml")
   }
 
   if (is.character(gcloud)) {
