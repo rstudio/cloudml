@@ -4,10 +4,13 @@
 \alias{job_cancel}
 \title{Cancel a job}
 \usage{
-job_cancel(job)
+job_cancel(job, gcloud = NULL)
 }
 \arguments{
 \item{job}{Job name or job object.}
+
+\item{gcloud}{A list or \code{YAML} file with optional 'account' or 'project'
+fields used to configure the GCloud environemnt.}
 }
 \description{
 Cancel a job.

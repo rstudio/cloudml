@@ -4,10 +4,13 @@
 \alias{job_status}
 \title{Current status of a job}
 \usage{
-job_status(job)
+job_status(job, gcloud = NULL)
 }
 \arguments{
 \item{job}{Job name or job object.}
+
+\item{gcloud}{A list or \code{YAML} file with optional 'account' or 'project'
+fields used to configure the GCloud environemnt.}
 }
 \description{
 Get the status of a job, as an \R list.

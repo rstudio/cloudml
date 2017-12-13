@@ -6,7 +6,7 @@
 \usage{
 job_stream_logs(job,
   polling_interval = getOption("cloudml.stream_logs.polling", 5),
-  task_name = NULL, allow_multiline_logs = FALSE)
+  task_name = NULL, allow_multiline_logs = FALSE, gcloud = NULL)
 }
 \arguments{
 \item{job}{Job name or job object.}
@@ -17,6 +17,9 @@ latest log messages.}
 \item{task_name}{If set, display only the logs for this particular task.}
 
 \item{allow_multiline_logs}{Output multiline log messages as single records.}
+
+\item{gcloud}{A list or \code{YAML} file with optional 'account' or 'project'
+fields used to configure the GCloud environemnt.}
 }
 \description{
 Show logs from a running Cloud ML Engine job.
