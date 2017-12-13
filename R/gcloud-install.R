@@ -18,7 +18,7 @@
 #
 # @name gcloud-paths
 # @keywords internal
-gcloud_path <- function() {
+gcloud_binary <- function() {
 
   user_path <- user_setting("gcloud.binary.path")
   if (!is.null(user_path))
@@ -27,7 +27,7 @@ gcloud_path <- function() {
   candidates <- c(
     function() Sys.which("gcloud"),
     function() "~/google-cloud-sdk/bin/gcloud",
-    function() file.path(gcloud_path_default(), "bin/gcloud")
+    function() file.path(gcloud_binary_default(), "bin/gcloud")
   )
 
   if (.Platform$OS.type == "windows") {
@@ -44,7 +44,7 @@ gcloud_path <- function() {
   stop("failed to find 'gcloud' binary")
 }
 
-gcloud_path_default <- function() {
+gcloud_binary_default <- function() {
   Sys.getenv("GCLOUD_INSTALL_PATH", "~/google-cloud-sdk")
 }
 
@@ -73,7 +73,7 @@ gcloud_install_unix <- function() {
   Sys.chmod(install_script, "755")
 
   # get gcloud path
-  gcloud_path <- gcloud_path_default()
+  gcloud_binary <- gcloud_binary_default()
 
   # if in rstudio then continue in the terminal
   if (have_rstudio_terminal()) {
@@ -81,7 +81,7 @@ gcloud_install_unix <- function() {
     readline("Installation of the Google Cloud SDK will continue in a terminal [OK]: ")
     install_args <- paste(shQuote(c(install_script,
                               paste0("--install-dir=",
-                                     path.expand(dirname(gcloud_path))))),
+                                     path.expand(dirname(gcloud_binary))))),
                           collapse = " ")
     terminal_command <- paste(install_args, "&&", "gcloud", "init")
     gcloud_terminal(terminal_command, clear = TRUE)
@@ -89,20 +89,20 @@ gcloud_install_unix <- function() {
   } else {
 
     # remove existing installation if necessary
-    if (utils::file_test("-d", gcloud_path)) {
-      message(paste("Google Cloud SDK already installed at", gcloud_path))
+    if (utils::file_test("-d", gcloud_binary)) {
+      message(paste("Google Cloud SDK already installed at", gcloud_binary))
       cat("\n")
       prompt <- readline("Remove existing installation of SDK? [Y/n]: ")
       if (nzchar(prompt) && tolower(prompt) != 'y')
         return(invisible(NULL))
       else {
         message("Removing existing installation of SDK")
-        unlink(gcloud_path, recursive = TRUE)
+        unlink(gcloud_binary, recursive = TRUE)
       }
     }
 
     # build arguments to sdk
-    args <- c(paste0("--install-dir=", dirname(path.expand(gcloud_path))),
+    args <- c(paste0("--install-dir=", dirname(path.expand(gcloud_binary))),
               "--disable-prompts")
 
     # execute with processx
@@ -110,11 +110,11 @@ gcloud_install_unix <- function() {
     result <- processx::run(install_script, args, echo = TRUE)
 
     # prompt to run gcloud init
-    message("Google Cloud SDK tools installed at ", gcloud_path)
+    message("Google Cloud SDK tools installed at ", gcloud_binary)
     cat("\n")
     message("IMPORTANT: To complete the installation, launch a terminal and execute the following:")
     cat("\n")
-    message("  $ ", file.path(path.expand(gcloud_path), "bin/gcloud init"))
+    message("  $ ", file.path(path.expand(gcloud_binary), "bin/gcloud init"))
     cat("\n")
   }
 
@@ -136,7 +136,7 @@ gcloud_install_windows <- function() {
 }
 
 gcloud_installed <- function() {
-  have_sdk <- !is.null(tryCatch(gcloud_path(), error = function(e) NULL))
+  have_sdk <- !is.null(tryCatch(gcloud_binary(), error = function(e) NULL))
   if (have_sdk)
     gcloud_default_account() != "(unset)"
   else

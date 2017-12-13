@@ -70,7 +70,7 @@ gcloud_exec <- function(..., args = NULL, echo = FALSE)
     args <- list(...)
 
   gexec(
-    gcloud_path(),
+    gcloud_binary(),
     args,
     echo
   )

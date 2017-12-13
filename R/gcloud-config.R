@@ -62,7 +62,7 @@ gcloud_default_project <- function() {
 gcloud_default_region <- function() {
   trimws(
     gexec(
-      gcloud_path(),
+      gcloud_binary(),
       c("config", "get-value", "region"),
       echo = FALSE,
       throws = FALSE

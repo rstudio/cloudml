@@ -130,6 +130,8 @@ gcloud_path <- function(url, local_dir = "gs", echo = FALSE) {
 #'
 #' @return `TRUE` when the current script is executing on CloudML, otherwise `FALSE`
 #'
+#' @import config
+#'
 #' @export
 is_cloudml <- function() {
   config::is_active("cloudml")

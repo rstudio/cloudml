@@ -22,7 +22,8 @@ Imports:
   tools,
   utils,
   withr,
-  yaml
+  yaml,
+  config
 Suggests:
   tensorflow,
   keras (>= 2.1.1.9002),

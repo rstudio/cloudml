@@ -1,6 +1,6 @@
 # @keywords internal
 # @rdname gcloud-paths
-gsutil_path <- function() {
+gsutil_binary <- function() {
   user_path <- user_setting("gsutil.binary.path")
   if (!is.null(user_path))
     return(normalizePath(user_path))
@@ -41,7 +41,7 @@ gsutil_exec <- function(..., args = NULL, echo = FALSE)
     args <- list(...)
 
   gexec(
-    gsutil_path(),
+    gsutil_binary(),
     args,
     echo = echo
   )

@@ -20,6 +20,9 @@
 #' @param gcloud A list or \code{YAML} file with optional 'account' or 'project'
 #'   fields used to configure the GCloud environemnt.
 #'
+#' @param collect Collect job when training is completed (blocks waiting
+#'   for the job to complete).
+#'
 #' @seealso [job_status()], [job_collect()], [job_cancel()]
 #'
 #' @export
@@ -538,7 +541,7 @@ job_collect_async <- function(
   }
 
   terminal_steps <- c(
-    paste(gcloud_path(), paste(log_arguments(), collapse = " "))
+    paste(gcloud_binary(), paste(log_arguments(), collapse = " "))
   )
 
   destination <- normalizePath(destination, mustWork = FALSE)

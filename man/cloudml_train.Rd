@@ -25,6 +25,9 @@ to YAML file containing flag values.}
 
 \item{gcloud}{A list or \code{YAML} file with optional 'account' or 'project'
 fields used to configure the GCloud environemnt.}
+
+\item{collect}{Collect job when training is completed (blocks waiting
+for the job to complete).}
 }
 \description{
 Upload a TensorFlow application to Google Cloud, and use that application to

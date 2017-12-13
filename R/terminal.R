@@ -45,7 +45,7 @@ gcloud_terminal <- function(command = NULL, clear = FALSE) {
 
 
   # launch terminal with cloud sdk on the PATH
-  withr::with_path(gcloud_path(), {
+  withr::with_path(gcloud_binary(), {
 
     if (length(gcloud_terminals) > 0) {
 
@@ -87,7 +87,7 @@ gcloud_init <- function() {
 gcloud_init_message <- function() {
   message("To initialize the Google Cloud SDK, launch a terminal and execute the following:")
   cat("\n")
-  message("  $ ", gcloud_path(), " init\n")
+  message("  $ ", gcloud_binary(), " init\n")
 }
 
 have_rstudio_terminal <- function() {
