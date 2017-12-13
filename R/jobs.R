@@ -195,6 +195,8 @@ job_cancel <- function(job, gcloud = NULL) {
 #'
 #' List existing Google Cloud ML jobs.
 #'
+#' @inheritParams gcloud_config
+#'
 #' @param filter
 #'   Filter the set of jobs to be returned.
 #'
