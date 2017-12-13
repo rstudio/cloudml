@@ -60,7 +60,7 @@ cloudml_train <- function(file = "train.R",
     if (!gcloud_project_has_bucket(project)) {
       gcloud_project_create_bucket(project)
     }
-    storage <- gcloud_project_bucket(project)
+    storage <- file.path(gcloud_project_bucket(project), "r-cloudml")
   }
 
   # region is required
