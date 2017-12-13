@@ -29,8 +29,7 @@ cloudml_write_config <- function(destination = "gcloud.yml") {
 
   if (nchar(Sys.getenv("GCLOUD_PROJECT")) > 0)
     options(
-      "cloudml.storage",
-      paste("gs://", Sys.getenv("GCLOUD_PROJECT"), "/travis", sep = "")
+      "cloudml.storage" = paste("gs://", Sys.getenv("GCLOUD_PROJECT"), "/travis", sep = "")
     )
 
   yaml::write_yaml(gcloud, destination)
