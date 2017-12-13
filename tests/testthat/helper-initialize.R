@@ -18,22 +18,22 @@ sysenv_file <- function(name, destination) {
   }
 }
 
-cloudml_write_config <- function(destination = "cloudml.yml") {
-  config = list(
-    gcloud = list(),
-    cloudml = list()
-  )
+cloudml_write_config <- function(destination = "gcloud.yml") {
+  gcloud = list()
 
   if (nchar(Sys.getenv("GCLOUD_PROJECT")) > 0)
-    config$gcloud$project <- Sys.getenv("GCLOUD_PROJECT")
+    gcloud$project <- Sys.getenv("GCLOUD_PROJECT")
 
   if (nchar(Sys.getenv("GCLOUD_ACCOUNT")) > 0)
-    config$gcloud$account <- Sys.getenv("GCLOUD_ACCOUNT")
+    gcloud$account <- Sys.getenv("GCLOUD_ACCOUNT")
 
   if (nchar(Sys.getenv("GCLOUD_PROJECT")) > 0)
-    config$gcloud$storage <- paste("gs://", Sys.getenv("GCLOUD_PROJECT"), "/travis", sep = "")
+    options(
+      "cloudml.storage",
+      paste("gs://", Sys.getenv("GCLOUD_PROJECT"), "/travis", sep = "")
+    )
 
-  yaml::write_yaml(config, destination)
+  yaml::write_yaml(gcloud, destination)
 }
 
 cloudml_tests_configured <- function() {
@@ -42,7 +42,7 @@ cloudml_tests_configured <- function() {
 
 if (cloudml_tests_configured()) {
   if (identical(Sys.getenv("TRAVIS"), "true")) {
-    cloudml:::gcloud_install()
+    cloudml::gcloud_install()
   }
 
   options(repos = c(CRAN = "http://cran.rstudio.com"))
