@@ -50,6 +50,7 @@ cloudml_train <- function(file = "train.R",
 
   # read configuration
   gcloud <- gcloud_config()
+  cloudml <- cloudml_config()
   cloudml_file <- deployment$cloudml_file
 
   # create default storage bucket for project if not specified
@@ -78,7 +79,7 @@ cloudml_train <- function(file = "train.R",
   scope_setup_py(directory)
   setwd(dirname(directory))
 
-  cloudml_version <- cloudml[["runtime-version"]] %||% "1.2"
+  cloudml_version <- cloudml$trainingOutput$runtimeVersion %||% "1.2"
   if (utils::compareVersion(cloudml_version, "1.2") < 0)
     stop("CloudML version ", cloudml_version, " is unsupported, use 1.2 or newer.")
 
