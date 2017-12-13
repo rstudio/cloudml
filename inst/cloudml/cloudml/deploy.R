@@ -136,12 +136,18 @@ store_cached_data <- function (source, destination, replace_all = FALSE) {
   for (pkg in dir(source)) {
     if (!pkg %in% cached_entries || replace_all) {
       source_entry <- file.path(source, pkg)
-      compressed <- file.path(tempdir(), paste0(pkg, ".tar"))
 
-      message(paste0("Compressing '", pkg, "' package to ", compressed, " cache."))
-      system2("tar", c("-cf", compressed, "-C", source_entry, "."))
+      if (file_test("-d", source_entry)) {
+        target <- file.path(destination, paste0(pkg, ".tar"))
+        compressed <- file.path(tempdir(), paste0(pkg, ".tar"))
 
-      target <- file.path(destination, paste0(pkg, ".tar"))
+        message(paste0("Compressing '", pkg, "' package to ", compressed, " cache."))
+        system2("tar", c("-cf", compressed, "-C", source_entry, "."))
+      }
+      else {
+        compressed <- normalizePath(source_entry)
+        target <- file.path(destination, basename(compressed))
+      }
 
       message(paste0("Adding '", compressed, "' to ", target, " cache."))
       system(paste("gsutil", "-m", "cp", shQuote(compressed), shQuote(target)))
@@ -158,14 +164,28 @@ retrieve_cached_data <- function(source, target) {
   message(paste0("Retrieving packages from ", remote_path, " cache into ", compressed, "."))
   system(paste("gsutil", "-m", "cp", "-r", shQuote(remote_path), shQuote(compressed)))
 
-  lapply(dir(compressed, full.names = TRUE, pattern = ".tar"), function(tar_file) {
-    target_package <- strsplit(basename(tar_file), "\\.")[[1]][[1]]
-    target_path <- file.path(target, target_package)
+  lapply(dir(compressed, full.names = TRUE), function(remote_file) {
+    file_parts <- strsplit(remote_file, ".")
+    if (length(file_parts) > 1 && file_parts[[2]] == "tar") {
+      target_package <- strsplit(basename(remote_file), "\\.")[[1]][[1]]
+      target_path <- file.path(target, target_package)
 
-    if (!file_test("-d", target_path)) dir.create(target_path, recursive = TRUE)
+      if (!file_test("-d", target_path)) dir.create(target_path, recursive = TRUE)
 
-    message(paste0("Restoring package from ", tar_file, " cache into ", target_path, "."))
-    system2("tar", c("-xf", tar_file, "-C", target_path))
+      message(paste0("Restoring package from ", remote_file, " cache into ", target_path, "."))
+      system2("tar", c("-xf", remote_file, "-C", target_path))
+    }
+    else {
+      target_path <- normalizePath(file.path(target, basename(remote_file)), mustWork = FALSE)
+
+      if (!file.exists(target)) {
+        message("Path ", target, " not found, creating.")
+        dir.create(target)
+      }
+
+      message(paste0("Restoring file from ", remote_file, " cache into ", target_path, "."))
+      file.copy(remote_file, target_path)
+    }
   })
 
   invisible(NULL)
@@ -212,8 +232,8 @@ if (use_packrat) {
 }
 
 if (cache_enabled) {
+  message("Caching: ", cache_local)
   store_cached_data(cache_local, cache_remote, use_packrat)
-  store_cached_data(cache_keras_local, cache_keras_remote)
 
   if (use_packrat) {
     # line can be removed once packrat is on CRAN
@@ -253,4 +273,9 @@ if (is.character(storage)) {
   source <- run_dir
   target <- do.call("file.path", as.list(c(storage, run_dir, trial_id)))
   system(paste("gsutil", "-m", "cp", "-r", shQuote(source), shQuote(target)))
+}
+
+if (cache_enabled) {
+  message("Caching: ", cache_keras_local)
+  store_cached_data(cache_keras_local, cache_keras_remote)
 }
