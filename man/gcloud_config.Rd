@@ -4,10 +4,11 @@
 \alias{gcloud_config}
 \title{Google Cloud Config}
 \usage{
-gcloud_config(path = getwd())
+gcloud_config(gcloud = NULL)
 }
 \arguments{
-\item{path}{Path to 'gcloud.yml' file; defaults to \code{getwd()}.}
+\item{gcloud}{A list or \code{YAML} file with optional 'account' or 'project'
+fields used to configure the GCloud environemnt.}
 }
 \description{
 Reads the Google Cloud config file.

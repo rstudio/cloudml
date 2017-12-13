@@ -94,12 +94,10 @@ scope_deployment <- function(id,
   }
 
   # copy or create gcloud.yml in bundle dir to maintain state
-  if (is.null(gcloud)) gcloud <- gcloud_config()
+  gcloud <- gcloud_config(gcloud)
   gcloud_config_path <- file.path(directory, "gcloud.yml")
   if (is.list(gcloud))
     yaml::write_yaml(gcloud, gcloud_config_path)
-  else
-    file.copy(gcloud, gcloud_config_path)
 
   envir <- parent.frame()
 
