@@ -640,9 +640,9 @@ job_download <- function(job,
 
 job_download_multiple <- function(job, trial, destination, view) {
   if (length(trial) <= 1)
-    job_download(job, trial, destination, FALSE)
+    job_download(job, trial, destination, view)
   else
-    lapply(trial, function(t) job_download(job, t, destination, view))
+    lapply(trial, function(t) job_download(job, t, destination, FALSE))
 }
 
 job_output_dir <- function(job) {
