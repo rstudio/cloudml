@@ -613,7 +613,32 @@ job_download <- function(job,
   ensure_directory(destination)
   gcloud_copy(source, destination, TRUE, echo = TRUE)
 
+  # write cloudml properties to run_dir
   run_dir <- file.path(destination, basename(source))
+  as_date <- function(x) {
+    tryCatch(as.double(as.POSIXct(x,
+                                  tz = "GMT",
+                                  format = "%Y-%m-%dT%H:%M:%SZ")),
+             error = function(e) NULL)
+  }
+  properties <- list()
+  properties$cloudml_job_id <- status$jobId
+  properties$cloudml_state <- status$state
+  properties$cloudml_error_message <- status$errorMessage
+  properties$cloudml_create_time <- as_date(status$createTime)
+  properties$cloudml_start_time <- as_date(status$startTime)
+  properties$cloudml_end_time <- as_date(status$endTime)
+  properties$cloudml_ml_units <- status$trainingOutput$consumedMLUnits
+  messages <- trimws(strsplit(attr(status, "messages"), "\n")[[1]])
+  messages <- messages[grepl("^https://.*$", messages)]
+  for (message in messages) {
+    if (startsWith(message, "https://console.cloud.google.com/ml/jobs/"))
+      properties$cloudml_console_url <- message
+    else if (startsWith(message, "https://console.cloud.google.com/logs"))
+      properties$cloudml_log_url <- message
+  }
+  tfruns::write_run_metadata("properties", properties, run_dir)
+
   cat("\n")
   message("Job downloaded to ", run_dir)
   cat("\n")
