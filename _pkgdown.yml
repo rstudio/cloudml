@@ -48,5 +48,5 @@ reference:
       - gcloud_terminal
       - gcloud_copy
       - gcloud_rsync
-      - gcloud_bucket
+      - gcloud_path
 

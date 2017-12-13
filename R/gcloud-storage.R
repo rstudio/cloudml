@@ -90,7 +90,7 @@ gcloud_rsync <- function(source, destination,
 #'
 #' Provides a local filesystem interface to Google Storage buckets. Many
 #' package functions accept only local filesystem paths as input (rather than
-#' gs:// URLs). For these cases the `gcloud_bucket()` function will synchronize
+#' gs:// URLs). For these cases the `gcloud_path()` function will synchronize
 #' gs:// buckets to the local filesystem and provide a local path interface
 #' to their contents.
 #'
@@ -107,7 +107,7 @@ gcloud_rsync <- function(source, destination,
 #'   development and a Google Cloud bucket during cloud training.
 #'
 #' @export
-gcloud_bucket <- function(url, local_dir = "gs", echo = FALSE) {
+gcloud_path <- function(url, local_dir = "gs", echo = FALSE) {
 
   # return url unmodified for non google-storage URIs
   if (!is_gs_uri(url)) {
