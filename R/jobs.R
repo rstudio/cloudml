@@ -367,6 +367,13 @@ job_trials.cloudml_job_status <- function(x) {
   job_trials_from_status(x)
 }
 
+job_validate_trials <- function(trials) {
+  if (!is.null(trials)) {
+    if (!is.numeric(trials) && !trials %in% c("best", "all"))
+      stop("The 'trials' parameter must be numeric, 'best' or 'all'.")
+  }
+}
+
 #' Collect job output
 #'
 #' Collect the job outputs (e.g. fitted model) from a job. If the job has not
@@ -375,7 +382,9 @@ job_trials.cloudml_job_status <- function(x) {
 #'
 #' @inheritParams job_status
 #'
-#' @param trial Trial number to collect when under hyperparameter tuning.
+#' @param trials Under hyperparameter tuning, specifies which trials to download.
+#'   Use \code{"best"} to download best trial, \code{"all"} to download all, or
+#'   a vector of trials \code{c(1,2)} or \code{1}.
 #'
 #' @param destination The destination directory in which model outputs should
 #'   be downloaded. Defaults to `runs`.
@@ -389,13 +398,14 @@ job_trials.cloudml_job_status <- function(x) {
 #'
 #' @export
 job_collect <- function(job,
-                        trial = NULL,
+                        trials = "best",
                         destination = "runs",
                         timeout = NULL,
                         view = interactive()) {
 
   job <- as.cloudml_job(job)
   id <- job$id
+  job_validate_trials(trials)
 
   # helper function for writing job status to console
   write_status <- function(status, time) {
@@ -421,9 +431,9 @@ job_collect <- function(job,
 
   # if we're already done, attempt download of outputs
   if (status$state == "SUCCEEDED")
-    return(job_download(
+    return(job_download_multiple(
       job,
-      trial = trial,
+      trial = trials,
       destination = destination,
       view = view)
     )
@@ -452,7 +462,10 @@ job_collect <- function(job,
     # download outputs on success
     if (status$state == "SUCCEEDED") {
       printf("\n")
-      return(job_download(job, destination = destination))
+      return(job_download_multiple(job,
+                                   trial = trials,
+                                   destination = destination,
+                                   view = view))
     }
 
     # if the job has failed, report error
@@ -568,7 +581,7 @@ job_collect_async <- function(
 }
 
 job_download <- function(job,
-                         trial = NULL,
+                         trial = "best",
                          destination = "runs",
                          view = interactive()) {
 
@@ -606,10 +619,17 @@ job_download <- function(job,
   message(sprintf("View job with: view_run(\"%s\")",
                   run_dir))
 
-  if (view)
+  if (view && trial != "all")
     tfruns::view_run(run_dir)
 
   status
+}
+
+job_download_multiple <- function(job, trial, destination, view) {
+  if (length(trial) <= 1)
+    job_download(job, trial, destination, FALSE)
+  else
+    lapply(trial, function(t) job_download(job, t, destination, view))
 }
 
 job_output_dir <- function(job) {
@@ -637,7 +657,7 @@ job_status_trial_dir <- function(status, destination, trial) {
     destination = destination
   )
 
-  if (is.null(trial)) {
+  if (trial == "best") {
     if (job_status_is_tuning(status) && !is.null(status$trainingInput$hyperparameters$goal)) {
       decreasing <- if (status$trainingInput$hyperparameters$goal == "MINIMIZE") FALSE else TRUE
       ordered <- order(sapply(status$trainingOutput$trials, function(e) e$finalMetric$objectiveValue), decreasing = TRUE)
@@ -650,7 +670,7 @@ job_status_trial_dir <- function(status, destination, trial) {
       }
     }
   }
-  else {
+  else if (is.numeric(trial)){
     output_path <- list(
       source = file.path(output_path$source, trial),
       destination = file.path(destination, status$jobId)
