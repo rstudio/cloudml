@@ -626,16 +626,10 @@ job_download <- function(job,
   }
   tfruns::write_run_metadata("properties", properties, run_dir)
 
-  cat("\n")
-  message("Job downloaded to ", run_dir)
-  cat("\n")
-  message(sprintf("View job with: view_run(\"%s\")",
-                  run_dir))
-
   if (view && trial != "all")
     tfruns::view_run(run_dir)
 
-  status
+  invisible(status)
 }
 
 job_download_multiple <- function(job, trial, destination, view) {
