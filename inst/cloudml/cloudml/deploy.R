@@ -125,7 +125,7 @@ if (file.exists("/etc/issue")) {
 use_packrat <- !identical(job_config[["packrat"]], FALSE)
 
 get_cached_bundles <- function (source) {
-  cached_entries <- system2("gsutil", c("ls", source), stdout = TRUE)
+  cached_entries <- system2("gsutil", c("ls", source), stdout = TRUE, stderr = FALSE)
   as.character(lapply(strsplit(basename(cached_entries), "\\."), function(e) e[[1]]))
 }
 
