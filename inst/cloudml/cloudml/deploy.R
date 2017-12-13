@@ -223,6 +223,9 @@ if (cache_enabled) {
 
 # Training ----
 
+# request that keras use sparse progress (one line per epoch)
+options(keras.fit_verbose = 2)
+
 # read deployment information
 deploy <- readRDS("cloudml/deploy.rds")
 
