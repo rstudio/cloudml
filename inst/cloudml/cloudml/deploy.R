@@ -176,7 +176,7 @@ retrieve_cached_data <- function(source, target) {
       system2("tar", c("-xf", remote_file, "-C", target_path))
     }
     else {
-      target_path <- normalizePath(file.path(target, basename(remote_file)))
+      target_path <- normalizePath(file.path(target, basename(remote_file)), mustWork = FALSE)
 
       if (!file.exists(target)) {
         message("Path ", target, " not found, creating.")
