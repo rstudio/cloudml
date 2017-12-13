@@ -4,7 +4,7 @@ gexec <- function(command,
                   echo = TRUE,
                   throws = TRUE)
 {
-  command <- normalizePath(command)
+  command <- normalizePath(command, mustWork = FALSE)
 
   if (.Platform$OS.type == "windows") {
     args <- c("/c", command, args)
