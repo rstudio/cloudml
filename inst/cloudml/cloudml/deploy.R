@@ -165,7 +165,7 @@ retrieve_cached_data <- function(source, target) {
   system(paste("gsutil", "-m", "cp", "-r", shQuote(remote_path), shQuote(compressed)))
 
   lapply(dir(compressed, full.names = TRUE), function(remote_file) {
-    file_parts <- strsplit(remote_file, ".")
+    file_parts <- strsplit(remote_file, "\\.")[[1]]
     if (length(file_parts) > 1 && file_parts[[2]] == "tar") {
       target_package <- strsplit(basename(remote_file), "\\.")[[1]][[1]]
       target_path <- file.path(target, target_package)
