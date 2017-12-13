@@ -12,17 +12,17 @@ cloudml_job <- function(class, id, description) {
   )
 }
 
-as.cloudml_job <- function(x) {
+as.cloudml_job <- function(x, gcloud) {
   UseMethod("as.cloudml_job")
 }
 
 #' @export
-as.cloudml_job.character <- function(x) {
-  resolve_job(x)
+as.cloudml_job.character <- function(x, gcloud) {
+  resolve_job(x, gcloud)
 }
 
 #' @export
-as.cloudml_job.cloudml_job <- function(x) {
+as.cloudml_job.cloudml_job <- function(x, gcloud) {
   x
 }
 

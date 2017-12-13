@@ -1,4 +1,4 @@
-ShellArgumentsBuilder <- function() {
+ShellArgumentsBuilder <- function(gcloud) {
 
   .arguments <- character()
 
@@ -34,10 +34,11 @@ ShellArgumentsBuilder <- function() {
   }
 
   # discover active application directory
-  path <- Sys.getenv("CLOUDML_APPLICATION_DIR", unset = getwd())
+  path <- Sys.getenv("CLOUDML_APPLICATION_DIR")
+  if (nchar(path) > 0) gcloud <- path
 
   # prepend project + account information
-  conf <- gcloud_config(path = path)
+  conf <- gcloud_config(gcloud = gcloud)
   (builder
     ("--project")
     (conf[["project"]])
@@ -48,7 +49,7 @@ ShellArgumentsBuilder <- function() {
   builder
 }
 
-MLArgumentsBuilder <- function() {
-  (ShellArgumentsBuilder()
+MLArgumentsBuilder <- function(gcloud) {
+  (ShellArgumentsBuilder(gcloud)
    ("ml-engine"))
 }

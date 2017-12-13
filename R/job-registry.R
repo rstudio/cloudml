@@ -6,14 +6,14 @@ register_job <- function(job, registry = job_registry()) {
   registry[[job$id]] <- job
 }
 
-resolve_job <- function(id, registry = job_registry()) {
+resolve_job <- function(id, gcloud, registry = job_registry()) {
 
   # if we have an associated job object in the registry, use that
   if (exists(id, envir = registry))
     return(registry[[id]])
 
   # otherwise, construct it by querying Google Cloud
-  arguments <- (MLArgumentsBuilder()
+  arguments <- (MLArgumentsBuilder(gcloud)
                 ("jobs")
                 ("describe")
                 (id))

@@ -2,15 +2,20 @@
 #'
 #' Reads the Google Cloud config file.
 #'
-#' @param path Path to 'gcloud.yml' file; defaults to \code{getwd()}.
+#' @param gcloud A list or \code{YAML} file with optional 'account' or 'project'
+#'   fields used to configure the GCloud environemnt.
 #'
-gcloud_config <- function(path = getwd()) {
+gcloud_config <- function(gcloud = NULL) {
+  if (is.list(gcloud)) return(gcloud)
+  if (is.null(gcloud)) {
+    path <- getwd()
+    gcloud <- find_config_file(path, "gcloud.yml")
+  }
 
-  file <- find_config_file(path, "gcloud.yml")
-  if (!is.null(file)) {
-    config <- yaml::yaml.load_file(file)
+  if (is.character(gcloud)) {
+    config <- yaml::yaml.load_file(gcloud)
   } else {
-    config <- list(gcloud = list(), cloudml = list())
+    config <- list()
   }
 
   # provide default account
