@@ -81,7 +81,6 @@ scope_deployment <- function(id,
   if (is.list(cloudml))
     yaml::write_yaml(cloudml, file.path(directory, cloudml_file))
   else {
-    cloudml_dir <- dirname(cloudml)
     cloudml_ext <- tools::file_ext(cloudml)
     if (!cloudml_ext %in% c("json", "yml"))
       stop(
@@ -89,8 +88,8 @@ scope_deployment <- function(id,
         cloudml_ext, "' found instead."
       )
 
-    cloudml_file <- paste0("cloudml", cloudml_ext)
-    cloudml_config_path <- file.path(cloudml_dir, cloudml_file)
+    cloudml_file <- paste0("cloudml.", cloudml_ext)
+    cloudml_config_path <- file.path(directory, cloudml_file)
     file.copy(cloudml, cloudml_config_path)
   }
 
