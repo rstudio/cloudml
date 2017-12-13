@@ -4,13 +4,15 @@
 \alias{job_collect}
 \title{Collect job output}
 \usage{
-job_collect(job, trial = NULL, destination = "runs", timeout = NULL,
+job_collect(job, trials = "best", destination = "runs", timeout = NULL,
   view = interactive())
 }
 \arguments{
 \item{job}{Job name or job object.}
 
-\item{trial}{Trial number to collect when under hyperparameter tuning.}
+\item{trials}{Under hyperparameter tuning, specifies which trials to download.
+Use \code{"best"} to download best trial, \code{"all"} to download all, or
+a vector of trials \code{c(1,2)} or \code{1}.}
 
 \item{destination}{The destination directory in which model outputs should
 be downloaded. Defaults to \code{runs}.}

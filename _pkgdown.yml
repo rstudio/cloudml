@@ -35,6 +35,7 @@ reference:
       - job_status
       - job_collect
       - job_stream_logs
+      - job_trials
       - job_cancel
       - job_list
 
