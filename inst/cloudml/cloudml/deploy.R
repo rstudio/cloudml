@@ -230,6 +230,7 @@ deploy <- readRDS("cloudml/deploy.rds")
 run_dir <- file.path("runs", deploy$id)
 tfruns::training_run(file = deploy$entrypoint,
                      context = deploy$context,
+                     config = "cloudml",
                      flags = deploy$overlay,
                      encoding = "UTF-8",
                      echo = TRUE,
