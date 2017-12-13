@@ -528,15 +528,6 @@ job_collect_async <- function(
                    (id)
                    ("--polling-interval=%i", as.integer(polling_interval)))
 
-  download_arguments <- paste(
-    gsutil_path(),
-    "-m",
-    "cp",
-    "-r",
-    shQuote(output_dir),
-    shQuote(destination)
-  )
-
   if (.Platform$OS.type == "windows") {
     os_collapse <-  " & "
     os_return   <- "\r\n"
@@ -549,14 +540,9 @@ job_collect_async <- function(
     paste(gcloud_path(), paste(log_arguments(), collapse = " "))
   )
 
+  destination <- normalizePath(destination, mustWork = FALSE)
   if (!job_is_tuning(job)) {
-    terminal_steps <- c(
-      terminal_steps,
-      paste("mkdir -p", destination),
-      paste(download_arguments, collapse = " "),
-      paste("echo \"\"")
-    )
-
+    terminal_steps <- c(terminal_steps, collect_job_step(destination, job$id))
     if (view)
       terminal_steps <- c(terminal_steps, view_job_step(destination, job$id))
   }
@@ -715,12 +701,26 @@ job_status_is_tuning <- function(status) {
   identical(status$trainingOutput$isHyperparameterTuningJob, TRUE)
 }
 
+collect_job_step <- function(destination, jobId) {
+  r_job_step(paste0(
+    "cloudml::job_collect('", jobId, "', destination = '", destination, "', view = FALSE)"
+  ))
+}
+
+
+
 view_job_step <- function(destination, jobId) {
+  r_job_step(paste0(
+    "utils::browseURL('",
+    file.path(destination, jobId, "tfruns.d", "view.html"),
+    "')"
+  ))
+}
+
+r_job_step <- function(command) {
   paste(
     paste0("\"", file.path(R.home("bin"), "Rscript"), "\""),
     "-e",
-    paste0("\"utils::browseURL('",
-           file.path(destination, jobId, "tfruns.d", "view.html"),
-           "')\"")
+    paste0("\"", command ,"\"")
   )
 }
