@@ -18,4 +18,3 @@ Other job management: \code{\link{job_collect_async}},
   \code{\link{job_status}}, \code{\link{job_stream_logs}},
   \code{\link{job_trials}}
 }
-\concept{job management}
