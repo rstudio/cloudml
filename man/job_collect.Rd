@@ -10,16 +10,17 @@ job_collect(job, trials = "best", destination = "runs", timeout = NULL,
 \arguments{
 \item{job}{Job name or job object.}
 
-\item{trials}{Under hyperparameter tuning, specifies which trials to download.
-Use \code{"best"} to download best trial, \code{"all"} to download all, or
-a vector of trials \code{c(1,2)} or \code{1}.}
+\item{trials}{Under hyperparameter tuning, specifies which trials to
+download. Use \code{"best"} to download best trial, \code{"all"} to
+download all, or a vector of trials \code{c(1,2)} or \code{1}.}
 
 \item{destination}{The destination directory in which model outputs should
 be downloaded. Defaults to \code{runs}.}
 
 \item{timeout}{Give up collecting job after the specified minutes.}
 
-\item{view}{View the job results after collecting it}
+\item{view}{View the job results after collecting it. You can also pass
+"save" to save a copy of the run report at \code{tfruns.d/view.html}}
 }
 \description{
 Collect the job outputs (e.g. fitted model) from a job. If the job has not

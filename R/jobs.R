@@ -383,16 +383,17 @@ job_validate_trials <- function(trials) {
 #'
 #' @inheritParams job_status
 #'
-#' @param trials Under hyperparameter tuning, specifies which trials to download.
-#'   Use \code{"best"} to download best trial, \code{"all"} to download all, or
-#'   a vector of trials \code{c(1,2)} or \code{1}.
+#' @param trials Under hyperparameter tuning, specifies which trials to
+#'   download. Use \code{"best"} to download best trial, \code{"all"} to
+#'   download all, or a vector of trials \code{c(1,2)} or \code{1}.
 #'
 #' @param destination The destination directory in which model outputs should
 #'   be downloaded. Defaults to `runs`.
 #'
 #' @param timeout Give up collecting job after the specified minutes.
 #'
-#' @param view View the job results after collecting it
+#' @param view View the job results after collecting it. You can also pass
+#'   "save" to save a copy of the run report at `tfruns.d/view.html`
 #'
 #'
 #' @family job management
@@ -626,8 +627,10 @@ job_download <- function(job,
   }
   tfruns::write_run_metadata("properties", properties, run_dir)
 
-  if (view && trial != "all")
+  if (isTRUE(view) && trial != "all")
     tfruns::view_run(run_dir)
+  else if (view == "save")
+    tfruns::save_run_view(run_dir, file.path(run_dir, "tfruns.d", "view.html"))
 
   invisible(status)
 }
@@ -697,7 +700,7 @@ job_status_is_tuning <- function(status) {
 
 collect_job_step <- function(destination, jobId) {
   r_job_step(paste0(
-    "cloudml::job_collect('", jobId, "', destination = '", destination, "', view = FALSE)"
+    "cloudml::job_collect('", jobId, "', destination = '", destination, "', view = 'save')"
   ))
 }
 
