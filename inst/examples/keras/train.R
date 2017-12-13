@@ -1,5 +1,9 @@
 library(keras)
 
+FLAGS <- flags(
+  flag_numeric("dropout_rate", 0.4)
+)
+
 mnist <- dataset_mnist()
 x_train <- mnist$train$x
 y_train <- mnist$train$y
@@ -20,7 +24,7 @@ model <- keras_model_sequential()
 
 model %>%
   layer_dense(units = 256, activation = 'relu', input_shape = c(784)) %>%
-  layer_dropout(rate = 0.4) %>%
+  layer_dropout(rate = FLAGS$dropout_rate) %>%
   layer_dense(units = 128, activation = 'relu') %>%
   layer_dropout(rate = 0.3) %>%
   layer_dense(units = 10, activation = 'softmax')
