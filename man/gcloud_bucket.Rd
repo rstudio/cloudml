@@ -7,7 +7,7 @@
 gcloud_bucket(url, local_dir = "gs", echo = FALSE)
 }
 \arguments{
-\item{url}{Google Storage bucket URL (e.g. \code{gs://&lt;your-bucket&gt;}).}
+\item{url}{Google Storage bucket URL (e.g. \code{gs://<your-bucket>}).}
 
 \item{local_dir}{Local directory to synchonize Google Storage bucket(s) to.}
 
