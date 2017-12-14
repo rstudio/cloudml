@@ -22,24 +22,29 @@ gcloud_config <- function(gcloud = NULL) {
     config <- list()
   }
 
-  # provide default account
-  if (is.null(config$account)) {
-    config$account <- gcloud_default_account()
-    if (config$account == "(unset)") {
-      message("Google Cloud SDK has not yet been initialized")
-      cat("\n")
-      if (have_rstudio_terminal()) {
-        message("Use the gcloud_init() function to initialize the SDK.")
-        cat("\n")
-      } else
-        gcloud_init_message()
-      stop("SDK not initialized")
-    }
-  }
+  # provide defaults if there is no named configuration
+  if (is.null(config$configuration)) {
 
-  # provide default project
-  if (is.null(config$project)) {
-    config$project <- gcloud_default_project()
+    # provide default account
+    if (is.null(config$account)) {
+      config$account <- gcloud_default_account()
+      if (config$account == "(unset)") {
+        message("Google Cloud SDK has not yet been initialized")
+        cat("\n")
+        if (have_rstudio_terminal()) {
+          message("Use the gcloud_init() function to initialize the SDK.")
+          cat("\n")
+        } else
+          gcloud_init_message()
+        stop("SDK not initialized")
+      }
+    }
+
+    # provide default project
+    if (is.null(config$project)) {
+      config$project <- gcloud_default_project()
+    }
+
   }
 
   # validate required 'gcloud' fields
