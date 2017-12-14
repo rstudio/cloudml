@@ -621,12 +621,12 @@ job_download <- function(job,
              error = function(e) NULL)
   }
   properties <- list()
-  properties$cloudml_job_id <- status$jobId
+  properties$cloudml_job <- status$jobId
   properties$cloudml_state <- status$state
-  properties$cloudml_error_message <- status$errorMessage
-  properties$cloudml_create_time <- as_date(status$createTime)
-  properties$cloudml_start_time <- as_date(status$startTime)
-  properties$cloudml_end_time <- as_date(status$endTime)
+  properties$cloudml_error <- status$errorMessage
+  properties$cloudml_created <- as_date(status$createTime)
+  properties$cloudml_start <- as_date(status$startTime)
+  properties$cloudml_end <- as_date(status$endTime)
   properties$cloudml_ml_units <- status$trainingOutput$consumedMLUnits
   properties$cloudml_scale_tier <- status$trainingInput$scaleTier
   messages <- trimws(strsplit(attr(status, "messages"), "\n")[[1]])
