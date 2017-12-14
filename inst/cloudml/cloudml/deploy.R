@@ -250,7 +250,7 @@ options(keras.fit_verbose = 2)
 deploy <- readRDS("cloudml/deploy.rds")
 
 # source entrypoint
-exit_status <- 0
+training_error <- NULL
 run_dir <- file.path("runs", deploy$id)
 tryCatch({
   tfruns::training_run(file = deploy$entrypoint,
@@ -262,8 +262,7 @@ tryCatch({
                        view = FALSE,
                        run_dir = run_dir)
 }, error = function(e) {
-  message("Error occurred during training: ", e$message)
-  exit_status <<- 1
+  training_error <<- e
 })
 
 
@@ -287,7 +286,8 @@ if (cache_enabled) {
   store_cached_data(cache_keras_local, cache_keras_remote)
 }
 
-if (exit_status != 0)
-  quit(save = "no", status = exit_status)
+if (!is.null(training_error))
+  stop(training_error)
+
 
 
