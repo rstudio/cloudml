@@ -58,7 +58,6 @@ cloudml_train <- function(file = "train.R",
   storage <- getOption("cloudml.storage")
   if (is.null(storage)) {
     project <- gcloud[["project"]]
-    project_bucket <- gcloud_project_bucket(project)
     if (!gcloud_project_has_bucket(project)) {
       gcloud_project_create_bucket(project)
     }
@@ -350,12 +349,14 @@ print.cloudml_job_status <- function(x, ...) {
 #'
 #' Get the hyperparameter trials for job, as an \R data frame
 #'
+#' @inheritParams gcloud_exec
+#
 #' @param x Job name or job object.
 #'
 #' @family job management
 #'
 #' @export
-job_trials <- function(x) {
+job_trials <- function(x, gcloud = NULL) {
   UseMethod("job_trials")
 }
 
@@ -367,18 +368,18 @@ job_trials_from_status <- function(status) {
 }
 
 #' @export
-job_trials.character <- function(x) {
-  status <- job_status(x)
+job_trials.character <- function(x, gcloud = NULL) {
+  status <- job_status(x, gcloud)
   job_trials_from_status(status)
 }
 
 #' @export
-job_trials.cloudml_job <- function(x) {
+job_trials.cloudml_job <- function(x, gcloud = NULL) {
   job_trials_from_status(x$description)
 }
 
 #' @export
-job_trials.cloudml_job_status <- function(x) {
+job_trials.cloudml_job_status <- function(x, gcloud = NULL) {
   job_trials_from_status(x)
 }
 
@@ -452,7 +453,8 @@ job_collect <- function(job = "latest",
       job,
       trial = trials,
       destination = destination,
-      view = view)
+      view = view,
+      gcloud = gcloud)
     )
   }
 
@@ -477,7 +479,8 @@ job_collect <- function(job = "latest",
       return(job_download_multiple(job,
                                    trial = trials,
                                    destination = destination,
-                                   view = view))
+                                   view = view,
+                                   gcloud = gcloud))
     }
 
     # job isn't ready yet; sleep for a while and try again
@@ -574,11 +577,14 @@ job_collect_async <- function(
 job_download <- function(job,
                          trial = "best",
                          destination = "runs",
-                         view = interactive()) {
+                         view = interactive(),
+                         gcloud) {
 
-  status <- job_status(job)
+  status <- job_status(job, gcloud)
 
-  trial_paths <- job_status_trial_dir(status, destination, trial)
+  # retrieve the gs-compatible source URL to copy from and the final
+  # run directory which might be modified to include the trial number
+  trial_paths <- job_status_trial_dir(status, destination, trial, job)
   source <- trial_paths$source
   destination <- trial_paths$destination
 
@@ -604,7 +610,7 @@ job_download <- function(job,
   gs_copy(source, destination, TRUE, echo = TRUE)
 
   # write cloudml properties to run_dir
-  run_dir <- file.path(destination, basename(source))
+  run_dir <- destination
   as_date <- function(x) {
     tryCatch(as.double(as.POSIXct(x,
                                   tz = "GMT",
@@ -638,11 +644,19 @@ job_download <- function(job,
   invisible(status)
 }
 
-job_download_multiple <- function(job, trial, destination, view) {
-  if (length(trial) <= 1)
-    job_download(job, trial, destination, view)
-  else
-    lapply(trial, function(t) job_download(job, t, destination, FALSE))
+job_list_trials <- function(job) {
+  as.numeric(sapply(job$description$trainingOutput$trials, function(e) e$trialId))
+}
+
+job_download_multiple <- function(job, trial, destination, view, gcloud) {
+  if (length(trial) <= 1 && trial != "all")
+    job_download(job, trial, destination, view, gcloud)
+  else {
+    if (identical(trial, "all")) trial <- job_list_trials(job)
+    lapply(trial, function(t) {
+      job_download(job, t, destination, FALSE, gcloud)
+    })
+  }
 }
 
 job_output_dir <- function(job, gcloud) {
@@ -660,34 +674,52 @@ job_output_dir <- function(job, gcloud) {
   output_path
 }
 
-job_status_trial_dir <- function(status, destination, trial) {
+job_status_trial_dir <- function(status, destination, trial, job) {
 
   # determine storage from job
   storage <- dirname(status$trainingInput$jobDir)
 
   output_path <- list(
-    source = file.path(storage, "runs", status$jobId, fsep = "/"),
-    destination = destination
+    source = file.path(storage, "runs", status$jobId, "*", fsep = "/"),
+    destination = file.path(destination, status$jobId)
   )
 
-  if (trial == "best") {
-    if (job_status_is_tuning(status) && !is.null(status$trainingInput$hyperparameters$goal)) {
-      decreasing <- if (status$trainingInput$hyperparameters$goal == "MINIMIZE") FALSE else TRUE
-      ordered <- order(sapply(status$trainingOutput$trials, function(e) e$finalMetric$objectiveValue), decreasing = TRUE)
-      if (length(ordered) > 0) {
-
-        output_path <- list(
-          source = file.path(output_path$source, status$trainingOutput$trials[[ordered[[1]]]]$trialId),
-          destination = file.path(destination, status$jobId)
-        )
+  if (!is.null(trial) && job_is_tuning(job)) {
+    trial_digits_format <- paste0("%0", nchar(max(job_list_trials(job))), "d")
+    trial_parent <- file.path(storage, "runs", status$jobId)
+    if (trial == "best") {
+      if (job_status_is_tuning(status) && !is.null(status$trainingInput$hyperparameters$goal)) {
+        decreasing <- if (status$trainingInput$hyperparameters$goal == "MINIMIZE") FALSE else TRUE
+        ordered <- order(sapply(status$trainingOutput$trials, function(e) e$finalMetric$objectiveValue), decreasing = TRUE)
+        if (length(ordered) > 0) {
+          best_trial <- as.numeric(status$trainingOutput$trials[[ordered[[1]]]]$trialId)
+          output_path <- list(
+            source = file.path(trial_parent, best_trial, "*"),
+            destination = file.path(
+              destination,
+              paste(
+                status$jobId,
+                sprintf(trial_digits_format, best_trial),
+                sep = "-"
+              )
+            )
+          )
+        }
       }
     }
-  }
-  else if (is.numeric(trial)){
-    output_path <- list(
-      source = file.path(output_path$source, trial),
-      destination = file.path(destination, status$jobId)
-    )
+    else if (is.numeric(trial)) {
+      output_path <- list(
+        source = file.path(trial_parent, trial, "*"),
+        destination = file.path(
+          destination,
+          paste(
+            status$jobId,
+            sprintf(trial_digits_format, trial),
+            sep = "-"
+          )
+        )
+      )
+    }
   }
 
   output_path

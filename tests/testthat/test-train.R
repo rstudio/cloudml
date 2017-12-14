@@ -9,6 +9,15 @@ expect_train_succeeds <- function(job) {
 
   expect_true(dir.exists("runs"))
 
+  job_dir <- dir("runs", full.names = TRUE)[[1]]
+  expect_true(grepl("/cloudml", job_dir))
+
+  tfruns_dir <- dir(job_dir, pattern = "tfruns", full.names = TRUE)
+  expect_true(length(tfruns_dir) == 1)
+
+  tfruns_props_dir <- dir(tfruns_dir, pattern = "properties", full.names = TRUE)
+  expect_true(length(tfruns_props_dir) == 1)
+
   saved_model <- dir(
     "runs",
     recursive = TRUE,

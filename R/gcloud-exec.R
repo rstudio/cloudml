@@ -28,7 +28,10 @@ gexec <- function(command,
 
       "",
       "[command]",
-      pretty,
+      paste(
+        command,
+        paste(quoted_args, collapse = " ")
+      ),
 
       "",
       "[output]",
@@ -46,10 +49,7 @@ gexec <- function(command,
     )
 
     pasted <- paste(output, collapse = "\n")
-    message(pasted)
-
-    message(paste(c(command, args), collapse = " "))
-    stop("error invoking 'gcloud' executable", call. = FALSE)
+    stop(pasted, call. = FALSE)
   }
 
   invisible(result)

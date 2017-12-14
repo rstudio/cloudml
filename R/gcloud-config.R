@@ -17,7 +17,7 @@ gcloud_config <- function(gcloud = NULL) {
     else
       config <- list()
   } else if (is.character(gcloud)) {
-    if (file.exists(gcloud))
+    if (file_test("-f", gcloud))
       config <- yaml::yaml.load_file(gcloud)
     else
       stop("gcloud config file '", gcloud, "' not found")

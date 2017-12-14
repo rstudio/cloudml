@@ -33,10 +33,6 @@ ShellArgumentsBuilder <- function(gcloud) {
     invisible(builder)
   }
 
-  # discover active application directory
-  path <- Sys.getenv("CLOUDML_APPLICATION_DIR")
-  if (nchar(path) > 0) gcloud <- path
-
   # prepend project + account information
   conf <- gcloud_config(gcloud = gcloud)
 

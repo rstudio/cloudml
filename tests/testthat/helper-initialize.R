@@ -40,7 +40,7 @@ cloudml_tests_configured <- function() {
 }
 
 if (cloudml_tests_configured()) {
-  if (identical(Sys.getenv("TRAVIS"), "true")) {
+  if (identical(Sys.getenv("TRAVIS"), "true") && !cloudml::gcloud_installed()) {
     cloudml::gcloud_install()
   }
 

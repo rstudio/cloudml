@@ -4,7 +4,7 @@
 \alias{job_trials}
 \title{Current trials of a job}
 \usage{
-job_trials(x)
+job_trials(x, gcloud = NULL)
 }
 \arguments{
 \item{x}{Job name or job object.}
