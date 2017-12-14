@@ -444,18 +444,13 @@ job_collect <- function(job,
   time <- Sys.time()
 
   # if we're already done, attempt download of outputs
-  if (status$state == "SUCCEEDED")
+  if (status$state %in% c("SUCCEEDED", "FAILED")) {
     return(job_download_multiple(
       job,
       trial = trials,
       destination = destination,
       view = view)
     )
-
-  # if the job has failed, report error
-  if (status$state == "FAILED") {
-    fmt <- "job '%s' failed [state: %s]"
-    stopf(fmt, id, status$state)
   }
 
   # otherwise, notify the user and begin polling
@@ -474,19 +469,12 @@ job_collect <- function(job,
     write_status(status, time)
 
     # download outputs on success
-    if (status$state == "SUCCEEDED") {
+    if (status$state %in% c("SUCCEEDED", "FAILED")) {
       printf("\n")
       return(job_download_multiple(job,
                                    trial = trials,
                                    destination = destination,
                                    view = view))
-    }
-
-    # if the job has failed, report error
-    if (status$state == "FAILED") {
-      printf("\n")
-      fmt <- "job '%s' failed [state: %s]"
-      stopf(fmt, id, status$state)
     }
 
     # job isn't ready yet; sleep for a while and try again
