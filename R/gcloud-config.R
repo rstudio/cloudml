@@ -50,21 +50,6 @@ gcloud_config <- function(gcloud = NULL) {
 
   }
 
-  # validate required 'gcloud' fields
-  for (field in c("project", "account")) {
-
-    if (is.null(config[[field]])) {
-      fmt <- "[%s]: field '%s' is missing"
-      stopf(fmt, as_aliased_path(file), field)
-    }
-
-    if (!is.character(config[[field]])) {
-      fmt <- "[%s]: field '%s' is not a string"
-      stopf(fmt, as_aliased_path(file), field)
-    }
-
-  }
-
   config
 }
 

@@ -39,11 +39,18 @@ ShellArgumentsBuilder <- function(gcloud) {
 
   # prepend project + account information
   conf <- gcloud_config(gcloud = gcloud)
-  (builder
-    ("--project")
-    (conf[["project"]])
-    ("--account")
-    (conf[["account"]]))
+
+  if (!is.null(conf[["account"]])) {
+    (builder
+     ("--account")
+     (conf[["account"]]))
+  }
+
+  if (!is.null(conf[["project"]])) {
+    (builder
+      ("--project")
+      (conf[["project"]]))
+  }
 
   if (!is.null(conf[["configuration"]])) {
     (builder
