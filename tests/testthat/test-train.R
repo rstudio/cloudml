@@ -5,7 +5,7 @@ expect_train_succeeds <- function(job) {
   expect_gt(length(job$description), 0)
   expect_gt(nchar(job$description$state), 0)
 
-  collected <- job_collect(job)
+  collected <- job_collect(job, view = "save")
 
   expect_true(dir.exists("runs"))
 
