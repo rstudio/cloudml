@@ -12,7 +12,10 @@ gcloud_config <- function(gcloud = NULL) {
   } else if (is.null(gcloud)) {
     path <- getwd()
     gcloud <- find_config_file(path, "gcloud.yml")
-    config <- yaml::yaml.load_file(gcloud)
+    if (!is.null(gcloud))
+      config <- yaml::yaml.load_file(gcloud)
+    else
+      config <- list()
   } else if (is.character(gcloud)) {
     if (file.exists(gcloud))
       config <- yaml::yaml.load_file(gcloud)
