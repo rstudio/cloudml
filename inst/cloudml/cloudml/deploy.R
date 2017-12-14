@@ -250,15 +250,22 @@ options(keras.fit_verbose = 2)
 deploy <- readRDS("cloudml/deploy.rds")
 
 # source entrypoint
+exit_status <- 0
 run_dir <- file.path("runs", deploy$id)
-tfruns::training_run(file = deploy$entrypoint,
-                     context = deploy$context,
-                     config = "cloudml",
-                     flags = deploy$overlay,
-                     encoding = "UTF-8",
-                     echo = TRUE,
-                     view = FALSE,
-                     run_dir = run_dir)
+tryCatch({
+  tfruns::training_run(file = deploy$entrypoint,
+                       context = deploy$context,
+                       config = "cloudml",
+                       flags = deploy$overlay,
+                       encoding = "UTF-8",
+                       echo = TRUE,
+                       view = FALSE,
+                       run_dir = run_dir)
+}, error = function(e) {
+  message("Error occurred during training: ", e$message)
+  exit_status <- 1
+})
+
 
 tf_config <- jsonlite::fromJSON(Sys.getenv("TF_CONFIG", "{}"))
 
@@ -279,3 +286,8 @@ if (cache_enabled) {
   message("Caching: ", cache_keras_local)
   store_cached_data(cache_keras_local, cache_keras_remote)
 }
+
+if (exit_status != 0)
+  quit(save = "no", status = exit_status)
+
+
