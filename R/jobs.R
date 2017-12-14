@@ -329,19 +329,21 @@ job_status <- function(job = "latest",
 
 #' @export
 print.cloudml_job_status <- function(x, ...) {
-  message("Job:    ", x$jobId, " (", x$state, ")")
 
-  if (!is.null(x$startTime)) message("Start:  ", x$startTime)
-  if (!is.null(x$endTime)) message("End:    ", x$endTime)
+  # strip generated attributes from trainingInput
+  x$trainingInput$args <- NULL
+  x$trainingInput$packageUris <- NULL
+  x$trainingInput$pythonModule <- NULL
 
+  str(x, give.attr = FALSE, no.list = TRUE)
   trails_data <- job_trials(x)
   if (!is.null(trails_data)) {
-    message("")
-    message("Hyperparameter Trials:")
+    cat("\n")
+    cat("Hyperparameter Trials:\n")
     print(trails_data)
   }
 
-  message(attr(x, "messages"))
+  cat(attr(x, "messages"), "\n")
 }
 
 #' Current trials of a job
