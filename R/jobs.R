@@ -582,6 +582,8 @@ job_download <- function(job,
 
   status <- job_status(job, gcloud)
 
+  # retrieve the gs-compatible source URL to copy from and the final
+  # run directory which might be modified to include the trial number
   trial_paths <- job_status_trial_dir(status, destination, trial, job)
   source <- trial_paths$source
   destination <- trial_paths$destination
@@ -684,7 +686,7 @@ job_status_trial_dir <- function(status, destination, trial, job) {
 
   if (!is.null(trial) && job_is_tuning(job)) {
     trial_digits_format <- paste0("%0", nchar(max(job_list_trials(job))), "d")
-
+    trial_parent <- file.path(storage, "runs", status$jobId)
     if (trial == "best") {
       if (job_status_is_tuning(status) && !is.null(status$trainingInput$hyperparameters$goal)) {
         decreasing <- if (status$trainingInput$hyperparameters$goal == "MINIMIZE") FALSE else TRUE
@@ -692,7 +694,7 @@ job_status_trial_dir <- function(status, destination, trial, job) {
         if (length(ordered) > 0) {
           best_trial <- as.numeric(status$trainingOutput$trials[[ordered[[1]]]]$trialId)
           output_path <- list(
-            source = file.path(output_path$source, best_trial, "*"),
+            source = file.path(trial_parent, best_trial, "*"),
             destination = file.path(
               destination,
               paste(
@@ -707,7 +709,7 @@ job_status_trial_dir <- function(status, destination, trial, job) {
     }
     else if (is.numeric(trial)) {
       output_path <- list(
-        source = file.path(output_path$source, trial, "*"),
+        source = file.path(trial_parent, trial, "*"),
         destination = file.path(
           destination,
           paste(
