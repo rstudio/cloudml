@@ -26,8 +26,6 @@ reference:
       Functions for model training and prediction.
     contents:
       - cloudml_train
-      - cloudml_tune
-      - is_cloudml
   - title: "Managing Jobs"
     desc: >
       Functions for managing remote Cloud ML Jobs.
