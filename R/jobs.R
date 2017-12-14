@@ -598,7 +598,7 @@ job_download <- function(job,
   }
 
   ensure_directory(destination)
-  gcloud_copy(source, destination, TRUE, echo = TRUE)
+  gs_copy(source, destination, TRUE, echo = TRUE)
 
   # write cloudml properties to run_dir
   run_dir <- file.path(destination, basename(source))

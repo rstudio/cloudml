@@ -20,7 +20,7 @@
 #'   copying directories.
 #'
 #' @export
-gcloud_copy <- function(source, destination, recursive = FALSE, echo = TRUE) {
+gs_copy <- function(source, destination, recursive = FALSE, echo = TRUE) {
 
   arguments <- c(
     "-m",
@@ -36,19 +36,19 @@ gcloud_copy <- function(source, destination, recursive = FALSE, echo = TRUE) {
 
 #' Synchronize content of two buckets/directories
 #'
-#' The `gcloud_rsync` function makes the contents under `destination` the same
+#' The `gs_rsync` function makes the contents under `destination` the same
 #' as the contents under `source`, by copying any missing files/objects (or
 #' those whose data has changed), and (if the `delete` option is specified)
 #' deleting any extra files/objects. `source` must specify a directory, bucket,
 #' or bucket subdirectory.
 #'
-#' @inheritParams gcloud_copy
+#' @inheritParams gs_copy
 #'
 #' @param delete Delete extra files under `destination` not found under
 #'   `source` By default extra files are not deleted.
 #' @param recursive Causes directories, buckets, and bucket subdirectories to
 #'   be synchronized recursively. If you neglect to use this option
-#'   `gcloud_rsync()` will make only the top-level directory in the source and
+#'   `gs_rsync()` will make only the top-level directory in the source and
 #'   destination URLs match, skipping any sub-directories.
 #' @param parallel Causes synchronization to run in parallel. This can
 #'   significantly improve performance if you are performing operations on a
@@ -61,11 +61,11 @@ gcloud_copy <- function(source, destination, recursive = FALSE, echo = TRUE) {
 #'   <https://cloud.google.com/storage/docs/gsutil/commands/rsync>).
 #'
 #' @export
-gcloud_rsync <- function(source, destination,
-                         delete = FALSE, recursive = FALSE,
-                         parallel = TRUE, dry_run = FALSE,
-                         options = NULL,
-                         echo = TRUE) {
+gs_rsync <- function(source, destination,
+                     delete = FALSE, recursive = FALSE,
+                     parallel = TRUE, dry_run = FALSE,
+                     options = NULL,
+                     echo = TRUE) {
 
   if (!utils::file_test("-d", destination))
     dir.create(destination, recursive = TRUE)
@@ -107,7 +107,7 @@ gcloud_rsync <- function(source, destination,
 #'   development and a Google Cloud bucket during cloud training.
 #'
 #' @export
-gcloud_path <- function(url, local_dir = "gs", echo = FALSE) {
+gs_local_dir <- function(url, local_dir = "gs", echo = FALSE) {
 
   # return url unmodified for non google-storage URIs
   if (!is_gs_uri(url)) {
@@ -119,7 +119,7 @@ gcloud_path <- function(url, local_dir = "gs", echo = FALSE) {
     local_path <- file.path(local_dir, object_path)
 
     # synchronize
-    gcloud_rsync(url, local_path, delete = TRUE, recursive = TRUE, echo = echo)
+    gs_rsync(url, local_path, delete = TRUE, recursive = TRUE, echo = echo)
 
     # return path
     local_path

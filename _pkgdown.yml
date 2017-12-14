@@ -39,12 +39,17 @@ reference:
 
   - title: "Google Cloud"
     desc: >
-      Functions for interacting with Google Cloud.
+      Functions for interacting with Google Cloud SDK.
     contents:
       - gcloud_install
       - gcloud_init
       - gcloud_terminal
-      - gcloud_copy
-      - gcloud_rsync
-      - gcloud_path
+
+   - title: "Google Stroage"
+    desc: >
+      Functions for interacting with Google Storage.
+    contents:
+      - gs_copy
+      - gs_rsync
+      - gs_local_dir
 
