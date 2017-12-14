@@ -58,7 +58,6 @@ cloudml_train <- function(file = "train.R",
   storage <- getOption("cloudml.storage")
   if (is.null(storage)) {
     project <- gcloud[["project"]]
-    project_bucket <- gcloud_project_bucket(project)
     if (!gcloud_project_has_bucket(project)) {
       gcloud_project_create_bucket(project)
     }
