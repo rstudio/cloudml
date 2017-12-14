@@ -263,7 +263,7 @@ tryCatch({
                        run_dir = run_dir)
 }, error = function(e) {
   message("Error occurred during training: ", e$message)
-  exit_status <- 1
+  exit_status <<- 1
 })
 
 
