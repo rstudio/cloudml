@@ -135,6 +135,11 @@ gcloud_install_windows <- function() {
   invisible(NULL)
 }
 
+#' Checks the Google Cloud SDK Install
+#'
+#' Is the Google Cloud SDK installed?
+#'
+#' @export
 gcloud_installed <- function() {
   have_sdk <- !is.null(tryCatch(gcloud_binary(), error = function(e) NULL))
   if (have_sdk)
