@@ -4,11 +4,12 @@
 \alias{job_collect}
 \title{Collect job output}
 \usage{
-job_collect(job, trials = "best", destination = "runs", timeout = NULL,
-  view = interactive(), gcloud = NULL)
+job_collect(job = "latest", trials = "best", destination = "runs",
+  timeout = NULL, view = interactive(), gcloud = NULL)
 }
 \arguments{
-\item{job}{Job name or job object.}
+\item{job}{Job name or job object. Pass "latest" to indicate the
+most recently submitted job.}
 
 \item{trials}{Under hyperparameter tuning, specifies which trials to
 download. Use \code{"best"} to download best trial, \code{"all"} to

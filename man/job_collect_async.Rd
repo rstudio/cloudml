@@ -9,7 +9,8 @@ job_collect_async(job, gcloud = NULL, destination = "runs",
   view = interactive())
 }
 \arguments{
-\item{job}{Job name or job object.}
+\item{job}{Job name or job object. Pass "latest" to indicate the
+most recently submitted job.}
 
 \item{gcloud}{Optional gcloud configuration.}
 

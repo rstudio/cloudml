@@ -180,7 +180,7 @@ cloudml_train <- function(file = "train.R",
 #' @family job management
 #'
 #' @export
-job_cancel <- function(job, gcloud = NULL) {
+job_cancel <- function(job = "latest", gcloud = NULL) {
   job <- as.cloudml_job(job, gcloud)
 
   arguments <- (MLArgumentsBuilder(gcloud)
@@ -269,7 +269,7 @@ job_list <- function(filter    = NULL,
 #' @family job management
 #'
 #' @export
-job_stream_logs <- function(job,
+job_stream_logs <- function(job = "latest",
                             polling_interval = getOption("cloudml.stream_logs.polling", 5),
                             task_name = NULL,
                             allow_multiline_logs = FALSE,
@@ -298,7 +298,8 @@ job_stream_logs <- function(job,
 #'
 #' @inheritParams gcloud_config
 #'
-#' @param job Job name or job object.
+#' @param job Job name or job object. Pass "latest" to indicate the
+#'   most recently submitted job.
 #'
 #' @param gcloud A list or \code{YAML} file with optional 'account' or 'project'
 #'   fields used to configure the GCloud environemnt.
@@ -306,7 +307,7 @@ job_stream_logs <- function(job,
 #' @family job management
 #'
 #' @export
-job_status <- function(job,
+job_status <- function(job = "latest",
                        gcloud = NULL) {
   job <- as.cloudml_job(job, gcloud)
 
@@ -410,7 +411,7 @@ job_validate_trials <- function(trials) {
 #' @family job management
 #'
 #' @export
-job_collect <- function(job,
+job_collect <- function(job = "latest",
                         trials = "best",
                         destination = "runs",
                         timeout = NULL,

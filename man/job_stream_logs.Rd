@@ -4,12 +4,13 @@
 \alias{job_stream_logs}
 \title{Show job log stream}
 \usage{
-job_stream_logs(job,
+job_stream_logs(job = "latest",
   polling_interval = getOption("cloudml.stream_logs.polling", 5),
   task_name = NULL, allow_multiline_logs = FALSE, gcloud = NULL)
 }
 \arguments{
-\item{job}{Job name or job object.}
+\item{job}{Job name or job object. Pass "latest" to indicate the
+most recently submitted job.}
 
 \item{polling_interval}{Number of seconds to wait between efforts to fetch the
 latest log messages.}
