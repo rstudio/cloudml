@@ -180,7 +180,7 @@ cloudml_train <- function(file = "train.R",
 #' @family job management
 #'
 #' @export
-job_cancel <- function(job, gcloud = NULL) {
+job_cancel <- function(job = "latest", gcloud = NULL) {
   job <- as.cloudml_job(job, gcloud)
 
   arguments <- (MLArgumentsBuilder(gcloud)
@@ -269,7 +269,7 @@ job_list <- function(filter    = NULL,
 #' @family job management
 #'
 #' @export
-job_stream_logs <- function(job,
+job_stream_logs <- function(job = "latest",
                             polling_interval = getOption("cloudml.stream_logs.polling", 5),
                             task_name = NULL,
                             allow_multiline_logs = FALSE,
@@ -298,7 +298,8 @@ job_stream_logs <- function(job,
 #'
 #' @inheritParams gcloud_config
 #'
-#' @param job Job name or job object.
+#' @param job Job name or job object. Pass "latest" to indicate the
+#'   most recently submitted job.
 #'
 #' @param gcloud A list or \code{YAML} file with optional 'account' or 'project'
 #'   fields used to configure the GCloud environemnt.
@@ -306,7 +307,7 @@ job_stream_logs <- function(job,
 #' @family job management
 #'
 #' @export
-job_status <- function(job,
+job_status <- function(job = "latest",
                        gcloud = NULL) {
   job <- as.cloudml_job(job, gcloud)
 
@@ -328,33 +329,33 @@ job_status <- function(job,
 
 #' @export
 print.cloudml_job_status <- function(x, ...) {
-  message("Job:    ", x$jobId, " (", x$state, ")")
 
-  if (!is.null(x$startTime)) message("Start:  ", x$startTime)
-  if (!is.null(x$endTime)) message("End:    ", x$endTime)
+  # strip generated attributes from trainingInput
+  x$trainingInput$args <- NULL
+  x$trainingInput$packageUris <- NULL
+  x$trainingInput$pythonModule <- NULL
 
+  str(x, give.attr = FALSE, no.list = TRUE)
   trails_data <- job_trials(x)
   if (!is.null(trails_data)) {
-    message("")
-    message("Hyperparameter Trials:")
+    cat("\n")
+    cat("Hyperparameter Trials:\n")
     print(trails_data)
   }
 
-  message(attr(x, "messages"))
+  cat(attr(x, "messages"), "\n")
 }
 
 #' Current trials of a job
 #'
 #' Get the hyperparameter trials for job, as an \R data frame
 #'
-#' @inheritParams gcloud_exec
-#
 #' @param x Job name or job object.
 #'
 #' @family job management
 #'
 #' @export
-job_trials <- function(x, gcloud = NULL) {
+job_trials <- function(x) {
   UseMethod("job_trials")
 }
 
@@ -366,18 +367,18 @@ job_trials_from_status <- function(status) {
 }
 
 #' @export
-job_trials.character <- function(x, gcloud = NULL) {
-  status <- job_status(x, gcloud)
+job_trials.character <- function(x) {
+  status <- job_status(x)
   job_trials_from_status(status)
 }
 
 #' @export
-job_trials.cloudml_job <- function(x, gcloud = NULL) {
+job_trials.cloudml_job <- function(x) {
   job_trials_from_status(x$description)
 }
 
 #' @export
-job_trials.cloudml_job_status <- function(x, gcloud = NULL) {
+job_trials.cloudml_job_status <- function(x) {
   job_trials_from_status(x)
 }
 
@@ -412,7 +413,7 @@ job_validate_trials <- function(trials) {
 #' @family job management
 #'
 #' @export
-job_collect <- function(job,
+job_collect <- function(job = "latest",
                         trials = "best",
                         destination = "runs",
                         timeout = NULL,
@@ -446,19 +447,13 @@ job_collect <- function(job,
   time <- Sys.time()
 
   # if we're already done, attempt download of outputs
-  if (status$state == "SUCCEEDED")
+  if (status$state %in% c("SUCCEEDED", "FAILED")) {
     return(job_download_multiple(
       job,
       trial = trials,
       destination = destination,
-      view = view,
-      gcloud)
+      view = view)
     )
-
-  # if the job has failed, report error
-  if (status$state == "FAILED") {
-    fmt <- "job '%s' failed [state: %s]"
-    stopf(fmt, id, status$state)
   }
 
   # otherwise, notify the user and begin polling
@@ -477,20 +472,12 @@ job_collect <- function(job,
     write_status(status, time)
 
     # download outputs on success
-    if (status$state == "SUCCEEDED") {
+    if (status$state %in% c("SUCCEEDED", "FAILED")) {
       printf("\n")
       return(job_download_multiple(job,
                                    trial = trials,
                                    destination = destination,
-                                   view = view,
-                                   gcloud))
-    }
-
-    # if the job has failed, report error
-    if (status$state == "FAILED") {
-      printf("\n")
-      fmt <- "job '%s' failed [state: %s]"
-      stopf(fmt, id, status$state)
+                                   view = view))
     }
 
     # job isn't ready yet; sleep for a while and try again
@@ -587,12 +574,11 @@ job_collect_async <- function(
 job_download <- function(job,
                          trial = "best",
                          destination = "runs",
-                         view = interactive(),
-                         gcloud) {
+                         view = interactive()) {
 
-  status <- job_status(job, gcloud)
+  status <- job_status(job)
 
-  trial_paths <- job_status_trial_dir(status, destination, trial, job)
+  trial_paths <- job_status_trial_dir(status, destination, trial)
   source <- trial_paths$source
   destination <- trial_paths$destination
 
@@ -615,10 +601,10 @@ job_download <- function(job,
   }
 
   ensure_directory(destination)
-  gcloud_copy(source, destination, TRUE, echo = TRUE)
+  gs_copy(source, destination, TRUE, echo = TRUE)
 
   # write cloudml properties to run_dir
-  run_dir <- destination
+  run_dir <- file.path(destination, basename(source))
   as_date <- function(x) {
     tryCatch(as.double(as.POSIXct(x,
                                   tz = "GMT",
@@ -626,12 +612,12 @@ job_download <- function(job,
              error = function(e) NULL)
   }
   properties <- list()
-  properties$cloudml_job_id <- status$jobId
+  properties$cloudml_job <- status$jobId
   properties$cloudml_state <- status$state
-  properties$cloudml_error_message <- status$errorMessage
-  properties$cloudml_create_time <- as_date(status$createTime)
-  properties$cloudml_start_time <- as_date(status$startTime)
-  properties$cloudml_end_time <- as_date(status$endTime)
+  properties$cloudml_error <- status$errorMessage
+  properties$cloudml_created <- as_date(status$createTime)
+  properties$cloudml_start <- as_date(status$startTime)
+  properties$cloudml_end <- as_date(status$endTime)
   properties$cloudml_ml_units <- status$trainingOutput$consumedMLUnits
   properties$cloudml_scale_tier <- status$trainingInput$scaleTier
   messages <- trimws(strsplit(attr(status, "messages"), "\n")[[1]])
@@ -652,19 +638,11 @@ job_download <- function(job,
   invisible(status)
 }
 
-job_list_trials <- function(job) {
-  as.numeric(sapply(job$description$trainingOutput$trials, function(e) e$trialId))
-}
-
-job_download_multiple <- function(job, trial, destination, view, gcloud) {
-  if (length(trial) <= 1 && trial != "all")
-    job_download(job, trial, destination, view, gcloud)
-  else {
-    if (identical(trial, "all")) trial <- job_list_trials(job)
-    lapply(trial, function(t) {
-      job_download(job, t, destination, FALSE, gcloud)
-    })
-  }
+job_download_multiple <- function(job, trial, destination, view) {
+  if (length(trial) <= 1)
+    job_download(job, trial, destination, view)
+  else
+    lapply(trial, function(t) job_download(job, t, destination, FALSE))
 }
 
 job_output_dir <- function(job, gcloud) {
@@ -682,7 +660,7 @@ job_output_dir <- function(job, gcloud) {
   output_path
 }
 
-job_status_trial_dir <- function(status, destination, trial, job) {
+job_status_trial_dir <- function(status, destination, trial) {
 
   # determine storage from job
   storage <- dirname(status$trainingInput$jobDir)
@@ -692,42 +670,24 @@ job_status_trial_dir <- function(status, destination, trial, job) {
     destination = destination
   )
 
-  if (!is.null(trial)) {
-    trial_digits_format <- paste0("%0", nchar(max(job_list_trials(job))), "d")
+  if (trial == "best") {
+    if (job_status_is_tuning(status) && !is.null(status$trainingInput$hyperparameters$goal)) {
+      decreasing <- if (status$trainingInput$hyperparameters$goal == "MINIMIZE") FALSE else TRUE
+      ordered <- order(sapply(status$trainingOutput$trials, function(e) e$finalMetric$objectiveValue), decreasing = TRUE)
+      if (length(ordered) > 0) {
 
-    if (trial == "best") {
-      if (job_status_is_tuning(status) && !is.null(status$trainingInput$hyperparameters$goal)) {
-        decreasing <- if (status$trainingInput$hyperparameters$goal == "MINIMIZE") FALSE else TRUE
-        ordered <- order(sapply(status$trainingOutput$trials, function(e) e$finalMetric$objectiveValue), decreasing = TRUE)
-        if (length(ordered) > 0) {
-          best_trial <- as.numeric(status$trainingOutput$trials[[ordered[[1]]]]$trialId)
-          output_path <- list(
-            source = file.path(output_path$source, best_trial, "*"),
-            destination = file.path(
-              destination,
-              paste(
-                status$jobId,
-                sprintf(trial_digits_format, best_trial),
-                sep = "-"
-              )
-            )
-          )
-        }
+        output_path <- list(
+          source = file.path(output_path$source, status$trainingOutput$trials[[ordered[[1]]]]$trialId),
+          destination = file.path(destination, status$jobId)
+        )
       }
     }
-    else if (is.numeric(trial)) {
-      output_path <- list(
-        source = file.path(output_path$source, trial, "*"),
-        destination = file.path(
-          destination,
-          paste(
-            status$jobId,
-            sprintf(trial_digits_format, trial),
-            sep = "-"
-          )
-        )
-      )
-    }
+  }
+  else if (is.numeric(trial)){
+    output_path <- list(
+      source = file.path(output_path$source, trial),
+      destination = file.path(destination, status$jobId)
+    )
   }
 
   output_path

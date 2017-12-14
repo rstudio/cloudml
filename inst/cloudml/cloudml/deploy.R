@@ -125,7 +125,7 @@ if (file.exists("/etc/issue")) {
 use_packrat <- !identical(job_config[["packrat"]], FALSE)
 
 get_cached_bundles <- function (source) {
-  cached_entries <- system2("gsutil", c("ls", source), stdout = TRUE)
+  cached_entries <- system2("gsutil", c("ls", source), stdout = TRUE, stderr = FALSE)
   as.character(lapply(strsplit(basename(cached_entries), "\\."), function(e) e[[1]]))
 }
 
@@ -250,15 +250,21 @@ options(keras.fit_verbose = 2)
 deploy <- readRDS("cloudml/deploy.rds")
 
 # source entrypoint
+training_error <- NULL
 run_dir <- file.path("runs", deploy$id)
-tfruns::training_run(file = deploy$entrypoint,
-                     context = deploy$context,
-                     config = "cloudml",
-                     flags = deploy$overlay,
-                     encoding = "UTF-8",
-                     echo = TRUE,
-                     view = FALSE,
-                     run_dir = run_dir)
+tryCatch({
+  tfruns::training_run(file = deploy$entrypoint,
+                       context = deploy$context,
+                       config = "cloudml",
+                       flags = deploy$overlay,
+                       encoding = "UTF-8",
+                       echo = TRUE,
+                       view = FALSE,
+                       run_dir = run_dir)
+}, error = function(e) {
+  training_error <<- e
+})
+
 
 tf_config <- jsonlite::fromJSON(Sys.getenv("TF_CONFIG", "{}"))
 
@@ -279,3 +285,9 @@ if (cache_enabled) {
   message("Caching: ", cache_keras_local)
   store_cached_data(cache_keras_local, cache_keras_remote)
 }
+
+if (!is.null(training_error))
+  stop(training_error)
+
+
+

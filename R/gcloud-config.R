@@ -2,43 +2,52 @@
 #'
 #' Reads the Google Cloud config file.
 #'
-#' @param gcloud A list or \code{YAML} file with optional 'account' or 'project'
-#'   fields used to configure the GCloud environemnt.
+#' @param gcloud A list or \code{YAML} file with optional 'account', 'project',
+#'   and 'configuration' fields used to configure the GCloud environemnt.
 #'
 gcloud_config <- function(gcloud = NULL) {
-  if (is.list(gcloud)) return(gcloud)
-  else if (is.null(gcloud)) {
+
+  if (is.list(gcloud)) {
+    config <- gcloud
+  } else if (is.null(gcloud)) {
     path <- getwd()
     gcloud <- find_config_file(path, "gcloud.yml")
-  }
-  else if (file_test("-d", gcloud)) {
-    gcloud <- find_config_file(gcloud, "gcloud.yml")
-  }
-
-  if (is.character(gcloud)) {
-    config <- yaml::yaml.load_file(gcloud)
+    if (!is.null(gcloud))
+      config <- yaml::yaml.load_file(gcloud)
+    else
+      config <- list()
+  } else if (is.character(gcloud)) {
+    if (file.exists(gcloud))
+      config <- yaml::yaml.load_file(gcloud)
+    else
+      stop("gcloud config file '", gcloud, "' not found")
   } else {
     config <- list()
   }
 
-  # provide default account
-  if (is.null(config$account)) {
-    config$account <- gcloud_default_account()
-    if (config$account == "(unset)") {
-      message("Google Cloud SDK has not yet been initialized")
-      cat("\n")
-      if (have_rstudio_terminal()) {
-        message("Use the gcloud_init() function to initialize the SDK.")
-        cat("\n")
-      } else
-        gcloud_init_message()
-      stop("SDK not initialized")
-    }
-  }
+  # provide defaults if there is no named configuration
+  if (is.null(config$configuration)) {
 
-  # provide default project
-  if (is.null(config$project)) {
-    config$project <- gcloud_default_project()
+    # provide default account
+    if (is.null(config$account)) {
+      config$account <- gcloud_default_account()
+      if (config$account == "(unset)") {
+        message("Google Cloud SDK has not yet been initialized")
+        cat("\n")
+        if (have_rstudio_terminal()) {
+          message("Use the gcloud_init() function to initialize the SDK.")
+          cat("\n")
+        } else
+          gcloud_init_message()
+        stop("SDK not initialized")
+      }
+    }
+
+    # provide default project
+    if (is.null(config$project)) {
+      config$project <- gcloud_default_project()
+    }
+
   }
 
   # validate required 'gcloud' fields

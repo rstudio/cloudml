@@ -4,10 +4,11 @@
 \alias{job_status}
 \title{Current status of a job}
 \usage{
-job_status(job, gcloud = NULL)
+job_status(job = "latest", gcloud = NULL)
 }
 \arguments{
-\item{job}{Job name or job object.}
+\item{job}{Job name or job object. Pass "latest" to indicate the
+most recently submitted job.}
 
 \item{gcloud}{A list or \code{YAML} file with optional 'account' or 'project'
 fields used to configure the GCloud environemnt.}

@@ -45,6 +45,12 @@ ShellArgumentsBuilder <- function(gcloud) {
     ("--account")
     (conf[["account"]]))
 
+  if (!is.null(conf[["configuration"]])) {
+    (builder
+       ("--configuration")
+       (conf[["configuration"]]))
+  }
+
   # return our builder object
   builder
 }

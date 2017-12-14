@@ -4,10 +4,11 @@
 \alias{job_cancel}
 \title{Cancel a job}
 \usage{
-job_cancel(job, gcloud = NULL)
+job_cancel(job = "latest", gcloud = NULL)
 }
 \arguments{
-\item{job}{Job name or job object.}
+\item{job}{Job name or job object. Pass "latest" to indicate the
+most recently submitted job.}
 
 \item{gcloud}{A list or \code{YAML} file with optional 'account' or 'project'
 fields used to configure the GCloud environemnt.}

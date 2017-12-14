@@ -7,8 +7,8 @@
 gcloud_config(gcloud = NULL)
 }
 \arguments{
-\item{gcloud}{A list or \code{YAML} file with optional 'account' or 'project'
-fields used to configure the GCloud environemnt.}
+\item{gcloud}{A list or \code{YAML} file with optional 'account', 'project',
+and 'configuration' fields used to configure the GCloud environemnt.}
 }
 \description{
 Reads the Google Cloud config file.
