@@ -454,7 +454,7 @@ job_collect <- function(job = "latest",
       trial = trials,
       destination = destination,
       view = view,
-      gcloud)
+      gcloud = gcloud)
     )
   }
 
@@ -480,7 +480,7 @@ job_collect <- function(job = "latest",
                                    trial = trials,
                                    destination = destination,
                                    view = view,
-                                   gcloud))
+                                   gcloud = gcloud))
     }
 
     # job isn't ready yet; sleep for a while and try again
