@@ -2,21 +2,22 @@
 #'
 #' Reads the Google Cloud config file.
 #'
-#' @param gcloud A list or \code{YAML} file with optional 'account' or 'project'
-#'   fields used to configure the GCloud environemnt.
+#' @param gcloud A list or \code{YAML} file with optional 'account', 'project',
+#'   and 'configuration' fields used to configure the GCloud environemnt.
 #'
 gcloud_config <- function(gcloud = NULL) {
-  if (is.list(gcloud)) return(gcloud)
-  else if (is.null(gcloud)) {
+
+  if (is.list(gcloud)) {
+    config <- gcloud
+  } else if (is.null(gcloud)) {
     path <- getwd()
     gcloud <- find_config_file(path, "gcloud.yml")
-  }
-  else if (file_test("-d", gcloud)) {
-    gcloud <- find_config_file(gcloud, "gcloud.yml")
-  }
-
-  if (is.character(gcloud)) {
     config <- yaml::yaml.load_file(gcloud)
+  } else if (is.character(gcloud)) {
+    if (file.exists(gcloud))
+      config <- yaml::yaml.load_file(gcloud)
+    else
+      stop("gcloud config file '", gcloud, "' not found")
   } else {
     config <- list()
   }

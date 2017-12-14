@@ -23,8 +23,8 @@ to YAML file containing flag values.}
 \item{cloudml}{A list, \code{YAML} or \code{JSON} configuration file as described
 \url{https://cloud.google.com/ml-engine/reference/rest/v1/projects.jobs}.}
 
-\item{gcloud}{A list or \code{YAML} file with optional 'account' or 'project'
-fields used to configure the GCloud environemnt.}
+\item{gcloud}{A list or \code{YAML} file with optional 'account', 'project',
+and 'configuration' fields used to configure the GCloud environemnt.}
 
 \item{collect}{Collect job when training is completed (blocks waiting
 for the job to complete).}
