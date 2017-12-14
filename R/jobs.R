@@ -679,11 +679,11 @@ job_status_trial_dir <- function(status, destination, trial, job) {
   storage <- dirname(status$trainingInput$jobDir)
 
   output_path <- list(
-    source = file.path(storage, "runs", status$jobId, fsep = "/"),
-    destination = destination
+    source = file.path(storage, "runs", status$jobId, "*", fsep = "/"),
+    destination = file.path(destination, status$jobId)
   )
 
-  if (!is.null(trial)) {
+  if (!is.null(trial) && job_is_tuning(job)) {
     trial_digits_format <- paste0("%0", nchar(max(job_list_trials(job))), "d")
 
     if (trial == "best") {
