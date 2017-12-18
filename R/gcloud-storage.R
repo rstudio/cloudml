@@ -142,3 +142,7 @@ gs_ensure_storage <- function(gcloud) {
 
   storage
 }
+
+gs_bucket_from_gs_uri <- function(uri) {
+  paste0("gs://", strsplit(sub("gs://", "", uri), "/")[[1]][[1]])
+}
