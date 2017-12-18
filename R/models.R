@@ -40,6 +40,7 @@ cloudml_deploy <- function(
   if (is.null(name)) name <- default_name
   if (is.null(version)) version <- default_name
 
+  cloudml <- cloudml_config(cloudml)
   gcloud <- gcloud_config(gcloud)
   storage <- gs_ensure_storage(gcloud)
 
@@ -50,8 +51,7 @@ cloudml_deploy <- function(
                   ("models")
                   ("create")
                   (name)
-                  ("--regions")
-                  (gcloud$region))
+                  ("--regions=%s", gcloud$region))
 
     output <- gcloud_exec(args = arguments())
   }
@@ -60,12 +60,10 @@ cloudml_deploy <- function(
                 ("versions")
                 ("create")
                 (as.character(version))
-                ("--model")
-                (name)
-                ("--origin")
-                (export_dir_base)
-                ("--staging-bucket")
-                (gs_bucket_from_gs_uri(storage)))
+                ("--model=%s", name)
+                ("--origin=%s", export_dir_base)
+                ("--staging-bucket=%s", gs_bucket_from_gs_uri(storage))
+                ("--runtime-version=%s", cloudml$trainingInput$runtimeVersion %||% "1.4"))
 
   output <- gcloud_exec(args = arguments())
 
