@@ -353,6 +353,7 @@ print.cloudml_job_status <- function(x, ...) {
 #' Get the hyperparameter trials for job, as an \R data frame
 #'
 #' @inheritParams gcloud_exec
+#' @inheritParams job_status
 #
 #' @param x Job name or job object.
 #'
