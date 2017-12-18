@@ -58,8 +58,7 @@ cloudml_train <- function(file = "train.R",
   storage <- gs_ensure_storage(gcloud)
 
   # region is required
-  default_region <- gcloud_default_region()
-  gcloud$region <- if (nchar(default_region) == 0) "us-east1" else default_region
+  if (is.null(gcloud$region)) gcloud$region <- gcloud_default_region()
 
   # pass parameters to the job
   job_yml <- file.path(deployment$directory, "job.yml")
