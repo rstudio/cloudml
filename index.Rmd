@@ -31,12 +31,14 @@ Start by installing the cloudml R package from GitHub as follows:
 devtools::install_github("rstudio/cloudml")
 ```
 
-Then, install the *Google Cloud SDK*, a set of utilties that enable you to interact with your Google Cloud account from within R. You can install the SDK using the `gcloud_install()` function:
+Then, install the *Google Cloud SDK*, a set of utilties that enable you to interact with your Google Cloud account from within R. You can install the SDK using the `gcloud_install()` function. 
 
 ```{r}
 library(cloudml)
 gcloud_install()
 ```
+
+Note that in order to ensure that the **cloudml** package can find your installation of the SDK you should accept the default installation location (`~/`) suggested within the installer.
 
 Once you've completed these steps you are ready to train models with CloudML!
 

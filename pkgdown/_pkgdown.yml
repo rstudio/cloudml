@@ -23,7 +23,7 @@ navbar:
 reference:
   - title: "Training"
     desc: >
-      Functions for model training and prediction.
+      Functions for model training.
     contents:
       - cloudml_train
   - title: "Managing Jobs"
