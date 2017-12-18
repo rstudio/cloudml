@@ -15,11 +15,13 @@ knitr::opts_chunk$set(echo = TRUE, eval=FALSE)
 
 [![Build Status](https://travis-ci.org/rstudio/cloudml.svg?branch=master)](https://travis-ci.org/rstudio/cloudml) [![CRAN_Status_Badge](https://www.r-pkg.org/badges/version/cloudml)](https://cran.r-project.org/package=cloudml)
 
-## Overview
+## R Interface to Google Cloud Machine Learning Engine
 
 The **cloudml** package provides an R interface to [Google Cloud Machine Learning](https://cloud.google.com/ml-engine/). CloudML makes it easy to run training applications built with R packages like [tensorflow](https://tensorflow.rstudio.com/) and [keras](https://keras.rstudio.com/) in the cloud.
 
-CloudML provides a cost-effective way to use GPUs for training models, since you only pay for the GPU compute time that your training jobs actually consume (as opposed to investing in a dedicated GPU machine either locally or in the cloud). CloudML also provides access to powerful scalable computing facilities when you need them.
+CloudML is a very cost-effective way to use GPUs for training models, since you only pay for the GPU compute time that your training jobs actually consume (as opposed to investing in a dedicated GPU machine either locally or in the cloud). 
+
+CloudML also provides facilites for tuning the hyperparameters of models. Hyperparameter tuning takes advantage of the processing infrastructure of Google Cloud Platform to test different hyperparameter configurations when training your model. It can give you optimized values for hyperparameters, which maximizes your model's predictive accuracy.
 
 ## Installation
 
@@ -113,13 +115,23 @@ view_run()
 
 
 
-
+--->
 
 
 ## Learning More
 
+To learn more about using CloudML with R, see the following articles:
+
+* [Training Jobs](articles/training.html) goes into additional depth on managing training jobs and their output.
+
+* [Hyperparameter Tuning](articles/tuning.html) describes how you can improve the performance of your models by running many trials with distinct hyperparameters (e.g. number and size of layers) to determine their optimal values.
+
+* [Google Cloud Storage](articles/storage.html) provides information on copying data between your local machine and Google Storage and also describes how to use data within Google Storage during training.
+
+* [CloudML Configuration](articles/configuration.html) covers available configuration options, including how to use various Google Cloud account profiles and customize the compute instances used for training.
 
 
---->
+
+
 
 
