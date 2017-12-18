@@ -40,8 +40,8 @@ cloudml_tests_configured <- function() {
 }
 
 if (cloudml_tests_configured()) {
-  if (identical(Sys.getenv("TRAVIS"), "true") && !cloudml::gcloud_installed()) {
-    cloudml::gcloud_install()
+  if (identical(Sys.getenv("TRAVIS"), "true")) {
+    cloudml::gcloud_install(update = FALSE)
   }
 
   options(repos = c(CRAN = "http://cran.rstudio.com"))

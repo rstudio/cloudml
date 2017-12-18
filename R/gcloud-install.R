@@ -52,8 +52,14 @@ gcloud_binary_default <- function() {
 #'
 #' Installs the Google Cloud SDK which enables CloudML operations.
 #'
+#' @param update Attempt to update an existing installation.
+#'
 #' @export
-gcloud_install <- function() {
+gcloud_install <- function(update = TRUE) {
+
+  # if we have an existing installation and update is FALSE then abort
+  if (gcloud_installed() && !update)
+    return(invisible(NULL))
 
   if (identical(.Platform$OS.type, "windows"))
     gcloud_install_windows()
@@ -135,11 +141,7 @@ gcloud_install_windows <- function() {
   invisible(NULL)
 }
 
-#' Checks the Google Cloud SDK Install
-#'
-#' Is the Google Cloud SDK installed?
-#'
-#' @export
+# Checks the Google Cloud SDK Install
 gcloud_installed <- function() {
   have_sdk <- !is.null(tryCatch(gcloud_binary(), error = function(e) NULL))
   if (have_sdk)
