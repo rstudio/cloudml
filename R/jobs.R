@@ -5,7 +5,7 @@
 #' train a model.
 #'
 #' @inheritParams tfruns::training_run
-#' @inheritParams gcloud_config
+#' @inheritParams job_status
 #'
 #' @param file File to be used as entrypoint for training.
 #'
@@ -194,7 +194,7 @@ job_cancel <- function(job = "latest", gcloud = NULL) {
 #'
 #' List existing Google Cloud ML jobs.
 #'
-#' @inheritParams gcloud_config
+#' @inheritParams job_status
 #'
 #' @param filter
 #'   Filter the set of jobs to be returned.
@@ -297,8 +297,6 @@ job_stream_logs <- function(job = "latest",
 #' Current status of a job
 #'
 #' Get the status of a job, as an \R list.
-#'
-#' @inheritParams gcloud_config
 #'
 #' @param job Job name or job object. Pass "latest" to indicate the
 #'   most recently submitted job.
