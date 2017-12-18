@@ -8,10 +8,10 @@ Authors@R: c(
     person(family = "RStudio", role = c("cph"))
     )
 Description: Interface to the Google Cloud Machine Learning Platform which provides
-  support to train and tune machine learning models at scale under Cloud ML.
+  cloud tools for training machine learning models.
 Depends:
   R (>= 3.3.0), 
-  tfruns (>= 1.0.0.9007)
+  tfruns (>= 1.1)
 Imports:
   jsonlite,
   packrat,
@@ -25,8 +25,8 @@ Imports:
   yaml,
   config
 Suggests:
-  tensorflow,
-  keras (>= 2.1.1.9002),
+  tensorflow (>= 1.4.2),
+  keras (>= 2.1.2),
   knitr,
   testthat
 Remotes:
