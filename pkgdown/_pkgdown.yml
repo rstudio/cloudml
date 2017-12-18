@@ -8,12 +8,16 @@ navbar:
   left:
     - text: "Home"
       href: index.html
-    - text: "Guides"
+    - text: "Articles"
       menu:
-      - text: "Training"
+      - text: "Training with CloudML"
         href: articles/training.html
-      - text: "Tuning"
+      - text: "Hyperparameter Tuning"
         href: articles/tuning.html
+      - text: "Google Cloud Storage"
+        href: articles/storage.html
+      - text: "CloudML Configuration"
+        href: articles/configuration.html
     - text: "Reference"
       href: reference/index.html
   right:

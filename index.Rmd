@@ -204,7 +204,7 @@ view_run("runs/cloudml_2017_12_15_182614794")
 
 To learn more about using CloudML with R, see the following articles:
 
-* [CloudML Training](articles/training.html) goes into additional depth on managing training jobs and their output.
+* [Training with CloudML](articles/training.html) goes into additional depth on managing training jobs and their output.
 
 * [Hyperparameter Tuning](articles/tuning.html) describes how you can improve the performance of your models by running many trials with distinct hyperparameters (e.g. number and size of layers) to determine their optimal values.
 
