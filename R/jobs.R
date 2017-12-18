@@ -55,14 +55,7 @@ cloudml_train <- function(file = "train.R",
   cloudml_file <- deployment$cloudml_file
 
   # create default storage bucket for project if not specified
-  storage <- getOption("cloudml.storage")
-  if (is.null(storage)) {
-    project <- gcloud[["project"]]
-    if (!gcloud_project_has_bucket(project)) {
-      gcloud_project_create_bucket(project)
-    }
-    storage <- file.path(gcloud_project_bucket(project), "r-cloudml")
-  }
+  storage <- gs_ensure_storage(gcloud)
 
   # region is required
   default_region <- gcloud_default_region()
