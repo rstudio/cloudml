@@ -28,12 +28,15 @@ cloudml_model_exists <- function(gcloud, name) {
 #' @param version The version for this model. Versions start with a letter and
 #'   contain only letters, numbers and underscores. Defaults to the current
 #'   directory name.
+#' @param cloudml A list, \code{YAML} or \code{JSON} configuration file as described
+#'   \url{https://cloud.google.com/ml-engine/reference/rest/v1/projects.jobs}.
 #'
 #' @export
 cloudml_deploy <- function(
   export_dir_base,
   name =  NULL,
   version = NULL,
+  cloudml = NULL,
   gcloud = NULL) {
 
   default_name <- basename(normalizePath(getwd(), winslash = "/"))
@@ -53,7 +56,7 @@ cloudml_deploy <- function(
                   (name)
                   ("--regions=%s", gcloud$region))
 
-    output <- gcloud_exec(args = arguments())
+    gcloud_exec(args = arguments())
   }
 
   arguments <- (MLArgumentsBuilder(gcloud)
@@ -65,7 +68,9 @@ cloudml_deploy <- function(
                 ("--staging-bucket=%s", gs_bucket_from_gs_uri(storage))
                 ("--runtime-version=%s", cloudml$trainingInput$runtimeVersion %||% "1.4"))
 
-  output <- gcloud_exec(args = arguments())
+  gcloud_exec(args = arguments())
+
+  message("Model created and available in https://console.cloud.google.com/mlengine/models/", name)
 
   invisible(NULL)
 }
