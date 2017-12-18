@@ -16,7 +16,6 @@ Imports:
   jsonlite,
   packrat,
   processx,
-  readr,
   rprojroot,
   rstudioapi,
   tools,

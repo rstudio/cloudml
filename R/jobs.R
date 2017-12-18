@@ -241,8 +241,11 @@ job_list <- function(filter    = NULL,
   output <- gcloud_exec(args = arguments())
 
   if (!uri) {
-    pasted <- paste(output$stdout, collapse = "\n")
-    output <- readr::read_table2(pasted)
+    output_tmp <- tempfile()
+    writeLines(output$stdout, output_tmp)
+    jobs <- utils::read.table(output_tmp, header = TRUE, stringsAsFactors = FALSE)
+    jobs$CREATED <- as.POSIXct(jobs$CREATED, format = "%Y-%m-%dT%H:%M:%S", tz = "GMT")
+    output <- jobs
   }
 
   output
