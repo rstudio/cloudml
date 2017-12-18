@@ -83,32 +83,9 @@
     
     
 <div class="contents">
-<div id="configuration-files" class="section level3">
+<div id="under-construction" class="section level3">
 <h3 class="hasAnchor">
-<a href="#configuration-files" class="anchor"></a>Configuration Files</h3>
-<p>Application deployment is configured through the use of a top-level <a href="http://yaml.org/">YAML</a> file called <code>cloudml.yml</code>. To create a default configuration file run:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(cloudml)
-<span class="kw">cloudml_create_config</span>()</code></pre></div>
-<p>Then modify this default file with the appropiate <code>project</code>, <code>account</code>, <code>region</code> and <code>sotage</code>:</p>
-<div class="sourceCode"><pre class="sourceCode yaml"><code class="sourceCode yaml"><span class="fu">gcloud:</span>
-  <span class="fu">project         :</span><span class="at"> </span><span class="st">"project-name"</span>
-  <span class="fu">account         :</span><span class="at"> </span><span class="st">"account@domain.com"</span>
-  <span class="fu">region          :</span><span class="at"> </span><span class="st">"us-central1"</span>
-  <span class="fu">runtime-version :</span><span class="at"> </span><span class="st">"1.4"</span>
-
-<span class="fu">cloudml:</span>
-  <span class="fu">storage         :</span><span class="at"> </span><span class="st">"gs://project-name/mnist"</span></code></pre></div>
-<p>The <code>gcloud</code> key is used for configuration specific to the Google Cloud SDK, and so contains items relevant to how applications are deployed.</p>
-<ul>
-<li><p>Any deployments made will be associated with the <code>project</code> and <code>account</code> fields above,</p></li>
-<li><p>Instances provisioned for training will be launched in the region specified by <code>region</code>,</p></li>
-<li><p>The TensorFlow version to be used during training is configured using the <code>runtime-version</code> field.</p></li>
-</ul>
-<p>The <code>storage</code> field in the <code>cloudml</code> section indicates where various artefacts used during provisioning and training are stored. Some useful paths to know:</p>
-<ul>
-<li><p><code>&lt;storage&gt;/staging</code>: applications will be ‘staged’ in this directory; that is, your deployed application will be uploaded and built in this location;</p></li>
-<li><p><code>&lt;storage&gt;/runs/&lt;timestamp&gt;</code>: training outputs will be copied to this directory.</p></li>
-</ul>
+<a href="#under-construction" class="anchor"></a>Under Construction</h3>
 </div>
 </div>
   </div>
