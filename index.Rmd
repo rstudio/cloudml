@@ -17,7 +17,7 @@ knitr::opts_chunk$set(echo = TRUE, eval=FALSE)
 
 ## R Interface to Google Cloud Machine Learning Engine
 
-The **cloudml** package provides an R interface to [Google Cloud Machine Learning](https://cloud.google.com/ml-engine/). CloudML makes it easy to run training applications built with R packages like [tensorflow](https://tensorflow.rstudio.com/) and [keras](https://keras.rstudio.com/) in the cloud.
+The **cloudml** package provides an R interface to [Google Cloud Machine Learning](https://cloud.google.com/ml-engine/). CloudML makes it easy to run training applications built with R packages like [keras](https://keras.rstudio.com/), [tfestimators](https://tensorflow.rstudio.com/tfestimators), and [tensorflow](https://tensorflow.rstudio.com/) in the cloud.
 
 CloudML is a very cost-effective way to use GPUs for training models, since you only pay for the GPU compute time that your training jobs actually consume (as opposed to investing in a dedicated GPU machine either locally or in the cloud). 
 
@@ -81,48 +81,130 @@ cloudml_train("train.R", scale_tier = "basic-gpu")
 
 Note that GPU instances are more expensive that CPU ones! See the documentation on [CloudML Pricing](https://cloud.google.com/ml-engine/pricing) for additional information.
 
-
-<!---
-
 ## CloudML Workflow
 
 The basic steps described above are the essential components of working with CloudML. That said, there are many flexible options available for managing jobs, viewing results, and specifying the compute resources required for training. This section describes this functionality in more detail.
 
+### Local Development
+
+Working on a CloudML project always begins with developing a training script that runs on your local machine. This will typically involve using some combination of the [keras](https://keras.rstudio.com/), [tfestimators](https://tensorflow.rstudio.com/tfestimators), and [tensorflow](https://tensorflow.rstudio.com/) packages. Once your script is working the way you expect you are ready to submit it to CloudML.
+
+
+
 ### Training Jobs
+
+The core unit of work in CloudML is a job. A job consists of a training script and related files (e.g. other scripts, data files, ec.). To submit a job to CloudML you use the `cloudml_train()` function, passing it the name of the training script to run. For example:
+
+```{r}
+job <- cloudml_train("minst_mlp.R")
+```
 
 <div class="bs-callout bs-callout-info">
 Note that the CloudML training and job management functions described here all work relative to the current working directory of your R session, so you should always switch to the working directory containing your scripts before executing these functions.
 </div>
 
-When not using RStudio, you can either ask the R session to wait for training to complete, and pull the generated models back to your local filesystem with:
+The `cloudml_train()` function returns a `job` object. This is a reference to the training job which you can use later to check it's status, collect it's output, etc. For example:
 
-```{r eval=FALSE}
+```{r}
+job_status(job)
+```
+```
+ $ createTime    : chr "2017-12-18T20:35:21Z"
+ $ etag          : chr "2KRqIbAhzvM="
+ $ jobId         : chr "cloudml_2017_12_18_203510175"
+ $ startTime     : chr "2017-12-18T20:35:52Z"
+ $ state         : chr "RUNNING"
+ $ trainingInput :List of 3
+  ..$ jobDir        : chr "gs://cedar-card-791/r-cloudml/staging"
+  ..$ region        : chr "us-east1"
+  ..$ runtimeVersion: chr "1.4"
+ $ trainingOutput:List of 1
+  ..$ consumedMLUnits: num 0.04
+
+View job in the Cloud Console at:
+https://console.cloud.google.com/ml/jobs/cloudml_2017_12_18_203510175?project=cedar-card-791
+
+View logs at:
+https://console.cloud.google.com/logs?resource=ml.googleapis.com%2Fjob_id%2Fcloudml_2017_12_18_203510175&project=cedar-card-791
+```
+
+You can call `job_collect()` at any time to download the job:
+
+```{r}
 job_collect(job)
 ```
 
-The R session will wait and continue polling Google Cloud until your application has finished running; if the application trained successfully, then the trained models will be copied to disk under the `runs` directory.
+If it hasn't already completed, R will block waiting for the job to complete and then perform the download. After the job has downloaded a report showing the results of the job will be automatically displayed.
 
-Once the job is collected, you can use [tfruns](https://tensorflow.rstudio.com/tools/tfruns/) to view the results of the last run:
+To interact with jobs you don't need the `job` object returned from `cloudml_train()`. If you call `job_status()` or `job_collect()` with no arguments they will act on the most recently submitted job:
 
-```{r eval=FALSE}
-library(tfruns)
-view_run()
+```{r}
+job_status()   # get status of last job
+job_collect()  # collect last job
 ```
 
+You can also list jobs and then reference them by job ID:
 
+```{r}
+job_list()
+```
+```
+                        JOB_ID    STATUS             CREATED
+1 cloudml_2017_12_18_203510175 SUCCEEDED 2017-12-18 15:35:21
+2 cloudml_2017_12_18_202228264    FAILED 2017-12-18 15:22:39
+3 cloudml_2017_12_18_201607948 SUCCEEDED 2017-12-18 15:16:18
+4 cloudml_2017_12_18_132620918 SUCCEEDED 2017-12-18 08:26:30
+5 cloudml_2017_12_15_182614794 SUCCEEDED 2017-12-15 13:26:29
+6 cloudml_2017_12_14_183247626 SUCCEEDED 2017-12-14 13:33:04
+```
+
+```{r}
+job_collect("cloudml_2017_12_18_203510175")
+```
 
 ### Training Runs
 
+Each training job will produce one or more training runs (it's typically only a single run, however when doing hyperparmeter turning there will be multiple runs). When you collect a job from CloudML it is automatically downloaded into the `runs` sub-directory of the current working directory.
 
+You can list all of the runs as a data frame using the `ls_runs()` function:
 
---->
+```{r}
+ls_runs()
+```
+```
+# A tibble: 6 x 34
+                            run_dir metric_loss metric_acc metric_val_loss metric_val_acc
+                              <chr>       <dbl>      <dbl>           <dbl>          <dbl>
+1 runs/cloudml_2017_12_15_182614794      0.0809     0.9763          0.0889         0.9786
+2 runs/cloudml_2017_12_14_183247626      0.0806     0.9770          0.0919         0.9773
+3 runs/cloudml_2017_12_14_144048138      0.0786     0.9772          0.0896         0.9777
+4 runs/cloudml_2017_12_14_143427111      0.0803     0.9771          0.0940         0.9760
+5 runs/cloudml_2017_12_14_124739611      0.0829     0.9766          0.0913         0.9782
+6 runs/cloudml_2017_12_14_124625505      0.0805     0.9765          0.0981         0.9766
+# ... with 29 more variables: flag_dropout1 <dbl>, flag_dropout2 <dbl>, samples <int>,
+#   validation_samples <int>, batch_size <int>, epochs <int>, epochs_completed <int>,
+#   metrics <chr>, model <chr>, loss_function <chr>, optimizer <chr>, learning_rate <dbl>,
+#   script <chr>, start <dttm>, end <dttm>, completed <lgl>, output <chr>, source_code <chr>,
+#   context <chr>, type <chr>, cloudml_console_url <chr>, cloudml_created <dttm>,
+#   cloudml_end <dttm>, cloudml_job <chr>, cloudml_log_url <chr>, cloudml_ml_units <dbl>,
+#   cloudml_scale_tier <chr>, cloudml_start <dttm>, cloudml_state <chr>
+```
 
+You can view run reports using the `view_run()` function:
+
+```{r}
+# view the latest run
+view_run()
+
+# view a specific run
+view_run("runs/cloudml_2017_12_15_182614794")
+```
 
 ## Learning More
 
 To learn more about using CloudML with R, see the following articles:
 
-* [Training Jobs](articles/training.html) goes into additional depth on managing training jobs and their output.
+* [CloudML Training](articles/training.html) goes into additional depth on managing training jobs and their output.
 
 * [Hyperparameter Tuning](articles/tuning.html) describes how you can improve the performance of your models by running many trials with distinct hyperparameters (e.g. number and size of layers) to determine their optimal values.
 
