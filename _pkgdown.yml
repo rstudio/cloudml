@@ -45,7 +45,7 @@ reference:
       - gcloud_init
       - gcloud_terminal
 
-   - title: "Google Stroage"
+  - title: "Google Stroage"
     desc: >
       Functions for interacting with Google Storage.
     contents:

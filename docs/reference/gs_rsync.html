@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Google Cloud Config — gcloud_config • cloudml</title>
+<title>Synchronize content of two buckets/directories — gs_rsync • cloudml</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -92,22 +92,67 @@
       <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Google Cloud Config</h1>
+    <h1>Synchronize content of two buckets/directories</h1>
     </div>
 
     
-    <p>Reads the Google Cloud config file.</p>
+    <p>The <code>gs_rsync</code> function makes the contents under <code>destination</code> the same
+as the contents under <code>source</code>, by copying any missing files/objects (or
+those whose data has changed), and (if the <code>delete</code> option is specified)
+deleting any extra files/objects. <code>source</code> must specify a directory, bucket,
+or bucket subdirectory.</p>
     
 
-    <pre class="usage"><span class='fu'>gcloud_config</span>(<span class='kw'>gcloud</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
+    <pre class="usage"><span class='fu'>gs_rsync</span>(<span class='no'>source</span>, <span class='no'>destination</span>, <span class='kw'>delete</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>recursive</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>parallel</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>dry_run</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>options</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>echo</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>gcloud</th>
-      <td><p>A list or <code>YAML</code> file with optional 'account', 'project',
-and 'configuration' fields used to configure the GCloud environemnt.</p></td>
+      <th>source</th>
+      <td><p>The file to be copied. This can be either a path on the local
+filesystem, or a Google Storage URI (e.g. <code>gs://[BUCKET_NAME]/[FILENAME.CSV]</code>).</p></td>
+    </tr>
+    <tr>
+      <th>destination</th>
+      <td><p>The location where the <code>source</code> file should be copied to. This can be
+either a path on the local filesystem, or a Google Storage URI (e.g.
+<code>gs://[BUCKET_NAME]/[FILENAME.CSV]</code>).</p></td>
+    </tr>
+    <tr>
+      <th>delete</th>
+      <td><p>Delete extra files under <code>destination</code> not found under
+<code>source</code> By default extra files are not deleted.</p></td>
+    </tr>
+    <tr>
+      <th>recursive</th>
+      <td><p>Causes directories, buckets, and bucket subdirectories to
+be synchronized recursively. If you neglect to use this option
+<code>gs_rsync()</code> will make only the top-level directory in the source and
+destination URLs match, skipping any sub-directories.</p></td>
+    </tr>
+    <tr>
+      <th>parallel</th>
+      <td><p>Causes synchronization to run in parallel. This can
+significantly improve performance if you are performing operations on a
+large number of files over a reasonably fast network connection.</p></td>
+    </tr>
+    <tr>
+      <th>dry_run</th>
+      <td><p>Causes rsync to run in "dry run" mode, i.e., just outputting
+what would be copied or deleted without actually doing any
+copying/deleting.</p></td>
+    </tr>
+    <tr>
+      <th>options</th>
+      <td><p>Character vector of additional command line options to the
+gsutil rsync command (as specified at
+<a href='https://cloud.google.com/storage/docs/gsutil/commands/rsync'>https://cloud.google.com/storage/docs/gsutil/commands/rsync</a>).</p></td>
+    </tr>
+    <tr>
+      <th>echo</th>
+      <td><p>Echo command output to console</p></td>
     </tr>
     </table>
     

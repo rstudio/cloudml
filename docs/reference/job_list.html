@@ -100,7 +100,7 @@
     
 
     <pre class="usage"><span class='fu'>job_list</span>(<span class='kw'>filter</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>limit</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>page_size</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>sort_by</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>uri</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
+  <span class='kw'>uri</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>gcloud</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
@@ -131,6 +131,11 @@ with <code>~</code> for descending order on that field.</p></td>
       <th>uri</th>
       <td><p>Print a list of resource URIs instead of the default
 output.</p></td>
+    </tr>
+    <tr>
+      <th>gcloud</th>
+      <td><p>A list or <code>YAML</code> file with optional 'account', 'project',
+and 'configuration' fields used to configure the GCloud environemnt.</p></td>
     </tr>
     </table>
     

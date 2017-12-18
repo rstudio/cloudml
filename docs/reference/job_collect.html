@@ -101,19 +101,22 @@ yet finished running, <code>job_collect()</code> will block and wait until the j
 finished.</p>
     
 
-    <pre class="usage"><span class='fu'>job_collect</span>(<span class='no'>job</span>, <span class='kw'>trial</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>destination</span> <span class='kw'>=</span> <span class='st'>"runs"</span>, <span class='kw'>timeout</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>view</span> <span class='kw'>=</span> <span class='fu'>interactive</span>())</pre>
+    <pre class="usage"><span class='fu'>job_collect</span>(<span class='kw'>job</span> <span class='kw'>=</span> <span class='st'>"latest"</span>, <span class='kw'>trials</span> <span class='kw'>=</span> <span class='st'>"best"</span>, <span class='kw'>destination</span> <span class='kw'>=</span> <span class='st'>"runs"</span>,
+  <span class='kw'>timeout</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>view</span> <span class='kw'>=</span> <span class='fu'>interactive</span>(), <span class='kw'>gcloud</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>job</th>
-      <td><p>Job name or job object.</p></td>
+      <td><p>Job name or job object. Pass "latest" to indicate the
+most recently submitted job.</p></td>
     </tr>
     <tr>
-      <th>trial</th>
-      <td><p>Trial number to collect when under hyperparameter tuning.</p></td>
+      <th>trials</th>
+      <td><p>Under hyperparameter tuning, specifies which trials to
+download. Use <code>"best"</code> to download best trial, <code>"all"</code> to
+download all, or a vector of trials <code>c(1,2)</code> or <code>1</code>.</p></td>
     </tr>
     <tr>
       <th>destination</th>
@@ -126,7 +129,13 @@ be downloaded. Defaults to <code>runs</code>.</p></td>
     </tr>
     <tr>
       <th>view</th>
-      <td><p>View the job results after collecting it</p></td>
+      <td><p>View the job results after collecting it. You can also pass
+"save" to save a copy of the run report at <code>tfruns.d/view.html</code></p></td>
+    </tr>
+    <tr>
+      <th>gcloud</th>
+      <td><p>A list or <code>YAML</code> file with optional 'account' or 'project'
+fields used to configure the GCloud environemnt.</p></td>
     </tr>
     </table>
     

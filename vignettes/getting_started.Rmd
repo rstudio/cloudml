@@ -17,9 +17,9 @@ knitr::opts_chunk$set(echo = TRUE, eval=FALSE)
 
 ## Overview
 
-The **cloudml** package provides an R interface to [Google Cloud Machine Learning](https://cloud.google.com/ml-engine/). CloudML makes it easy to run training applications built with R packages like [tensorflow](https://tensorflow.rstudio.com/) and [keras](https://keras.rstudio.com/) in the cloud. 
+The **cloudml** package provides an R interface to [Google Cloud Machine Learning](https://cloud.google.com/ml-engine/). CloudML makes it easy to run training applications built with R packages like [tensorflow](https://tensorflow.rstudio.com/) and [keras](https://keras.rstudio.com/) in the cloud.
 
-Cloud ML Engine manages the computing resources that your training job needs to run, so you can focus more on your model than on hardware configuration or resource management. Your use of the training service is bounded by pricing and resource quota policy, but within those bounds, you have access to powerful scalable computing.
+CloudML provides a cost-effective way to use GPUs for training models, since you only pay for the GPU compute time that your training jobs actually consume (as opposed to investing in a dedicated GPU machine either locally or in the cloud). CloudML also provides access to powerful scalable computing facilities when you need them.
 
 ## Prerequisites
 

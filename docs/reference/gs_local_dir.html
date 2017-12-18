@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Google Cloud Config — gcloud_config • cloudml</title>
+<title>Get a local path to the contents of Google Storage bucket — gs_local_dir • cloudml</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -92,24 +92,46 @@
       <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Google Cloud Config</h1>
+    <h1>Get a local path to the contents of Google Storage bucket</h1>
     </div>
 
     
-    <p>Reads the Google Cloud config file.</p>
+    <p>Provides a local filesystem interface to Google Storage buckets. Many
+package functions accept only local filesystem paths as input (rather than
+gs:// URLs). For these cases the <code>gcloud_path()</code> function will synchronize
+gs:// buckets to the local filesystem and provide a local path interface
+to their contents.</p>
     
 
-    <pre class="usage"><span class='fu'>gcloud_config</span>(<span class='kw'>gcloud</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
+    <pre class="usage"><span class='fu'>gs_local_dir</span>(<span class='no'>url</span>, <span class='kw'>local_dir</span> <span class='kw'>=</span> <span class='st'>"gs"</span>, <span class='kw'>echo</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>gcloud</th>
-      <td><p>A list or <code>YAML</code> file with optional 'account', 'project',
-and 'configuration' fields used to configure the GCloud environemnt.</p></td>
+      <th>url</th>
+      <td><p>Google Storage bucket URL (e.g. <code>gs://&lt;your-bucket&gt;</code>).</p></td>
+    </tr>
+    <tr>
+      <th>local_dir</th>
+      <td><p>Local directory to synchonize Google Storage bucket(s) to.</p></td>
+    </tr>
+    <tr>
+      <th>echo</th>
+      <td><p>Echo command output to console</p></td>
     </tr>
     </table>
+    
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>Local path to contents of bucket.</p>
+    
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    <p>If you pass a local path as the <code>url</code> it will be returned
+unmodified. This allows you to for example use a training flag for the
+location of data which points to a local directory during
+development and a Google Cloud bucket during cloud training.</p>
     
 
   </div>
@@ -117,7 +139,11 @@ and 'configuration' fields used to configure the GCloud environemnt.</p></td>
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
-                </ul>
+      
+      <li><a href="#value">Value</a></li>
+
+      <li><a href="#details">Details</a></li>
+          </ul>
 
   </div>
 </div>
