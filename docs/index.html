@@ -9,13 +9,14 @@
 <!-- jquery --><script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script><!-- Bootstrap --><link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/cosmo/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script><!-- Font Awesome icons --><link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
 <!-- pkgdown --><link href="pkgdown.css" rel="stylesheet">
-<script src="jquery.sticky-kit.min.js"></script><script src="pkgdown.js"></script><!-- mathjax --><script src="https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!--[if lt IE 9]>
+<script src="jquery.sticky-kit.min.js"></script><script src="pkgdown.js"></script><link href="extra.css" rel="stylesheet">
+<!-- mathjax --><script src="https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 <![endif]-->
 </head>
 <body>
-    <div class="container template-home">
+    <div class="container template-vignette">
       <header><div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
   <div class="container">
     <div class="navbar-header">
@@ -67,58 +68,112 @@
 
       
       </header><div class="row">
-  <div class="contents col-md-9">
-    <div id="r-interface-to-cloudml" class="section level1">
-<div class="page-header"><h1 class="hasAnchor">
-<a href="#r-interface-to-cloudml" class="anchor"></a>R Interface to CloudML</h1></div>
+  <div class="col-md-9">
+    
+
+    
+    
+<div class="contents">
 
 <div id="overview" class="section level2">
 <h2 class="hasAnchor">
 <a href="#overview" class="anchor"></a>Overview</h2>
 <p>The <strong>cloudml</strong> package provides an R interface to <a href="https://cloud.google.com/ml-engine/">Google Cloud Machine Learning</a>. CloudML makes it easy to run training applications built with R packages like <a href="https://tensorflow.rstudio.com/">tensorflow</a> and <a href="https://keras.rstudio.com/">keras</a> in the cloud.</p>
-<p>Cloud ML Engine manages the computing resources that your training job needs to run, so you can focus more on your model than on hardware configuration or resource management. Your use of the training service is bounded by pricing and resource quota policy, but within those bounds, you have access to powerful scalable computing.</p>
+<p>CloudML provides a cost-effective way to use GPUs for training models, since you only pay for the GPU compute time that your training jobs actually consume (as opposed to investing in a dedicated GPU machine either locally or in the cloud). CloudML also provides access to powerful scalable computing facilities when you need them.</p>
 </div>
-<div id="prerequisites" class="section level2">
+<div id="installation" class="section level2">
 <h2 class="hasAnchor">
-<a href="#prerequisites" class="anchor"></a>Prerequisites</h2>
-<div id="google-cloud-account" class="section level4">
-<h4 class="hasAnchor">
-<a href="#google-cloud-account" class="anchor"></a>Google Cloud Account</h4>
-<p>Before you can begin training models with CloudML you need to have a <strong>Google Cloud Account</strong>. If you don’t already have an account you can create one at <a href="https://console.cloud.google.com" class="uri">https://console.cloud.google.com</a>.</p>
-</div>
-<div id="cloudml-r-package" class="section level4">
-<h4 class="hasAnchor">
-<a href="#cloudml-r-package" class="anchor"></a>CloudML R Package</h4>
-<p>Next, install the cloudml R package from GitHub as follows:</p>
+<a href="#installation" class="anchor"></a>Installation</h2>
+<p>Before you can begin training models with CloudML you need to have a <em>Google Cloud Account</em>. If you don’t already have an account you can create one at <a href="https://console.cloud.google.com" class="uri">https://console.cloud.google.com</a>.</p>
+<p>Start by installing the cloudml R package from GitHub as follows:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">devtools<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/devtools/topics/install_github">install_github</a></span>(<span class="st">"rstudio/cloudml"</span>)</code></pre></div>
-</div>
-<div id="google-cloud-sdk" class="section level4">
-<h4 class="hasAnchor">
-<a href="#google-cloud-sdk" class="anchor"></a>Google Cloud SDK</h4>
-<p>Finally, you need to install the <strong>Google Cloud SDK</strong>, a set of utilties that enable you to interact with your Google Cloud account from within R. You can install the SDK using the <code><a href="reference/gcloud_install.html">gcloud_install()</a></code> function:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="reference/gcloud_install.html">gcloud_install</a></span>()</code></pre></div>
+<p>Then, install the <em>Google Cloud SDK</em>, a set of utilties that enable you to interact with your Google Cloud account from within R. You can install the SDK using the <code><a href="reference/gcloud_install.html">gcloud_install()</a></code> function:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(cloudml)
+<span class="kw"><a href="reference/gcloud_install.html">gcloud_install</a></span>()</code></pre></div>
 <p>Once you’ve completed these steps you are ready to train models with CloudML!</p>
-</div>
 </div>
 <div id="training-on-cloudml" class="section level2">
 <h2 class="hasAnchor">
 <a href="#training-on-cloudml" class="anchor"></a>Training on CloudML</h2>
-<p>To train models on CloudML, first work on them locally (perhaps with a smaller sample of your dataset) until your training script is working correctly. Then, call the <code><a href="reference/cloudml_train.html">cloudml_train()</a></code> function, specifying the R script to execute for training:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">job &lt;-<span class="st"> </span><span class="kw"><a href="reference/cloudml_train.html">cloudml_train</a></span>(<span class="st">"train.R"</span>)</code></pre></div>
-<p>Note that all of the files within the current working directory will be bundled up and sent along with the script.</p>
-<p>When using RStudio, a terminal window is used to stream the logs and download the job when it finializes.</p>
-<p>When not using RStudio, you can ask the R session to wait for training to complete, and pull the generated models back to your local filesystem with:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="reference/job_collect.html">job_collect</a></span>(job)</code></pre></div>
-<p>The R session will wait and continue polling Google Cloud until your application has finished running; if the application trained successfully, then the trained models will be copied to disk under the <code>runs</code> directory.</p>
-<p>Once the job is collected, you can use <a href="https://tensorflow.rstudio.com/tools/tfruns/">tfruns</a> to view the results of the last run:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(tfruns)
-<span class="kw"><a href="http://www.rdocumentation.org/packages/tfruns/topics/view_run">view_run</a></span>()</code></pre></div>
+<p>To train a model on CloudML, first work the training script locally (perhaps with a smaller sample of your dataset). The script can contain arbitrary R code which trains and/or evaluates a model. Once you’ve confirmed that things work as expected, you can submit a CloudML job to perform training in the cloud.</p>
+<div id="submitting-a-job" class="section level3">
+<h3 class="hasAnchor">
+<a href="#submitting-a-job" class="anchor"></a>Submitting a Job</h3>
+<p>To submit a job, call the <code><a href="reference/cloudml_train.html">cloudml_train()</a></code> function, specifying the R script to execute for training:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(cloudml)
+<span class="kw"><a href="reference/cloudml_train.html">cloudml_train</a></span>(<span class="st">"train.R"</span>)</code></pre></div>
+<p>All of the files within the current working directory will be bundled up and sent along with the script to CloudML.</p>
+<p>If you are using <a href="https://www.rstudio.com/products/rstudio/download/">RStudio v1.1</a> or higher, then the CloudML training job is monitored (and it’s results collected) using a background terminal:</p>
+<div class="figure">
+<img src="images/rstudio-terminal.png" class="screenshot" width="730">
+</div>
+</div>
+<div id="collecting-results" class="section level3">
+<h3 class="hasAnchor">
+<a href="#collecting-results" class="anchor"></a>Collecting Results</h3>
+<p>When the job is complete, training results can be collected back to your local system (this is done automatically when monitoring the job using a background terminal in RStudio). A run report is displayed after the job is collected:</p>
+<div class="figure">
+<img src="images/training-run.png" class="screenshot" width="730">
+</div>
+<p>Artifacts of your training run (e.g. saved models) are downloaded along with various run metrics and saved to the <code>runs</code> sub-directory of the working directory from which you submitted your training job.</p>
+</div>
+<div id="training-with-a-gpu" class="section level3">
+<h3 class="hasAnchor">
+<a href="#training-with-a-gpu" class="anchor"></a>Training with a GPU</h3>
+<p>By default, CloudML utilizes CPU based instances for training. You can request the use of a GPU using the <code>scale_tier</code> parameter of <code><a href="reference/cloudml_train.html">cloudml_train()</a></code>. For example, the following would train the same model as above but with a GPU:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="reference/cloudml_train.html">cloudml_train</a></span>(<span class="st">"train.R"</span>, <span class="dt">scale_tier =</span> <span class="st">"basic-gpu"</span>)</code></pre></div>
+<p>Note that GPU instances are more expensive that CPU ones! See the documentation on <a href="https://cloud.google.com/ml-engine/pricing">CloudML Pricing</a> for additional information.</p>
+<!---
+
+## CloudML Workflow
+
+The basic steps described above are the essential components of working with CloudML. That said, there are many flexible options available for managing jobs, viewing results, and specifying the compute resources required for training. This section describes this functionality in more detail.
+
+### Training Jobs
+
+<div class="bs-callout bs-callout-info">
+Note that the CloudML training and job management functions described here all work relative to the current working directory of your R session, so you should always switch to the working directory containing your scripts before executing these functions.
+</div>
+
+When not using RStudio, you can either ask the R session to wait for training to complete, and pull the generated models back to your local filesystem with:
+
+
+```r
+job_collect(job)
+```
+
+The R session will wait and continue polling Google Cloud until your application has finished running; if the application trained successfully, then the trained models will be copied to disk under the `runs` directory.
+
+Once the job is collected, you can use [tfruns](https://tensorflow.rstudio.com/tools/tfruns/) to view the results of the last run:
+
+
+```r
+library(tfruns)
+view_run()
+```
+
+
+
+### Training Runs
+
+
+
+
+
+
+## Learning More
+
+
+
+--->
+</div>
 </div>
 </div>
   </div>
 
-  <div class="col-md-3" id="sidebar">
-    <h2>License</h2>
+  <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
+    <h2 class="hasAnchor">
+<a href="#sidebar" class="anchor"></a>License</h2>
 <p><a href="https://opensource.org/licenses/mit-license.php">MIT</a> + file <a href="LICENSE.html">LICENSE</a></p>
 <h2>Developers</h2>
 <ul class="list-unstyled">
@@ -133,6 +188,7 @@
 <li><a href="https://cran.r-project.org/package=cloudml"><img src="https://www.r-pkg.org/badges/version/cloudml" alt="CRAN_Status_Badge"></a></li>
 </ul>
 </div>
+
 </div>
 
 

@@ -1,10 +1,4 @@
-#' Google Cloud Config
-#'
-#' Reads the Google Cloud config file.
-#'
-#' @param gcloud A list or \code{YAML} file with optional 'account', 'project',
-#'   and 'configuration' fields used to configure the GCloud environemnt.
-#'
+# Google Cloud Config
 gcloud_config <- function(gcloud = NULL) {
 
   if (is.list(gcloud)) {

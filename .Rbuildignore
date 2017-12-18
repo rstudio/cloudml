@@ -7,13 +7,11 @@
 ^man-roxygen/
 ^docs/
 ^README\.R?md
-^_pkgdown.yml$
 ^index\..*$
-^_pkgdown\.yml$
 ^\.travis\.yml$
 ^runs\.*$
 ^cloudml.yml$
 ^.travis.R$
 ^docs$
 ^.*/runs/.*$
-
+^pkgdown$

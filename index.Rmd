@@ -1,0 +1,123 @@
+---
+title: "R Interface to CloudML"
+output: 
+  rmarkdown::html_vignette: 
+    readme: true
+vignette: >
+  %\VignetteIndexEntry{Getting Started}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, eval=FALSE)
+```
+
+[![Build Status](https://travis-ci.org/rstudio/cloudml.svg?branch=master)](https://travis-ci.org/rstudio/cloudml) [![CRAN_Status_Badge](https://www.r-pkg.org/badges/version/cloudml)](https://cran.r-project.org/package=cloudml)
+
+## Overview
+
+The **cloudml** package provides an R interface to [Google Cloud Machine Learning](https://cloud.google.com/ml-engine/). CloudML makes it easy to run training applications built with R packages like [tensorflow](https://tensorflow.rstudio.com/) and [keras](https://keras.rstudio.com/) in the cloud.
+
+CloudML provides a cost-effective way to use GPUs for training models, since you only pay for the GPU compute time that your training jobs actually consume (as opposed to investing in a dedicated GPU machine either locally or in the cloud). CloudML also provides access to powerful scalable computing facilities when you need them.
+
+## Installation
+
+Before you can begin training models with CloudML you need to have a *Google Cloud Account*. If you don't already have an account you can create one at <https://console.cloud.google.com>.
+
+Start by installing the cloudml R package from GitHub as follows:
+
+```r
+devtools::install_github("rstudio/cloudml")
+```
+
+Then, install the *Google Cloud SDK*, a set of utilties that enable you to interact with your Google Cloud account from within R. You can install the SDK using the `gcloud_install()` function:
+
+```{r}
+library(cloudml)
+gcloud_install()
+```
+
+Once you've completed these steps you are ready to train models with CloudML!
+
+## Training on CloudML
+
+To train a model on CloudML, first work the training script locally (perhaps with a smaller sample of your dataset). The script can contain arbitrary R code which trains and/or evaluates a model. Once you've confirmed that things work as expected, you can submit a CloudML job to perform training in the cloud.
+
+### Submitting a Job
+
+To submit a job, call the `cloudml_train()` function, specifying the R script to execute for training:
+
+```{r}
+library(cloudml)
+cloudml_train("train.R")
+```
+
+All of the files within the current working directory will be bundled up and sent along with the script to CloudML.
+
+If you are using [RStudio v1.1](https://www.rstudio.com/products/rstudio/download/) or higher, then the CloudML training job is monitored (and it's results collected) using a background terminal:
+
+![](images/rstudio-terminal.png){.screenshot width=730px}
+
+### Collecting Results
+
+When the job is complete, training results can be collected back to your local system (this is done automatically when monitoring the job using a background terminal in RStudio). A run report is displayed after the job is collected:
+
+![](images/training-run.png){.screenshot width=730px}
+
+Artifacts of your training run (e.g. saved models) are downloaded along with various run metrics and saved to the `runs` sub-directory of the working directory from which you submitted your training job.
+
+### Training with a GPU
+
+By default, CloudML utilizes CPU based instances for training. You can request the use of a GPU using the `scale_tier` parameter of `cloudml_train()`. For example, the following would train the same model as above but with a GPU:
+
+```{r}
+cloudml_train("train.R", scale_tier = "basic-gpu")
+```
+
+Note that GPU instances are more expensive that CPU ones! See the documentation on [CloudML Pricing](https://cloud.google.com/ml-engine/pricing) for additional information.
+
+
+<!---
+
+## CloudML Workflow
+
+The basic steps described above are the essential components of working with CloudML. That said, there are many flexible options available for managing jobs, viewing results, and specifying the compute resources required for training. This section describes this functionality in more detail.
+
+### Training Jobs
+
+<div class="bs-callout bs-callout-info">
+Note that the CloudML training and job management functions described here all work relative to the current working directory of your R session, so you should always switch to the working directory containing your scripts before executing these functions.
+</div>
+
+When not using RStudio, you can either ask the R session to wait for training to complete, and pull the generated models back to your local filesystem with:
+
+```{r eval=FALSE}
+job_collect(job)
+```
+
+The R session will wait and continue polling Google Cloud until your application has finished running; if the application trained successfully, then the trained models will be copied to disk under the `runs` directory.
+
+Once the job is collected, you can use [tfruns](https://tensorflow.rstudio.com/tools/tfruns/) to view the results of the last run:
+
+```{r eval=FALSE}
+library(tfruns)
+view_run()
+```
+
+
+
+### Training Runs
+
+
+
+
+
+
+## Learning More
+
+
+
+--->
+
+

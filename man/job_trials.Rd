@@ -17,7 +17,6 @@ Get the hyperparameter trials for job, as an \R data frame
 }
 \seealso{
 Other job management: \code{\link{job_cancel}},
-  \code{\link{job_collect_async}},
   \code{\link{job_collect}}, \code{\link{job_list}},
   \code{\link{job_status}}, \code{\link{job_stream_logs}}
 }

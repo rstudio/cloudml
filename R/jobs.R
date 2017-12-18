@@ -497,27 +497,7 @@ job_collect <- function(job = "latest",
   stop("failed to receive job outputs")
 }
 
-#' Collect Job Output Asynchronously
-#'
-#' Collect the job outputs (e.g. fitted model) from a job asynchronously
-#' using the RStudio terminal, if available.
-#'
-#' @inheritParams job_status
-#'
-#' @param gcloud
-#'   Optional gcloud configuration.
-#'
-#' @param destination
-#'   The destination directory in which model outputs should
-#'   be downloaded. Defaults to `runs`.
-#'
-#' @param view View the job after collecting it.
-#'
-#' @param polling_interval
-#'   Number of seconds to wait between efforts to fetch the
-#'   latest log messages.
-#'
-#' @family job management
+# Collect Job Output Asynchronously
 job_collect_async <- function(
   job,
   gcloud = NULL,

@@ -1,0 +1,59 @@
+
+/*
+ * Callouts
+ *
+ * Not quite alerts, but custom and helpful notes for folks reading the docs.
+ * Requires a base and modifier class.
+ */
+
+/* Common styles for all types */
+.bs-callout {
+  padding: 20px;
+  margin: 20px 0;
+  border: 1px solid #eee;
+  border-left-width: 5px;
+  border-radius: 3px;
+  background-color: #fdfdfd;
+}
+.bs-callout h4 {
+  margin-top: 0;
+  margin-bottom: 5px;
+}
+.bs-callout p:last-child {
+  margin-bottom: 0;
+}
+.bs-callout code {
+  border-radius: 3px;
+}
+
+/* Tighten up space between multiple callouts */
+.bs-callout + .bs-callout {
+  margin-top: -5px;
+}
+
+/* Variations */
+.bs-callout-danger {
+  border-left-color: #FF0039;
+}
+.bs-callout-danger h4 {
+  color: #FF0039;
+}
+.bs-callout-warning {
+  border-left-color: #FF7518;
+}
+.bs-callout-warning h4 {
+  color: #FF7518;
+}
+.bs-callout-info {
+  border-left-color: #9954BB;
+}
+.bs-callout-info h4 {
+  color: #9954BB;
+}
+
+
+.screenshot {
+  margin-bottom: 20px;
+  border: solid 1px #cccccc;
+}
+
