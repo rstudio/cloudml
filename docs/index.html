@@ -119,14 +119,13 @@
 <p>Note that in order to ensure that the <strong>cloudml</strong> package can find your installation of the SDK you should accept the default installation location (<code>~/</code>) suggested within the installer.</p>
 <p>Once you’ve completed these steps you are ready to train models with CloudML!</p>
 </div>
-</div>
-<div id="training-on-cloudml" class="section level2">
-<h2 class="hasAnchor">
-<a href="#training-on-cloudml" class="anchor"></a>Training on CloudML</h2>
-<p>To train a model on CloudML, first work the training script locally (perhaps with a smaller sample of your dataset). The script can contain arbitrary R code which trains and/or evaluates a model. Once you’ve confirmed that things work as expected, you can submit a CloudML job to perform training in the cloud.</p>
-<div id="submitting-a-job" class="section level3">
+<div id="training-on-cloudml" class="section level3">
 <h3 class="hasAnchor">
-<a href="#submitting-a-job" class="anchor"></a>Submitting a Job</h3>
+<a href="#training-on-cloudml" class="anchor"></a>Training on CloudML</h3>
+<p>To train a model on CloudML, first work the training script locally (perhaps with a smaller sample of your dataset). The script can contain arbitrary R code which trains and/or evaluates a model. Once you’ve confirmed that things work as expected, you can submit a CloudML job to perform training in the cloud.</p>
+<div id="submitting-a-job" class="section level4">
+<h4 class="hasAnchor">
+<a href="#submitting-a-job" class="anchor"></a>Submitting a Job</h4>
 <p>To submit a job, call the <code><a href="reference/cloudml_train.html">cloudml_train()</a></code> function, specifying the R script to execute for training:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(cloudml)
 <span class="kw"><a href="reference/cloudml_train.html">cloudml_train</a></span>(<span class="st">"train.R"</span>)</code></pre></div>
@@ -136,14 +135,15 @@
 <img src="images/rstudio-terminal.png" class="screenshot" width="730">
 </div>
 </div>
-<div id="collecting-results" class="section level3">
-<h3 class="hasAnchor">
-<a href="#collecting-results" class="anchor"></a>Collecting Results</h3>
+<div id="collecting-results" class="section level4">
+<h4 class="hasAnchor">
+<a href="#collecting-results" class="anchor"></a>Collecting Results</h4>
 <p>When the job is complete, training results can be collected back to your local system (this is done automatically when monitoring the job using a background terminal in RStudio). A run report is displayed after the job is collected:</p>
 <div class="figure">
 <img src="images/training-run.png" class="screenshot" width="730">
 </div>
 <p>Artifacts of your training run (e.g. saved models) are downloaded along with various run metrics and saved to the <code>runs</code> sub-directory of the working directory from which you submitted your training job.</p>
+</div>
 </div>
 <div id="training-with-a-gpu" class="section level3">
 <h3 class="hasAnchor">
@@ -151,89 +151,6 @@
 <p>By default, CloudML utilizes CPU based instances for training. You can request the use of a GPU using the <code>scale_tier</code> parameter of <code><a href="reference/cloudml_train.html">cloudml_train()</a></code>. For example, the following would train the same model as above but with a GPU:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="reference/cloudml_train.html">cloudml_train</a></span>(<span class="st">"train.R"</span>, <span class="dt">scale_tier =</span> <span class="st">"basic-gpu"</span>)</code></pre></div>
 <p>Note that GPU instances are more expensive that CPU ones! See the documentation on <a href="https://cloud.google.com/ml-engine/pricing">CloudML Pricing</a> for additional information.</p>
-</div>
-</div>
-<div id="cloudml-workflow" class="section level2">
-<h2 class="hasAnchor">
-<a href="#cloudml-workflow" class="anchor"></a>CloudML Workflow</h2>
-<p>The basic steps described above are the essential components of working with CloudML. That said, there are many flexible options available for managing jobs, viewing results, and specifying the compute resources required for training. This section describes this functionality in more detail.</p>
-<div id="local-development" class="section level3">
-<h3 class="hasAnchor">
-<a href="#local-development" class="anchor"></a>Local Development</h3>
-<p>Working on a CloudML project always begins with developing a training script that runs on your local machine. This will typically involve using some combination of the <a href="https://keras.rstudio.com/">keras</a>, <a href="https://tensorflow.rstudio.com/tfestimators">tfestimators</a>, and <a href="https://tensorflow.rstudio.com/">tensorflow</a> packages. Once your script is working the way you expect you are ready to submit it to CloudML.</p>
-</div>
-<div id="training-jobs" class="section level3">
-<h3 class="hasAnchor">
-<a href="#training-jobs" class="anchor"></a>Training Jobs</h3>
-<p>The core unit of work in CloudML is a job. A job consists of a training script and related files (e.g. other scripts, data files, ec.). To submit a job to CloudML you use the <code><a href="reference/cloudml_train.html">cloudml_train()</a></code> function, passing it the name of the training script to run. For example:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">job &lt;-<span class="st"> </span><span class="kw"><a href="reference/cloudml_train.html">cloudml_train</a></span>(<span class="st">"minst_mlp.R"</span>)</code></pre></div>
-<div class="bs-callout bs-callout-warning">
-<p>Note that the CloudML training and job management functions described here all work relative to the current working directory of your R session, so you should always switch to the working directory containing your scripts before executing these functions.</p>
-</div>
-<p>The <code><a href="reference/cloudml_train.html">cloudml_train()</a></code> function returns a <code>job</code> object. This is a reference to the training job which you can use later to check it’s status, collect it’s output, etc. For example:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="reference/job_status.html">job_status</a></span>(job)</code></pre></div>
-<pre><code> $ createTime    : chr "2017-12-18T20:35:21Z"
- $ etag          : chr "2KRqIbAhzvM="
- $ jobId         : chr "cloudml_2017_12_18_203510175"
- $ startTime     : chr "2017-12-18T20:35:52Z"
- $ state         : chr "RUNNING"
- $ trainingInput :List of 3
-  ..$ jobDir        : chr "gs://cedar-card-791/r-cloudml/staging"
-  ..$ region        : chr "us-east1"
-  ..$ runtimeVersion: chr "1.4"
- $ trainingOutput:List of 1
-  ..$ consumedMLUnits: num 0.04
-
-View job in the Cloud Console at:
-https://console.cloud.google.com/ml/jobs/cloudml_2017_12_18_203510175?project=cedar-card-791
-
-View logs at:
-https://console.cloud.google.com/logs?resource=ml.googleapis.com%2Fjob_id%2Fcloudml_2017_12_18_203510175&amp;project=cedar-card-791</code></pre>
-<p>You can call <code><a href="reference/job_collect.html">job_collect()</a></code> at any time to download the job:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="reference/job_collect.html">job_collect</a></span>(job)</code></pre></div>
-<p>If it hasn’t already completed, R will block waiting for the job to complete and then perform the download. After the job has downloaded a report showing the results of the job will be automatically displayed.</p>
-<p>To interact with jobs you don’t need the <code>job</code> object returned from <code><a href="reference/cloudml_train.html">cloudml_train()</a></code>. If you call <code><a href="reference/job_status.html">job_status()</a></code> or <code><a href="reference/job_collect.html">job_collect()</a></code> with no arguments they will act on the most recently submitted job:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="reference/job_status.html">job_status</a></span>()   <span class="co"># get status of last job</span>
-<span class="kw"><a href="reference/job_collect.html">job_collect</a></span>()  <span class="co"># collect last job</span></code></pre></div>
-<p>You can also list jobs and then reference them by job ID:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="reference/job_list.html">job_list</a></span>()</code></pre></div>
-<pre><code>                        JOB_ID    STATUS             CREATED
-1 cloudml_2017_12_18_203510175 SUCCEEDED 2017-12-18 15:35:21
-2 cloudml_2017_12_18_202228264    FAILED 2017-12-18 15:22:39
-3 cloudml_2017_12_18_201607948 SUCCEEDED 2017-12-18 15:16:18
-4 cloudml_2017_12_18_132620918 SUCCEEDED 2017-12-18 08:26:30
-5 cloudml_2017_12_15_182614794 SUCCEEDED 2017-12-15 13:26:29
-6 cloudml_2017_12_14_183247626 SUCCEEDED 2017-12-14 13:33:04</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="reference/job_collect.html">job_collect</a></span>(<span class="st">"cloudml_2017_12_18_203510175"</span>)</code></pre></div>
-</div>
-<div id="training-runs" class="section level3">
-<h3 class="hasAnchor">
-<a href="#training-runs" class="anchor"></a>Training Runs</h3>
-<p>Each training job will produce one or more training runs (it’s typically only a single run, however when doing hyperparmeter turning there will be multiple runs). When you collect a job from CloudML it is automatically downloaded into the <code>runs</code> sub-directory of the current working directory.</p>
-<p>You can list all of the runs as a data frame using the <code>ls_runs()</code> function:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ls_runs</span>()</code></pre></div>
-<pre><code># A tibble: 6 x 34
-                            run_dir metric_loss metric_acc metric_val_loss metric_val_acc
-                              &lt;chr&gt;       &lt;dbl&gt;      &lt;dbl&gt;           &lt;dbl&gt;          &lt;dbl&gt;
-1 runs/cloudml_2017_12_15_182614794      0.0809     0.9763          0.0889         0.9786
-2 runs/cloudml_2017_12_14_183247626      0.0806     0.9770          0.0919         0.9773
-3 runs/cloudml_2017_12_14_144048138      0.0786     0.9772          0.0896         0.9777
-4 runs/cloudml_2017_12_14_143427111      0.0803     0.9771          0.0940         0.9760
-5 runs/cloudml_2017_12_14_124739611      0.0829     0.9766          0.0913         0.9782
-6 runs/cloudml_2017_12_14_124625505      0.0805     0.9765          0.0981         0.9766
-# ... with 29 more variables: flag_dropout1 &lt;dbl&gt;, flag_dropout2 &lt;dbl&gt;, samples &lt;int&gt;,
-#   validation_samples &lt;int&gt;, batch_size &lt;int&gt;, epochs &lt;int&gt;, epochs_completed &lt;int&gt;,
-#   metrics &lt;chr&gt;, model &lt;chr&gt;, loss_function &lt;chr&gt;, optimizer &lt;chr&gt;, learning_rate &lt;dbl&gt;,
-#   script &lt;chr&gt;, start &lt;dttm&gt;, end &lt;dttm&gt;, completed &lt;lgl&gt;, output &lt;chr&gt;, source_code &lt;chr&gt;,
-#   context &lt;chr&gt;, type &lt;chr&gt;, cloudml_console_url &lt;chr&gt;, cloudml_created &lt;dttm&gt;,
-#   cloudml_end &lt;dttm&gt;, cloudml_job &lt;chr&gt;, cloudml_log_url &lt;chr&gt;, cloudml_ml_units &lt;dbl&gt;,
-#   cloudml_scale_tier &lt;chr&gt;, cloudml_start &lt;dttm&gt;, cloudml_state &lt;chr&gt;</code></pre>
-<p>You can view run reports using the <code>view_run()</code> function:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># view the latest run</span>
-<span class="kw">view_run</span>()
-
-<span class="co"># view a specific run</span>
-<span class="kw">view_run</span>(<span class="st">"runs/cloudml_2017_12_15_182614794"</span>)</code></pre></div>
 </div>
 </div>
 <div id="learning-more" class="section level2">
