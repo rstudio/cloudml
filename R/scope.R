@@ -51,6 +51,9 @@ scope_deployment <- function(id,
                              cloudml = NULL,
                              gcloud = NULL)
 {
+  if (!is.list(cloudml)) stop("'cloudml' expected to be a configuration list")
+  if (!is.list(gcloud)) stop("'gcloud' expected to be a configuration list")
+
   application <- normalizePath(application, winslash = "/")
 
   validate_application(application, entrypoint)
@@ -77,32 +80,12 @@ scope_deployment <- function(id,
   initialize_application(directory)
 
   # copy or create cloudml.yml in bundle dir to maintain state
-  if (is.null(cloudml)) cloudml <- cloudml_config()
   cloudml_file <- "cloudml.yml"
-  if (is.list(cloudml))
-    yaml::write_yaml(cloudml, file.path(directory, cloudml_file))
-  else {
-    cloudml_ext <- tools::file_ext(cloudml)
-    if (!cloudml_ext %in% c("json", "yml"))
-      stop(
-        "CloudML configuration file expected to have 'json' or 'yml' extension but '",
-        cloudml_ext, "' found instead."
-      )
-
-    cloudml_file <- paste0("cloudml.", cloudml_ext)
-    cloudml_config_path <- file.path(directory, cloudml_file)
-    file.copy(cloudml, cloudml_config_path)
-  }
-
-
-  message("Master Type Missing: ", is.null(master_type))
-
+  yaml::write_yaml(cloudml, file.path(directory, cloudml_file))
 
   # copy or create gcloud.yml in bundle dir to maintain state
-  gcloud <- gcloud_config(gcloud)
   gcloud_config_path <- file.path(directory, "gcloud.yml")
-  if (is.list(gcloud))
-    yaml::write_yaml(gcloud, gcloud_config_path)
+  yaml::write_yaml(gcloud, gcloud_config_path)
 
   envir <- parent.frame()
 

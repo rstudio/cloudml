@@ -34,6 +34,9 @@ cloudml_train <- function(file = "train.R",
 {
   message("Submitting training job to CloudML...")
 
+  gcloud <- gcloud_config()
+  cloudml <- cloudml_config()
+
   # set application and entrypoint
   application <- getwd()
   entrypoint <- file
@@ -54,8 +57,6 @@ cloudml_train <- function(file = "train.R",
   return(NULL)
 
   # read configuration
-  gcloud <- gcloud_config()
-  cloudml <- cloudml_config()
   cloudml_file <- deployment$cloudml_file
 
   # create default storage bucket for project if not specified
