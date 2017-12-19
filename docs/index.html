@@ -148,9 +148,14 @@
 <div id="training-with-a-gpu" class="section level3">
 <h3 class="hasAnchor">
 <a href="#training-with-a-gpu" class="anchor"></a>Training with a GPU</h3>
-<p>By default, CloudML utilizes CPU based instances for training. You can request the use of a GPU using the <code>scale_tier</code> parameter of <code><a href="reference/cloudml_train.html">cloudml_train()</a></code>. For example, the following would train the same model as above but with a GPU:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="reference/cloudml_train.html">cloudml_train</a></span>(<span class="st">"train.R"</span>, <span class="dt">scale_tier =</span> <span class="st">"basic-gpu"</span>)</code></pre></div>
-<p>Note that GPU instances are more expensive that CPU ones! See the documentation on <a href="https://cloud.google.com/ml-engine/pricing">CloudML Pricing</a> for additional information.</p>
+<p>By default, CloudML utilizes “standard” CPU-based instances suitable for training simple models with small to moderate datasets. You can request the use of other machine types, including ones with GPUs, using the <code>master_type</code> parameter of <code><a href="reference/cloudml_train.html">cloudml_train()</a></code>.</p>
+<p>For example, the following would train the same model as above but with a <a href="http://www.nvidia.com/object/tesla-k80.html">Tesla K80 GPU</a>:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="reference/cloudml_train.html">cloudml_train</a></span>(<span class="st">"train.R"</span>, <span class="dt">master_type =</span> <span class="st">"standard_gpu"</span>)</code></pre></div>
+<p>To train using a <a href="http://www.nvidia.com/object/tesla-p100.html">Tesla P100 GPU</a> you would specify <code>"standard_p100"</code>:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="reference/cloudml_train.html">cloudml_train</a></span>(<span class="st">"train.R"</span>, <span class="dt">master_type =</span> <span class="st">"standard_p100"</span>)</code></pre></div>
+<p>To train on a machine with 4 Tesla P100 GPU’s you would specify <code>"complex_model_m_p100"</code>:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="reference/cloudml_train.html">cloudml_train</a></span>(<span class="st">"train.R"</span>, <span class="dt">master_type =</span> <span class="st">"complex_model_m_p100"</span>)</code></pre></div>
+<p>See the CloudML website for documentation on <a href="https://cloud.google.com/ml-engine/docs/training-overview#machine_type_table">available machine types</a>. Also note that GPU instances can be considerably more expensive that CPU ones! See the documentation on <a href="https://cloud.google.com/ml-engine/pricing">CloudML Pricing</a> for details.</p>
 </div>
 </div>
 <div id="learning-more" class="section level2">

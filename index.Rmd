@@ -85,13 +85,27 @@ Artifacts of your training run (e.g. saved models) are downloaded along with var
 
 ### Training with a GPU
 
-By default, CloudML utilizes CPU based instances for training. You can request the use of a GPU using the `scale_tier` parameter of `cloudml_train()`. For example, the following would train the same model as above but with a GPU:
+By default, CloudML utilizes "standard" CPU-based instances suitable for training simple models with small to moderate datasets. You can request the use of other machine types, including ones with GPUs, using the `master_type` parameter of `cloudml_train()`. 
+
+For example, the following would train the same model as above but with a [Tesla K80 GPU](http://www.nvidia.com/object/tesla-k80.html):
 
 ```{r}
-cloudml_train("train.R", scale_tier = "basic-gpu")
+cloudml_train("train.R", master_type = "standard_gpu")
 ```
 
-Note that GPU instances are more expensive that CPU ones! See the documentation on [CloudML Pricing](https://cloud.google.com/ml-engine/pricing) for additional information.
+To train using a [Tesla P100 GPU](http://www.nvidia.com/object/tesla-p100.html) you would specify `"standard_p100"`:
+
+```{r}
+cloudml_train("train.R", master_type = "standard_p100")
+```
+
+To train on a machine with 4 Tesla P100 GPU's you would specify `"complex_model_m_p100"`:
+
+```{r}
+cloudml_train("train.R", master_type = "complex_model_m_p100")
+```
+
+See the CloudML website for documentation on [available machine types](https://cloud.google.com/ml-engine/docs/training-overview#machine_type_table). Also note that GPU instances can be considerably more expensive that CPU ones! See the documentation on [CloudML Pricing](https://cloud.google.com/ml-engine/pricing) for details.
 
 ## Learning More
 
