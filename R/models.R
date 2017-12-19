@@ -101,6 +101,8 @@ cloudml_predict <- function(
   if (is.null(name)) name <- default_name
   if (is.null(version)) version <- default_name
 
+  gcloud <- gcloud_config(gcloud)
+
   json_file <- tempfile(fileext = ".json")
   jsonlite::write_json(input, json_file)
 
