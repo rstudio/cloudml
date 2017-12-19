@@ -35,7 +35,7 @@ reference:
 
   - title: "Prediction"
     desc: >
-      Functions for deploying models and generating predictions
+      Functions for deploying models and generating predictions.
     contents:
       - cloudml_deploy
       - cloudml_predict
@@ -51,7 +51,7 @@ reference:
       - job_cancel
       - job_list
 
-  - title: "Google Stroage"
+  - title: "Google Storage"
     desc: >
       Functions for interacting with Google Storage.
     contents:
