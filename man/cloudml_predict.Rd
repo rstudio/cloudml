@@ -13,6 +13,9 @@ name.}
 \item{version}{The version for this model. Versions start with a letter and
 contain only letters, numbers and underscores. Defaults to the current
 directory name.}
+
+\item{gcloud}{A list or \code{YAML} file with optional 'account' or 'project'
+fields used to configure the GCloud environemnt.}
 }
 \description{
 Perform online prediction over a CloudML model, usually, created using

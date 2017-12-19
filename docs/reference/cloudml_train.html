@@ -109,9 +109,8 @@
 train a model.</p>
     
 
-    <pre class="usage"><span class='fu'>cloudml_train</span>(<span class='kw'>file</span> <span class='kw'>=</span> <span class='st'>"train.R"</span>, <span class='kw'>scale_tier</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"basic"</span>, <span class='st'>"basic-gpu"</span>,
-  <span class='st'>"basic-tpu"</span>), <span class='kw'>flags</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>cloudml</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>gcloud</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>collect</span> <span class='kw'>=</span> <span class='st'>"ask"</span>)</pre>
+    <pre class="usage"><span class='fu'>cloudml_train</span>(<span class='kw'>file</span> <span class='kw'>=</span> <span class='st'>"train.R"</span>, <span class='kw'>master_type</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>flags</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>cloudml</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>gcloud</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>collect</span> <span class='kw'>=</span> <span class='st'>"ask"</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
@@ -121,12 +120,12 @@ train a model.</p>
       <td><p>File to be used as entrypoint for training.</p></td>
     </tr>
     <tr>
-      <th>scale_tier</th>
-      <td><p>Machine type for training. "basic" provides a single
-worker instance suitable for learning how to use Cloud ML Engine,
-and for experimenting with new models using small datasets; "basic-gpu"
-provides a single worker instance with a GPU. "basic-tpu" provides a
-single worker instance with a TPU.</p></td>
+      <th>master_type</th>
+      <td><p>Training master node machine type. "standard" provides a
+basic machine configuration suitable for training simple models with small
+to moderate datasets. See the documentation at
+<a href='https://cloud.google.com/ml-engine/docs/training-overview#machine_type_table'>https://cloud.google.com/ml-engine/docs/training-overview#machine_type_table</a>
+for details on available machine types.</p></td>
     </tr>
     <tr>
       <th>flags</th>
@@ -135,7 +134,8 @@ to YAML file containing flag values.</p></td>
     </tr>
     <tr>
       <th>cloudml</th>
-      <td><p>A list, <code>YAML</code> or <code>JSON</code> configuration file as described
+      <td><p>A list, <code>YAML</code> or <code>JSON</code> configuration file as
+described
 <a href='https://cloud.google.com/ml-engine/reference/rest/v1/projects.jobs'>https://cloud.google.com/ml-engine/reference/rest/v1/projects.jobs</a>.</p></td>
     </tr>
     <tr>
@@ -145,8 +145,8 @@ fields used to configure the GCloud environemnt.</p></td>
     </tr>
     <tr>
       <th>collect</th>
-      <td><p>Collect job when training is completed (blocks waiting
-for the job to complete).</p></td>
+      <td><p>Collect job when training is completed (blocks waiting for
+the job to complete).</p></td>
     </tr>
     </table>
     

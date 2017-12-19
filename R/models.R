@@ -18,7 +18,7 @@ cloudml_model_exists <- function(gcloud, name) {
 #'
 #' Deploys a SavedModel to CloudML model for online predictions.
 #'
-#' @inheritParams gcloud_config
+#' @inheritParams cloudml_train
 #'
 #' @param export_dir_base A string containing a directory containing an
 #'   exported SavedModels. Consider using \code{tensorflow::export_savedmodel()}
@@ -80,7 +80,7 @@ cloudml_deploy <- function(
 #' Perform online prediction over a CloudML model, usually, created using
 #' \code{cloudml_deploy}.
 #'
-#' @inheritParams gcloud_config
+#' @inheritParams cloudml_train
 #'
 #' @param name The name for this model. Defaults to the current directory
 #'   name.

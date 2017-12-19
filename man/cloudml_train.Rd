@@ -4,7 +4,7 @@
 \alias{cloudml_train}
 \title{Train a model using Cloud ML}
 \usage{
-cloudml_train(file = "train.R", master_type = "standard", flags = NULL,
+cloudml_train(file = "train.R", master_type = NULL, flags = NULL,
   cloudml = NULL, gcloud = NULL, collect = "ask")
 }
 \arguments{

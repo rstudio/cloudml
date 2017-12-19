@@ -21,6 +21,9 @@ directory name.}
 
 \item{cloudml}{A list, \code{YAML} or \code{JSON} configuration file as described
 \url{https://cloud.google.com/ml-engine/reference/rest/v1/projects.jobs}.}
+
+\item{gcloud}{A list or \code{YAML} file with optional 'account' or 'project'
+fields used to configure the GCloud environemnt.}
 }
 \description{
 Deploys a SavedModel to CloudML model for online predictions.
