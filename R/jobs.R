@@ -26,7 +26,7 @@
 #'
 #' @export
 cloudml_train <- function(file = "train.R",
-                          master_type = "standard",
+                          master_type = NULL,
                           flags = NULL,
                           cloudml = NULL,
                           gcloud = NULL,
@@ -34,8 +34,13 @@ cloudml_train <- function(file = "train.R",
 {
   message("Submitting training job to CloudML...")
 
-  gcloud <- gcloud_config()
-  cloudml <- cloudml_config()
+  gcloud <- gcloud_config(gcloud)
+  cloudml <- cloudml_config(cloudml)
+
+  if (!is.null(master_type)) cloudml$trainingInput$masterType <- master_type
+  if (!is.null(cloudml$trainingInput$masterType) &&
+      !identical(cloudml$trainingInput$scaleTier, "CUSTOM"))
+    cloudml$trainingInput$scaleTier <- "CUSTOM"
 
   # set application and entrypoint
   application <- getwd()
@@ -47,14 +52,11 @@ cloudml_train <- function(file = "train.R",
     id = id,
     application = application,
     context = "cloudml",
-    master_type = if (!missing(master_type)) master_type else NULL,
     overlay = flags,
     entrypoint = entrypoint,
     cloudml = cloudml,
     gcloud = gcloud
   )
-
-  return(NULL)
 
   # read configuration
   cloudml_file <- deployment$cloudml_file
@@ -91,7 +93,6 @@ cloudml_train <- function(file = "train.R",
                 ("--module-name=%s.cloudml.deploy", basename(directory))
                 ("--runtime-version=%s", cloudml_version)
                 ("--region=%s", gcloud[["region"]])
-                ("--scale-tier=%s", "CUSTOM")
                 ("--config=%s/%s", "cloudml-model", cloudml_file)
                 ("--")
                 ("Rscript"))

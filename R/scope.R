@@ -46,7 +46,6 @@ scope_deployment <- function(id,
                              application = getwd(),
                              context = "local",
                              overlay = NULL,
-                             master_type = NULL,
                              entrypoint = NULL,
                              cloudml = NULL,
                              gcloud = NULL)
