@@ -4,30 +4,30 @@
 \alias{cloudml_train}
 \title{Train a model using Cloud ML}
 \usage{
-cloudml_train(file = "train.R", scale_tier = c("basic", "basic-gpu",
-  "basic-tpu"), flags = NULL, cloudml = NULL, gcloud = NULL,
-  collect = "ask")
+cloudml_train(file = "train.R", master_type = "standard", flags = NULL,
+  cloudml = NULL, gcloud = NULL, collect = "ask")
 }
 \arguments{
 \item{file}{File to be used as entrypoint for training.}
 
-\item{scale_tier}{Machine type for training. "basic" provides a single
-worker instance suitable for learning how to use Cloud ML Engine,
-and for experimenting with new models using small datasets; "basic-gpu"
-provides a single worker instance with a GPU. "basic-tpu" provides a
-single worker instance with a TPU.}
+\item{master_type}{Training master node machine type. "standard" provides a
+basic machine configuration suitable for training simple models with small
+to moderate datasets. See the documentation at
+\url{https://cloud.google.com/ml-engine/docs/training-overview#machine_type_table}
+for details on available machine types.}
 
 \item{flags}{Named list with flag values (see \code{\link[=flags]{flags()}}) or path
 to YAML file containing flag values.}
 
-\item{cloudml}{A list, \code{YAML} or \code{JSON} configuration file as described
+\item{cloudml}{A list, \code{YAML} or \code{JSON} configuration file as
+described
 \url{https://cloud.google.com/ml-engine/reference/rest/v1/projects.jobs}.}
 
 \item{gcloud}{A list or \code{YAML} file with optional 'account' or 'project'
 fields used to configure the GCloud environemnt.}
 
-\item{collect}{Collect job when training is completed (blocks waiting
-for the job to complete).}
+\item{collect}{Collect job when training is completed (blocks waiting for
+the job to complete).}
 }
 \description{
 Upload a TensorFlow application to Google Cloud, and use that application to

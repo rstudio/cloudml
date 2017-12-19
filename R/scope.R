@@ -46,6 +46,7 @@ scope_deployment <- function(id,
                              application = getwd(),
                              context = "local",
                              overlay = NULL,
+                             master_type = NULL,
                              entrypoint = NULL,
                              cloudml = NULL,
                              gcloud = NULL)
@@ -92,6 +93,10 @@ scope_deployment <- function(id,
     cloudml_config_path <- file.path(directory, cloudml_file)
     file.copy(cloudml, cloudml_config_path)
   }
+
+
+  message("Machine Type Missing: ", missing(machine_type))
+
 
   # copy or create gcloud.yml in bundle dir to maintain state
   gcloud <- gcloud_config(gcloud)

@@ -9,23 +9,24 @@
 #'
 #' @param file File to be used as entrypoint for training.
 #'
-#' @param scale_tier Machine type for training. "basic" provides a single
-#'   worker instance suitable for learning how to use Cloud ML Engine,
-#'   and for experimenting with new models using small datasets; "basic-gpu"
-#'   provides a single worker instance with a GPU. "basic-tpu" provides a
-#'   single worker instance with a TPU.
+#' @param master_type Training master node machine type. "standard" provides a
+#'   basic machine configuration suitable for training simple models with small
+#'   to moderate datasets. See the documentation at
+#'   <https://cloud.google.com/ml-engine/docs/training-overview#machine_type_table>
+#'    for details on available machine types.
 #'
-#' @param cloudml A list, \code{YAML} or \code{JSON} configuration file as described
+#' @param cloudml A list, \code{YAML} or \code{JSON} configuration file as
+#'   described
 #'   \url{https://cloud.google.com/ml-engine/reference/rest/v1/projects.jobs}.
 #'
-#' @param collect Collect job when training is completed (blocks waiting
-#'   for the job to complete).
+#' @param collect Collect job when training is completed (blocks waiting for
+#'   the job to complete).
 #'
 #' @seealso [job_status()], [job_collect()], [job_cancel()]
 #'
 #' @export
 cloudml_train <- function(file = "train.R",
-                          scale_tier = c("basic", "basic-gpu", "basic-tpu"),
+                          master_type = "standard",
                           flags = NULL,
                           cloudml = NULL,
                           gcloud = NULL,
@@ -43,11 +44,14 @@ cloudml_train <- function(file = "train.R",
     id = id,
     application = application,
     context = "cloudml",
+    master_type = master_type,
     overlay = flags,
     entrypoint = entrypoint,
     cloudml = cloudml,
     gcloud = gcloud
   )
+
+  return(NULL)
 
   # read configuration
   gcloud <- gcloud_config()
@@ -86,7 +90,7 @@ cloudml_train <- function(file = "train.R",
                 ("--module-name=%s.cloudml.deploy", basename(directory))
                 ("--runtime-version=%s", cloudml_version)
                 ("--region=%s", gcloud[["region"]])
-                ("--scale-tier=%s", match.arg(scale_tier))
+                ("--scale-tier=%s", "CUSTOM")
                 ("--config=%s/%s", "cloudml-model", cloudml_file)
                 ("--")
                 ("Rscript"))
