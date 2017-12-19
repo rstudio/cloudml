@@ -95,7 +95,7 @@ scope_deployment <- function(id,
   }
 
 
-  message("Machine Type Missing: ", missing(machine_type))
+  message("Master Type Missing: ", missing(master_type))
 
 
   # copy or create gcloud.yml in bundle dir to maintain state
