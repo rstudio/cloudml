@@ -74,3 +74,48 @@ cloudml_deploy <- function(
 
   invisible(NULL)
 }
+
+#' Perform Prediction over a CloudML Model.
+#'
+#' Perform online prediction over a CloudML model, usually, created using
+#' \code{cloudml_deploy}.
+#'
+#' @inheritParams gcloud_config
+#'
+#' @param name The name for this model. Defaults to the current directory
+#'   name.
+#' @param version The version for this model. Versions start with a letter and
+#'   contain only letters, numbers and underscores. Defaults to the current
+#'   directory name.
+#'
+#' @seealso [cloudml_deploy()]
+#'
+#' @export
+cloudml_predict <- function(
+  input,
+  name = NULL,
+  version = NULL,
+  gcloud = NULL) {
+
+  default_name <- basename(normalizePath(getwd(), winslash = "/"))
+  if (is.null(name)) name <- default_name
+  if (is.null(version)) version <- default_name
+
+  json_file <- tempfile(fileext = ".json")
+  jsonlite::write_json(input, json_file)
+
+  arguments <- (MLArgumentsBuilder(gcloud)
+                ("predict")
+                ("--model=%s", name)
+                ("--version=%s", as.character(version))
+                ("--json-instances=%s", json_file)
+                ("--format=%s", "json"))
+
+  output <- gcloud_exec(args = arguments())
+
+  json <- jsonlite::fromJSON(output$stdout)
+  if (!is.null(json$error))
+    stop(json$error)
+
+  json
+}
