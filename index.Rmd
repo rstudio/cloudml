@@ -214,7 +214,7 @@ view_run("runs/cloudml_2017_12_15_182614794")
 
 ## Learning More
 
-To learn more about using CloudML with R, see the following articles:
+To learn more about using CloudML with R, see the following guides:
 
 * [Training with CloudML](articles/training.html) goes into additional depth on managing training jobs and their output.
 

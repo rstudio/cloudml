@@ -8,7 +8,7 @@ navbar:
   left:
     - text: "Home"
       href: index.html
-    - text: "Articles"
+    - text: "Guides"
       menu:
       - text: "Training with CloudML"
         href: articles/training.html
