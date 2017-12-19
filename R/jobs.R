@@ -605,7 +605,7 @@ job_download <- function(job,
   properties$cloudml_start <- as_date(status$startTime)
   properties$cloudml_end <- as_date(status$endTime)
   properties$cloudml_ml_units <- status$trainingOutput$consumedMLUnits
-  properties$cloudml_scale_tier <- status$trainingInput$scaleTier
+  properties$cloudml_master_type <- status$trainingInput$masterType
   messages <- trimws(strsplit(attr(status, "messages"), "\n")[[1]])
   messages <- messages[grepl("^https://.*$", messages)]
   for (message in messages) {
