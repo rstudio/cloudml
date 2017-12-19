@@ -12,6 +12,8 @@ navbar:
       menu:
       - text: "Training with CloudML"
         href: articles/training.html
+      - text: "Deploying Models"
+        href: articles/training.html
       - text: "Hyperparameter Tuning"
         href: articles/tuning.html
       - text: "Google Cloud Storage"
@@ -30,6 +32,14 @@ reference:
       Functions for model training.
     contents:
       - cloudml_train
+
+  - title: "Prediction"
+    desc: >
+      Functions for deploying models and generating predictions
+    contents:
+      - cloudml_deploy
+      - cloudml_predict
+
   - title: "Managing Jobs"
     desc: >
       Functions for managing remote Cloud ML Jobs.
@@ -41,14 +51,6 @@ reference:
       - job_cancel
       - job_list
 
-  - title: "Google Cloud"
-    desc: >
-      Functions for interacting with Google Cloud SDK.
-    contents:
-      - gcloud_install
-      - gcloud_init
-      - gcloud_terminal
-
   - title: "Google Stroage"
     desc: >
       Functions for interacting with Google Storage.
@@ -57,3 +59,10 @@ reference:
       - gs_rsync
       - gs_local_dir
 
+  - title: "Google Cloud SDK"
+    desc: >
+      Functions for interacting with Google Cloud SDK.
+    contents:
+      - gcloud_install
+      - gcloud_init
+      - gcloud_terminal

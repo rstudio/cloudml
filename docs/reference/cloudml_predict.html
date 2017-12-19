@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Copy files to / from Google Storage — gs_copy • cloudml</title>
+<title>Perform Prediction over a CloudML Model. — cloudml_predict • cloudml</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -101,41 +101,35 @@
       <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Copy files to / from Google Storage</h1>
+    <h1>Perform Prediction over a CloudML Model.</h1>
     </div>
 
     
-    <p>Use the <code>gsutil cp</code> command to copy data between your local file system and
-the cloud, copy data within the cloud, and copy data between cloud storage
-providers.</p>
+    <p>Perform online prediction over a CloudML model, usually, created using
+<code>cloudml_deploy</code>.</p>
     
 
-    <pre class="usage"><span class='fu'>gs_copy</span>(<span class='no'>source</span>, <span class='no'>destination</span>, <span class='kw'>recursive</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>echo</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</pre>
+    <pre class="usage"><span class='fu'>cloudml_predict</span>(<span class='no'>input</span>, <span class='kw'>name</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>version</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>gcloud</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>source</th>
-      <td><p>The file to be copied. This can be either a path on the local
-filesystem, or a Google Storage URI (e.g. <code>gs://[BUCKET_NAME]/[FILENAME.CSV]</code>).</p></td>
+      <th>name</th>
+      <td><p>The name for this model. Defaults to the current directory
+name.</p></td>
     </tr>
     <tr>
-      <th>destination</th>
-      <td><p>The location where the <code>source</code> file should be copied to. This can be
-either a path on the local filesystem, or a Google Storage URI (e.g.
-<code>gs://[BUCKET_NAME]/[FILENAME.CSV]</code>).</p></td>
-    </tr>
-    <tr>
-      <th>recursive</th>
-      <td><p>Boolean; perform a recursive copy? This must be specified if you intend on
-copying directories.</p></td>
-    </tr>
-    <tr>
-      <th>echo</th>
-      <td><p>Echo command output to console</p></td>
+      <th>version</th>
+      <td><p>The version for this model. Versions start with a letter and
+contain only letters, numbers and underscores. Defaults to the current
+directory name.</p></td>
     </tr>
     </table>
+    
+    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
+
+    <p><code><a href='cloudml_deploy.html'>cloudml_deploy()</a></code></p>
     
 
   </div>
@@ -143,7 +137,9 @@ copying directories.</p></td>
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
-                </ul>
+      
+      <li><a href="#see-also">See also</a></li>
+          </ul>
 
   </div>
 </div>

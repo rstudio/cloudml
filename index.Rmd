@@ -15,17 +15,29 @@ knitr::opts_chunk$set(echo = TRUE, eval=FALSE)
 
 [![Build Status](https://travis-ci.org/rstudio/cloudml.svg?branch=master)](https://travis-ci.org/rstudio/cloudml) [![CRAN_Status_Badge](https://www.r-pkg.org/badges/version/cloudml)](https://cran.r-project.org/package=cloudml)
 
-## R Interface to Google Cloud Machine Learning Engine
+# R Interface to Google CloudML
 
-The **cloudml** package provides an R interface to [Google Cloud Machine Learning](https://cloud.google.com/ml-engine/). CloudML makes it easy to run training applications built with R packages like [keras](https://keras.rstudio.com/), [tfestimators](https://tensorflow.rstudio.com/tfestimators), and [tensorflow](https://tensorflow.rstudio.com/) in the cloud.
+![](images/cloudml.png){align=right width=200px style="margin-left: 10px;"}
 
-CloudML is a very cost-effective way to use GPUs for training models, since you only pay for the GPU compute time that your training jobs actually consume (as opposed to investing in a dedicated GPU machine either locally or in the cloud). 
+The **cloudml** package provides an R interface to [Google Cloud Machine Learning Engine](https://cloud.google.com/ml-engine/), a managed service that enables:
 
-CloudML also provides facilites for tuning the hyperparameters of models. Hyperparameter tuning takes advantage of the processing infrastructure of Google Cloud Platform to test different hyperparameter configurations when training your model. It can give you optimized values for hyperparameters, which maximizes your model's predictive accuracy.
+* Scalable training of models built with the [keras](https://keras.rstudio.com/), [tfestimators](https://tensorflow.rstudio.com/tfestimators), and [tensorflow](https://tensorflow.rstudio.com/) R packages.
 
-## Installation
+* On-demand access to training on GPUs, including the new [Tesla P100 GPUs](http://www.nvidia.com/object/tesla-p100.html) from NVIDIA&reg;. 
+
+* Hyperparameter tuning to optmize key attributes of model architectures in order to maximize predictive accuracy.
+
+* Deployment of trained models to the Google global prediction platform that can support thousands of users and TBs of data.
+
+<div style="height: 25px;"></div>
+
+## Getting Started
+
+### Google Cloud Account
 
 Before you can begin training models with CloudML you need to have a *Google Cloud Account*. If you don't already have an account you can create one at <https://console.cloud.google.com>.
+
+### Installation
 
 Start by installing the cloudml R package from GitHub as follows:
 
@@ -99,7 +111,7 @@ The core unit of work in CloudML is a job. A job consists of a training script a
 job <- cloudml_train("minst_mlp.R")
 ```
 
-<div class="bs-callout bs-callout-info">
+<div class="bs-callout bs-callout-warning">
 Note that the CloudML training and job management functions described here all work relative to the current working directory of your R session, so you should always switch to the working directory containing your scripts before executing these functions.
 </div>
 
@@ -206,7 +218,9 @@ To learn more about using CloudML with R, see the following articles:
 
 * [Training with CloudML](articles/training.html) goes into additional depth on managing training jobs and their output.
 
-* [Hyperparameter Tuning](articles/tuning.html) describes how you can improve the performance of your models by running many trials with distinct hyperparameters (e.g. number and size of layers) to determine their optimal values.
+* [Deploying Models](articles/training.html) describes how to deploy trained models and generate predictions from them.
+
+* [Hyperparameter Tuning](articles/tuning.html) explores how you can improve the performance of your models by running many trials with distinct hyperparameters (e.g. number and size of layers) to determine their optimal values.
 
 * [Google Cloud Storage](articles/storage.html) provides information on copying data between your local machine and Google Storage and also describes how to use data within Google Storage during training.
 

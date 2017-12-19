@@ -13,7 +13,7 @@
   border: 1px solid #eee;
   border-left-width: 5px;
   border-radius: 3px;
-  background-color: #fdfdfd;
+  background-color: #fefefe;
 }
 .bs-callout h4 {
   margin-top: 0;
@@ -56,4 +56,14 @@
   margin-bottom: 20px;
   border: solid 1px #cccccc;
 }
+
+.contents h1, .contents h2, .contents h3, .contents h4 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+
+.level2 {
+  margin-bottom: 25px;
+}
+
 

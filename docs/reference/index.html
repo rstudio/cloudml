@@ -65,6 +65,9 @@
       <a href="../articles/training.html">Training with CloudML</a>
     </li>
     <li>
+      <a href="../articles/training.html">Deploying Models</a>
+    </li>
+    <li>
       <a href="../articles/tuning.html">Hyperparameter Tuning</a>
     </li>
     <li>
@@ -129,6 +132,26 @@
       </tbody><tbody>
         <tr>
           <th colspan="2">
+            <h2 id="section-prediction" class="hasAnchor"><a href="#section-prediction" class="anchor"></a>Prediction</h2>
+            <p class="section-desc"><p>Functions for deploying models and generating predictions</p></p>
+          </th>
+        </tr>
+        <tr>
+          <!--  -->
+          <td>
+            <p><code><a href="cloudml_deploy.html">cloudml_deploy</a></code> </p>
+          </td>
+          <td><p>Deploy SavedModel to CloudML</p></td>
+        </tr><tr>
+          <!--  -->
+          <td>
+            <p><code><a href="cloudml_predict.html">cloudml_predict</a></code> </p>
+          </td>
+          <td><p>Perform Prediction over a CloudML Model.</p></td>
+        </tr>
+      </tbody><tbody>
+        <tr>
+          <th colspan="2">
             <h2 id="section-managing-jobs" class="hasAnchor"><a href="#section-managing-jobs" class="anchor"></a>Managing Jobs</h2>
             <p class="section-desc"><p>Functions for managing remote Cloud ML Jobs.</p></p>
           </th>
@@ -173,32 +196,6 @@
       </tbody><tbody>
         <tr>
           <th colspan="2">
-            <h2 id="section-google-cloud" class="hasAnchor"><a href="#section-google-cloud" class="anchor"></a>Google Cloud</h2>
-            <p class="section-desc"><p>Functions for interacting with Google Cloud SDK.</p></p>
-          </th>
-        </tr>
-        <tr>
-          <!--  -->
-          <td>
-            <p><code><a href="gcloud_install.html">gcloud_install</a></code> </p>
-          </td>
-          <td><p>Install the Google Cloud SDK</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="gcloud_init.html">gcloud_init</a></code> </p>
-          </td>
-          <td><p>Initialize the Google Cloud SDK</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="gcloud_terminal.html">gcloud_terminal</a></code> </p>
-          </td>
-          <td><p>Create an RStudio terminal with access to the Google Cloud SDK</p></td>
-        </tr>
-      </tbody><tbody>
-        <tr>
-          <th colspan="2">
             <h2 id="section-google-stroage" class="hasAnchor"><a href="#section-google-stroage" class="anchor"></a>Google Stroage</h2>
             <p class="section-desc"><p>Functions for interacting with Google Storage.</p></p>
           </th>
@@ -222,6 +219,32 @@
           </td>
           <td><p>Get a local path to the contents of Google Storage bucket</p></td>
         </tr>
+      </tbody><tbody>
+        <tr>
+          <th colspan="2">
+            <h2 id="section-google-cloud-sdk" class="hasAnchor"><a href="#section-google-cloud-sdk" class="anchor"></a>Google Cloud SDK</h2>
+            <p class="section-desc"><p>Functions for interacting with Google Cloud SDK.</p></p>
+          </th>
+        </tr>
+        <tr>
+          <!--  -->
+          <td>
+            <p><code><a href="gcloud_install.html">gcloud_install</a></code> </p>
+          </td>
+          <td><p>Install the Google Cloud SDK</p></td>
+        </tr><tr>
+          <!--  -->
+          <td>
+            <p><code><a href="gcloud_init.html">gcloud_init</a></code> </p>
+          </td>
+          <td><p>Initialize the Google Cloud SDK</p></td>
+        </tr><tr>
+          <!--  -->
+          <td>
+            <p><code><a href="gcloud_terminal.html">gcloud_terminal</a></code> </p>
+          </td>
+          <td><p>Create an RStudio terminal with access to the Google Cloud SDK</p></td>
+        </tr>
       </tbody>
       </table>
     </div>
@@ -231,9 +254,10 @@
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#section-training">Training</a></li>
+      <li><a href="#section-prediction">Prediction</a></li>
       <li><a href="#section-managing-jobs">Managing Jobs</a></li>
-      <li><a href="#section-google-cloud">Google Cloud</a></li>
       <li><a href="#section-google-stroage">Google Stroage</a></li>
+      <li><a href="#section-google-cloud-sdk">Google Cloud SDK</a></li>
     </ul>
   </div>
 </div>
