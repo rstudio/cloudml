@@ -129,3 +129,20 @@ gs_local_dir <- function(url, local_dir = "gs", echo = FALSE) {
 is_gs_uri <- function(file) {
   is.character(file) && grepl("^gs://.+$", file)
 }
+
+gs_ensure_storage <- function(gcloud) {
+  storage <- getOption("cloudml.storage")
+  if (is.null(storage)) {
+    project <- gcloud[["project"]]
+    if (!gcloud_project_has_bucket(project)) {
+      gcloud_project_create_bucket(project)
+    }
+    storage <- file.path(gcloud_project_bucket(project), "r-cloudml")
+  }
+
+  storage
+}
+
+gs_bucket_from_gs_uri <- function(uri) {
+  paste0("gs://", strsplit(sub("gs://", "", uri), "/")[[1]][[1]])
+}
