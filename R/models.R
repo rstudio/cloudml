@@ -2,16 +2,15 @@ cloudml_model_exists <- function(gcloud, name) {
 
   arguments <- (MLArgumentsBuilder(gcloud)
                 ("models")
-                ("list"))
+                ("list")
+                ("--format=json"))
 
   output <- gcloud_exec(args = arguments())
   pasted <- paste(output$stdout, collapse = "\n")
 
-  suppressWarnings({
-    output <- utils::read.table(pasted, header = TRUE, stringsAsFactors = FALSE)
-  })
+  output_parsed <- jsonlite::fromJSON(pasted)
 
-  name %in% output$NAME
+  !is.null(output_parsed$name) && name %in% basename(output_parsed$name)
 }
 
 #' Deploy SavedModel to CloudML
