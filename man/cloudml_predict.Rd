@@ -4,9 +4,12 @@
 \alias{cloudml_predict}
 \title{Perform Prediction over a CloudML Model.}
 \usage{
-cloudml_predict(input, name = NULL, version = NULL, gcloud = NULL)
+cloudml_predict(instances, name = NULL, version = NULL, gcloud = NULL)
 }
 \arguments{
+\item{instances}{A list of instances to be predicted. While predicting
+a single instance, list wrapping this single instance is still expected.}
+
 \item{name}{The name for this model. Defaults to the current directory
 name.}
 
