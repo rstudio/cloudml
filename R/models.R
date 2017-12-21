@@ -8,7 +8,7 @@ cloudml_model_exists <- function(gcloud, name) {
   pasted <- paste(output$stdout, collapse = "\n")
 
   suppressWarnings({
-    output <- readr::read_table2(pasted)
+    output <- utils::read.table(pasted, header = TRUE, stringsAsFactors = FALSE)
   })
 
   name %in% output$NAME
