@@ -35,7 +35,9 @@ The **cloudml** package provides an R interface to [Google Cloud Machine Learnin
 
 ### Google Cloud Account
 
-Before you can begin training models with CloudML you need to have a *Google Cloud Account*. If you don't already have an account you can create one at <https://console.cloud.google.com>.
+Before you can begin training models with CloudML you need to have a *Google Cloud Account*. If you don't already have an account you can create one at <https://console.cloud.google.com>. 
+
+If you are a new customer of Google Cloud you will receive a [12-month, $300 credit](https://cloud.google.com/free/docs/frequently-asked-questions#free-trial) that can be applied to your use of CloudML.
 
 ### Installation
 
