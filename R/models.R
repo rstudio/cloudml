@@ -2,16 +2,15 @@ cloudml_model_exists <- function(gcloud, name) {
 
   arguments <- (MLArgumentsBuilder(gcloud)
                 ("models")
-                ("list"))
+                ("list")
+                ("--format=json"))
 
   output <- gcloud_exec(args = arguments())
   pasted <- paste(output$stdout, collapse = "\n")
 
-  suppressWarnings({
-    output <- readr::read_table2(pasted)
-  })
+  output_parsed <- jsonlite::fromJSON(pasted)
 
-  name %in% output$NAME
+  !is.null(output_parsed$name) && name %in% basename(output_parsed$name)
 }
 
 #' Deploy SavedModel to CloudML
@@ -82,6 +81,8 @@ cloudml_deploy <- function(
 #'
 #' @inheritParams cloudml_train
 #'
+#' @param instances A list of instances to be predicted. While predicting
+#'   a single instance, list wrapping this single instance is still expected.
 #' @param name The name for this model. Defaults to the current directory
 #'   name.
 #' @param version The version for this model. Versions start with a letter and
@@ -92,7 +93,7 @@ cloudml_deploy <- function(
 #'
 #' @export
 cloudml_predict <- function(
-  input,
+  instances,
   name = NULL,
   version = NULL,
   gcloud = NULL) {
@@ -101,14 +102,22 @@ cloudml_predict <- function(
   if (is.null(name)) name <- default_name
   if (is.null(version)) version <- default_name
 
-  json_file <- tempfile(fileext = ".json")
-  jsonlite::write_json(input, json_file)
+  gcloud <- gcloud_config(gcloud)
+
+  # CloudML CLI does not expect valid JSON but rather a one line per JSON instance.
+  # See https://cloud.google.com/ml-engine/docs/online-predict#formatting_your_input_for_online_prediction
+
+  pseudo_json_file <- tempfile(fileext = ".json")
+  all_json <- lapply(instances, function(instance) {
+    as.character(jsonlite::toJSON(instance))
+  })
+  writeLines(paste(all_json, collapse = "\n"), pseudo_json_file)
 
   arguments <- (MLArgumentsBuilder(gcloud)
                 ("predict")
                 ("--model=%s", name)
                 ("--version=%s", as.character(version))
-                ("--json-instances=%s", json_file)
+                ("--json-instances=%s", pseudo_json_file)
                 ("--format=%s", "json"))
 
   output <- gcloud_exec(args = arguments())
