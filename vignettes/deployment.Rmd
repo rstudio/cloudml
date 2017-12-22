@@ -13,4 +13,80 @@ vignette: >
 knitr::opts_chunk$set(echo = TRUE, eval=FALSE)
 ```
 
-### Under Construction
+You can host your trained machine learning models in the cloud using the Cloud ML
+prediction service to infer target values for new data. This can improve performance
+and make your models easily available for others to consume. 
+
+## Exporting a SavedModel
+
+The Cloud ML prediction service makes use of models exported through the
+`export_savedmodel()` function which is available for the `tensorflow`, `keras` and
+`tfestimators` packages or any other tool that support the [tf.train.Saver](https://www.tensorflow.org/api_docs/python/tf/train/Saver) interface.
+
+For instance, we can define and export a simple model by running:
+
+```{r eval=F}
+library(tensorflow)
+library(cloudml)
+
+# define output folder
+model_dir <- tempfile()
+
+# define simple string-based tensor operations
+sess <- tf$Session()
+name <- tf$placeholder(tf$string)
+hello <- tf$string_join(inputs = c("Hello, ", name, "!"))
+
+# export as a savedmodel
+export_savedmodel(
+  sess,
+  model_dir,
+  inputs = list(name = name),
+  outputs = list(hello = hello))
+```
+
+```
+[1] "/var/folders/fz/v6wfsg2x1fb1rw4f6r0x4jwm0000gn/T//Rtmp9OCDeo/filee7ef3e841204/saved_model.pb"
+```
+
+## Deployment
+
+Deployment is performed through `cloudml_deploy()` which uses the same `gcloud`
+and `cloudml` configuration concepts used while training. We can
+train any exported model by running:
+
+```{r eval=F}
+cloudml_deploy(model_dir)
+```
+```
+Model created and available in https://console.cloud.google.com/mlengine/models/cloudml
+```
+
+Notice that models make use of unique names and versions which can be specified
+using the `name` and `version` parameters in `cloudml_deploy()`.
+
+## Prediction
+
+Once a model is deployed, predictions can be performed by providing a list of inputs into
+`cloudml_predict()`:
+
+```{r eval=F}
+cloudml_predict(
+  list(
+    list(name = "cloudml"),
+    list(name = "tensorflow")
+  )
+)
+```
+
+```
+$predictions
+               hello
+1    Hello, cloudml!
+2 Hello, tensorflow!
+```
+
+Similar to `cloudml_deploy()`, `cloudml_predict()` makes use of the same configuration
+concepts and `name` and `version` parameters.
+
+For additional settings and resources visit [Google Cloud Platform - Prediction Basics](https://cloud.google.com/ml-engine/docs/prediction-overview)
