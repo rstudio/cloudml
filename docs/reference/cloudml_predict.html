@@ -109,11 +109,16 @@
 <code>cloudml_deploy</code>.</p>
     
 
-    <pre class="usage"><span class='fu'>cloudml_predict</span>(<span class='no'>input</span>, <span class='kw'>name</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>version</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>gcloud</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
+    <pre class="usage"><span class='fu'>cloudml_predict</span>(<span class='no'>instances</span>, <span class='kw'>name</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>version</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>gcloud</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>instances</th>
+      <td><p>A list of instances to be predicted. While predicting
+a single instance, list wrapping this single instance is still expected.</p></td>
+    </tr>
     <tr>
       <th>name</th>
       <td><p>The name for this model. Defaults to the current directory

@@ -143,7 +143,31 @@
 <div class="figure">
 <img src="images/training-run.png" class="screenshot" width="730">
 </div>
-<p>Artifacts of your training run (e.g. saved models) are downloaded along with various run metrics and saved to the <code>runs</code> sub-directory of the working directory from which you submitted your training job.</p>
+<p>You can list all previous runs as a data frame using the <code>ls_runs()</code> function:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ls_runs</span>()</code></pre></div>
+<pre><code># A tibble: 6 x 34
+                            run_dir metric_loss metric_acc metric_val_loss metric_val_acc
+                              &lt;chr&gt;       &lt;dbl&gt;      &lt;dbl&gt;           &lt;dbl&gt;          &lt;dbl&gt;
+1 runs/cloudml_2017_12_15_182614794      0.0809     0.9763          0.0889         0.9786
+2 runs/cloudml_2017_12_14_183247626      0.0806     0.9770          0.0919         0.9773
+3 runs/cloudml_2017_12_14_144048138      0.0786     0.9772          0.0896         0.9777
+4 runs/cloudml_2017_12_14_143427111      0.0803     0.9771          0.0940         0.9760
+5 runs/cloudml_2017_12_14_124739611      0.0829     0.9766          0.0913         0.9782
+6 runs/cloudml_2017_12_14_124625505      0.0805     0.9765          0.0981         0.9766
+# ... with 29 more variables: flag_dropout1 &lt;dbl&gt;, flag_dropout2 &lt;dbl&gt;, samples &lt;int&gt;,
+#   validation_samples &lt;int&gt;, batch_size &lt;int&gt;, epochs &lt;int&gt;, epochs_completed &lt;int&gt;,
+#   metrics &lt;chr&gt;, model &lt;chr&gt;, loss_function &lt;chr&gt;, optimizer &lt;chr&gt;, learning_rate &lt;dbl&gt;,
+#   script &lt;chr&gt;, start &lt;dttm&gt;, end &lt;dttm&gt;, completed &lt;lgl&gt;, output &lt;chr&gt;, source_code &lt;chr&gt;,
+#   context &lt;chr&gt;, type &lt;chr&gt;, cloudml_console_url &lt;chr&gt;, cloudml_created &lt;dttm&gt;,
+#   cloudml_end &lt;dttm&gt;, cloudml_job &lt;chr&gt;, cloudml_log_url &lt;chr&gt;, cloudml_ml_units &lt;dbl&gt;,
+#   cloudml_scale_tier &lt;chr&gt;, cloudml_start &lt;dttm&gt;, cloudml_state &lt;chr&gt;</code></pre>
+<p>You can view run reports using the <code>view_run()</code> function:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># view the latest run</span>
+<span class="kw">view_run</span>()
+
+<span class="co"># view a specific run</span>
+<span class="kw">view_run</span>(<span class="st">"runs/cloudml_2017_12_15_182614794"</span>)</code></pre></div>
+<p>There are many tools available to list, filter, and compare training runs. For additional information see the documentation for the <a href="https://tensorflow.rstudio.com/tools/tfruns/articles/overview.html">tfruns package</a>.</p>
 </div>
 </div>
 <div id="training-with-a-gpu" class="section level3">

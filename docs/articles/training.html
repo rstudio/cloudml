@@ -86,18 +86,43 @@
     
     
 <div class="contents">
-<div id="cloudml-workflow" class="section level2">
+<div id="overview" class="section level2">
 <h2 class="hasAnchor">
-<a href="#cloudml-workflow" class="anchor"></a>CloudML Workflow</h2>
-<p>The basic steps described above are the essential components of working with CloudML. That said, there are many flexible options available for managing jobs, viewing results, and specifying the compute resources required for training. This section describes this functionality in more detail.</p>
-<div id="local-development" class="section level3">
-<h3 class="hasAnchor">
-<a href="#local-development" class="anchor"></a>Local Development</h3>
-<p>Working on a CloudML project always begins with developing a training script that runs on your local machine. This will typically involve using some combination of the <a href="https://keras.rstudio.com/">keras</a>, <a href="https://tensorflow.rstudio.com/tfestimators">tfestimators</a>, and <a href="https://tensorflow.rstudio.com/">tensorflow</a> packages. Once your script is working the way you expect you are ready to submit it to CloudML.</p>
+<a href="#overview" class="anchor"></a>Overview</h2>
+<p>Training models with CloudML uses the following workflow:</p>
+<ul>
+<li><p>Develop and test an R training script locally</p></li>
+<li><p>Submit a job to CloudML to execute your script in the cloud</p></li>
+<li><p>Monitor and collect the results of the job</p></li>
+<li><p>Tune your model based on the results and repeat training as necessary</p></li>
+</ul>
+<p>This article describes this workflow in more detail.</p>
 </div>
-<div id="training-jobs" class="section level3">
+<div id="local-development" class="section level2">
+<h2 class="hasAnchor">
+<a href="#local-development" class="anchor"></a>Local Development</h2>
+<p>Working on a CloudML project always begins with developing a training script that runs on your local machine. This will typically involve using some combination of these packages:</p>
+<ul>
+<li><p><a href="https://keras.rstudio.com/">keras</a></p></li>
+<li><p><a href="https://tensorflow.rstudio.com/tfestimators">tfestimators</a></p></li>
+<li><p><a href="https://tensorflow.rstudio.com/">tensorflow</a></p></li>
+</ul>
+<div id="project-working-directory" class="section level3">
 <h3 class="hasAnchor">
-<a href="#training-jobs" class="anchor"></a>Training Jobs</h3>
+<a href="#project-working-directory" class="anchor"></a>Project / Working Directory</h3>
+<p>CloudML training applications consist of a single directory that in turn includes a training script. You can include additional script, configuration, data, or other files within your application simply by having them within the working directory where you execute <code><a href="../reference/cloudml_train.html">cloudml_train()</a></code> from. The most straightforward way to organize your work on a CloudML application is to use an <a href="https://support.rstudio.com/hc/en-us/articles/200526207-Using-Projects">RStudio Project</a>.</p>
+</div>
+<div id="local-vs-cloudml-data" class="section level3">
+<h3 class="hasAnchor">
+<a href="#local-vs-cloudml-data" class="anchor"></a>Local vs. CloudML Data</h3>
+<p>One thing you will almost certainly want to do during local development is work against a smaller subsample of your dataset. You can write a script that uses one set of data locally and another set of data on CloudML by using <a href="https://tensorflow.rstudio.com/tools/training_flags.html">training flags</a> along with the <a href="storage.html">Google Cloud Storage</a> functions provided by the <strong>cloudml</strong> package.</p>
+<p>See the article on <a href="storage.html">Google Cloud Storage</a> for a detailed example of using distinct data for local and CloudML execution contexts, as well as reading data from Google Cloud Storage buckets.</p>
+<p>Once your script is working the way you expect you are ready to submit it as a job to CloudML.</p>
+</div>
+</div>
+<div id="submitting-jobs" class="section level2">
+<h2 class="hasAnchor">
+<a href="#submitting-jobs" class="anchor"></a>Submitting Jobs</h2>
 <p>The core unit of work in CloudML is a job. A job consists of a training script and related files (e.g. other scripts, data files, ec.). To submit a job to CloudML you use the <code><a href="../reference/cloudml_train.html">cloudml_train()</a></code> function, passing it the name of the training script to run. For example:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">job &lt;-<span class="st"> </span><span class="kw"><a href="../reference/cloudml_train.html">cloudml_train</a></span>(<span class="st">"minst_mlp.R"</span>)</code></pre></div>
 <div class="bs-callout bs-callout-warning">
@@ -122,22 +147,22 @@ https://console.cloud.google.com/ml/jobs/cloudml_2017_12_18_203510175?project=ce
 
 View logs at:
 https://console.cloud.google.com/logs?resource=ml.googleapis.com%2Fjob_id%2Fcloudml_2017_12_18_203510175&amp;project=cedar-card-791</code></pre>
-<p>You can call <code><a href="../reference/job_collect.html">job_collect()</a></code> at any time to download the job:</p>
+<p>To interact with jobs you don’t need the <code>job</code> object returned from <code><a href="../reference/cloudml_train.html">cloudml_train()</a></code>. If you call <code><a href="../reference/job_status.html">job_status()</a></code> or with no arguments it will act on the most recently submitted job:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/job_status.html">job_status</a></span>()   <span class="co"># get status of last job</span></code></pre></div>
+</div>
+<div id="collecting-job-results" class="section level2">
+<h2 class="hasAnchor">
+<a href="#collecting-job-results" class="anchor"></a>Collecting Job Results</h2>
+<p>You can call <code><a href="../reference/job_collect.html">job_collect()</a></code> at any time to download a job:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/job_collect.html">job_collect</a></span>(job)</code></pre></div>
-<p>If it hasn’t already completed, R will block waiting for the job to complete and then perform the download. After the job has downloaded a report showing the results of the job will be automatically displayed.</p>
-<p>To interact with jobs you don’t need the <code>job</code> object returned from <code><a href="../reference/cloudml_train.html">cloudml_train()</a></code>. If you call <code><a href="../reference/job_status.html">job_status()</a></code> or <code><a href="../reference/job_collect.html">job_collect()</a></code> with no arguments they will act on the most recently submitted job:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/job_status.html">job_status</a></span>()   <span class="co"># get status of last job</span>
-<span class="kw"><a href="../reference/job_collect.html">job_collect</a></span>()  <span class="co"># collect last job</span></code></pre></div>
-<p>You can also list jobs and then reference them by job ID:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/job_list.html">job_list</a></span>()</code></pre></div>
-<pre><code>                        JOB_ID    STATUS             CREATED
-1 cloudml_2017_12_18_203510175 SUCCEEDED 2017-12-18 15:35:21
-2 cloudml_2017_12_18_202228264    FAILED 2017-12-18 15:22:39
-3 cloudml_2017_12_18_201607948 SUCCEEDED 2017-12-18 15:16:18
-4 cloudml_2017_12_18_132620918 SUCCEEDED 2017-12-18 08:26:30
-5 cloudml_2017_12_15_182614794 SUCCEEDED 2017-12-15 13:26:29
-6 cloudml_2017_12_14_183247626 SUCCEEDED 2017-12-14 13:33:04</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/job_collect.html">job_collect</a></span>(<span class="st">"cloudml_2017_12_18_203510175"</span>)</code></pre></div>
+<p>Note also that if you are using RStudio v1.1 or higher you’ll be given the to monitor and collect submitted jobs in the background using an RStudio terminal:</p>
+<div class="figure">
+<img src="images/rstudio-terminal.png" class="screenshot" width="730">
+</div>
+<p>In this case you don’t need to call <code><a href="../reference/job_collect.html">job_collect()</a></code> explicitly as this will be done from within the background terminal after the job completes.</p>
+<p>Once the job is complete it’s results will be downloaded and a report will be automatically displayed:</p>
+<div class="figure">
+<img src="images/training-run.png" class="screenshot" width="730">
 </div>
 <div id="training-runs" class="section level3">
 <h3 class="hasAnchor">
@@ -167,7 +192,35 @@ https://console.cloud.google.com/logs?resource=ml.googleapis.com%2Fjob_id%2Fclou
 
 <span class="co"># view a specific run</span>
 <span class="kw">view_run</span>(<span class="st">"runs/cloudml_2017_12_15_182614794"</span>)</code></pre></div>
+<p>There are many tools available to list, filter, and compare training runs. For additional information see the documentation for the <a href="https://tensorflow.rstudio.com/tools/tfruns/articles/overview.html">tfruns package</a>.</p>
 </div>
+</div>
+<div id="managing-jobs" class="section level2">
+<h2 class="hasAnchor">
+<a href="#managing-jobs" class="anchor"></a>Managing Jobs</h2>
+<p>You can enumerate previously submitted jobs using the <code><a href="../reference/job_list.html">job_list()</a></code> function:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/job_list.html">job_list</a></span>()</code></pre></div>
+<pre><code>                        JOB_ID    STATUS             CREATED
+1 cloudml_2017_12_18_203510175 SUCCEEDED 2017-12-18 15:35:21
+2 cloudml_2017_12_18_202228264    FAILED 2017-12-18 15:22:39
+3 cloudml_2017_12_18_201607948 SUCCEEDED 2017-12-18 15:16:18
+4 cloudml_2017_12_18_132620918 SUCCEEDED 2017-12-18 08:26:30
+5 cloudml_2017_12_15_182614794 SUCCEEDED 2017-12-15 13:26:29
+6 cloudml_2017_12_14_183247626 SUCCEEDED 2017-12-14 13:33:04</code></pre>
+<p>You can use the <code>JOB_ID</code> field to interact with any of these jobs:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/job_status.html">job_status</a></span>(<span class="st">"cloudml_2017_12_18_203510175"</span>)</code></pre></div>
+<p>The <code><a href="../reference/job_stream_logs.html">job_stream_logs()</a></code> function can be used to view the live log of a running job:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/job_stream_logs.html">job_stream_logs</a></span>(<span class="st">"cloudml_2017_12_18_203510175"</span>)</code></pre></div>
+<p>The <code><a href="../reference/job_cancel.html">job_cancel()</a></code> function can be used to cancel a running job:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/job_cancel.html">job_cancel</a></span>(<span class="st">"cloudml_2017_12_18_203510175"</span>)</code></pre></div>
+</div>
+<div id="tuning-your-application" class="section level2">
+<h2 class="hasAnchor">
+<a href="#tuning-your-application" class="anchor"></a>Tuning Your Application</h2>
+</div>
+<div id="learning-more" class="section level2">
+<h2 class="hasAnchor">
+<a href="#learning-more" class="anchor"></a>Learning More</h2>
 </div>
 </div>
   </div>
@@ -177,7 +230,13 @@ https://console.cloud.google.com/logs?resource=ml.googleapis.com%2Fjob_id%2Fclou
       <h2 class="hasAnchor">
 <a href="#tocnav" class="anchor"></a>Contents</h2>
       <ul class="nav nav-pills nav-stacked">
-<li><a href="#cloudml-workflow">CloudML Workflow</a></li>
+<li><a href="#overview">Overview</a></li>
+      <li><a href="#local-development">Local Development</a></li>
+      <li><a href="#submitting-jobs">Submitting Jobs</a></li>
+      <li><a href="#collecting-job-results">Collecting Job Results</a></li>
+      <li><a href="#managing-jobs">Managing Jobs</a></li>
+      <li><a href="#tuning-your-application">Tuning Your Application</a></li>
+      <li><a href="#learning-more">Learning More</a></li>
       </ul>
 </div>
       </div>

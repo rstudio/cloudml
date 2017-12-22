@@ -13,16 +13,43 @@ vignette: >
 knitr::opts_chunk$set(echo = TRUE, eval=FALSE)
 ```
 
-## CloudML Workflow
+## Overview
 
-The basic steps described above are the essential components of working with CloudML. That said, there are many flexible options available for managing jobs, viewing results, and specifying the compute resources required for training. This section describes this functionality in more detail.
+Training models with CloudML uses the following workflow:
 
-### Local Development
+- Develop and test an R training script locally
 
-Working on a CloudML project always begins with developing a training script that runs on your local machine. This will typically involve using some combination of the [keras](https://keras.rstudio.com/), [tfestimators](https://tensorflow.rstudio.com/tfestimators), and [tensorflow](https://tensorflow.rstudio.com/) packages. Once your script is working the way you expect you are ready to submit it to CloudML.
+- Submit a job to CloudML to execute your script in the cloud
 
+- Monitor and collect the results of the job
 
-### Training Jobs
+- Tune your model based on the results and repeat training as necessary
+
+This article describes this workflow in more detail.
+
+## Local Development
+
+Working on a CloudML project always begins with developing a training script that runs on your local machine. This will typically involve using some combination of these packages:
+
+- [keras](https://keras.rstudio.com/)
+
+- [tfestimators](https://tensorflow.rstudio.com/tfestimators)
+
+- [tensorflow](https://tensorflow.rstudio.com/) 
+
+### Project / Working Directory
+
+CloudML training applications consist of a single directory that in turn includes a training script. You can include additional script, configuration, data, or other files within your application simply by having them within the working directory where you execute `cloudml_train()` from. The most straightforward way to organize your work on a CloudML application is to use an [RStudio Project](https://support.rstudio.com/hc/en-us/articles/200526207-Using-Projects).
+
+### Local vs. CloudML Data
+
+One thing you will almost certainly want to do during local development is work against a smaller subsample of your dataset. You can write a script that uses one set of data locally and another set of data on CloudML by using [training flags](https://tensorflow.rstudio.com/tools/training_flags.html) along with the [Google Cloud Storage](storage.html) functions provided by the **cloudml** package.
+
+See the article on [Google Cloud Storage](storage.html) for a detailed example of using distinct data for local and CloudML execution contexts, as well as reading data from Google Cloud Storage buckets.
+
+Once your script is working the way you expect you are ready to submit it as a job to CloudML.
+
+## Submitting Jobs
 
 The core unit of work in CloudML is a job. A job consists of a training script and related files (e.g. other scripts, data files, ec.). To submit a job to CloudML you use the `cloudml_train()` function, passing it the name of the training script to run. For example:
 
@@ -59,39 +86,29 @@ View logs at:
 https://console.cloud.google.com/logs?resource=ml.googleapis.com%2Fjob_id%2Fcloudml_2017_12_18_203510175&project=cedar-card-791
 ```
 
-You can call `job_collect()` at any time to download the job:
+To interact with jobs you don't need the `job` object returned from `cloudml_train()`. If you call `job_status()` or with no arguments it will act on the most recently submitted job:
+
+```{r}
+job_status()   # get status of last job
+```
+
+## Collecting Job Results 
+
+You can call `job_collect()` at any time to download a job:
 
 ```{r}
 job_collect(job)
 ```
 
-If it hasn't already completed, R will block waiting for the job to complete and then perform the download. After the job has downloaded a report showing the results of the job will be automatically displayed.
+Note also that if you are using RStudio v1.1 or higher you'll be given the to monitor and collect submitted jobs in the background using an RStudio terminal:
 
-To interact with jobs you don't need the `job` object returned from `cloudml_train()`. If you call `job_status()` or `job_collect()` with no arguments they will act on the most recently submitted job:
+![](images/rstudio-terminal.png){.screenshot width=730px}
 
-```{r}
-job_status()   # get status of last job
-job_collect()  # collect last job
-```
+In this case you don't need to call `job_collect()` explicitly as this will be done from within the background terminal after the job completes.
 
-You can also list jobs and then reference them by job ID:
+Once the job is complete it's results will be downloaded and a report will be automatically displayed:
 
-```{r}
-job_list()
-```
-```
-                        JOB_ID    STATUS             CREATED
-1 cloudml_2017_12_18_203510175 SUCCEEDED 2017-12-18 15:35:21
-2 cloudml_2017_12_18_202228264    FAILED 2017-12-18 15:22:39
-3 cloudml_2017_12_18_201607948 SUCCEEDED 2017-12-18 15:16:18
-4 cloudml_2017_12_18_132620918 SUCCEEDED 2017-12-18 08:26:30
-5 cloudml_2017_12_15_182614794 SUCCEEDED 2017-12-15 13:26:29
-6 cloudml_2017_12_14_183247626 SUCCEEDED 2017-12-14 13:33:04
-```
-
-```{r}
-job_collect("cloudml_2017_12_18_203510175")
-```
+![](images/training-run.png){.screenshot width=730px}
 
 ### Training Runs
 
@@ -120,7 +137,6 @@ ls_runs()
 #   cloudml_end <dttm>, cloudml_job <chr>, cloudml_log_url <chr>, cloudml_ml_units <dbl>,
 #   cloudml_scale_tier <chr>, cloudml_start <dttm>, cloudml_state <chr>
 ```
-
 You can view run reports using the `view_run()` function:
 
 ```{r}
@@ -130,4 +146,57 @@ view_run()
 # view a specific run
 view_run("runs/cloudml_2017_12_15_182614794")
 ```
+
+There are many tools available to list, filter, and compare training runs. For additional information see the documentation for the [tfruns package](https://tensorflow.rstudio.com/tools/tfruns/articles/overview.html).
+
+
+## Managing Jobs 
+
+You can enumerate previously submitted jobs using the `job_list()` function:
+
+```{r}
+job_list()
+```
+```
+                        JOB_ID    STATUS             CREATED
+1 cloudml_2017_12_18_203510175 SUCCEEDED 2017-12-18 15:35:21
+2 cloudml_2017_12_18_202228264    FAILED 2017-12-18 15:22:39
+3 cloudml_2017_12_18_201607948 SUCCEEDED 2017-12-18 15:16:18
+4 cloudml_2017_12_18_132620918 SUCCEEDED 2017-12-18 08:26:30
+5 cloudml_2017_12_15_182614794 SUCCEEDED 2017-12-15 13:26:29
+6 cloudml_2017_12_14_183247626 SUCCEEDED 2017-12-14 13:33:04
+```
+
+You can use the `JOB_ID` field to interact with any of these jobs:
+
+```{r}
+job_status("cloudml_2017_12_18_203510175")
+```
+
+The `job_stream_logs()` function can be used to view the live log of a running job:
+
+```{r}
+job_stream_logs("cloudml_2017_12_18_203510175")
+```
+
+The `job_cancel()` function can be used to cancel a running job:
+
+```{r}
+job_cancel("cloudml_2017_12_18_203510175")
+```
+
+## Tuning Your Application
+
+
+
+
+
+
+## Learning More
+
+
+
+
+
+
 

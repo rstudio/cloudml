@@ -83,7 +83,40 @@ When the job is complete, training results can be collected back to your local s
 
 ![](images/training-run.png){.screenshot width=730px}
 
-Artifacts of your training run (e.g. saved models) are downloaded along with various run metrics and saved to the `runs` sub-directory of the working directory from which you submitted your training job.
+You can list all previous runs as a data frame using the `ls_runs()` function:
+
+```{r}
+ls_runs()
+```
+```
+# A tibble: 6 x 34
+                            run_dir metric_loss metric_acc metric_val_loss metric_val_acc
+                              <chr>       <dbl>      <dbl>           <dbl>          <dbl>
+1 runs/cloudml_2017_12_15_182614794      0.0809     0.9763          0.0889         0.9786
+2 runs/cloudml_2017_12_14_183247626      0.0806     0.9770          0.0919         0.9773
+3 runs/cloudml_2017_12_14_144048138      0.0786     0.9772          0.0896         0.9777
+4 runs/cloudml_2017_12_14_143427111      0.0803     0.9771          0.0940         0.9760
+5 runs/cloudml_2017_12_14_124739611      0.0829     0.9766          0.0913         0.9782
+6 runs/cloudml_2017_12_14_124625505      0.0805     0.9765          0.0981         0.9766
+# ... with 29 more variables: flag_dropout1 <dbl>, flag_dropout2 <dbl>, samples <int>,
+#   validation_samples <int>, batch_size <int>, epochs <int>, epochs_completed <int>,
+#   metrics <chr>, model <chr>, loss_function <chr>, optimizer <chr>, learning_rate <dbl>,
+#   script <chr>, start <dttm>, end <dttm>, completed <lgl>, output <chr>, source_code <chr>,
+#   context <chr>, type <chr>, cloudml_console_url <chr>, cloudml_created <dttm>,
+#   cloudml_end <dttm>, cloudml_job <chr>, cloudml_log_url <chr>, cloudml_ml_units <dbl>,
+#   cloudml_scale_tier <chr>, cloudml_start <dttm>, cloudml_state <chr>
+```
+You can view run reports using the `view_run()` function:
+
+```{r}
+# view the latest run
+view_run()
+
+# view a specific run
+view_run("runs/cloudml_2017_12_15_182614794")
+```
+
+There are many tools available to list, filter, and compare training runs. For additional information see the documentation for the [tfruns package](https://tensorflow.rstudio.com/tools/tfruns/articles/overview.html).
 
 ### Training with a GPU
 
