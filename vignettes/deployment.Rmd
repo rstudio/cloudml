@@ -21,9 +21,9 @@ and make your models easily available for others to consume.
 
 The Cloud ML prediction service makes use of models exported through the
 `export_savedmodel()` function which is available for the `tensorflow`, `keras` and
-`tfestimators` packages or others tools that support the [tf.train.Saver](https://www.tensorflow.org/api_docs/python/tf/train/Saver) interface.
+`tfestimators` packages or any other tool that support the [tf.train.Saver](https://www.tensorflow.org/api_docs/python/tf/train/Saver) interface.
 
-For instance, we can save a very simple model by running:
+For instance, we can define and export a simple model by running:
 
 ```{r eval=F}
 library(tensorflow)
@@ -49,11 +49,11 @@ export_savedmodel(
 [1] "/var/folders/fz/v6wfsg2x1fb1rw4f6r0x4jwm0000gn/T//Rtmp9OCDeo/filee7ef3e841204/saved_model.pb"
 ```
 
-## Deployment in Cloud ML
+## Deployment
 
 Deployment is performed through `cloudml_deploy()` which uses the same `gcloud`
-and `cloudml` configuration concepts used while training. Therefore, we can
-train this simple model by running:
+and `cloudml` configuration concepts used while training. We can
+train any exported model by running:
 
 ```{r eval=F}
 cloudml_deploy(model_dir)
@@ -65,7 +65,7 @@ Model created and available in https://console.cloud.google.com/mlengine/models/
 Notice that models make use of unique names and versions which can be specified
 using the `name` and `version` parameters in `cloudml_deploy()`.
 
-## Prediction in Cloud ML
+## Prediction
 
 Once a model is deployed, predictions can be performed by providing a list of inputs into
 `cloudml_predict()`:
