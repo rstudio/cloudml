@@ -199,9 +199,6 @@ FLAGS <- flags(
   flag_numeric("dropout1", 0.4),
   flag_integer("dense_units2", 128),
   flag_numeric("dropout2", 0.3),
-  flag_integer("epochs", 30),
-  flag_integer("batch_size", 128),
-  flag_numeric("learning_rate", 0.001)
 )
 ```
 
@@ -218,14 +215,14 @@ predictions <- input %>%
 
 model <- keras_model(input, predictions) %>% compile(
   loss = 'categorical_crossentropy',
-  optimizer = optimizer_rmsprop(lr = FLAGS$learning_rate),
+  optimizer = optimizer_rmsprop(lr = 0.001),
   metrics = c('accuracy')
 )
 
 history <- model %>% fit(
   x_train, y_train,
-  batch_size = FLAGS$batch_size,
-  epochs = FLAGS$epochs,
+  batch_size = 128,
+  epochs = 30,
   verbose = 1,
   validation_split = 0.2
 )
@@ -239,11 +236,22 @@ You can try out different flags by passing a named list of `flags` to the `cloud
 cloudml_train("minst_mlp.R", flags = list(dropout1 = 0.3, dropout2 = 0.2))
 ```
 
-These flags are recorded and become part of the the results recorded:
+These flags are passed to your script and are also retained as part of the results recorded for the training run.
 
-
+You can also more systematically try combinations of flags using CloudML [hyperparameter tuning](tuning.html). 
 
 ## Learning More
+
+The following articles provide additional documentation on training and deploying models with CloudML:
+
+* [Deploying Models](articles/training.html) describes how to deploy trained models and generate predictions from them.
+
+* [Hyperparameter Tuning](articles/tuning.html) explores how you can improve the performance of your models by running many trials with distinct hyperparameters (e.g. number and size of layers) to determine their optimal values.
+
+* [Google Cloud Storage](articles/storage.html) provides information on copying data between your local machine and Google Storage and also describes how to use data within Google Storage during training.
+
+* [CloudML Configuration](articles/configuration.html) covers available configuration options, including how to use various Google Cloud account profiles and customize the compute instances used for training.
+
 
 
 

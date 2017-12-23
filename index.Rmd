@@ -144,7 +144,7 @@ See the CloudML website for documentation on [available machine types](https://c
 
 ## Learning More
 
-To learn more about using CloudML with R, see the following guides:
+To learn more about using CloudML with R, see the following articles:
 
 * [Training with CloudML](articles/training.html) goes into additional depth on managing training jobs and their output.
 

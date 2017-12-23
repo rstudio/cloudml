@@ -223,9 +223,6 @@ FLAGS &lt;-<span class="st"> </span><span class="kw"><a href="http://www.rdocume
   <span class="kw"><a href="http://www.rdocumentation.org/packages/keras/topics/reexports">flag_numeric</a></span>(<span class="st">"dropout1"</span>, <span class="fl">0.4</span>),
   <span class="kw"><a href="http://www.rdocumentation.org/packages/keras/topics/reexports">flag_integer</a></span>(<span class="st">"dense_units2"</span>, <span class="dv">128</span>),
   <span class="kw"><a href="http://www.rdocumentation.org/packages/keras/topics/reexports">flag_numeric</a></span>(<span class="st">"dropout2"</span>, <span class="fl">0.3</span>),
-  <span class="kw"><a href="http://www.rdocumentation.org/packages/keras/topics/reexports">flag_integer</a></span>(<span class="st">"epochs"</span>, <span class="dv">30</span>),
-  <span class="kw"><a href="http://www.rdocumentation.org/packages/keras/topics/reexports">flag_integer</a></span>(<span class="st">"batch_size"</span>, <span class="dv">128</span>),
-  <span class="kw"><a href="http://www.rdocumentation.org/packages/keras/topics/reexports">flag_numeric</a></span>(<span class="st">"learning_rate"</span>, <span class="fl">0.001</span>)
 )</code></pre></div>
 <p>Then use the flags in a script as follows:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">input &lt;-<span class="st"> </span><span class="kw"><a href="http://www.rdocumentation.org/packages/keras/topics/layer_input">layer_input</a></span>(<span class="dt">shape =</span> <span class="kw">c</span>(<span class="dv">784</span>))
@@ -238,25 +235,33 @@ predictions &lt;-<span class="st"> </span>input <span class="op">%&gt;%</span><s
 
 model &lt;-<span class="st"> </span><span class="kw"><a href="http://www.rdocumentation.org/packages/keras/topics/keras_model">keras_model</a></span>(input, predictions) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw"><a href="http://www.rdocumentation.org/packages/keras/topics/compile">compile</a></span>(
   <span class="dt">loss =</span> <span class="st">'categorical_crossentropy'</span>,
-  <span class="dt">optimizer =</span> <span class="kw"><a href="http://www.rdocumentation.org/packages/keras/topics/optimizer_rmsprop">optimizer_rmsprop</a></span>(<span class="dt">lr =</span> FLAGS<span class="op">$</span>learning_rate),
+  <span class="dt">optimizer =</span> <span class="kw"><a href="http://www.rdocumentation.org/packages/keras/topics/optimizer_rmsprop">optimizer_rmsprop</a></span>(<span class="dt">lr =</span> <span class="fl">0.001</span>),
   <span class="dt">metrics =</span> <span class="kw">c</span>(<span class="st">'accuracy'</span>)
 )
 
 history &lt;-<span class="st"> </span>model <span class="op">%&gt;%</span><span class="st"> </span><span class="kw"><a href="http://www.rdocumentation.org/packages/keras/topics/fit">fit</a></span>(
   x_train, y_train,
-  <span class="dt">batch_size =</span> FLAGS<span class="op">$</span>batch_size,
-  <span class="dt">epochs =</span> FLAGS<span class="op">$</span>epochs,
+  <span class="dt">batch_size =</span> <span class="dv">128</span>,
+  <span class="dt">epochs =</span> <span class="dv">30</span>,
   <span class="dt">verbose =</span> <span class="dv">1</span>,
   <span class="dt">validation_split =</span> <span class="fl">0.2</span>
 )</code></pre></div>
 <p>Note that instead of literal values for the various hyperparameters we want to vary we now reference members of the FLAGS list returned from the <code><a href="http://www.rdocumentation.org/packages/keras/topics/reexports">flags()</a></code> function.</p>
 <p>You can try out different flags by passing a named list of <code>flags</code> to the <code><a href="../reference/cloudml_train.html">cloudml_train()</a></code> function. For example:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/cloudml_train.html">cloudml_train</a></span>(<span class="st">"minst_mlp.R"</span>, <span class="dt">flags =</span> <span class="kw">list</span>(<span class="dt">dropout1 =</span> <span class="fl">0.3</span>, <span class="dt">dropout2 =</span> <span class="fl">0.2</span>))</code></pre></div>
-<p>These flags are recorded and become part of the the results recorded:</p>
+<p>These flags are passed to your script and are also retained as part of the results recorded for the training run.</p>
+<p>You can also more systematically try combinations of flags using CloudML <a href="tuning.html">hyperparameter tuning</a>.</p>
 </div>
 <div id="learning-more" class="section level2">
 <h2 class="hasAnchor">
 <a href="#learning-more" class="anchor"></a>Learning More</h2>
+<p>The following articles provide additional documentation on training and deploying models with CloudML:</p>
+<ul>
+<li><p><a href="articles/training.html">Deploying Models</a> describes how to deploy trained models and generate predictions from them.</p></li>
+<li><p><a href="articles/tuning.html">Hyperparameter Tuning</a> explores how you can improve the performance of your models by running many trials with distinct hyperparameters (e.g. number and size of layers) to determine their optimal values.</p></li>
+<li><p><a href="articles/storage.html">Google Cloud Storage</a> provides information on copying data between your local machine and Google Storage and also describes how to use data within Google Storage during training.</p></li>
+<li><p><a href="articles/configuration.html">CloudML Configuration</a> covers available configuration options, including how to use various Google Cloud account profiles and customize the compute instances used for training.</p></li>
+</ul>
 </div>
 </div>
   </div>
