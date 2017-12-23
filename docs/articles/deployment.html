@@ -86,14 +86,69 @@
     
     
 <div class="contents">
-<div id="under-construction" class="section level3">
-<h3 class="hasAnchor">
-<a href="#under-construction" class="anchor"></a>Under Construction</h3>
+<p>You can host your trained machine learning models in the cloud using the Cloud ML prediction service to infer target values for new data. This can improve performance and make your models easily available for others to consume.</p>
+<div id="exporting-a-savedmodel" class="section level2">
+<h2 class="hasAnchor">
+<a href="#exporting-a-savedmodel" class="anchor"></a>Exporting a SavedModel</h2>
+<p>The Cloud ML prediction service makes use of models exported through the <code><a href="http://www.rdocumentation.org/packages/tensorflow/topics/export_savedmodel">export_savedmodel()</a></code> function which is available for the <code>tensorflow</code>, <code>keras</code> and <code>tfestimators</code> packages or any other tool that support the <a href="https://www.tensorflow.org/api_docs/python/tf/train/Saver">tf.train.Saver</a> interface.</p>
+<p>For instance, we can define and export a simple model by running:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(tensorflow)
+<span class="kw">library</span>(cloudml)
+
+<span class="co"># define output folder</span>
+model_dir &lt;-<span class="st"> </span><span class="kw">tempfile</span>()
+
+<span class="co"># define simple string-based tensor operations</span>
+sess &lt;-<span class="st"> </span>tf<span class="op">$</span><span class="kw">Session</span>()
+name &lt;-<span class="st"> </span>tf<span class="op">$</span><span class="kw">placeholder</span>(tf<span class="op">$</span>string)
+hello &lt;-<span class="st"> </span>tf<span class="op">$</span><span class="kw">string_join</span>(<span class="dt">inputs =</span> <span class="kw">c</span>(<span class="st">"Hello, "</span>, name, <span class="st">"!"</span>))
+
+<span class="co"># export as a savedmodel</span>
+<span class="kw"><a href="http://www.rdocumentation.org/packages/tensorflow/topics/export_savedmodel">export_savedmodel</a></span>(
+  sess,
+  model_dir,
+  <span class="dt">inputs =</span> <span class="kw">list</span>(<span class="dt">name =</span> name),
+  <span class="dt">outputs =</span> <span class="kw">list</span>(<span class="dt">hello =</span> hello))</code></pre></div>
+<pre><code>[1] "/var/folders/fz/v6wfsg2x1fb1rw4f6r0x4jwm0000gn/T//Rtmp9OCDeo/filee7ef3e841204/saved_model.pb"</code></pre>
+</div>
+<div id="deployment" class="section level2">
+<h2 class="hasAnchor">
+<a href="#deployment" class="anchor"></a>Deployment</h2>
+<p>Deployment is performed through <code><a href="../reference/cloudml_deploy.html">cloudml_deploy()</a></code> which uses the same <code>gcloud</code> and <code>cloudml</code> configuration concepts used while training. We can train any exported model by running:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/cloudml_deploy.html">cloudml_deploy</a></span>(model_dir)</code></pre></div>
+<pre><code>Model created and available in https://console.cloud.google.com/mlengine/models/cloudml</code></pre>
+<p>Notice that models make use of unique names and versions which can be specified using the <code>name</code> and <code>version</code> parameters in <code><a href="../reference/cloudml_deploy.html">cloudml_deploy()</a></code>.</p>
+</div>
+<div id="prediction" class="section level2">
+<h2 class="hasAnchor">
+<a href="#prediction" class="anchor"></a>Prediction</h2>
+<p>Once a model is deployed, predictions can be performed by providing a list of inputs into <code><a href="../reference/cloudml_predict.html">cloudml_predict()</a></code>:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/cloudml_predict.html">cloudml_predict</a></span>(
+  <span class="kw">list</span>(
+    <span class="kw">list</span>(<span class="dt">name =</span> <span class="st">"cloudml"</span>),
+    <span class="kw">list</span>(<span class="dt">name =</span> <span class="st">"tensorflow"</span>)
+  )
+)</code></pre></div>
+<pre><code>$predictions
+               hello
+1    Hello, cloudml!
+2 Hello, tensorflow!</code></pre>
+<p>Similar to <code><a href="../reference/cloudml_deploy.html">cloudml_deploy()</a></code>, <code><a href="../reference/cloudml_predict.html">cloudml_predict()</a></code> makes use of the same configuration concepts and <code>name</code> and <code>version</code> parameters.</p>
+<p>For additional settings and resources visit <a href="https://cloud.google.com/ml-engine/docs/prediction-overview">Google Cloud Platform - Prediction Basics</a></p>
 </div>
 </div>
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
+        <div id="tocnav">
+      <h2 class="hasAnchor">
+<a href="#tocnav" class="anchor"></a>Contents</h2>
+      <ul class="nav nav-pills nav-stacked">
+<li><a href="#exporting-a-savedmodel">Exporting a SavedModel</a></li>
+      <li><a href="#deployment">Deployment</a></li>
+      <li><a href="#prediction">Prediction</a></li>
+      </ul>
+</div>
       </div>
 
 </div>

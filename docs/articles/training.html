@@ -101,30 +101,25 @@
 <div id="local-development" class="section level2">
 <h2 class="hasAnchor">
 <a href="#local-development" class="anchor"></a>Local Development</h2>
-<p>Working on a CloudML project always begins with developing a training script that runs on your local machine. This will typically involve using some combination of these packages:</p>
+<p>Working on a CloudML project always begins with developing a training script that runs on your local machine. This will typically involve using one of these packages:</p>
 <ul>
-<li><p><a href="https://keras.rstudio.com/">keras</a></p></li>
-<li><p><a href="https://tensorflow.rstudio.com/tfestimators">tfestimators</a></p></li>
-<li><p><a href="https://tensorflow.rstudio.com/">tensorflow</a></p></li>
+<li><p><a href="https://keras.rstudio.com/">keras</a> — A high-level interface for neural networks, with a focus on enabling fast experimentation.</p></li>
+<li><p><a href="https://tensorflow.rstudio.com/tfestimators">tfestimators</a> — High-level implementations of common model types such as regressors and classifiers.</p></li>
+<li><p><a href="https://tensorflow.rstudio.com/">tensorflow</a> — Lower-level interface that provides full access to the TensorFlow computational graph.</p></li>
 </ul>
-<div id="project-working-directory" class="section level3">
-<h3 class="hasAnchor">
-<a href="#project-working-directory" class="anchor"></a>Project / Working Directory</h3>
-<p>CloudML training applications consist of a single directory that in turn includes a training script. You can include additional script, configuration, data, or other files within your application simply by having them within the working directory where you execute <code><a href="../reference/cloudml_train.html">cloudml_train()</a></code> from. The most straightforward way to organize your work on a CloudML application is to use an <a href="https://support.rstudio.com/hc/en-us/articles/200526207-Using-Projects">RStudio Project</a>.</p>
-</div>
-<div id="local-vs-cloudml-data" class="section level3">
-<h3 class="hasAnchor">
-<a href="#local-vs-cloudml-data" class="anchor"></a>Local vs. CloudML Data</h3>
-<p>One thing you will almost certainly want to do during local development is work against a smaller subsample of your dataset. You can write a script that uses one set of data locally and another set of data on CloudML by using <a href="https://tensorflow.rstudio.com/tools/training_flags.html">training flags</a> along with the <a href="storage.html">Google Cloud Storage</a> functions provided by the <strong>cloudml</strong> package.</p>
-<p>See the article on <a href="storage.html">Google Cloud Storage</a> for a detailed example of using distinct data for local and CloudML execution contexts, as well as reading data from Google Cloud Storage buckets.</p>
+<p>There are no special requirements for your training script, however there are a couple of things to keep in mind:</p>
+<ol style="list-style-type: decimal">
+<li><p>When you train a model on CloudML all of the files in the current working directory are uploaded. Therefore, your training script should be within the current working directory and references to other scripts, data files, etc. should be relative to the current working directory. As a result, the most straightforward way to organize your work on a CloudML application is to use an <a href="https://support.rstudio.com/hc/en-us/articles/200526207-Using-Projects">RStudio Project</a>.</p></li>
+<li><p>Your training data may be contained within the working directory, or it may be located within Google Cloud Storage. If your training data is large and/or located in cloud storage, the most straightforward workflow for development is to use a local subsample of your data. See the article on <a href="storage.html">Google Cloud Storage</a> for a detailed example of using distinct data for local and CloudML execution contexts, as well as reading data from Google Cloud Storage buckets.</p></li>
+</ol>
 <p>Once your script is working the way you expect you are ready to submit it as a job to CloudML.</p>
-</div>
 </div>
 <div id="submitting-jobs" class="section level2">
 <h2 class="hasAnchor">
 <a href="#submitting-jobs" class="anchor"></a>Submitting Jobs</h2>
 <p>The core unit of work in CloudML is a job. A job consists of a training script and related files (e.g. other scripts, data files, ec.). To submit a job to CloudML you use the <code><a href="../reference/cloudml_train.html">cloudml_train()</a></code> function, passing it the name of the training script to run. For example:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">job &lt;-<span class="st"> </span><span class="kw"><a href="../reference/cloudml_train.html">cloudml_train</a></span>(<span class="st">"minst_mlp.R"</span>)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(cloudml)
+job &lt;-<span class="st"> </span><span class="kw"><a href="../reference/cloudml_train.html">cloudml_train</a></span>(<span class="st">"minst_mlp.R"</span>)</code></pre></div>
 <div class="bs-callout bs-callout-warning">
 <p>Note that the CloudML training and job management functions described here all work relative to the current working directory of your R session, so you should always switch to the working directory containing your scripts before executing these functions.</p>
 </div>
@@ -154,7 +149,8 @@ https://console.cloud.google.com/logs?resource=ml.googleapis.com%2Fjob_id%2Fclou
 <h2 class="hasAnchor">
 <a href="#collecting-job-results" class="anchor"></a>Collecting Job Results</h2>
 <p>You can call <code><a href="../reference/job_collect.html">job_collect()</a></code> at any time to download a job:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/job_collect.html">job_collect</a></span>(job)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/job_collect.html">job_collect</a></span>()     <span class="co"># collect last job</span>
+<span class="kw"><a href="../reference/job_collect.html">job_collect</a></span>(job)  <span class="co"># collect specific job</span></code></pre></div>
 <p>Note also that if you are using RStudio v1.1 or higher you’ll be given the to monitor and collect submitted jobs in the background using an RStudio terminal:</p>
 <div class="figure">
 <img src="images/rstudio-terminal.png" class="screenshot" width="730">
@@ -217,6 +213,46 @@ https://console.cloud.google.com/logs?resource=ml.googleapis.com%2Fjob_id%2Fclou
 <div id="tuning-your-application" class="section level2">
 <h2 class="hasAnchor">
 <a href="#tuning-your-application" class="anchor"></a>Tuning Your Application</h2>
+<p>Tuning your application typically requires choosing and then optimizing a set of hyperparameters that influence your model’s performance. This could include the number and type of layers, units within layers, drop rates, regularization, etc.</p>
+<p>You can experiment with hyperparameters on an ad-hoc basis, but in general it’s better to explore them more systematnically. The key to doing this with CloudML is by defining <a href="https://tensorflow.rstudio.com/tools/training_flags.html">training flags</a> within your script and the parameterizing runs using those flags.</p>
+<p>For example, you might define the following training flags:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(keras)
+
+FLAGS &lt;-<span class="st"> </span><span class="kw"><a href="http://www.rdocumentation.org/packages/keras/topics/reexports">flags</a></span>(
+  <span class="kw"><a href="http://www.rdocumentation.org/packages/keras/topics/reexports">flag_integer</a></span>(<span class="st">"dense_units1"</span>, <span class="dv">128</span>),
+  <span class="kw"><a href="http://www.rdocumentation.org/packages/keras/topics/reexports">flag_numeric</a></span>(<span class="st">"dropout1"</span>, <span class="fl">0.4</span>),
+  <span class="kw"><a href="http://www.rdocumentation.org/packages/keras/topics/reexports">flag_integer</a></span>(<span class="st">"dense_units2"</span>, <span class="dv">128</span>),
+  <span class="kw"><a href="http://www.rdocumentation.org/packages/keras/topics/reexports">flag_numeric</a></span>(<span class="st">"dropout2"</span>, <span class="fl">0.3</span>),
+  <span class="kw"><a href="http://www.rdocumentation.org/packages/keras/topics/reexports">flag_integer</a></span>(<span class="st">"epochs"</span>, <span class="dv">30</span>),
+  <span class="kw"><a href="http://www.rdocumentation.org/packages/keras/topics/reexports">flag_integer</a></span>(<span class="st">"batch_size"</span>, <span class="dv">128</span>),
+  <span class="kw"><a href="http://www.rdocumentation.org/packages/keras/topics/reexports">flag_numeric</a></span>(<span class="st">"learning_rate"</span>, <span class="fl">0.001</span>)
+)</code></pre></div>
+<p>Then use the flags in a script as follows:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">input &lt;-<span class="st"> </span><span class="kw"><a href="http://www.rdocumentation.org/packages/keras/topics/layer_input">layer_input</a></span>(<span class="dt">shape =</span> <span class="kw">c</span>(<span class="dv">784</span>))
+predictions &lt;-<span class="st"> </span>input <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw"><a href="http://www.rdocumentation.org/packages/keras/topics/layer_dense">layer_dense</a></span>(<span class="dt">units =</span> FLAGS<span class="op">$</span>dense_units1, <span class="dt">activation =</span> <span class="st">'relu'</span>) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw"><a href="http://www.rdocumentation.org/packages/keras/topics/layer_dropout">layer_dropout</a></span>(<span class="dt">rate =</span> FLAGS<span class="op">$</span>dropout1) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw"><a href="http://www.rdocumentation.org/packages/keras/topics/layer_dense">layer_dense</a></span>(<span class="dt">units =</span> FLAGS<span class="op">$</span>dense_units2, <span class="dt">activation =</span> <span class="st">'relu'</span>) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw"><a href="http://www.rdocumentation.org/packages/keras/topics/layer_dropout">layer_dropout</a></span>(<span class="dt">rate =</span> FLAGS<span class="op">$</span>dropout2) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw"><a href="http://www.rdocumentation.org/packages/keras/topics/layer_dense">layer_dense</a></span>(<span class="dt">units =</span> <span class="dv">10</span>, <span class="dt">activation =</span> <span class="st">'softmax'</span>)
+
+model &lt;-<span class="st"> </span><span class="kw"><a href="http://www.rdocumentation.org/packages/keras/topics/keras_model">keras_model</a></span>(input, predictions) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw"><a href="http://www.rdocumentation.org/packages/keras/topics/compile">compile</a></span>(
+  <span class="dt">loss =</span> <span class="st">'categorical_crossentropy'</span>,
+  <span class="dt">optimizer =</span> <span class="kw"><a href="http://www.rdocumentation.org/packages/keras/topics/optimizer_rmsprop">optimizer_rmsprop</a></span>(<span class="dt">lr =</span> FLAGS<span class="op">$</span>learning_rate),
+  <span class="dt">metrics =</span> <span class="kw">c</span>(<span class="st">'accuracy'</span>)
+)
+
+history &lt;-<span class="st"> </span>model <span class="op">%&gt;%</span><span class="st"> </span><span class="kw"><a href="http://www.rdocumentation.org/packages/keras/topics/fit">fit</a></span>(
+  x_train, y_train,
+  <span class="dt">batch_size =</span> FLAGS<span class="op">$</span>batch_size,
+  <span class="dt">epochs =</span> FLAGS<span class="op">$</span>epochs,
+  <span class="dt">verbose =</span> <span class="dv">1</span>,
+  <span class="dt">validation_split =</span> <span class="fl">0.2</span>
+)</code></pre></div>
+<p>Note that instead of literal values for the various hyperparameters we want to vary we now reference members of the FLAGS list returned from the <code><a href="http://www.rdocumentation.org/packages/keras/topics/reexports">flags()</a></code> function.</p>
+<p>You can try out different flags by passing a named list of <code>flags</code> to the <code><a href="../reference/cloudml_train.html">cloudml_train()</a></code> function. For example:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/cloudml_train.html">cloudml_train</a></span>(<span class="st">"minst_mlp.R"</span>, <span class="dt">flags =</span> <span class="kw">list</span>(<span class="dt">dropout1 =</span> <span class="fl">0.3</span>, <span class="dt">dropout2 =</span> <span class="fl">0.2</span>))</code></pre></div>
+<p>These flags are recorded and become part of the the results recorded:</p>
 </div>
 <div id="learning-more" class="section level2">
 <h2 class="hasAnchor">

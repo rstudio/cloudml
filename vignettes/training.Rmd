@@ -29,23 +29,19 @@ This article describes this workflow in more detail.
 
 ## Local Development
 
-Working on a CloudML project always begins with developing a training script that runs on your local machine. This will typically involve using some combination of these packages:
+Working on a CloudML project always begins with developing a training script that runs on your local machine. This will typically involve using one of these packages:
 
-- [keras](https://keras.rstudio.com/)
+- [keras](https://keras.rstudio.com/) --- A high-level interface for neural networks, with a focus on enabling fast experimentation.
 
-- [tfestimators](https://tensorflow.rstudio.com/tfestimators)
+- [tfestimators](https://tensorflow.rstudio.com/tfestimators) --- High-level implementations of common model types such as regressors and classifiers.
 
-- [tensorflow](https://tensorflow.rstudio.com/) 
+- [tensorflow](https://tensorflow.rstudio.com/) --- Lower-level interface that provides full access to the TensorFlow computational graph.
 
-### Project / Working Directory
+There are no special requirements for your training script, however there are a couple of things to keep in mind:
 
-CloudML training applications consist of a single directory that in turn includes a training script. You can include additional script, configuration, data, or other files within your application simply by having them within the working directory where you execute `cloudml_train()` from. The most straightforward way to organize your work on a CloudML application is to use an [RStudio Project](https://support.rstudio.com/hc/en-us/articles/200526207-Using-Projects).
+1) When you train a model on CloudML all of the files in the current working directory are uploaded. Therefore, your training script should be within the current working directory and references to other scripts, data files, etc. should be relative to the current working directory. As a result, the most straightforward way to organize your work on a CloudML application is to use an [RStudio Project](https://support.rstudio.com/hc/en-us/articles/200526207-Using-Projects).
 
-### Local vs. CloudML Data
-
-One thing you will almost certainly want to do during local development is work against a smaller subsample of your dataset. You can write a script that uses one set of data locally and another set of data on CloudML by using [training flags](https://tensorflow.rstudio.com/tools/training_flags.html) along with the [Google Cloud Storage](storage.html) functions provided by the **cloudml** package.
-
-See the article on [Google Cloud Storage](storage.html) for a detailed example of using distinct data for local and CloudML execution contexts, as well as reading data from Google Cloud Storage buckets.
+2) Your training data may be contained within the working directory, or it may be located within Google Cloud Storage. If your training data is large and/or located in cloud storage, the most straightforward workflow for development is to use a local subsample of your data. See the article on [Google Cloud Storage](storage.html) for a detailed example of using distinct data for local and CloudML execution contexts, as well as reading data from Google Cloud Storage buckets.
 
 Once your script is working the way you expect you are ready to submit it as a job to CloudML.
 
@@ -54,6 +50,7 @@ Once your script is working the way you expect you are ready to submit it as a j
 The core unit of work in CloudML is a job. A job consists of a training script and related files (e.g. other scripts, data files, ec.). To submit a job to CloudML you use the `cloudml_train()` function, passing it the name of the training script to run. For example:
 
 ```{r}
+library(cloudml)
 job <- cloudml_train("minst_mlp.R")
 ```
 
@@ -97,7 +94,8 @@ job_status()   # get status of last job
 You can call `job_collect()` at any time to download a job:
 
 ```{r}
-job_collect(job)
+job_collect()     # collect last job
+job_collect(job)  # collect specific job
 ```
 
 Note also that if you are using RStudio v1.1 or higher you'll be given the to monitor and collect submitted jobs in the background using an RStudio terminal:
@@ -187,8 +185,61 @@ job_cancel("cloudml_2017_12_18_203510175")
 
 ## Tuning Your Application
 
+Tuning your application typically requires choosing and then optimizing a set of hyperparameters that influence your model's performance. This could include the number and type of layers, units within layers, drop rates, regularization, etc.
 
+You can experiment with hyperparameters on an ad-hoc basis, but in general it's better to explore them more systematnically. The key to doing this with CloudML is by defining [training flags](https://tensorflow.rstudio.com/tools/training_flags.html) within your script and the parameterizing runs using those flags. 
 
+For example, you might define the following training flags:
+
+```{r}
+library(keras)
+
+FLAGS <- flags(
+  flag_integer("dense_units1", 128),
+  flag_numeric("dropout1", 0.4),
+  flag_integer("dense_units2", 128),
+  flag_numeric("dropout2", 0.3),
+  flag_integer("epochs", 30),
+  flag_integer("batch_size", 128),
+  flag_numeric("learning_rate", 0.001)
+)
+```
+
+Then use the flags in a script as follows:
+
+```{r}
+input <- layer_input(shape = c(784))
+predictions <- input %>% 
+  layer_dense(units = FLAGS$dense_units1, activation = 'relu') %>%
+  layer_dropout(rate = FLAGS$dropout1) %>%
+  layer_dense(units = FLAGS$dense_units2, activation = 'relu') %>%
+  layer_dropout(rate = FLAGS$dropout2) %>%
+  layer_dense(units = 10, activation = 'softmax')
+
+model <- keras_model(input, predictions) %>% compile(
+  loss = 'categorical_crossentropy',
+  optimizer = optimizer_rmsprop(lr = FLAGS$learning_rate),
+  metrics = c('accuracy')
+)
+
+history <- model %>% fit(
+  x_train, y_train,
+  batch_size = FLAGS$batch_size,
+  epochs = FLAGS$epochs,
+  verbose = 1,
+  validation_split = 0.2
+)
+```
+
+Note that instead of literal values for the various hyperparameters we want to vary we now reference members of the FLAGS list returned from the `flags()` function.
+
+You can try out different flags by passing a named list of `flags` to the `cloudml_train()` function. For example:
+
+```{r}
+cloudml_train("minst_mlp.R", flags = list(dropout1 = 0.3, dropout2 = 0.2))
+```
+
+These flags are recorded and become part of the the results recorded:
 
 
 
