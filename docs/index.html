@@ -97,6 +97,7 @@
 <li><p>Hyperparameter tuning to optmize key attributes of model architectures in order to maximize predictive accuracy.</p></li>
 <li><p>Deployment of trained models to the Google global prediction platform that can support thousands of users and TBs of data.</p></li>
 </ul>
+<p>CloudML is a managed service where you pay only for the hardware resources that you use. Prices vary depending on configuration (e.g. CPU vs. GPU vs. multiple GPUs). See <a href="https://cloud.google.com/ml-engine/pricing" class="uri">https://cloud.google.com/ml-engine/pricing</a> for additional details.</p>
 <div style="height: 25px;">
 
 </div>
@@ -131,6 +132,9 @@
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(cloudml)
 <span class="kw"><a href="reference/cloudml_train.html">cloudml_train</a></span>(<span class="st">"train.R"</span>)</code></pre></div>
 <p>All of the files within the current working directory will be bundled up and sent along with the script to CloudML.</p>
+<div class="bs-callout bs-callout-warning">
+<p>Note that the very first time you submit a job to CloudML the various packages required to run your script will be compiled from source. This will make the execution time of the job considerably longer that you might expect. It’s only the first job that incurs this overhead though (since the package installations are cached), and subsequent jobs will run more quickly.</p>
+</div>
 <p>If you are using <a href="https://www.rstudio.com/products/rstudio/download/">RStudio v1.1</a> or higher, then the CloudML training job is monitored (and it’s results collected) using a background terminal:</p>
 <div class="figure">
 <img src="images/rstudio-terminal.png" class="screenshot" width="730">

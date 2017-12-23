@@ -96,7 +96,7 @@
 <li><p>Monitor and collect the results of the job</p></li>
 <li><p>Tune your model based on the results and repeat training as necessary</p></li>
 </ul>
-<p>This article describes this workflow in more detail.</p>
+<p>CloudML is a managed service where you pay only for the hardware resources that you use. Prices vary depending on configuration (e.g. CPU vs. GPU vs. multiple GPUs). See <a href="https://cloud.google.com/ml-engine/pricing" class="uri">https://cloud.google.com/ml-engine/pricing</a> for additional details.</p>
 </div>
 <div id="local-development" class="section level2">
 <h2 class="hasAnchor">
@@ -109,7 +109,7 @@
 </ul>
 <p>There are no special requirements for your training script, however there are a couple of things to keep in mind:</p>
 <ol style="list-style-type: decimal">
-<li><p>When you train a model on CloudML all of the files in the current working directory are uploaded. Therefore, your training script should be within the current working directory and references to other scripts, data files, etc. should be relative to the current working directory. As a result, the most straightforward way to organize your work on a CloudML application is to use an <a href="https://support.rstudio.com/hc/en-us/articles/200526207-Using-Projects">RStudio Project</a>.</p></li>
+<li><p>When you train a model on CloudML all of the files in the current working directory are uploaded. Therefore, your training script should be within the current working directory and references to other scripts, data files, etc. should be relative to the current working directory. The most straightforward way to organize your work on a CloudML application is to use an <a href="https://support.rstudio.com/hc/en-us/articles/200526207-Using-Projects">RStudio Project</a>.</p></li>
 <li><p>Your training data may be contained within the working directory, or it may be located within Google Cloud Storage. If your training data is large and/or located in cloud storage, the most straightforward workflow for development is to use a local subsample of your data. See the article on <a href="storage.html">Google Cloud Storage</a> for a detailed example of using distinct data for local and CloudML execution contexts, as well as reading data from Google Cloud Storage buckets.</p></li>
 </ol>
 <p>Once your script is working the way you expect you are ready to submit it as a job to CloudML.</p>
@@ -117,11 +117,11 @@
 <div id="submitting-jobs" class="section level2">
 <h2 class="hasAnchor">
 <a href="#submitting-jobs" class="anchor"></a>Submitting Jobs</h2>
-<p>The core unit of work in CloudML is a job. A job consists of a training script and related files (e.g. other scripts, data files, ec.). To submit a job to CloudML you use the <code><a href="../reference/cloudml_train.html">cloudml_train()</a></code> function, passing it the name of the training script to run. For example:</p>
+<p>The core unit of work in CloudML is a job. A job consists of a training script and related files (e.g. other scripts, data files, etc. within the working directory). To submit a job to CloudML you use the <code><a href="../reference/cloudml_train.html">cloudml_train()</a></code> function, passing it the name of the training script to run. For example:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(cloudml)
 job &lt;-<span class="st"> </span><span class="kw"><a href="../reference/cloudml_train.html">cloudml_train</a></span>(<span class="st">"minst_mlp.R"</span>)</code></pre></div>
 <div class="bs-callout bs-callout-warning">
-<p>Note that the CloudML training and job management functions described here all work relative to the current working directory of your R session, so you should always switch to the working directory containing your scripts before executing these functions.</p>
+<p>Note that the very first time you submit a job to CloudML the various packages required to run your script will be compiled from source. This will make the execution time of the job considerably longer that you might expect. It’s only the first job that incurs this overhead though (since the package installations are cached), and subsequent jobs will run more quickly.</p>
 </div>
 <p>The <code><a href="../reference/cloudml_train.html">cloudml_train()</a></code> function returns a <code>job</code> object. This is a reference to the training job which you can use later to check it’s status, collect it’s output, etc. For example:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/job_status.html">job_status</a></span>(job)</code></pre></div>
@@ -252,6 +252,18 @@ history &lt;-<span class="st"> </span>model <span class="op">%&gt;%</span><span 
 <p>These flags are passed to your script and are also retained as part of the results recorded for the training run.</p>
 <p>You can also more systematically try combinations of flags using CloudML <a href="tuning.html">hyperparameter tuning</a>.</p>
 </div>
+<div id="training-with-a-gpu" class="section level2">
+<h2 class="hasAnchor">
+<a href="#training-with-a-gpu" class="anchor"></a>Training with a GPU</h2>
+<p>By default, CloudML utilizes “standard” CPU-based instances suitable for training simple models with small to moderate datasets. You can request the use of other machine types, including ones with GPUs, using the <code>master_type</code> parameter of <code><a href="../reference/cloudml_train.html">cloudml_train()</a></code>.</p>
+<p>For example, the following would train the same model as above but with a <a href="http://www.nvidia.com/object/tesla-k80.html">Tesla K80 GPU</a>:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/cloudml_train.html">cloudml_train</a></span>(<span class="st">"train.R"</span>, <span class="dt">master_type =</span> <span class="st">"standard_gpu"</span>)</code></pre></div>
+<p>To train using a <a href="http://www.nvidia.com/object/tesla-p100.html">Tesla P100 GPU</a> you would specify <code>"standard_p100"</code>:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/cloudml_train.html">cloudml_train</a></span>(<span class="st">"train.R"</span>, <span class="dt">master_type =</span> <span class="st">"standard_p100"</span>)</code></pre></div>
+<p>To train on a machine with 4 Tesla P100 GPU’s you would specify <code>"complex_model_m_p100"</code>:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/cloudml_train.html">cloudml_train</a></span>(<span class="st">"train.R"</span>, <span class="dt">master_type =</span> <span class="st">"complex_model_m_p100"</span>)</code></pre></div>
+<p>See the CloudML website for documentation on <a href="https://cloud.google.com/ml-engine/docs/training-overview#machine_type_table">available machine types</a>. Also note that GPU instances can be considerably more expensive that CPU ones! See the documentation on <a href="https://cloud.google.com/ml-engine/pricing">CloudML Pricing</a> for details.</p>
+</div>
 <div id="learning-more" class="section level2">
 <h2 class="hasAnchor">
 <a href="#learning-more" class="anchor"></a>Learning More</h2>
@@ -277,6 +289,7 @@ history &lt;-<span class="st"> </span>model <span class="op">%&gt;%</span><span 
       <li><a href="#collecting-job-results">Collecting Job Results</a></li>
       <li><a href="#managing-jobs">Managing Jobs</a></li>
       <li><a href="#tuning-your-application">Tuning Your Application</a></li>
+      <li><a href="#training-with-a-gpu">Training with a GPU</a></li>
       <li><a href="#learning-more">Learning More</a></li>
       </ul>
 </div>

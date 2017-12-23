@@ -25,7 +25,7 @@ Training models with CloudML uses the following workflow:
 
 - Tune your model based on the results and repeat training as necessary
 
-This article describes this workflow in more detail.
+CloudML is a managed service where you pay only for the hardware resources that you use. Prices vary depending on configuration (e.g. CPU vs. GPU vs. multiple GPUs). See <https://cloud.google.com/ml-engine/pricing> for additional details.
 
 ## Local Development
 
@@ -39,7 +39,7 @@ Working on a CloudML project always begins with developing a training script tha
 
 There are no special requirements for your training script, however there are a couple of things to keep in mind:
 
-1) When you train a model on CloudML all of the files in the current working directory are uploaded. Therefore, your training script should be within the current working directory and references to other scripts, data files, etc. should be relative to the current working directory. As a result, the most straightforward way to organize your work on a CloudML application is to use an [RStudio Project](https://support.rstudio.com/hc/en-us/articles/200526207-Using-Projects).
+1) When you train a model on CloudML all of the files in the current working directory are uploaded. Therefore, your training script should be within the current working directory and references to other scripts, data files, etc. should be relative to the current working directory. The most straightforward way to organize your work on a CloudML application is to use an [RStudio Project](https://support.rstudio.com/hc/en-us/articles/200526207-Using-Projects).
 
 2) Your training data may be contained within the working directory, or it may be located within Google Cloud Storage. If your training data is large and/or located in cloud storage, the most straightforward workflow for development is to use a local subsample of your data. See the article on [Google Cloud Storage](storage.html) for a detailed example of using distinct data for local and CloudML execution contexts, as well as reading data from Google Cloud Storage buckets.
 
@@ -47,7 +47,7 @@ Once your script is working the way you expect you are ready to submit it as a j
 
 ## Submitting Jobs
 
-The core unit of work in CloudML is a job. A job consists of a training script and related files (e.g. other scripts, data files, ec.). To submit a job to CloudML you use the `cloudml_train()` function, passing it the name of the training script to run. For example:
+The core unit of work in CloudML is a job. A job consists of a training script and related files (e.g. other scripts, data files, etc. within the working directory). To submit a job to CloudML you use the `cloudml_train()` function, passing it the name of the training script to run. For example:
 
 ```{r}
 library(cloudml)
@@ -55,7 +55,7 @@ job <- cloudml_train("minst_mlp.R")
 ```
 
 <div class="bs-callout bs-callout-warning">
-Note that the CloudML training and job management functions described here all work relative to the current working directory of your R session, so you should always switch to the working directory containing your scripts before executing these functions.
+Note that the very first time you submit a job to CloudML the various packages required to run your script will be compiled from source. This will make the execution time of the job considerably longer that you might expect. It's only the first job that incurs this overhead though (since the package installations are cached), and subsequent jobs will run more quickly. 
 </div>
 
 The `cloudml_train()` function returns a `job` object. This is a reference to the training job which you can use later to check it's status, collect it's output, etc. For example:
@@ -239,6 +239,30 @@ cloudml_train("minst_mlp.R", flags = list(dropout1 = 0.3, dropout2 = 0.2))
 These flags are passed to your script and are also retained as part of the results recorded for the training run.
 
 You can also more systematically try combinations of flags using CloudML [hyperparameter tuning](tuning.html). 
+
+## Training with a GPU
+
+By default, CloudML utilizes "standard" CPU-based instances suitable for training simple models with small to moderate datasets. You can request the use of other machine types, including ones with GPUs, using the `master_type` parameter of `cloudml_train()`. 
+
+For example, the following would train the same model as above but with a [Tesla K80 GPU](http://www.nvidia.com/object/tesla-k80.html):
+
+```{r}
+cloudml_train("train.R", master_type = "standard_gpu")
+```
+
+To train using a [Tesla P100 GPU](http://www.nvidia.com/object/tesla-p100.html) you would specify `"standard_p100"`:
+
+```{r}
+cloudml_train("train.R", master_type = "standard_p100")
+```
+
+To train on a machine with 4 Tesla P100 GPU's you would specify `"complex_model_m_p100"`:
+
+```{r}
+cloudml_train("train.R", master_type = "complex_model_m_p100")
+```
+
+See the CloudML website for documentation on [available machine types](https://cloud.google.com/ml-engine/docs/training-overview#machine_type_table). Also note that GPU instances can be considerably more expensive that CPU ones! See the documentation on [CloudML Pricing](https://cloud.google.com/ml-engine/pricing) for details.
 
 ## Learning More
 
