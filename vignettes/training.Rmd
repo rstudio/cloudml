@@ -100,13 +100,13 @@ job_collect(job)  # collect specific job
 
 Note also that if you are using RStudio v1.1 or higher you'll be given the to monitor and collect submitted jobs in the background using an RStudio terminal:
 
-![](images/rstudio-terminal.png){.screenshot width=730px}
+![](images/rstudio-terminal.png){.screenshot width=725px}
 
 In this case you don't need to call `job_collect()` explicitly as this will be done from within the background terminal after the job completes.
 
 Once the job is complete it's results will be downloaded and a report will be automatically displayed:
 
-![](images/training-run.png){.screenshot width=730px}
+![](images/training-run.png){.screenshot width=725px}
 
 ### Training Runs
 

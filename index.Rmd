@@ -81,13 +81,13 @@ Note that the very first time you submit a job to CloudML the various packages r
 
 If you are using [RStudio v1.1](https://www.rstudio.com/products/rstudio/download/) or higher, then the CloudML training job is monitored (and it's results collected) using a background terminal:
 
-![](images/rstudio-terminal.png){.screenshot width=730px}
+![](images/rstudio-terminal.png){.screenshot width=725px}
 
 #### Collecting Results
 
 When the job is complete, training results can be collected back to your local system (this is done automatically when monitoring the job using a background terminal in RStudio). A run report is displayed after the job is collected:
 
-![](images/training-run.png){.screenshot width=730px}
+![](images/training-run.png){.screenshot width=725px}
 
 You can list all previous runs as a data frame using the `ls_runs()` function:
 
