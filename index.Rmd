@@ -29,7 +29,7 @@ The **cloudml** package provides an R interface to [Google Cloud Machine Learnin
 
 * Deployment of trained models to the Google global prediction platform that can support thousands of users and TBs of data.
 
-CloudML is a managed service where you pay only for the hardware resources that you use. Prices vary depending on configuration (e.g. CPU vs. GPU vs. multiple GPUs). See <https://cloud.google.com/ml-engine/pricing> for additional details.
+CloudML is a managed service where you pay only for the hardware resources that you use. Prices vary depending on configuration (e.g. CPU vs. GPU vs. multiple GPUs). See <https://cloud.google.com/ml-engine/pricing> for additional details. 
 
 <div style="height: 25px;"></div>
 
@@ -39,7 +39,7 @@ CloudML is a managed service where you pay only for the hardware resources that 
 
 Before you can begin training models with CloudML you need to have a *Google Cloud Account*. If you don't already have an account you can create one at <https://console.cloud.google.com>. 
 
-If you are a new customer of Google Cloud you will receive a [12-month, $300 credit](https://cloud.google.com/free/docs/frequently-asked-questions#free-trial) that can be applied to your use of CloudML.
+If you are a new customer of Google Cloud you will receive a [12-month, $300 credit](https://cloud.google.com/free/docs/frequently-asked-questions#free-trial) that can be applied to your use of CloudML. In addition, Google is providing a \$200 credit for users of the R interface to CloudML (this credit applies to both new and existing customers). Use this link to [apply for the \$200 credit](https://goo.gl/mhQKHB).
 
 ### Installation
 
