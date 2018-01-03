@@ -6,8 +6,15 @@ vignette: >
   %\VignetteIndexEntry{Google Cloud Storage}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
+type: docs
+repo: https://github.com/rstudio/cloudml
+menu:
+  main:
+    name: "Google Cloud Storage"
+    identifier: "tools-cloudml-storage"
+    parent: "cloudml-top"
+    weight: 50
 ---
-
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE, eval=FALSE)

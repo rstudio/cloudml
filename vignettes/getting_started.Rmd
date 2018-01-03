@@ -1,21 +1,28 @@
 ---
-title: "R Interface to CloudML"
+title: "R Interface to Google CloudML"
 output: 
-  rmarkdown::html_vignette: 
-    readme: true
+  rmarkdown::html_vignette: default
 vignette: >
   %\VignetteIndexEntry{Getting Started}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
+type: docs
+repo: https://github.com/rstudio/cloudml
+menu:
+  main:
+    name: "Getting Started"
+    identifier: "tools-cloudml-overview"
+    parent: "cloudml-top"
+    weight: 10
+aliases:
+  - /tools/cloudml/
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE, eval=FALSE)
 ```
 
-[![Build Status](https://travis-ci.org/rstudio/cloudml.svg?branch=master)](https://travis-ci.org/rstudio/cloudml) [![CRAN_Status_Badge](https://www.r-pkg.org/badges/version/cloudml)](https://cran.r-project.org/package=cloudml)
-
-# R Interface to Google CloudML
+## Overview
 
 ![](images/cloudml.png){align=right width=200px style="margin-left: 10px;"}
 
@@ -33,15 +40,14 @@ CloudML is a managed service where you pay only for the hardware resources that 
 
 <div style="height: 25px;"></div>
 
-## Getting Started
 
-### Google Cloud Account
+## Google Cloud Account
 
 Before you can begin training models with CloudML you need to have a *Google Cloud Account*. If you don't already have an account you can create one at <https://console.cloud.google.com>. 
 
 If you are a new customer of Google Cloud you will receive a [12-month, $300 credit](https://cloud.google.com/free/docs/frequently-asked-questions#free-trial) that can be applied to your use of CloudML. In addition, Google is providing a \$200 credit for users of the R interface to CloudML (this credit applies to both new and existing customers). Use this link to [apply for the \$200 credit](https://goo.gl/mhQKHB).
 
-### Installation
+## Installation
 
 Start by installing the cloudml R package from GitHub as follows:
 
@@ -60,11 +66,11 @@ Note that in order to ensure that the **cloudml** package can find your installa
 
 Once you've completed these steps you are ready to train models with CloudML!
 
-### Training on CloudML
+## Training on CloudML
 
 To train a model on CloudML, first work the training script locally (perhaps with a smaller sample of your dataset). The script can contain arbitrary R code which trains and/or evaluates a model. Once you've confirmed that things work as expected, you can submit a CloudML job to perform training in the cloud.
 
-#### Submitting a Job
+### Submitting a Job
 
 To submit a job, call the `cloudml_train()` function, specifying the R script to execute for training:
 
@@ -83,7 +89,7 @@ If you are using [RStudio v1.1](https://www.rstudio.com/products/rstudio/downloa
 
 ![](images/rstudio-terminal.png){.screenshot width=725px}
 
-#### Collecting Results
+### Collecting Results
 
 When the job is complete, training results can be collected back to your local system (this is done automatically when monitoring the job using a background terminal in RStudio). A run report is displayed after the job is collected:
 
@@ -124,7 +130,7 @@ view_run("runs/cloudml_2017_12_15_182614794")
 
 There are many tools available to list, filter, and compare training runs. For additional information see the documentation for the [tfruns package](https://tensorflow.rstudio.com/tools/tfruns/articles/overview.html).
 
-### Training with a GPU
+## Training with a GPU
 
 By default, CloudML utilizes "standard" CPU-based instances suitable for training simple models with small to moderate datasets. You can request the use of other machine types, including ones with GPUs, using the `master_type` parameter of `cloudml_train()`. 
 
@@ -152,13 +158,13 @@ See the CloudML website for documentation on [available machine types](https://c
 
 To learn more about using CloudML with R, see the following articles:
 
-* [Training with CloudML](articles/training.html) goes into additional depth on managing training jobs and their output.
+* [Training with CloudML](training.html) goes into additional depth on managing training jobs and their output.
 
-* [Deploying Models](articles/training.html) describes how to deploy trained models and generate predictions from them.
+* [Deploying Models](deployment.html) describes how to deploy trained models and generate predictions from them.
 
-* [Hyperparameter Tuning](articles/tuning.html) explores how you can improve the performance of your models by running many trials with distinct hyperparameters (e.g. number and size of layers) to determine their optimal values.
+* [Hyperparameter Tuning](tuning.html) explores how you can improve the performance of your models by running many trials with distinct hyperparameters (e.g. number and size of layers) to determine their optimal values.
 
-* [Google Cloud Storage](articles/storage.html) provides information on copying data between your local machine and Google Storage and also describes how to use data within Google Storage during training.
+* [Google Cloud Storage](storage.html) provides information on copying data between your local machine and Google Storage and also describes how to use data within Google Storage during training.
 
 
 

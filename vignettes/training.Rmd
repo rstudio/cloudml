@@ -6,6 +6,14 @@ vignette: >
   %\VignetteIndexEntry{Training with CloudML}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
+type: docs
+repo: https://github.com/rstudio/cloudml
+menu:
+  main:
+    name: "Training with CloudML"
+    identifier: "tools-cloudml-training"
+    parent: "cloudml-top"
+    weight: 20
 ---
 
 
@@ -285,11 +293,11 @@ Note that `trainingInput` is used as the top level key in the config file (this 
 
 The following articles provide additional documentation on training and deploying models with CloudML:
 
-* [Deploying Models](articles/training.html) describes how to deploy trained models and generate predictions from them.
+* [Deploying Models](deployment.html) describes how to deploy trained models and generate predictions from them.
 
-* [Hyperparameter Tuning](articles/tuning.html) explores how you can improve the performance of your models by running many trials with distinct hyperparameters (e.g. number and size of layers) to determine their optimal values.
+* [Hyperparameter Tuning](tuning.html) explores how you can improve the performance of your models by running many trials with distinct hyperparameters (e.g. number and size of layers) to determine their optimal values.
 
-* [Google Cloud Storage](articles/storage.html) provides information on copying data between your local machine and Google Storage and also describes how to use data within Google Storage during training.
+* [Google Cloud Storage](storage.html) provides information on copying data between your local machine and Google Storage and also describes how to use data within Google Storage during training.
 
 
 

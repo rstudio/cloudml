@@ -6,6 +6,14 @@ vignette: >
   %\VignetteIndexEntry{Deploying Models}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
+type: docs
+repo: https://github.com/rstudio/cloudml
+menu:
+  main:
+    name: "Deploying Models"
+    identifier: "tools-cloudml-deployment"
+    parent: "cloudml-top"
+    weight: 30
 ---
 
 
