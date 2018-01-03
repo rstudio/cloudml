@@ -50,7 +50,8 @@ Copying file://savedmodel/variables/variables.data-00000-of-00001 [Content-Type=
 Copying file://savedmodel/saved_model.pb [Content-Type=application/octet-stream]...
 Copying file://savedmodel/variables/variables.index [Content-Type=application/octet-stream]...
 / [3/3 files][  1.9 MiB/  1.9 MiB] 100% Done                                    
-Operation completed over 3 objects/1.9 MiB.                                      
+Operation completed over 3 objects/1.9 MiB.
+
 Model created and available in https://console.cloud.google.com/mlengine/models/keras_mnist
 ```
 
@@ -62,19 +63,26 @@ using the `name` and `version` parameters in `cloudml_deploy()`.
 Once a model is deployed, predictions can be performed by providing a list of inputs into
 `cloudml_predict()`:
 
-```{r eval=F}
-mnist_image <- as.vector(dataset_mnist()$train$x[1,,])
+```{r eval=FALSE}
+mnist_image <- keras::dataset_mnist()$train$x[1,,]
+grid::grid.raster(mnist_image / 255)
+```
+
+![](images/deploy-keras-mnist-image.png)
+
+```{r}
 cloudml_predict(
-  list(mnist_image),
+  list(
+    as.vector(t(mnist_image))
+  ),
   name = "keras_mnist",
 )
 ```
 
 ```
 $predictions
-               hello
-1    Hello, cloudml!
-2 Hello, tensorflow!
+                       dense_3
+1 0, 0, 0, 0, 0, 1, 0, 0, 0, 0
 ```
 
 For additional information visit [Google Cloud Platform - Prediction Basics](https://cloud.google.com/ml-engine/docs/prediction-overview)
