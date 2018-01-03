@@ -36,6 +36,7 @@ cloudml_train <- function(file = "train.R",
 
   gcloud <- gcloud_config(gcloud)
   cloudml <- cloudml_config(cloudml)
+  gs_ensure_account(gcloud)
 
   if (!is.null(master_type)) cloudml$trainingInput$masterType <- master_type
   if (!is.null(cloudml$trainingInput$masterType) &&

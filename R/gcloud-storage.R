@@ -143,6 +143,26 @@ gs_ensure_storage <- function(gcloud) {
   storage
 }
 
+gs_ensure_account <- function(gcloud) {
+  if (!is.null(gcloud) && !is.null(gcloud$account)) {
+    account <- gexec(
+      gcloud_binary(),
+      c("config", "get-value", "account"),
+      echo = FALSE,
+      throws = FALSE
+    )$stdout
+
+    if (!identical(account, gcloud$account)) {
+      gexec(
+        gcloud_binary(),
+        c("config", "set", "account", gcloud$account),
+        echo = FALSE,
+        throws = FALSE
+      )
+    }
+  }
+}
+
 gs_bucket_from_gs_uri <- function(uri) {
   paste0("gs://", strsplit(sub("gs://", "", uri), "/")[[1]][[1]])
 }
