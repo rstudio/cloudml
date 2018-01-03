@@ -20,6 +20,8 @@ x_test <- x_test / 255
 y_train <- to_categorical(y_train, 10)
 y_test <- to_categorical(y_test, 10)
 
+backend()$set_learning_phase(TRUE)
+
 model <- keras_model_sequential()
 
 model %>%
