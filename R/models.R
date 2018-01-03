@@ -22,25 +22,19 @@ cloudml_model_exists <- function(gcloud, name) {
 #' @param export_dir_base A string containing a directory containing an
 #'   exported SavedModels. Consider using \code{tensorflow::export_savedmodel()}
 #'   to export this SavedModel.
-#' @param name The name for this model. Defaults to the current directory
-#'   name.
+#' @param name The name for this model (required)
 #' @param version The version for this model. Versions start with a letter and
-#'   contain only letters, numbers and underscores. Defaults to the current
-#'   directory name.
-#' @param cloudml A list, \code{YAML} or \code{JSON} configuration file as described
-#'   \url{https://cloud.google.com/ml-engine/reference/rest/v1/projects.jobs}.
+#'   contain only letters, numbers and underscores. Defaults to name_1
+#'
+#' @seealso [cloudml_predict()]
 #'
 #' @export
 cloudml_deploy <- function(
   export_dir_base,
-  name =  NULL,
-  version = NULL,
+  name,
+  version = paste0(name, "_1"),
   cloudml = NULL,
   gcloud = NULL) {
-
-  default_name <- basename(normalizePath(getwd(), winslash = "/"))
-  if (is.null(name)) name <- default_name
-  if (is.null(version)) version <- default_name
 
   cloudml <- cloudml_config(cloudml)
   gcloud <- gcloud_config(gcloud)
@@ -77,25 +71,20 @@ cloudml_deploy <- function(
 #' Perform Prediction over a CloudML Model.
 #'
 #' Perform online prediction over a CloudML model, usually, created using
-#' \code{cloudml_deploy}.
+#' [cloudml_deploy()]
 #'
-#' @inheritParams cloudml_train
+#' @inheritParams cloudml_deploy
 #'
 #' @param instances A list of instances to be predicted. While predicting
 #'   a single instance, list wrapping this single instance is still expected.
-#' @param name The name for this model. Defaults to the current directory
-#'   name.
-#' @param version The version for this model. Versions start with a letter and
-#'   contain only letters, numbers and underscores. Defaults to the current
-#'   directory name.
 #'
 #' @seealso [cloudml_deploy()]
 #'
 #' @export
 cloudml_predict <- function(
   instances,
-  name = NULL,
-  version = NULL,
+  name,
+  version = paste0(name, "_1"),
   gcloud = NULL) {
 
   default_name <- basename(normalizePath(getwd(), winslash = "/"))
