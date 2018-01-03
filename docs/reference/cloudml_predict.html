@@ -73,9 +73,6 @@
     <li>
       <a href="../articles/storage.html">Google Cloud Storage</a>
     </li>
-    <li>
-      <a href="../articles/configuration.html">CloudML Configuration</a>
-    </li>
   </ul>
 </li>
 <li>
@@ -106,10 +103,11 @@
 
     
     <p>Perform online prediction over a CloudML model, usually, created using
-<code>cloudml_deploy</code>.</p>
+<code><a href='cloudml_deploy.html'>cloudml_deploy()</a></code></p>
     
 
-    <pre class="usage"><span class='fu'>cloudml_predict</span>(<span class='no'>instances</span>, <span class='kw'>name</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>version</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>gcloud</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
+    <pre class="usage"><span class='fu'>cloudml_predict</span>(<span class='no'>instances</span>, <span class='no'>name</span>, <span class='kw'>version</span> <span class='kw'>=</span> <span class='fu'>paste0</span>(<span class='no'>name</span>, <span class='st'>"_1"</span>),
+  <span class='kw'>gcloud</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
@@ -121,14 +119,12 @@ a single instance, list wrapping this single instance is still expected.</p></td
     </tr>
     <tr>
       <th>name</th>
-      <td><p>The name for this model. Defaults to the current directory
-name.</p></td>
+      <td><p>The name for this model (required)</p></td>
     </tr>
     <tr>
       <th>version</th>
       <td><p>The version for this model. Versions start with a letter and
-contain only letters, numbers and underscores. Defaults to the current
-directory name.</p></td>
+contain only letters, numbers and underscores. Defaults to name_1</p></td>
     </tr>
     <tr>
       <th>gcloud</th>

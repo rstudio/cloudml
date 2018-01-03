@@ -160,7 +160,6 @@ To learn more about using CloudML with R, see the following articles:
 
 * [Google Cloud Storage](articles/storage.html) provides information on copying data between your local machine and Google Storage and also describes how to use data within Google Storage during training.
 
-* [CloudML Configuration](articles/configuration.html) covers available configuration options, including how to use various Google Cloud account profiles and customize the compute instances used for training.
 
 
 
