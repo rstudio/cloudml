@@ -13,7 +13,7 @@ menu:
     name: "Deploying Models"
     identifier: "tools-cloudml-deployment"
     parent: "cloudml-top"
-    weight: 30
+    weight: 50
 ---
 
 

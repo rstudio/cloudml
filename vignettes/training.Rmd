@@ -293,12 +293,11 @@ Note that `trainingInput` is used as the top level key in the config file (this 
 
 The following articles provide additional documentation on training and deploying models with CloudML:
 
-* [Deploying Models](deployment.html) describes how to deploy trained models and generate predictions from them.
-
 * [Hyperparameter Tuning](tuning.html) explores how you can improve the performance of your models by running many trials with distinct hyperparameters (e.g. number and size of layers) to determine their optimal values.
 
 * [Google Cloud Storage](storage.html) provides information on copying data between your local machine and Google Storage and also describes how to use data within Google Storage during training.
 
+* [Deploying Models](deployment.html) describes how to deploy trained models and generate predictions from them.
 
 
 

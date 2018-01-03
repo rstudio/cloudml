@@ -13,7 +13,7 @@ menu:
     name: "Hyperparameter Tuning"
     identifier: "tools-cloudml-tuning"
     parent: "cloudml-top"
-    weight: 40
+    weight: 30
 ---
 
 ```{r setup, include=FALSE}
