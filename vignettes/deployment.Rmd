@@ -25,27 +25,14 @@ The Cloud ML prediction service makes use of models exported through the
 `export_savedmodel()` function which is available for models created using the [tensorflow](https://tensorflow.rstudio.com/tensorflow/), [keras](https://tensorflow.rstudio.com/keras/) and
 [tfestimators](https://tensorflow.rstudio.com/tfestimators/) packages or any other tool that support the [tf.train.Saver](https://www.tensorflow.org/api_docs/python/tf/train/Saver) interface.
 
-For instance, we can define and export a simple model by running:
+For instance, we can use `examples/keras/train.R` included in this package to define
+and train an MNIST keras model by running:
 
 ```{r}
-library(tensorflow)
-library(cloudml)
+library(tfruns)
 
-# define output folder
-model_dir <- tempfile()
-
-# define simple string-based tensor operations
-sess <- tf$Session()
-name <- tf$placeholder(tf$string)
-hello <- tf$string_join(inputs = c("Hello, ", name, "!"))
-
-# export as a savedmodel
-export_savedmodel(
-  sess,
-  model_dir,
-  inputs = list(name = name),
-  outputs = list(hello = hello)
-)
+training_file <- system.file("examples/keras/train.R", package = "cloudml")
+training_run(training_file)
 ```
 
 
@@ -56,10 +43,15 @@ and `cloudml` configuration concepts used while training. We can
 train any exported model by running:
 
 ```{r eval=F}
-cloudml_deploy(model_dir, name = "hello_world")
+cloudml_deploy("savedmodel", name = "keras_mnist")
 ```
 ```
-Model created and available in https://console.cloud.google.com/mlengine/models/hello_world
+Copying file://savedmodel/variables/variables.data-00000-of-00001 [Content-Type=application/octet-stream]...
+Copying file://savedmodel/saved_model.pb [Content-Type=application/octet-stream]...
+Copying file://savedmodel/variables/variables.index [Content-Type=application/octet-stream]...
+/ [3/3 files][  1.9 MiB/  1.9 MiB] 100% Done                                    
+Operation completed over 3 objects/1.9 MiB.                                      
+Model created and available in https://console.cloud.google.com/mlengine/models/keras_mnist
 ```
 
 Notice that models make use of unique names and versions which can be specified
@@ -71,12 +63,10 @@ Once a model is deployed, predictions can be performed by providing a list of in
 `cloudml_predict()`:
 
 ```{r eval=F}
+mnist_image <- as.vector(dataset_mnist()$train$x[1,,])
 cloudml_predict(
-  name = "hello_world",
-  list(
-    list(name = "cloudml"),
-    list(name = "tensorflow")
-  )
+  list(mnist_image),
+  name = "keras_mnist",
 )
 ```
 
