@@ -105,7 +105,7 @@ cloudml_predict <- function(
 
   pseudo_json_file <- tempfile(fileext = ".json")
   all_json <- lapply(instances, function(instance) {
-    as.character(jsonlite::toJSON(instance))
+    as.character(jsonlite::toJSON(instance, auto_unbox = TRUE))
   })
   writeLines(paste(all_json, collapse = "\n"), pseudo_json_file)
 
