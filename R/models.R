@@ -105,7 +105,7 @@ cloudml_predict <- function(
 
   pseudo_json_file <- tempfile(fileext = ".json")
   all_json <- lapply(instances, function(instance) {
-    as.character(jsonlite::toJSON(instance))
+    as.character(jsonlite::toJSON(instance, auto_unbox = TRUE))
   })
   writeLines(paste(all_json, collapse = "\n"), pseudo_json_file)
 
@@ -118,9 +118,16 @@ cloudml_predict <- function(
 
   output <- gcloud_exec(args = arguments())
 
-  json <- jsonlite::fromJSON(output$stdout)
-  if (!is.null(json$error))
-    stop(json$error)
+  json_raw <- output$stdout
+  json_parsed <- jsonlite::fromJSON(json_raw)
+  if (!is.null(json_parsed$error))
+    stop(json_parsed$error)
 
-  json
+  if (getOption("cloudml.prediction.diagnose", default = FALSE))
+    list(
+      request = all_json,
+      response = json_raw
+    )
+  else
+    json_parsed
 }
