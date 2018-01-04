@@ -71,7 +71,7 @@ job_status(job)
  $ state         : chr "RUNNING"
  $ trainingInput :List of 3
   ..$ jobDir        : chr "gs://cedar-card-791/r-cloudml/staging"
-  ..$ region        : chr "us-east1"
+  ..$ region        : chr "us-central1"
   ..$ runtimeVersion: chr "1.4"
  $ trainingOutput:List of 1
   ..$ consumedMLUnits: num 0.04
