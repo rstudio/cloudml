@@ -6,7 +6,8 @@ register_job <- function(job, registry = job_registry()) {
   registry[[job$id]] <- job
 }
 
-resolve_job <- function(id, gcloud, registry = job_registry()) {
+resolve_job <- function(id, registry = job_registry()) {
+  gcloud <- gcloud_config()
 
   # resolve "latest" to latest job
   if (identical(id, "latest"))

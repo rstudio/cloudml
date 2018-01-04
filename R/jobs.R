@@ -555,7 +555,7 @@ job_download <- function(job,
                          view = interactive(),
                          gcloud) {
 
-  status <- job_status(job, gcloud)
+  status <- job_status(job)
 
   # retrieve the gs-compatible source URL to copy from and the final
   # run directory which might be modified to include the trial number
