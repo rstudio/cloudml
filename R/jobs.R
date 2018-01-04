@@ -15,6 +15,8 @@
 #'   <https://cloud.google.com/ml-engine/docs/training-overview#machine_type_table>
 #'    for details on available machine types.
 #'
+#' @param region The region to be used for training.
+#'
 #' @param cloudml A list, \code{YAML} or \code{JSON} configuration file as
 #'   described
 #'   \url{https://cloud.google.com/ml-engine/reference/rest/v1/projects.jobs}.
@@ -28,6 +30,7 @@
 cloudml_train <- function(file = "train.R",
                           master_type = NULL,
                           flags = NULL,
+                          region = NULL,
                           cloudml = NULL,
                           collect = "ask")
 {
@@ -91,7 +94,7 @@ cloudml_train <- function(file = "train.R",
                 ("--package-path=%s", basename(directory))
                 ("--module-name=%s.cloudml.deploy", basename(directory))
                 ("--runtime-version=%s", cloudml_version)
-                ("--region=%s", gcloud[["region"]])
+                ("--region=%s", region)
                 ("--config=%s/%s", "cloudml-model", cloudml_file)
                 ("--")
                 ("Rscript"))

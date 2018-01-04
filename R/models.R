@@ -25,6 +25,7 @@ cloudml_model_exists <- function(gcloud, name) {
 #' @param name The name for this model (required)
 #' @param version The version for this model. Versions start with a letter and
 #'   contain only letters, numbers and underscores. Defaults to name_1
+#' @param region The region to be used to deploy this model.
 #'
 #' @seealso [cloudml_predict()]
 #'
@@ -33,6 +34,7 @@ cloudml_deploy <- function(
   export_dir_base,
   name,
   version = paste0(name, "_1"),
+  region = NULL,
   cloudml = NULL) {
 
   cloudml <- cloudml_config(cloudml)
@@ -46,7 +48,7 @@ cloudml_deploy <- function(
                   ("models")
                   ("create")
                   (name)
-                  ("--regions=%s", gcloud$region))
+                  ("--regions=%s", region))
 
     gcloud_exec(args = arguments())
   }
