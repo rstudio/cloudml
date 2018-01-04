@@ -38,6 +38,8 @@ cloudml_deploy <- function(
 
   cloudml <- cloudml_config(cloudml)
   gcloud <- gcloud_config(gcloud)
+
+  gs_ensure_account(gcloud)
   storage <- gs_ensure_storage(gcloud)
 
   if (is.null(gcloud$region)) gcloud$region <- gcloud_default_region()
