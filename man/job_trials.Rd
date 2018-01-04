@@ -4,13 +4,10 @@
 \alias{job_trials}
 \title{Current trials of a job}
 \usage{
-job_trials(x, gcloud = NULL)
+job_trials(x)
 }
 \arguments{
 \item{x}{Job name or job object.}
-
-\item{gcloud}{A list or \code{YAML} file with optional 'account' or 'project'
-fields used to configure the GCloud environemnt.}
 }
 \description{
 Get the hyperparameter trials for job, as an \R data frame

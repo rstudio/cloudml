@@ -5,7 +5,7 @@
 \title{Deploy SavedModel to CloudML}
 \usage{
 cloudml_deploy(export_dir_base, name, version = paste0(name, "_1"),
-  cloudml = NULL, gcloud = NULL)
+  region = NULL, cloudml = NULL)
 }
 \arguments{
 \item{export_dir_base}{A string containing a directory containing an
@@ -17,12 +17,11 @@ to export this SavedModel.}
 \item{version}{The version for this model. Versions start with a letter and
 contain only letters, numbers and underscores. Defaults to name_1}
 
+\item{region}{The region to be used to deploy this model.}
+
 \item{cloudml}{A list, \code{YAML} or \code{JSON} configuration file as
 described
 \url{https://cloud.google.com/ml-engine/reference/rest/v1/projects.jobs}.}
-
-\item{gcloud}{A list or \code{YAML} file with optional 'account' or 'project'
-fields used to configure the GCloud environemnt.}
 }
 \description{
 Deploys a SavedModel to CloudML model for online predictions.

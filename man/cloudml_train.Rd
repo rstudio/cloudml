@@ -5,7 +5,7 @@
 \title{Train a model using Cloud ML}
 \usage{
 cloudml_train(file = "train.R", master_type = NULL, flags = NULL,
-  cloudml = NULL, gcloud = NULL, collect = "ask")
+  region = NULL, cloudml = NULL, collect = "ask")
 }
 \arguments{
 \item{file}{File to be used as entrypoint for training.}
@@ -19,12 +19,11 @@ for details on available machine types.}
 \item{flags}{Named list with flag values (see \code{\link[=flags]{flags()}}) or path
 to YAML file containing flag values.}
 
+\item{region}{The region to be used for training.}
+
 \item{cloudml}{A list, \code{YAML} or \code{JSON} configuration file as
 described
 \url{https://cloud.google.com/ml-engine/reference/rest/v1/projects.jobs}.}
-
-\item{gcloud}{A list or \code{YAML} file with optional 'account' or 'project'
-fields used to configure the GCloud environemnt.}
 
 \item{collect}{Collect job when training is completed (blocks waiting for
 the job to complete).}

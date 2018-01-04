@@ -24,9 +24,6 @@ with \code{~} for descending order on that field.}
 
 \item{uri}{Print a list of resource URIs instead of the default
 output.}
-
-\item{gcloud}{A list or \code{YAML} file with optional 'account' or 'project'
-fields used to configure the GCloud environemnt.}
 }
 \description{
 List existing Google Cloud ML jobs.
