@@ -10,7 +10,7 @@ vignette: >
 
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE, eval=FALSE)
+knitr::opts_chunk$set(echo = TRUE)
 ```
 
 You can host your trained machine learning models in the cloud and use the Cloud ML prediction service to infer target values for new data. This page discusses model hosting and prediction and introduces considerations you should keep in mind for your projects.
@@ -28,13 +28,57 @@ The Cloud ML prediction service makes use of models exported through the
 For instance, we can use `examples/keras/train.R` included in this package to define
 and train an MNIST keras model by running:
 
-```{r}
-library(tfruns)
+```{r eval=FALSE}
+library(keras)
 
-training_file <- system.file("examples/keras/train.R", package = "cloudml")
-training_run(training_file)
+FLAGS <- flags(
+  flag_numeric("dropout_rate", 0.4)
+)
+
+mnist <- dataset_mnist()
+x_train <- mnist$train$x
+y_train <- mnist$train$y
+x_test <- mnist$test$x
+y_test <- mnist$test$y
+
+x_train <- array_reshape(x_train, c(nrow(x_train), 784))
+x_test <- array_reshape(x_test, c(nrow(x_test), 784))
+x_train <- x_train / 255
+x_test <- x_test / 255
+
+y_train <- to_categorical(y_train, 10)
+y_test <- to_categorical(y_test, 10)
+
+# set learning_pahse to avoid predictions to require this placeholder
+backend()$set_learning_phase(TRUE)
+
+model <- keras_model_sequential()
+
+model %>%
+  layer_dense(units = 256, activation = 'relu', input_shape = c(784)) %>%
+  layer_dropout(rate = FLAGS$dropout_rate) %>%
+  layer_dense(units = 128, activation = 'relu') %>%
+  layer_dropout(rate = 0.3) %>%
+  layer_dense(units = 10, activation = 'softmax')
+
+model %>% compile(
+  loss = 'categorical_crossentropy',
+  optimizer = optimizer_rmsprop(),
+  metrics = c('accuracy')
+)
+
+model %>% fit(
+  x_train, y_train,
+  epochs = 20, batch_size = 128,
+  validation_split = 0.2
+)
+
+export_savedmodel(model, "savedmodel")
 ```
 
+Notice that `backend()$set_learning_phase(TRUE)` is set before training starts
+to avoid having to specify the [learning_phase](https://keras.io/backend/#learning_phase)
+keras placeholder over each prediction.
 
 ### Deploying the Model
 
@@ -42,7 +86,7 @@ Deployment is performed through `cloudml_deploy()` which uses the same `gcloud`
 and `cloudml` configuration concepts used while training. We can
 train any exported model by running:
 
-```{r eval=F}
+```{r eval=FALSE}
 cloudml_deploy("savedmodel", name = "keras_mnist")
 ```
 ```
@@ -70,7 +114,7 @@ grid::grid.raster(mnist_image / 255)
 
 ![](images/deploy-keras-mnist-image.png)
 
-```{r}
+```{r eval=FALSE}
 cloudml_predict(
   list(
     as.vector(t(mnist_image))
