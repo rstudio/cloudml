@@ -41,7 +41,7 @@ cloudml_deploy <- function(
   gcloud <- gcloud_config()
   storage <- gs_ensure_storage(gcloud)
 
-  if (is.null(gcloud$region)) gcloud$region <- gcloud_default_region()
+  if (is.null(region)) region <- gcloud_default_region()
 
   if (!cloudml_model_exists(gcloud, name)) {
     arguments <- (MLArgumentsBuilder(gcloud)
