@@ -29,12 +29,11 @@ cloudml_train <- function(file = "train.R",
                           master_type = NULL,
                           flags = NULL,
                           cloudml = NULL,
-                          gcloud = NULL,
                           collect = "ask")
 {
   message("Submitting training job to CloudML...")
 
-  gcloud <- gcloud_config(gcloud)
+  gcloud <- gcloud_config()
   cloudml <- cloudml_config(cloudml)
 
   if (!is.null(master_type)) cloudml$trainingInput$masterType <- master_type
@@ -177,7 +176,8 @@ cloudml_train <- function(file = "train.R",
 #' @family job management
 #'
 #' @export
-job_cancel <- function(job = "latest", gcloud = NULL) {
+job_cancel <- function(job = "latest") {
+  gcloud <- gcloud_config()
   job <- as.cloudml_job(job, gcloud)
 
   arguments <- (MLArgumentsBuilder(gcloud)
@@ -272,9 +272,9 @@ job_list <- function(filter    = NULL,
 job_stream_logs <- function(job = "latest",
                             polling_interval = getOption("cloudml.stream_logs.polling", 5),
                             task_name = NULL,
-                            allow_multiline_logs = FALSE,
-                            gcloud = NULL)
+                            allow_multiline_logs = FALSE)
 {
+  gcloud <- gcloud_config()
   job <- as.cloudml_job(job, gcloud)
 
   arguments <- (
@@ -299,14 +299,11 @@ job_stream_logs <- function(job = "latest",
 #' @param job Job name or job object. Pass "latest" to indicate the
 #'   most recently submitted job.
 #'
-#' @param gcloud A list or \code{YAML} file with optional 'account' or 'project'
-#'   fields used to configure the GCloud environemnt.
-#'
 #' @family job management
 #'
 #' @export
-job_status <- function(job = "latest",
-                       gcloud = NULL) {
+job_status <- function(job = "latest") {
+  gcloud <- gcloud_config()
   job <- as.cloudml_job(job, gcloud)
 
   arguments <- (MLArgumentsBuilder(gcloud)
@@ -356,7 +353,7 @@ print.cloudml_job_status <- function(x, ...) {
 #' @family job management
 #'
 #' @export
-job_trials <- function(x, gcloud = NULL) {
+job_trials <- function(x) {
   UseMethod("job_trials")
 }
 
@@ -368,18 +365,18 @@ job_trials_from_status <- function(status) {
 }
 
 #' @export
-job_trials.character <- function(x, gcloud = NULL) {
-  status <- job_status(x, gcloud)
+job_trials.character <- function(x) {
+  status <- job_status(x)
   job_trials_from_status(status)
 }
 
 #' @export
-job_trials.cloudml_job <- function(x, gcloud = NULL) {
+job_trials.cloudml_job <- function(x) {
   job_trials_from_status(x$description)
 }
 
 #' @export
-job_trials.cloudml_job_status <- function(x, gcloud = NULL) {
+job_trials.cloudml_job_status <- function(x) {
   job_trials_from_status(x)
 }
 
@@ -418,10 +415,8 @@ job_collect <- function(job = "latest",
                         trials = "best",
                         destination = "runs",
                         timeout = NULL,
-                        view = interactive(),
-                        gcloud = NULL) {
-
-  job <- as.cloudml_job(job, gcloud)
+                        view = interactive()) {
+  job <- as.cloudml_job(job)
   id <- job$id
   job_validate_trials(trials)
 
@@ -505,7 +500,7 @@ job_collect_async <- function(
   if (!have_rstudio_terminal())
     stop("job_collect_async requires a version of RStudio with terminals (>= v1.1)")
 
-  output_dir <- job_output_dir(job, gcloud)
+  gcloud <- gcloud_config()
   job <- as.cloudml_job(job)
   id <- job$id
 

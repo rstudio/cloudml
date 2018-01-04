@@ -33,11 +33,10 @@ cloudml_deploy <- function(
   export_dir_base,
   name,
   version = paste0(name, "_1"),
-  cloudml = NULL,
-  gcloud = NULL) {
+  cloudml = NULL) {
 
   cloudml <- cloudml_config(cloudml)
-  gcloud <- gcloud_config(gcloud)
+  gcloud <- gcloud_config()
   storage <- gs_ensure_storage(gcloud)
 
   if (is.null(gcloud$region)) gcloud$region <- gcloud_default_region()
@@ -91,14 +90,13 @@ cloudml_deploy <- function(
 cloudml_predict <- function(
   instances,
   name,
-  version = paste0(name, "_1"),
-  gcloud = NULL) {
+  version = paste0(name, "_1")) {
 
   default_name <- basename(normalizePath(getwd(), winslash = "/"))
   if (is.null(name)) name <- default_name
   if (is.null(version)) version <- default_name
 
-  gcloud <- gcloud_config(gcloud)
+  gcloud <- gcloud_config()
 
   # CloudML CLI does not expect valid JSON but rather a one line per JSON instance.
   # See https://cloud.google.com/ml-engine/docs/online-predict#formatting_your_input_for_online_prediction
