@@ -25,6 +25,7 @@ cloudml_model_exists <- function(gcloud, name) {
 #' @param name The name for this model (required)
 #' @param version The version for this model. Versions start with a letter and
 #'   contain only letters, numbers and underscores. Defaults to name_1
+#' @param region The region to be used to deploy this model.
 #'
 #' @seealso [cloudml_predict()]
 #'
@@ -33,21 +34,21 @@ cloudml_deploy <- function(
   export_dir_base,
   name,
   version = paste0(name, "_1"),
-  cloudml = NULL,
-  gcloud = NULL) {
+  region = NULL,
+  cloudml = NULL) {
 
   cloudml <- cloudml_config(cloudml)
-  gcloud <- gcloud_config(gcloud)
+  gcloud <- gcloud_config()
   storage <- gs_ensure_storage(gcloud)
 
-  if (is.null(gcloud$region)) gcloud$region <- gcloud_default_region()
+  if (is.null(region)) region <- gcloud_default_region()
 
   if (!cloudml_model_exists(gcloud, name)) {
     arguments <- (MLArgumentsBuilder(gcloud)
                   ("models")
                   ("create")
                   (name)
-                  ("--regions=%s", gcloud$region))
+                  ("--regions=%s", region))
 
     gcloud_exec(args = arguments())
   }
@@ -91,14 +92,13 @@ cloudml_deploy <- function(
 cloudml_predict <- function(
   instances,
   name,
-  version = paste0(name, "_1"),
-  gcloud = NULL) {
+  version = paste0(name, "_1")) {
 
   default_name <- basename(normalizePath(getwd(), winslash = "/"))
   if (is.null(name)) name <- default_name
   if (is.null(version)) version <- default_name
 
-  gcloud <- gcloud_config(gcloud)
+  gcloud <- gcloud_config()
 
   # CloudML CLI does not expect valid JSON but rather a one line per JSON instance.
   # See https://cloud.google.com/ml-engine/docs/online-predict#formatting_your_input_for_online_prediction

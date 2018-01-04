@@ -5,7 +5,7 @@
 \title{Collect job output}
 \usage{
 job_collect(job = "latest", trials = "best", destination = "runs",
-  timeout = NULL, view = interactive(), gcloud = NULL)
+  timeout = NULL, view = interactive())
 }
 \arguments{
 \item{job}{Job name or job object. Pass "latest" to indicate the
@@ -22,9 +22,6 @@ be downloaded. Defaults to \code{runs}.}
 
 \item{view}{View the job results after collecting it. You can also pass
 "save" to save a copy of the run report at \code{tfruns.d/view.html}}
-
-\item{gcloud}{A list or \code{YAML} file with optional 'account' or 'project'
-fields used to configure the GCloud environemnt.}
 }
 \description{
 Collect the job outputs (e.g. fitted model) from a job. If the job has not

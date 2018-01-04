@@ -15,6 +15,8 @@
 #'   <https://cloud.google.com/ml-engine/docs/training-overview#machine_type_table>
 #'    for details on available machine types.
 #'
+#' @param region The region to be used for training.
+#'
 #' @param cloudml A list, \code{YAML} or \code{JSON} configuration file as
 #'   described
 #'   \url{https://cloud.google.com/ml-engine/reference/rest/v1/projects.jobs}.
@@ -28,13 +30,13 @@
 cloudml_train <- function(file = "train.R",
                           master_type = NULL,
                           flags = NULL,
+                          region = NULL,
                           cloudml = NULL,
-                          gcloud = NULL,
                           collect = "ask")
 {
   message("Submitting training job to CloudML...")
 
-  gcloud <- gcloud_config(gcloud)
+  gcloud <- gcloud_config()
   cloudml <- cloudml_config(cloudml)
 
   if (!is.null(master_type)) cloudml$trainingInput$masterType <- master_type
@@ -65,7 +67,7 @@ cloudml_train <- function(file = "train.R",
   storage <- gs_ensure_storage(gcloud)
 
   # region is required
-  if (is.null(gcloud$region)) gcloud$region <- gcloud_default_region()
+  if (is.null(region)) region <- gcloud_default_region()
 
   # pass parameters to the job
   job_yml <- file.path(deployment$directory, "job.yml")
@@ -92,7 +94,7 @@ cloudml_train <- function(file = "train.R",
                 ("--package-path=%s", basename(directory))
                 ("--module-name=%s.cloudml.deploy", basename(directory))
                 ("--runtime-version=%s", cloudml_version)
-                ("--region=%s", gcloud[["region"]])
+                ("--region=%s", region)
                 ("--config=%s/%s", "cloudml-model", cloudml_file)
                 ("--")
                 ("Rscript"))
@@ -177,8 +179,9 @@ cloudml_train <- function(file = "train.R",
 #' @family job management
 #'
 #' @export
-job_cancel <- function(job = "latest", gcloud = NULL) {
-  job <- as.cloudml_job(job, gcloud)
+job_cancel <- function(job = "latest") {
+  gcloud <- gcloud_config()
+  job <- as.cloudml_job(job)
 
   arguments <- (MLArgumentsBuilder(gcloud)
                 ("jobs")
@@ -272,10 +275,10 @@ job_list <- function(filter    = NULL,
 job_stream_logs <- function(job = "latest",
                             polling_interval = getOption("cloudml.stream_logs.polling", 5),
                             task_name = NULL,
-                            allow_multiline_logs = FALSE,
-                            gcloud = NULL)
+                            allow_multiline_logs = FALSE)
 {
-  job <- as.cloudml_job(job, gcloud)
+  gcloud <- gcloud_config()
+  job <- as.cloudml_job(job)
 
   arguments <- (
     MLArgumentsBuilder(gcloud)
@@ -299,15 +302,12 @@ job_stream_logs <- function(job = "latest",
 #' @param job Job name or job object. Pass "latest" to indicate the
 #'   most recently submitted job.
 #'
-#' @param gcloud A list or \code{YAML} file with optional 'account' or 'project'
-#'   fields used to configure the GCloud environemnt.
-#'
 #' @family job management
 #'
 #' @export
-job_status <- function(job = "latest",
-                       gcloud = NULL) {
-  job <- as.cloudml_job(job, gcloud)
+job_status <- function(job = "latest") {
+  gcloud <- gcloud_config()
+  job <- as.cloudml_job(job)
 
   arguments <- (MLArgumentsBuilder(gcloud)
                 ("jobs")
@@ -356,7 +356,7 @@ print.cloudml_job_status <- function(x, ...) {
 #' @family job management
 #'
 #' @export
-job_trials <- function(x, gcloud = NULL) {
+job_trials <- function(x) {
   UseMethod("job_trials")
 }
 
@@ -368,18 +368,18 @@ job_trials_from_status <- function(status) {
 }
 
 #' @export
-job_trials.character <- function(x, gcloud = NULL) {
-  status <- job_status(x, gcloud)
+job_trials.character <- function(x) {
+  status <- job_status(x)
   job_trials_from_status(status)
 }
 
 #' @export
-job_trials.cloudml_job <- function(x, gcloud = NULL) {
+job_trials.cloudml_job <- function(x) {
   job_trials_from_status(x$description)
 }
 
 #' @export
-job_trials.cloudml_job_status <- function(x, gcloud = NULL) {
+job_trials.cloudml_job_status <- function(x) {
   job_trials_from_status(x)
 }
 
@@ -418,10 +418,9 @@ job_collect <- function(job = "latest",
                         trials = "best",
                         destination = "runs",
                         timeout = NULL,
-                        view = interactive(),
-                        gcloud = NULL) {
-
-  job <- as.cloudml_job(job, gcloud)
+                        view = interactive()) {
+  gcloud <- gcloud_config()
+  job <- as.cloudml_job(job)
   id <- job$id
   job_validate_trials(trials)
 
@@ -453,8 +452,7 @@ job_collect <- function(job = "latest",
       job,
       trial = trials,
       destination = destination,
-      view = view,
-      gcloud = gcloud)
+      view = view)
     )
   }
 
@@ -505,7 +503,7 @@ job_collect_async <- function(
   if (!have_rstudio_terminal())
     stop("job_collect_async requires a version of RStudio with terminals (>= v1.1)")
 
-  output_dir <- job_output_dir(job, gcloud)
+  gcloud <- gcloud_config()
   job <- as.cloudml_job(job)
   id <- job$id
 
@@ -560,7 +558,7 @@ job_download <- function(job,
                          view = interactive(),
                          gcloud) {
 
-  status <- job_status(job, gcloud)
+  status <- job_status(job)
 
   # retrieve the gs-compatible source URL to copy from and the final
   # run directory which might be modified to include the trial number
@@ -639,10 +637,10 @@ job_download_multiple <- function(job, trial, destination, view, gcloud) {
   }
 }
 
-job_output_dir <- function(job, gcloud) {
+job_output_dir <- function(job) {
 
   # determine storage from job
-  job <- as.cloudml_job(job, gcloud)
+  job <- as.cloudml_job(job)
   storage <- dirname(job$description$trainingInput$jobDir)
 
   output_path <- file.path(storage, "runs", job$id)
