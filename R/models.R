@@ -52,13 +52,20 @@ cloudml_deploy <- function(
     gcloud_exec(args = arguments())
   }
 
+  model_dest <- sprintf(
+    "%s/models/%s",
+    storage,
+    timestamp_string()
+  )
+
+  gs_copy(export_dir_base, model_dest, recursive = TRUE)
+
   arguments <- (MLArgumentsBuilder(gcloud)
                 ("versions")
                 ("create")
                 (as.character(version))
                 ("--model=%s", name)
-                ("--origin=%s", export_dir_base)
-                ("--staging-bucket=%s", gs_bucket_from_gs_uri(storage))
+                ("--origin=%s", model_dest)
                 ("--runtime-version=%s", cloudml$trainingInput$runtimeVersion %||% "1.4"))
 
   gcloud_exec(args = arguments())
