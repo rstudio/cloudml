@@ -51,7 +51,7 @@ The core unit of work in CloudML is a job. A job consists of a training script a
 
 ```{r}
 library(cloudml)
-job <- cloudml_train("minst_mlp.R")
+job <- cloudml_train("mnist_mlp.R")
 ```
 
 <div class="bs-callout bs-callout-warning">

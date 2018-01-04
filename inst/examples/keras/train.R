@@ -10,15 +10,16 @@ y_train <- mnist$train$y
 x_test <- mnist$test$x
 y_test <- mnist$test$y
 
-# reshape
 x_train <- array_reshape(x_train, c(nrow(x_train), 784))
 x_test <- array_reshape(x_test, c(nrow(x_test), 784))
-# rescale
 x_train <- x_train / 255
 x_test <- x_test / 255
 
 y_train <- to_categorical(y_train, 10)
 y_test <- to_categorical(y_test, 10)
+
+# required in order to call export_savedmodel on keras models
+k_set_learning_phase(TRUE)
 
 model <- keras_model_sequential()
 
