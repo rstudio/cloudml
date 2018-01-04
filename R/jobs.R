@@ -181,7 +181,7 @@ cloudml_train <- function(file = "train.R",
 #' @export
 job_cancel <- function(job = "latest") {
   gcloud <- gcloud_config()
-  job <- as.cloudml_job(job, gcloud)
+  job <- as.cloudml_job(job)
 
   arguments <- (MLArgumentsBuilder(gcloud)
                 ("jobs")
@@ -278,7 +278,7 @@ job_stream_logs <- function(job = "latest",
                             allow_multiline_logs = FALSE)
 {
   gcloud <- gcloud_config()
-  job <- as.cloudml_job(job, gcloud)
+  job <- as.cloudml_job(job)
 
   arguments <- (
     MLArgumentsBuilder(gcloud)
@@ -307,7 +307,7 @@ job_stream_logs <- function(job = "latest",
 #' @export
 job_status <- function(job = "latest") {
   gcloud <- gcloud_config()
-  job <- as.cloudml_job(job, gcloud)
+  job <- as.cloudml_job(job)
 
   arguments <- (MLArgumentsBuilder(gcloud)
                 ("jobs")
@@ -419,6 +419,7 @@ job_collect <- function(job = "latest",
                         destination = "runs",
                         timeout = NULL,
                         view = interactive()) {
+  gcloud <- gcloud_config()
   job <- as.cloudml_job(job)
   id <- job$id
   job_validate_trials(trials)
@@ -451,8 +452,7 @@ job_collect <- function(job = "latest",
       job,
       trial = trials,
       destination = destination,
-      view = view,
-      gcloud = gcloud)
+      view = view)
     )
   }
 
@@ -637,10 +637,10 @@ job_download_multiple <- function(job, trial, destination, view, gcloud) {
   }
 }
 
-job_output_dir <- function(job, gcloud) {
+job_output_dir <- function(job) {
 
   # determine storage from job
-  job <- as.cloudml_job(job, gcloud)
+  job <- as.cloudml_job(job)
   storage <- dirname(job$description$trainingInput$jobDir)
 
   output_path <- file.path(storage, "runs", job$id)
