@@ -64,6 +64,14 @@ gcloud_install()
 
 Note that in order to ensure that the **cloudml** package can find your installation of the SDK you should accept the default installation location (`~/`) suggested within the installer.
 
+As part of the installation you are asked to specify a default account, project, and compute region for Google Cloud. These settings are then used automatically for all CloudML jobs. To switch to another account, project, or region you can use the `gcloud_init()` function:
+
+```{r}
+gcloud_init()
+```
+
+Note that you don't need to execute `gcloud_init()` now as this was done automatically as part of `gcloud_install()`.
+
 Once you've completed these steps you are ready to train models with CloudML!
 
 ## Training on CloudML
