@@ -20,4 +20,159 @@ menu:
 knitr::opts_chunk$set(echo = TRUE, eval=FALSE)
 ```
 
-### Under Construction
+## Overview
+
+This article describes hyperparameter tuning, which is the automated model enhancer provided by Cloud Machine Learning Engine. Hyperparameter tuning takes advantage of the processing infrastructure of Google Cloud Platform to test different hyperparameter configurations when training your model. It can give you optimized values for hyperparameters, which maximizes your model's predictive accuracy.
+
+## What's a hyperparameter?
+
+If you're new to machine learning, you may have never encountered the term *hyperparameters* before. Your trainer handles three categories of data as it trains your model:
+
+- Your input data (also called training data) is a collection of individual records (instances) containing the features important to your machine learning problem. This data is used during training to configure your model to accurately make predictions about new instances of similar data. However, the actual values in your input data never directly become part of your model.
+
+- Your model's parameters are the variables that your chosen machine learning technique uses to adjust to your data. For example, a deep neural network (DNN) is composed of processing nodes (neurons), each with an operation performed on data as it travels through the network. When your DNN is trained, each node has a weight value that tells your model how much impact it has on the final prediction. Those weights are an example of your model's parameters. In many ways, your model's parameters are the model—they are what distinguishes your particular model from other models of the same type working on similar data.
+
+- If model parameters are variables that get adjusted by training with existing data, your hyperparameters are the variables about the training process itself. For example, part of setting up a deep neural network is deciding how many "hidden" layers of nodes to use between the input layer and the output layer, as well as how many nodes each layer should use. These variables are not directly related to the training data at all. They are configuration variables. Another difference is that parameters change during a training job, while the hyperparameters are usually constant during a job.
+
+Your model parameters are optimized (you could say "tuned") by the training process: you run data through the operations of the model, compare the resulting prediction with the actual value for each data instance, evaluate the accuracy, and adjust until you find the best values. Hyperparameters are similarly tuned by running your whole training job, looking at the aggregate accuracy, and adjusting. In both cases you are modifying the composition of your model in an effort to find the best combination to handle your problem.
+
+Without an automated technology like Cloud ML Engine hyperparameter tuning, you need to make manual adjustments to the hyperparameters over the course of many training runs to arrive at the optimal values. Hyperparameter tuning makes the process of determining the best hyperparameter settings easier and less tedious.
+
+## How it works
+
+Hyperparameter tuning works by running multiple *trials* in a single training job. Each trial is a complete execution of your training application with values for your chosen hyperparameters set within limits you specify. The Cloud ML Engine training service keeps track of the results of each trial and makes adjustments for subsequent trials. When the job is finished, you can get a summary of all the trials along with the most effective configuration of values according to the criteria you specify.
+
+Hyperparameter tuning requires more explicit communication between the Cloud ML Engine training service and your training application. You define all the information that your model needs in your training application. The best way to think about this interaction is that you define the hyperparameters (variables) that you want to adjust and you define a target value.
+
+To learn more about how Bayesian optimization is used for hyperparameter tuning in Cloud ML Engine, read the August 2017 Google Cloud Big Data and Machine Learning Blog post named [Hyperparameter Tuning in Cloud Machine Learning Engine using Bayesian Optimization](https://cloud.google.com/blog/big-data/2017/08/hyperparameter-tuning-in-cloud-machine-learning-engine-using-bayesian-optimization).
+
+## What it optimizes
+
+Hyperparameter tuning optimizes a single target variable (also called the hyperparameter metric) that you specify. The accuracy of the model, as calculated from an evaluation pass, is a common metric. The metric must be a numeric value, and you can specify whether you want to tune your model to maximize or minimize your metric.
+
+When you start a job with hyperparameter tuning, you establish the name of your hyperparameter metric. The appropriate name will depend on whether you are using [keras](https://tensorflow.rstudio.com/keras/), [tfestimators](https://tensorflow.rstudio.com/keras/), or the [core](https://tensorflow.rstudio.com/tensorflow/) TensorFlow API. This will be covered below in the section on [Hyperparameter tuning configuration].
+
+### How Cloud ML Engine gets your metric
+
+You may notice that there are no instructions in this documentation for passing your hyperparameter metric to the Cloud ML Engine training service. That's because the service automatically monitors TensorFlow summary events generated by your trainer and retrieves the metric.
+
+### The flow of hyperparameter values
+
+Without hyperparameter tuning, you can set your hyperparameters by whatever means you like in your trainer. You might configure them according to command-line arguments to your main application module, or feed them to your application in a configuration file, for example. When you use hyperparameter tuning, you must set the values of the hyperparameters that you're using for tuning with a specific procedure:
+
+- Define a [training flag](https://tensorflow.rstudio.com/tools/training_flags.html) within your training script for each tuned hyperparameter.
+
+- Use the value passed for those arguments to set the corresponding hyperparameter in your training code.
+
+When you configure a training job with hyperparameter tuning, you define each hyperparameter to tune, its type, and the range of values to try. You identify each hyperparameter using exactly the same name as the corresponding argument you defined in your main module. The training service includes command-line arguments using these names when it runs your trainer, which are in turn propagated to the `FLAGS` within your script.
+
+## Selecting hyperparameters
+
+There is very little universal advice to give about how to choose which hyperparameters you should tune. If you have experience with the machine learning technique that you're using, you may have insight into how its hyperparameters behave. You may also be able to find advice from machine learning communities.
+
+However you choose them, it's important to understand the implications. Every hyperparameter that you choose to tune has the potential to exponentially increase the number of trials required for a successful tuning job. When you train on Cloud ML Engine you are charged for the duration of the job, so careless assignment of hyperparameters to tune can greatly increase the cost of training your model.
+
+## Preparing your script
+
+To prepare your training script for tuning, you should define a [training flag](https://tensorflow.rstudio.com/tools/training_flags.html) within your script for each tuned hyperparameter. For example:
+
+```{r}
+library(keras)
+
+FLAGS <- flags(
+  flag_integer("dense_units1", 128),
+  flag_numeric("dropout1", 0.4),
+  flag_integer("dense_units2", 128),
+  flag_numeric("dropout2", 0.3)
+)
+```
+
+These flags would then used within a script as follows:
+
+```{r}
+model <- keras_model_sequential() %>% 
+  layer_dense(units = FLAGS$dense_units1, activation = 'relu', 
+              input_shape = c(784)) %>%
+  layer_dropout(rate = FLAGS$dropout1) %>%
+  layer_dense(units = FLAGS$dense_units2, activation = 'relu') %>%
+  layer_dropout(rate = FLAGS$dropout2) %>%
+  layer_dense(units = 10, activation = 'softmax')
+```
+
+Note that instead of literal values for the various parameters we want to vary we now reference members of the `FLAGS` list returned from the `flags()` function.
+
+## Tuning configuration
+
+Before you submit you training script you need to create a configuration file that determines both the name of the metric to optimize as well as the training flags and corresponding values to use for optimization. The exact semantics of specifying a metric differ depending on what interface you are using, here we'll use a Keras example (see the section on [Optimization metrics] for details on other interfaces).
+
+With Keras, any named metric (as defined by the `metrics` argument passed to the `compile()` function) can be used as the target for optimization. For example, if this was the call to `compile()`:
+
+```{r}
+model %>% compile(
+  loss = 'categorical_crossentropy',
+  optimizer = optimizer_rmsprop(),
+  metrics = c('accuracy')
+)
+```
+
+Then you could use the following as your CloudML training configuration file for a scenario where you wanted to explore the impact of different dropout ratios:
+
+**tuning.yml**
+
+```yaml
+trainingInput:
+  scaleTier: CUSTOM
+  masterType: standard_gpu
+  hyperparameters:
+    goal: MAXIMIZE
+    hyperparameterMetricTag: accuracy
+    maxTrials: 10
+    params:
+      - parameterName: dropout1
+        type: DOUBLE
+        minValue: 0.2
+        maxValue: 0.6
+        scaleType: UNIT_LINEAR_SCALE
+      - parameterName: dropout2
+        type: DOUBLE
+        minValue: 0.1
+        maxValue: 0.5
+        scaleType: UNIT_LINEAR_SCALE
+```
+
+Note that configuration for the compute resources to use for the job can also be provided in the config file (e.g. the `masterType` field). 
+
+The `type` field can be one of:
+
+- `INTEGER`
+- `DOUBLE` 
+
+The `scaleType` field can be one of:
+
+- `UNIT_LINEAR_SCALE`
+- `UNIT_LOG_SCALE`
+- `UNIT_REVERSE_LOG_SCALE`
+
+Complete details on available options can be found in the [HyperparameterSpec](https://cloud.google.com/ml-engine/reference/rest/v1/projects.jobs#HyperparameterSpec) documentation.
+
+## Submitting a tuning job
+
+To submit a hyperparmaeter tuning job, pass the name of the CloudML configuration file containing your hyperparmeters to `cloudml_train()`:
+
+```{r}
+cloudml_train("mnist_mlp.R", cloudml = "tuning.yml")
+```
+
+The job will proceed as normal, and you can monitor it's results within an RStudio terminal or via the `job_status()` and `job_stream_logs()` functions. When the job completes you will see the following summary of the tuning runs:
+
+
+
+## Collecting trials
+
+
+
+
+## Optimization metrics
+
+
+
