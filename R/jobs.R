@@ -667,8 +667,20 @@ job_status_trial_dir <- function(status, destination, trial, job) {
     trial_parent <- file.path(storage, "runs", status$jobId)
     if (trial == "best") {
       if (job_status_is_tuning(status) && !is.null(status$trainingInput$hyperparameters$goal)) {
+
+        if (length(status$trainingOutput$trials) == 0) {
+          stop("Job contains no output trials.")
+        }
+
+        if (is.null(status$trainingOutput$trials[[1]]$finalMetric)) {
+          stop(
+            "Job trails contains no final metric to retrieve best trial, ",
+            "consider using 'all' or specific trials instead."
+          )
+        }
+
         decreasing <- if (status$trainingInput$hyperparameters$goal == "MINIMIZE") FALSE else TRUE
-        ordered <- order(sapply(status$trainingOutput$trials, function(e) e$finalMetric$objectiveValue), decreasing = TRUE)
+        ordered <- order(sapply(status$trainingOutput$trials, function(e) e$finalMetric$objectiveValue), decreasing = decreasing)
         if (length(ordered) > 0) {
           best_trial <- as.numeric(status$trainingOutput$trials[[ordered[[1]]]]$trialId)
           output_path <- list(
