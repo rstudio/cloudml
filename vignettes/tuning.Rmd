@@ -1,17 +1,23 @@
 ---
-title: "Hyperparameter Tuning with CloudML"
+title: "Hyperparameter Tuning"
 output: 
   rmarkdown::html_vignette: default
 vignette: >
-  %\VignetteIndexEntry{Hyperparameter Tuning with CloudML}
+  %\VignetteIndexEntry{Hyperparameter Tuning}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
+type: docs
+repo: https://github.com/rstudio/cloudml
+menu:
+  main:
+    name: "Hyperparameter Tuning"
+    identifier: "tools-cloudml-tuning"
+    parent: "cloudml-top"
+    weight: 30
 ---
-
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE, eval=FALSE)
 ```
 
 ### Under Construction
-
