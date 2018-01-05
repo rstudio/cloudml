@@ -50,7 +50,7 @@ test_that("cloudml_train() can train and collect savedmodel", {
 test_that("cloudml_train() can train keras model", {
   with_temp_training_dir(system.file("examples/keras", package = "cloudml"), {
     cloudml_write_config()
-    job <- cloudml_train()
+    job <- cloudml_train("mnist_mlp.R")
     expect_train_succeeds(job)
   })
 
