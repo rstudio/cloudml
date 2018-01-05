@@ -334,11 +334,11 @@ print.cloudml_job_status <- function(x, ...) {
   x$trainingInput$pythonModule <- NULL
 
   str(x, give.attr = FALSE, no.list = TRUE)
-  trails_data <- job_trials(x)
-  if (!is.null(trails_data)) {
+  trials_data <- job_trials(x)
+  if (!is.null(trials_data)) {
     cat("\n")
     cat("Hyperparameter Trials:\n")
-    print(trails_data)
+    print(trials_data)
   }
 
   cat(attr(x, "messages"), "\n")
@@ -676,8 +676,8 @@ job_status_trial_dir <- function(status, destination, trial, job) {
 
         if (is.null(status$trainingOutput$trials[[1]]$finalMetric)) {
           stop(
-            "Job trails contains no final metric to retrieve best trial, ",
-            "consider using 'all' or specific trials instead."
+            "Job is missing final metrics to retrieve best trial, ",
+            "consider using 'all' or an specific trial instead."
           )
         }
 
