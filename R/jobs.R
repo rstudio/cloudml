@@ -334,11 +334,11 @@ print.cloudml_job_status <- function(x, ...) {
   x$trainingInput$pythonModule <- NULL
 
   str(x, give.attr = FALSE, no.list = TRUE)
-  trails_data <- job_trials(x)
-  if (!is.null(trails_data)) {
+  trials_data <- job_trials(x)
+  if (!is.null(trials_data)) {
     cat("\n")
     cat("Hyperparameter Trials:\n")
-    print(trails_data)
+    print(trials_data)
   }
 
   cat(attr(x, "messages"), "\n")
@@ -452,7 +452,8 @@ job_collect <- function(job = "latest",
       job,
       trial = trials,
       destination = destination,
-      view = view)
+      view = view,
+      status = status)
     )
   }
 
@@ -478,7 +479,8 @@ job_collect <- function(job = "latest",
                                    trial = trials,
                                    destination = destination,
                                    view = view,
-                                   gcloud = gcloud))
+                                   gcloud = gcloud,
+                                   status = status))
     }
 
     # job isn't ready yet; sleep for a while and try again
@@ -622,15 +624,15 @@ job_download <- function(job,
   invisible(status)
 }
 
-job_list_trials <- function(job) {
-  as.numeric(sapply(job$description$trainingOutput$trials, function(e) e$trialId))
+job_list_trials <- function(status) {
+  as.numeric(sapply(status$trainingOutput$trials, function(e) e$trialId))
 }
 
-job_download_multiple <- function(job, trial, destination, view, gcloud) {
+job_download_multiple <- function(job, trial, destination, view, gcloud, status) {
   if (length(trial) <= 1 && trial != "all")
     job_download(job, trial, destination, view, gcloud)
   else {
-    if (identical(trial, "all")) trial <- job_list_trials(job)
+    if (identical(trial, "all")) trial <- job_list_trials(status)
     lapply(trial, function(t) {
       job_download(job, t, destination, FALSE, gcloud)
     })
@@ -663,12 +665,24 @@ job_status_trial_dir <- function(status, destination, trial, job) {
   )
 
   if (!is.null(trial) && job_is_tuning(job)) {
-    trial_digits_format <- paste0("%0", nchar(max(job_list_trials(job))), "d")
+    trial_digits_format <- paste0("%0", nchar(max(job_list_trials(status))), "d")
     trial_parent <- file.path(storage, "runs", status$jobId)
     if (trial == "best") {
       if (job_status_is_tuning(status) && !is.null(status$trainingInput$hyperparameters$goal)) {
+
+        if (length(status$trainingOutput$trials) == 0) {
+          stop("Job contains no output trials.")
+        }
+
+        if (is.null(status$trainingOutput$trials[[1]]$finalMetric)) {
+          stop(
+            "Job is missing final metrics to retrieve best trial, ",
+            "consider using 'all' or an specific trial instead."
+          )
+        }
+
         decreasing <- if (status$trainingInput$hyperparameters$goal == "MINIMIZE") FALSE else TRUE
-        ordered <- order(sapply(status$trainingOutput$trials, function(e) e$finalMetric$objectiveValue), decreasing = TRUE)
+        ordered <- order(sapply(status$trainingOutput$trials, function(e) e$finalMetric$objectiveValue), decreasing = decreasing)
         if (length(ordered) > 0) {
           best_trial <- as.numeric(status$trainingOutput$trials[[ordered[[1]]]]$trialId)
           output_path <- list(
