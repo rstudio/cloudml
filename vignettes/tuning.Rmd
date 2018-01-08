@@ -169,8 +169,43 @@ The job will proceed as normal, and you can monitor it's results within an RStud
 
 ## Collecting trials
 
+Once the job is completed you can inspect all of the job trails using the `job_trials()` function. For example:
 
+```{r}
+job_trials("cloudml_2018_01_08_142717956")
+```
+```
+finalMetric.objectiveValue finalMetric.trainingStep hyperparameters.dropout1 hyperparameters.dropout2 trialId
+1                    0.973854                       19       0.2011326172916916      0.32774705750441724      10
+2                    0.973458                       19      0.20090378506439671      0.10079321757280404       3
+3                    0.973354                       19       0.5476299090261757      0.49998941144858033       6
+4                    0.972875                       19        0.597820322273044       0.4074512354566201       7
+5                    0.972729                       19      0.25969787952729828      0.42851076497180118       1
+6                    0.972417                       19      0.20045494784980847      0.15927383711937335       4
+7                    0.972188                       19      0.33367593781223304      0.10077055587860367       5
+8                    0.972188                       19      0.59880072314674071      0.10476853415572558       9
+9                    0.972021                       19         0.40078175292512      0.49982245025905447       8
+10                   0.971792                       19      0.46984175786143262      0.25901078861553267       2
+```
 
+You can collect jobs executed as part of a hyperparameter tunning run using the 'job_collect()` function:
+
+```{r}
+job_collect("cloudml_2018_01_08_142717956")
+```
+
+By default this will only collect the job trial with the best metric (`trials = "best"`). You can pass `trials = "all"` to download all trials. For example:
+
+```{r}
+job_collect("cloudml_2018_01_08_142717956", trials = "all")
+```
+
+You can also pass vector of trial IDs to download specific trials. For example, this code would download the top 5 performing trials:
+
+```{r}
+trials <- job_trials("cloudml_2018_01_08_142717956")
+job_collect("cloudml_2018_01_08_142717956", trials = trials$trialId[1:5])
+```
 
 ## Optimization metrics
 
