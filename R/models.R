@@ -35,9 +35,9 @@ cloudml_deploy <- function(
   name,
   version = paste0(name, "_1"),
   region = NULL,
-  cloudml = NULL) {
+  config = NULL) {
 
-  cloudml <- cloudml_config(cloudml)
+  cloudml <- cloudml_config(config)
   gcloud <- gcloud_config()
   storage <- gs_ensure_storage(gcloud)
 

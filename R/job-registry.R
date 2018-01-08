@@ -11,7 +11,7 @@ resolve_job <- function(id, registry = job_registry()) {
 
   # resolve "latest" to latest job
   if (identical(id, "latest"))
-    id <- job_list(gcloud = gcloud)[[1,"JOB_ID"]]
+    id <- job_list()[[1,"JOB_ID"]]
 
   # if we have an associated job object in the registry, use that
   if (exists(id, envir = registry))

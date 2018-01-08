@@ -17,7 +17,7 @@
 #'
 #' @param region The region to be used for training.
 #'
-#' @param cloudml A list, \code{YAML} or \code{JSON} configuration file as
+#' @param config A list, \code{YAML} or \code{JSON} configuration file as
 #'   described
 #'   \url{https://cloud.google.com/ml-engine/reference/rest/v1/projects.jobs}.
 #'
@@ -31,13 +31,13 @@ cloudml_train <- function(file = "train.R",
                           master_type = NULL,
                           flags = NULL,
                           region = NULL,
-                          cloudml = NULL,
+                          config = NULL,
                           collect = "ask")
 {
   message("Submitting training job to CloudML...")
 
   gcloud <- gcloud_config()
-  cloudml <- cloudml_config(cloudml)
+  cloudml <- cloudml_config(config)
 
   if (!is.null(master_type)) cloudml$trainingInput$masterType <- master_type
   if (!is.null(cloudml$trainingInput$masterType) &&
@@ -226,9 +226,10 @@ job_list <- function(filter    = NULL,
                      limit     = NULL,
                      page_size = NULL,
                      sort_by   = NULL,
-                     uri       = FALSE,
-                     gcloud    = NULL)
+                     uri       = FALSE)
 {
+  gcloud <- gcloud_config()
+
   arguments <- (
     MLArgumentsBuilder(gcloud)
     ("jobs")

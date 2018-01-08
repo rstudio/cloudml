@@ -162,7 +162,7 @@ Complete details on available options can be found in the [HyperparameterSpec](h
 To submit a hyperparmaeter tuning job, pass the name of the CloudML configuration file containing your hyperparmeters to `cloudml_train()`:
 
 ```{r}
-cloudml_train("mnist_mlp.R", cloudml = "tuning.yml")
+cloudml_train("mnist_mlp.R", config = "tuning.yml")
 ```
 
 The job will proceed as normal, and you can monitor it's results within an RStudio terminal or via the `job_status()` and `job_stream_logs()` functions. 

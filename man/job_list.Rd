@@ -5,7 +5,7 @@
 \title{List all jobs}
 \usage{
 job_list(filter = NULL, limit = NULL, page_size = NULL, sort_by = NULL,
-  uri = FALSE, gcloud = NULL)
+  uri = FALSE)
 }
 \arguments{
 \item{filter}{Filter the set of jobs to be returned.}

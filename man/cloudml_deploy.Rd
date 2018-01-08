@@ -5,7 +5,7 @@
 \title{Deploy SavedModel to CloudML}
 \usage{
 cloudml_deploy(export_dir_base, name, version = paste0(name, "_1"),
-  region = NULL, cloudml = NULL)
+  region = NULL, config = NULL)
 }
 \arguments{
 \item{export_dir_base}{A string containing a directory containing an
@@ -19,7 +19,7 @@ contain only letters, numbers and underscores. Defaults to name_1}
 
 \item{region}{The region to be used to deploy this model.}
 
-\item{cloudml}{A list, \code{YAML} or \code{JSON} configuration file as
+\item{config}{A list, \code{YAML} or \code{JSON} configuration file as
 described
 \url{https://cloud.google.com/ml-engine/reference/rest/v1/projects.jobs}.}
 }
