@@ -209,5 +209,5 @@ job_collect("cloudml_2018_01_08_142717956", trials = trials$trialId[1:5])
 
 ## Optimization metrics
 
-
+TODO: describe the appropriate `hyperparameterMetricTag` for keras, tfestimators, and core API training jobs.
 
