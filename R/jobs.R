@@ -369,6 +369,15 @@ job_trials_from_status <- function(status) {
 }
 
 #' @export
+job_trials.default <- function(x = NULL) {
+  if (is.null(x))
+    job_trials("latest")
+  else
+    stop("no applicable method for 'job_trials' to an object of class ",
+         class(x)[[1]])
+}
+
+#' @export
 job_trials.character <- function(x) {
   status <- job_status(x)
   job_trials_from_status(status)
