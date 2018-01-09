@@ -210,11 +210,11 @@ job_collect("cloudml_2018_01_08_142717956", trials = trials$trialId[1:5])
 ## Optimization metrics
 
 The `hyperparameterMetricTag` is the TensorFlow summary tag name used
-for optimizing trials. For current versions of Tensorflow, this tag name should
-exactly match what is shown in Tensorboard, including all scopes.
+for optimizing trials. For current versions of TensorFlow, this tag name should
+exactly match what is shown in TensorBoard, including all scopes.
 
-You can find open Tensorboard by running `view_run()` over a completed run and
-inspect the available tags under Metrics or Evaluation:
+You can open Tensorboard by running `tensorboard()` over a completed run and
+inspecting the available metrics.
 
 <img src="images/tensorboard-metrics.png" width="260px">
 <img src="images/tensorboard-evaluation.png" width="260px">
@@ -231,12 +231,12 @@ Tags vary across models but the commmon ones follow:
 | tfestimators | global_step  |
 | tfestimators | loss         |
 
-When using the Core TensorFlow API summary tags can be added as follows:
+When using the Core TensorFlow API summary tags can be added explicitly as follows:
 
 ```{r}
 summary <- tf$Summary()
 summary$value$add(tag = "accuracy", simple_value = accuracy)
-summary_writer$add_summary(summary, iteration)
+summary_writer$add_summary(summary, iteration_number)
 ```
 
 

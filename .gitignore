@@ -6,3 +6,4 @@ internal/
 /cloudml.yml
 runs/
 scratch
+savedmodel/

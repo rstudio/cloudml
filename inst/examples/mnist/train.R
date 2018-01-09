@@ -4,7 +4,7 @@ message("Command Arguments: ", paste(commandArgs(TRUE), collapse = " "))
 
 # read in flags
 FLAGS <- flags(
-  flag_numeric("gradient_descent_optimizer", 0.5)
+  flag_numeric("learning_rate", 0.01)
 )
 
 message("FLAGS: ", jsonlite::toJSON(as.data.frame(FLAGS)))
@@ -24,8 +24,8 @@ y <- tf$nn$softmax(tf$matmul(x, W) + b)
 y_ <- tf$placeholder(tf$float32, shape(NULL, 10L))
 cross_entropy <- tf$reduce_mean(-tf$reduce_sum(y_ * tf$log(y), reduction_indices=1L))
 
-message("Using gradient-descent-optimizer set to: ", FLAGS$gradient_descent_optimizer)
-optimizer <- tf$train$GradientDescentOptimizer(FLAGS$gradient_descent_optimizer)
+message("Using learning_rate set to: ", FLAGS$learning_rate)
+optimizer <- tf$train$GradientDescentOptimizer(FLAGS$learning_rate)
 
 train_step <- optimizer$minimize(cross_entropy)
 
