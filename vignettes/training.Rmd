@@ -246,7 +246,55 @@ cloudml_train("minst_mlp.R", flags = list(dropout1 = 0.3, dropout2 = 0.2))
 
 These flags are passed to your script and are also retained as part of the results recorded for the training run.
 
-You can also more systematically try combinations of flags using CloudML [hyperparameter tuning](tuning.html). 
+You can also more systematically try combinations of flags using CloudML by defining
+a `hyperparameters` entry in your configuration file as follows:
+
+```
+trainingInput:
+  scaleTier: CUSTOM
+  masterType: standard_gpu
+  hyperparameters:
+    goal: MAXIMIZE
+    hyperparameterMetricTag: acc
+    maxTrials: 2
+    maxParallelTrials: 2
+    params:
+      - parameterName: dropout1
+        type: DOUBLE
+        minValue: 0.2
+        maxValue: 0.6
+        scaleType: UNIT_LINEAR_SCALE
+```
+
+Notice that `hyperparameterMetricTag` is the TensorFlow summary tag name used
+for optimizing trials. For current versions of Tensorflow, this tag name should
+exactly match what is shown in Tensorboard, including all scopes.
+
+You can find open Tensorboard by running `view_run()` over a completed run and
+inspect the available tags under Metrics or Evaluation:
+
+<img src="images/tensorboard-metrics.png" width="260px">
+<img src="images/tensorboard-evaluation.png" width="260px">
+
+Tags vary across models but the commmon ones follow:
+
+| package      | tag          |
+|--------------|--------------|
+| keras        | acc          |
+| keras        | loss         |
+| keras        | val_acc      |
+| keras        | val_loss     |
+| tfestimators | average_loss |
+| tfestimators | global_step  |
+| tfestimators | loss         |
+
+When using the Core TensorFlow API summary tags can be added as follows:
+
+```{r}
+summary <- tf$Summary()
+summary$value$add(tag = "accuracy", simple_value = accuracy)
+summary_writer$add_summary(summary, iteration)
+```
 
 ## Training with a GPU
 
