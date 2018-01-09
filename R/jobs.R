@@ -365,7 +365,7 @@ job_trials_from_status <- function(status) {
   if (is.null(status$trainingOutput) || is.null(status$trainingOutput$trials))
     return(NULL)
 
-  df <- do.call("rbind", lapply(x$trainingOutput$trials, as.data.frame, stringsAsFactors = FALSE))
+  df <- do.call("rbind", lapply(status$trainingOutput$trials, as.data.frame, stringsAsFactors = FALSE))
 
   for(col in colnames(df))
     df[[col]] <- as.numeric(df[[col]])
