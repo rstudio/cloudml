@@ -1,6 +1,9 @@
 
-
 library(tfestimators)
+
+FLAGS <- flags(
+  flag_numeric("num_epochs", 10)
+)
 
 mtcars_input_fn <- function(data, num_epochs = 1) {
   input_fn(data,
@@ -22,7 +25,7 @@ indices <- sample(1:nrow(mtcars), size = 0.80 * nrow(mtcars))
 train <- mtcars[indices, ]
 test  <- mtcars[-indices, ]
 
-model %>% train(mtcars_input_fn(train, num_epochs = 10))
+model %>% train(mtcars_input_fn(train, num_epochs = FLAGS$num_epochs))
 
 model %>% evaluate(mtcars_input_fn(test))
 
@@ -30,5 +33,3 @@ obs <- mtcars[1:3, ]
 model %>% predict(mtcars_input_fn(obs))
 
 export_savedmodel(model, export_dir_base = "savedmodel")
-
-
