@@ -13,10 +13,20 @@ if not os.path.exists(deploy):
 # Move to the application directory.
 os.chdir(os.path.dirname(path))
 
-# Run 'Rscript' with this entrypoint. We don't forward command line arguments,
-# as 'gcloud' will append a '--job-dir' argument (when specified) which can
-# confuse the tfruns flags system.
-commands = [sys.argv[1], deploy] + ["--args"] + sys.argv[2:]
+# Run 'Rscript' with this entrypoint. Forward command line arguments, but since
+# 'gcloud' will append a '--job-dir' argument (when specified) which can
+# confuse the tfruns flags system, we remove this argument manually.
+flags = sys.argv[2:]
+try:
+  job_dir = flags.index("--job-dir")
+except:
+  job_dir = -1
+if (job_dir >= 0):
+  del flags[job_dir]
+  if (job_dir < len(flags)):
+    del flags[job_dir]
+
+commands = [sys.argv[1], deploy] + flags
 
 process = subprocess.Popen(
   commands,
