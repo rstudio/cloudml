@@ -4,15 +4,11 @@ trainingInput:
   hyperparameters:
     goal: MAXIMIZE
     hyperparameterMetricTag: acc
-    maxTrials: 10
+    maxTrials: 2
     params:
       - parameterName: dropout1
         type: DOUBLE
         minValue: 0.2
         maxValue: 0.6
         scaleType: UNIT_LINEAR_SCALE
-      - parameterName: dropout2
-        type: DOUBLE
-        minValue: 0.1
-        maxValue: 0.5
-        scaleType: UNIT_LINEAR_SCALE
+

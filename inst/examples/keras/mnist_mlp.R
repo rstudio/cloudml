@@ -7,6 +7,8 @@ FLAGS <- flags(
   flag_numeric("dropout2", 0.3)
 )
 
+print(FLAGS)
+
 mnist <- dataset_mnist()
 x_train <- mnist$train$x
 y_train <- mnist$train$y
