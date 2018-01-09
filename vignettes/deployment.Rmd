@@ -18,7 +18,7 @@ menu:
 
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = TRUE, eval = FALSE)
 ```
 
 You can host your trained machine learning models in the cloud and use the Cloud ML prediction service to infer target values for new data. This page discusses model hosting and prediction and introduces considerations you should keep in mind for your projects.
