@@ -209,17 +209,11 @@ job_collect("cloudml_2018_01_08_142717956", trials = trials$trialId[1:5])
 
 ## Optimization metrics
 
-The `hyperparameterMetricTag` is the TensorFlow summary tag name used
-for optimizing trials. For current versions of TensorFlow, this tag name should
-exactly match what is shown in TensorBoard, including all scopes.
+The `hyperparameterMetricTag` is the TensorFlow summary tag name used for optimizing trials. For current versions of TensorFlow, this tag name should exactly match what is shown in TensorBoard, including all scopes.
 
-You can open Tensorboard by running `tensorboard()` over a completed run and
-inspecting the available metrics.
+You can open Tensorboard by running `tensorboard()` over a completed run and inspecting the available metrics.
 
-<img src="images/tensorboard-metrics.png" width="260px">
-<img src="images/tensorboard-evaluation.png" width="260px">
-
-Tags vary across models but the commmon ones follow:
+Tags vary across models but some common ones follow:
 
 | package      | tag          |
 |--------------|--------------|
@@ -238,5 +232,14 @@ summary <- tf$Summary()
 summary$value$add(tag = "accuracy", simple_value = accuracy)
 summary_writer$add_summary(summary, iteration_number)
 ```
+
+You can see examples training scripts and corresponding `tuning.yml` files for the various TensorFlow APIs here:
+
+- [keras](https://github.com/rstudio/cloudml/tree/master/inst/examples/keras)
+
+- [tfestimators](https://github.com/rstudio/cloudml/tree/master/inst/examples/tfestimators)
+
+- [tensorflow](https://github.com/rstudio/cloudml/tree/master/inst/examples/mnist)
+
 
 
