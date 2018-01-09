@@ -3,7 +3,7 @@ trainingInput:
   masterType: standard_gpu
   hyperparameters:
     goal: MAXIMIZE
-    hyperparameterMetricTag: acc
+    hyperparameterMetricTag: val_acc
     maxTrials: 2
     params:
       - parameterName: dropout1
