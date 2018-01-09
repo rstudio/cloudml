@@ -55,7 +55,7 @@ gcloud_default_project <- function() {
   trimws(gcloud_exec("config", "get-value", "project")$stdout)
 }
 
-gcloud_default_region <- function(default_region = "us-east1") {
+gcloud_default_region <- function(default_region = "us-central1") {
   region <- trimws(
     gexec(
       gcloud_binary(),

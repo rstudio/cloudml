@@ -59,7 +59,7 @@ The core unit of work in CloudML is a job. A job consists of a training script a
 
 ```{r}
 library(cloudml)
-job <- cloudml_train("minst_mlp.R")
+job <- cloudml_train("mnist_mlp.R")
 ```
 
 <div class="bs-callout bs-callout-warning">
@@ -79,7 +79,7 @@ job_status(job)
  $ state         : chr "RUNNING"
  $ trainingInput :List of 3
   ..$ jobDir        : chr "gs://cedar-card-791/r-cloudml/staging"
-  ..$ region        : chr "us-east1"
+  ..$ region        : chr "us-central1"
   ..$ runtimeVersion: chr "1.4"
  $ trainingOutput:List of 1
   ..$ consumedMLUnits: num 0.04
@@ -287,7 +287,14 @@ trainingInput:
   runtimeVersion: 1.2
 ```
 
+You can also pass a named configuration file (i.e. one for a hyperparameter tuning job) via the `config` parmater of `cloudml_train()`. For example:
+
+```{r}
+cloudml_train("mnist_mlp.R", config = "tuning.yml")
+```
+
 Note that `trainingInput` is used as the top level key in the config file (this is required). Additional documentation on available fields in the configuration file is available here <https://cloud.google.com/ml-engine/reference/rest/v1/projects.jobs#TrainingInput>.
+
 
 ## Learning More
 

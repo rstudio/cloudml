@@ -4,8 +4,7 @@
 \alias{cloudml_predict}
 \title{Perform Prediction over a CloudML Model.}
 \usage{
-cloudml_predict(instances, name, version = paste0(name, "_1"),
-  gcloud = NULL)
+cloudml_predict(instances, name, version = paste0(name, "_1"))
 }
 \arguments{
 \item{instances}{A list of instances to be predicted. While predicting
@@ -15,9 +14,6 @@ a single instance, list wrapping this single instance is still expected.}
 
 \item{version}{The version for this model. Versions start with a letter and
 contain only letters, numbers and underscores. Defaults to name_1}
-
-\item{gcloud}{A list or \code{YAML} file with optional 'account' or 'project'
-fields used to configure the GCloud environemnt.}
 }
 \description{
 Perform online prediction over a CloudML model, usually, created using

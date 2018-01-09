@@ -1,6 +1,6 @@
 context("train")
 
-expect_train_succeeds <- function(job) {
+expect_train_succeeds <- function(job, saves_model = FALSE) {
   expect_gt(nchar(job$id), 0)
   expect_gt(length(job$description), 0)
   expect_gt(nchar(job$description$state), 0)
@@ -24,7 +24,9 @@ expect_train_succeeds <- function(job) {
     full.names = TRUE,
     pattern = "saved_model")
 
-  expect_gte(length(saved_model), 1)
+  if (saves_model) {
+    expect_gte(length(saved_model), 1)
+  }
 }
 
 with_temp_training_dir <- function(training_dir, expr) {
@@ -38,20 +40,18 @@ with_temp_training_dir <- function(training_dir, expr) {
 }
 
 test_that("cloudml_train() can train and collect savedmodel", {
-  skip("plain tensorflow test is currently a subset of keras test")
-
   with_temp_training_dir(system.file("examples/mnist", package = "cloudml"), {
     cloudml_write_config()
     job <- cloudml_train()
-    expect_train_succeeds(job)
+    expect_train_succeeds(job, saves_model = TRUE)
   })
 })
 
 test_that("cloudml_train() can train keras model", {
   with_temp_training_dir(system.file("examples/keras", package = "cloudml"), {
     cloudml_write_config()
-    job <- cloudml_train()
-    expect_train_succeeds(job)
+    job <- cloudml_train("mnist_mlp.R")
+    expect_train_succeeds(job, saves_model = FALSE)
   })
 
 })

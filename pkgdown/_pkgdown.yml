@@ -13,7 +13,7 @@ navbar:
       - text: "Training with CloudML"
         href: articles/training.html
       - text: "Deploying Models"
-        href: articles/training.html
+        href: articles/deployment.html
       - text: "Hyperparameter Tuning"
         href: articles/tuning.html
       - text: "Google Cloud Storage"
