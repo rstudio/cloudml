@@ -49,9 +49,6 @@ x_test <- x_test / 255
 y_train <- to_categorical(y_train, 10)
 y_test <- to_categorical(y_test, 10)
 
-# required in order to call export_savedmodel on keras models
-k_set_learning_phase(TRUE)
-
 model <- keras_model_sequential()
 
 model %>%
@@ -75,10 +72,6 @@ model %>% fit(
 
 export_savedmodel(model, "savedmodel")
 ```
-
-Notice that `k_set_learning_phase(TRUE)` is set before training starts
-to avoid having to specify the [learning_phase](https://keras.io/backend/#learning_phase)
-keras placeholder over each prediction.
 
 ### Deploying the Model
 
