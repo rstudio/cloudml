@@ -35,7 +35,7 @@
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
     Guides
-
+     
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu">
@@ -43,7 +43,7 @@
       <a href="../articles/training.html">Training with CloudML</a>
     </li>
     <li>
-      <a href="../articles/training.html">Deploying Models</a>
+      <a href="../articles/deployment.html">Deploying Models</a>
     </li>
     <li>
       <a href="../articles/tuning.html">Hyperparameter Tuning</a>
@@ -61,7 +61,7 @@
 <li>
   <a href="https://github.com/rstudio/cloudml">
     <span class="fa fa-github"></span>
-
+     
   </a>
 </li>
       </ul>
@@ -72,16 +72,16 @@
 </div>
 <!--/.navbar -->
 
-
+      
       </header><div class="row">
   <div class="col-md-9">
     <div class="page-header toc-ignore">
       <h1>Training with CloudML</h1>
-
+            
           </div>
 
-
-
+    
+    
 <div class="contents">
 <div id="overview" class="section level2">
 <h2 class="hasAnchor">
@@ -116,7 +116,7 @@
 <a href="#submitting-jobs" class="anchor"></a>Submitting Jobs</h2>
 <p>The core unit of work in CloudML is a job. A job consists of a training script and related files (e.g. other scripts, data files, etc. within the working directory). To submit a job to CloudML you use the <code><a href="../reference/cloudml_train.html">cloudml_train()</a></code> function, passing it the name of the training script to run. For example:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(cloudml)
-job &lt;-<span class="st"> </span><span class="kw"><a href="../reference/cloudml_train.html">cloudml_train</a></span>(<span class="st">"minst_mlp.R"</span>)</code></pre></div>
+job &lt;-<span class="st"> </span><span class="kw"><a href="../reference/cloudml_train.html">cloudml_train</a></span>(<span class="st">"mnist_mlp.R"</span>)</code></pre></div>
 <div class="bs-callout bs-callout-warning">
 <p>Note that the very first time you submit a job to CloudML the various packages required to run your script will be compiled from source. This will make the execution time of the job considerably longer that you might expect. It’s only the first job that incurs this overhead though (since the package installations are cached), and subsequent jobs will run more quickly.</p>
 </div>
@@ -271,6 +271,8 @@ history &lt;-<span class="st"> </span>model <span class="op">%&gt;%</span><span 
   <span class="fu">scaleTier:</span><span class="at"> CUSTOM</span>
   <span class="fu">masterType:</span><span class="at"> large_model</span>
   <span class="fu">runtimeVersion:</span><span class="at"> 1.2</span></code></pre></div>
+<p>You can also pass a named configuration file (i.e. one for a hyperparameter tuning job) via the <code>config</code> parmater of <code><a href="../reference/cloudml_train.html">cloudml_train()</a></code>. For example:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/cloudml_train.html">cloudml_train</a></span>(<span class="st">"mnist_mlp.R"</span>, <span class="dt">config =</span> <span class="st">"tuning.yml"</span>)</code></pre></div>
 <p>Note that <code>trainingInput</code> is used as the top level key in the config file (this is required). Additional documentation on available fields in the configuration file is available here <a href="https://cloud.google.com/ml-engine/reference/rest/v1/projects.jobs#TrainingInput" class="uri">https://cloud.google.com/ml-engine/reference/rest/v1/projects.jobs#TrainingInput</a>.</p>
 </div>
 <div id="learning-more" class="section level2">

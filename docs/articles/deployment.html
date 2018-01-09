@@ -43,7 +43,7 @@
       <a href="../articles/training.html">Training with CloudML</a>
     </li>
     <li>
-      <a href="../articles/training.html">Deploying Models</a>
+      <a href="../articles/deployment.html">Deploying Models</a>
     </li>
     <li>
       <a href="../articles/tuning.html">Hyperparameter Tuning</a>
@@ -91,33 +91,63 @@
 <div id="exporting-a-savedmodel" class="section level3">
 <h3 class="hasAnchor">
 <a href="#exporting-a-savedmodel" class="anchor"></a>Exporting a SavedModel</h3>
-<p>The Cloud ML prediction service makes use of models exported through the <code><a href="http://www.rdocumentation.org/packages/tensorflow/topics/export_savedmodel">export_savedmodel()</a></code> function which is available for models created using the <a href="https://tensorflow.rstudio.com/tensorflow/">tensorflow</a>, <a href="https://tensorflow.rstudio.com/keras/">keras</a> and <a href="https://tensorflow.rstudio.com/tfestimators/">tfestimators</a> packages or any other tool that support the <a href="https://www.tensorflow.org/api_docs/python/tf/train/Saver">tf.train.Saver</a> interface.</p>
-<p>For instance, we can define and export a simple model by running:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(tensorflow)
-<span class="kw">library</span>(cloudml)
+<p>The Cloud ML prediction service makes use of models exported through the <code><a href="http://www.rdocumentation.org/packages/keras/topics/reexports">export_savedmodel()</a></code> function which is available for models created using the <a href="https://tensorflow.rstudio.com/tensorflow/">tensorflow</a>, <a href="https://tensorflow.rstudio.com/keras/">keras</a> and <a href="https://tensorflow.rstudio.com/tfestimators/">tfestimators</a> packages or any other tool that support the <a href="https://www.tensorflow.org/api_docs/python/tf/train/Saver">tf.train.Saver</a> interface.</p>
+<p>For instance, we can use <code>examples/keras/train.R</code> included in this package to define and train an MNIST keras model by running:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(keras)
 
-<span class="co"># define output folder</span>
-model_dir &lt;-<span class="st"> </span><span class="kw">tempfile</span>()
+FLAGS &lt;-<span class="st"> </span><span class="kw"><a href="http://www.rdocumentation.org/packages/keras/topics/reexports">flags</a></span>(
+  <span class="kw"><a href="http://www.rdocumentation.org/packages/keras/topics/reexports">flag_numeric</a></span>(<span class="st">"dropout_rate"</span>, <span class="fl">0.4</span>)
+)
 
-<span class="co"># define simple string-based tensor operations</span>
-sess &lt;-<span class="st"> </span>tf<span class="op">$</span><span class="kw">Session</span>()
-name &lt;-<span class="st"> </span>tf<span class="op">$</span><span class="kw">placeholder</span>(tf<span class="op">$</span>string)
-hello &lt;-<span class="st"> </span>tf<span class="op">$</span><span class="kw">string_join</span>(<span class="dt">inputs =</span> <span class="kw">c</span>(<span class="st">"Hello, "</span>, name, <span class="st">"!"</span>))
+mnist &lt;-<span class="st"> </span><span class="kw"><a href="http://www.rdocumentation.org/packages/keras/topics/dataset_mnist">dataset_mnist</a></span>()
+x_train &lt;-<span class="st"> </span>mnist<span class="op">$</span>train<span class="op">$</span>x
+y_train &lt;-<span class="st"> </span>mnist<span class="op">$</span>train<span class="op">$</span>y
+x_test &lt;-<span class="st"> </span>mnist<span class="op">$</span>test<span class="op">$</span>x
+y_test &lt;-<span class="st"> </span>mnist<span class="op">$</span>test<span class="op">$</span>y
 
-<span class="co"># export as a savedmodel</span>
-<span class="kw"><a href="http://www.rdocumentation.org/packages/tensorflow/topics/export_savedmodel">export_savedmodel</a></span>(
-  sess,
-  model_dir,
-  <span class="dt">inputs =</span> <span class="kw">list</span>(<span class="dt">name =</span> name),
-  <span class="dt">outputs =</span> <span class="kw">list</span>(<span class="dt">hello =</span> hello)
-)</code></pre></div>
+x_train &lt;-<span class="st"> </span><span class="kw"><a href="http://www.rdocumentation.org/packages/keras/topics/reexports">array_reshape</a></span>(x_train, <span class="kw">c</span>(<span class="kw">nrow</span>(x_train), <span class="dv">784</span>))
+x_test &lt;-<span class="st"> </span><span class="kw"><a href="http://www.rdocumentation.org/packages/keras/topics/reexports">array_reshape</a></span>(x_test, <span class="kw">c</span>(<span class="kw">nrow</span>(x_test), <span class="dv">784</span>))
+x_train &lt;-<span class="st"> </span>x_train <span class="op">/</span><span class="st"> </span><span class="dv">255</span>
+x_test &lt;-<span class="st"> </span>x_test <span class="op">/</span><span class="st"> </span><span class="dv">255</span>
+
+y_train &lt;-<span class="st"> </span><span class="kw"><a href="http://www.rdocumentation.org/packages/keras/topics/to_categorical">to_categorical</a></span>(y_train, <span class="dv">10</span>)
+y_test &lt;-<span class="st"> </span><span class="kw"><a href="http://www.rdocumentation.org/packages/keras/topics/to_categorical">to_categorical</a></span>(y_test, <span class="dv">10</span>)
+
+model &lt;-<span class="st"> </span><span class="kw"><a href="http://www.rdocumentation.org/packages/keras/topics/keras_model_sequential">keras_model_sequential</a></span>()
+
+model <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw"><a href="http://www.rdocumentation.org/packages/keras/topics/layer_dense">layer_dense</a></span>(<span class="dt">units =</span> <span class="dv">256</span>, <span class="dt">activation =</span> <span class="st">'relu'</span>, <span class="dt">input_shape =</span> <span class="kw">c</span>(<span class="dv">784</span>)) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw"><a href="http://www.rdocumentation.org/packages/keras/topics/layer_dropout">layer_dropout</a></span>(<span class="dt">rate =</span> FLAGS<span class="op">$</span>dropout_rate) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw"><a href="http://www.rdocumentation.org/packages/keras/topics/layer_dense">layer_dense</a></span>(<span class="dt">units =</span> <span class="dv">128</span>, <span class="dt">activation =</span> <span class="st">'relu'</span>) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw"><a href="http://www.rdocumentation.org/packages/keras/topics/layer_dropout">layer_dropout</a></span>(<span class="dt">rate =</span> <span class="fl">0.3</span>) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw"><a href="http://www.rdocumentation.org/packages/keras/topics/layer_dense">layer_dense</a></span>(<span class="dt">units =</span> <span class="dv">10</span>, <span class="dt">activation =</span> <span class="st">'softmax'</span>)
+
+model <span class="op">%&gt;%</span><span class="st"> </span><span class="kw"><a href="http://www.rdocumentation.org/packages/keras/topics/compile">compile</a></span>(
+  <span class="dt">loss =</span> <span class="st">'categorical_crossentropy'</span>,
+  <span class="dt">optimizer =</span> <span class="kw"><a href="http://www.rdocumentation.org/packages/keras/topics/optimizer_rmsprop">optimizer_rmsprop</a></span>(),
+  <span class="dt">metrics =</span> <span class="kw">c</span>(<span class="st">'accuracy'</span>)
+)
+
+model <span class="op">%&gt;%</span><span class="st"> </span><span class="kw"><a href="http://www.rdocumentation.org/packages/keras/topics/fit">fit</a></span>(
+  x_train, y_train,
+  <span class="dt">epochs =</span> <span class="dv">20</span>, <span class="dt">batch_size =</span> <span class="dv">128</span>,
+  <span class="dt">validation_split =</span> <span class="fl">0.2</span>
+)
+
+<span class="kw"><a href="http://www.rdocumentation.org/packages/keras/topics/reexports">export_savedmodel</a></span>(model, <span class="st">"savedmodel"</span>)</code></pre></div>
 </div>
 <div id="deploying-the-model" class="section level3">
 <h3 class="hasAnchor">
 <a href="#deploying-the-model" class="anchor"></a>Deploying the Model</h3>
 <p>Deployment is performed through <code><a href="../reference/cloudml_deploy.html">cloudml_deploy()</a></code> which uses the same <code>gcloud</code> and <code>cloudml</code> configuration concepts used while training. We can train any exported model by running:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/cloudml_deploy.html">cloudml_deploy</a></span>(model_dir, <span class="dt">name =</span> <span class="st">"hello_world"</span>)</code></pre></div>
-<pre><code>Model created and available in https://console.cloud.google.com/mlengine/models/hello_world</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/cloudml_deploy.html">cloudml_deploy</a></span>(<span class="st">"savedmodel"</span>, <span class="dt">name =</span> <span class="st">"keras_mnist"</span>)</code></pre></div>
+<pre><code>Copying file://savedmodel/variables/variables.data-00000-of-00001 [Content-Type=application/octet-stream]...
+Copying file://savedmodel/saved_model.pb [Content-Type=application/octet-stream]...
+Copying file://savedmodel/variables/variables.index [Content-Type=application/octet-stream]...
+/ [3/3 files][  1.9 MiB/  1.9 MiB] 100% Done                                    
+Operation completed over 3 objects/1.9 MiB.
+
+Model created and available in https://console.cloud.google.com/mlengine/models/keras_mnist</code></pre>
 <p>Notice that models make use of unique names and versions which can be specified using the <code>name</code> and <code>version</code> parameters in <code><a href="../reference/cloudml_deploy.html">cloudml_deploy()</a></code>.</p>
 </div>
 </div>
@@ -125,17 +155,18 @@ hello &lt;-<span class="st"> </span>tf<span class="op">$</span><span class="kw">
 <h2 class="hasAnchor">
 <a href="#prediction" class="anchor"></a>Prediction</h2>
 <p>Once a model is deployed, predictions can be performed by providing a list of inputs into <code><a href="../reference/cloudml_predict.html">cloudml_predict()</a></code>:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">mnist_image &lt;-<span class="st"> </span>keras<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/keras/topics/dataset_mnist">dataset_mnist</a></span>()<span class="op">$</span>train<span class="op">$</span>x[<span class="dv">1</span>,,]
+grid<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/grid/topics/grid.raster">grid.raster</a></span>(mnist_image <span class="op">/</span><span class="st"> </span><span class="dv">255</span>)</code></pre></div>
+<p><img src="images/deploy-keras-mnist-image.png"><br></p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/cloudml_predict.html">cloudml_predict</a></span>(
-  <span class="dt">name =</span> <span class="st">"hello_world"</span>,
   <span class="kw">list</span>(
-    <span class="kw">list</span>(<span class="dt">name =</span> <span class="st">"cloudml"</span>),
-    <span class="kw">list</span>(<span class="dt">name =</span> <span class="st">"tensorflow"</span>)
-  )
+    <span class="kw">as.vector</span>(<span class="kw">t</span>(mnist_image))
+  ),
+  <span class="dt">name =</span> <span class="st">"keras_mnist"</span>,
 )</code></pre></div>
 <pre><code>$predictions
-               hello
-1    Hello, cloudml!
-2 Hello, tensorflow!</code></pre>
+                       dense_3
+1 0, 0, 0, 0, 0, 1, 0, 0, 0, 0</code></pre>
 <p>For additional information visit <a href="https://cloud.google.com/ml-engine/docs/prediction-overview">Google Cloud Platform - Prediction Basics</a></p>
 </div>
 </div>

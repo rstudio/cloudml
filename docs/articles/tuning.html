@@ -5,7 +5,7 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Hyperparameter Tuning with CloudML • cloudml</title>
+<title>Hyperparameter Tuning • cloudml</title>
 <!-- jquery --><script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script><!-- Bootstrap --><link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/cosmo/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script><!-- Font Awesome icons --><link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
 <!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
@@ -43,7 +43,7 @@
       <a href="../articles/training.html">Training with CloudML</a>
     </li>
     <li>
-      <a href="../articles/training.html">Deploying Models</a>
+      <a href="../articles/deployment.html">Deploying Models</a>
     </li>
     <li>
       <a href="../articles/tuning.html">Hyperparameter Tuning</a>
@@ -76,21 +76,187 @@
       </header><div class="row">
   <div class="col-md-9">
     <div class="page-header toc-ignore">
-      <h1>Hyperparameter Tuning with CloudML</h1>
+      <h1>Hyperparameter Tuning</h1>
             
           </div>
 
     
     
 <div class="contents">
-<div id="under-construction" class="section level3">
+<div id="overview" class="section level2">
+<h2 class="hasAnchor">
+<a href="#overview" class="anchor"></a>Overview</h2>
+<p>This article describes hyperparameter tuning, which is the automated model enhancer provided by Cloud Machine Learning Engine. Hyperparameter tuning takes advantage of the processing infrastructure of Google Cloud Platform to test different hyperparameter configurations when training your model. It can give you optimized values for hyperparameters, which maximizes your model’s predictive accuracy.</p>
+</div>
+<div id="whats-a-hyperparameter" class="section level2">
+<h2 class="hasAnchor">
+<a href="#whats-a-hyperparameter" class="anchor"></a>What’s a hyperparameter?</h2>
+<p>If you’re new to machine learning, you may have never encountered the term <em>hyperparameters</em> before. Your trainer handles three categories of data as it trains your model:</p>
+<ul>
+<li><p>Your input data (also called training data) is a collection of individual records (instances) containing the features important to your machine learning problem. This data is used during training to configure your model to accurately make predictions about new instances of similar data. However, the actual values in your input data never directly become part of your model.</p></li>
+<li><p>Your model’s parameters are the variables that your chosen machine learning technique uses to adjust to your data. For example, a deep neural network (DNN) is composed of processing nodes (neurons), each with an operation performed on data as it travels through the network. When your DNN is trained, each node has a weight value that tells your model how much impact it has on the final prediction. Those weights are an example of your model’s parameters. In many ways, your model’s parameters are the model—they are what distinguishes your particular model from other models of the same type working on similar data.</p></li>
+<li><p>If model parameters are variables that get adjusted by training with existing data, your hyperparameters are the variables about the training process itself. For example, part of setting up a deep neural network is deciding how many “hidden” layers of nodes to use between the input layer and the output layer, as well as how many nodes each layer should use. These variables are not directly related to the training data at all. They are configuration variables. Another difference is that parameters change during a training job, while the hyperparameters are usually constant during a job.</p></li>
+</ul>
+<p>Your model parameters are optimized (you could say “tuned”) by the training process: you run data through the operations of the model, compare the resulting prediction with the actual value for each data instance, evaluate the accuracy, and adjust until you find the best values. Hyperparameters are similarly tuned by running your whole training job, looking at the aggregate accuracy, and adjusting. In both cases you are modifying the composition of your model in an effort to find the best combination to handle your problem.</p>
+<p>Without an automated technology like Cloud ML Engine hyperparameter tuning, you need to make manual adjustments to the hyperparameters over the course of many training runs to arrive at the optimal values. Hyperparameter tuning makes the process of determining the best hyperparameter settings easier and less tedious.</p>
+</div>
+<div id="how-it-works" class="section level2">
+<h2 class="hasAnchor">
+<a href="#how-it-works" class="anchor"></a>How it works</h2>
+<p>Hyperparameter tuning works by running multiple <em>trials</em> in a single training job. Each trial is a complete execution of your training application with values for your chosen hyperparameters set within limits you specify. The Cloud ML Engine training service keeps track of the results of each trial and makes adjustments for subsequent trials. When the job is finished, you can get a summary of all the trials along with the most effective configuration of values according to the criteria you specify.</p>
+<p>Hyperparameter tuning requires more explicit communication between the Cloud ML Engine training service and your training application. You define all the information that your model needs in your training application. The best way to think about this interaction is that you define the hyperparameters (variables) that you want to adjust and you define a target value.</p>
+<p>To learn more about how Bayesian optimization is used for hyperparameter tuning in Cloud ML Engine, read the August 2017 Google Cloud Big Data and Machine Learning Blog post named <a href="https://cloud.google.com/blog/big-data/2017/08/hyperparameter-tuning-in-cloud-machine-learning-engine-using-bayesian-optimization">Hyperparameter Tuning in Cloud Machine Learning Engine using Bayesian Optimization</a>.</p>
+</div>
+<div id="what-it-optimizes" class="section level2">
+<h2 class="hasAnchor">
+<a href="#what-it-optimizes" class="anchor"></a>What it optimizes</h2>
+<p>Hyperparameter tuning optimizes a single target variable (also called the hyperparameter metric) that you specify. The accuracy of the model, as calculated from an evaluation pass, is a common metric. The metric must be a numeric value, and you can specify whether you want to tune your model to maximize or minimize your metric.</p>
+<p>When you start a job with hyperparameter tuning, you establish the name of your hyperparameter metric. The appropriate name will depend on whether you are using <a href="https://tensorflow.rstudio.com/keras/">keras</a>, <a href="https://tensorflow.rstudio.com/keras/">tfestimators</a>, or the <a href="https://tensorflow.rstudio.com/tensorflow/">core</a> TensorFlow API. This will be covered below in the section on [Hyperparameter tuning configuration].</p>
+<div id="how-cloud-ml-engine-gets-your-metric" class="section level3">
 <h3 class="hasAnchor">
-<a href="#under-construction" class="anchor"></a>Under Construction</h3>
+<a href="#how-cloud-ml-engine-gets-your-metric" class="anchor"></a>How Cloud ML Engine gets your metric</h3>
+<p>You may notice that there are no instructions in this documentation for passing your hyperparameter metric to the Cloud ML Engine training service. That’s because the service automatically monitors TensorFlow summary events generated by your trainer and retrieves the metric.</p>
+</div>
+<div id="the-flow-of-hyperparameter-values" class="section level3">
+<h3 class="hasAnchor">
+<a href="#the-flow-of-hyperparameter-values" class="anchor"></a>The flow of hyperparameter values</h3>
+<p>Without hyperparameter tuning, you can set your hyperparameters by whatever means you like in your trainer. You might configure them according to command-line arguments to your main application module, or feed them to your application in a configuration file, for example. When you use hyperparameter tuning, you must set the values of the hyperparameters that you’re using for tuning with a specific procedure:</p>
+<ul>
+<li><p>Define a <a href="https://tensorflow.rstudio.com/tools/training_flags.html">training flag</a> within your training script for each tuned hyperparameter.</p></li>
+<li><p>Use the value passed for those arguments to set the corresponding hyperparameter in your training code.</p></li>
+</ul>
+<p>When you configure a training job with hyperparameter tuning, you define each hyperparameter to tune, its type, and the range of values to try. You identify each hyperparameter using exactly the same name as the corresponding argument you defined in your main module. The training service includes command-line arguments using these names when it runs your trainer, which are in turn propagated to the <code>FLAGS</code> within your script.</p>
+</div>
+</div>
+<div id="selecting-hyperparameters" class="section level2">
+<h2 class="hasAnchor">
+<a href="#selecting-hyperparameters" class="anchor"></a>Selecting hyperparameters</h2>
+<p>There is very little universal advice to give about how to choose which hyperparameters you should tune. If you have experience with the machine learning technique that you’re using, you may have insight into how its hyperparameters behave. You may also be able to find advice from machine learning communities.</p>
+<p>However you choose them, it’s important to understand the implications. Every hyperparameter that you choose to tune has the potential to exponentially increase the number of trials required for a successful tuning job. When you train on Cloud ML Engine you are charged for the duration of the job, so careless assignment of hyperparameters to tune can greatly increase the cost of training your model.</p>
+</div>
+<div id="preparing-your-script" class="section level2">
+<h2 class="hasAnchor">
+<a href="#preparing-your-script" class="anchor"></a>Preparing your script</h2>
+<p>To prepare your training script for tuning, you should define a <a href="https://tensorflow.rstudio.com/tools/training_flags.html">training flag</a> within your script for each tuned hyperparameter. For example:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(keras)
+
+FLAGS &lt;-<span class="st"> </span><span class="kw"><a href="http://www.rdocumentation.org/packages/keras/topics/reexports">flags</a></span>(
+  <span class="kw"><a href="http://www.rdocumentation.org/packages/keras/topics/reexports">flag_integer</a></span>(<span class="st">"dense_units1"</span>, <span class="dv">128</span>),
+  <span class="kw"><a href="http://www.rdocumentation.org/packages/keras/topics/reexports">flag_numeric</a></span>(<span class="st">"dropout1"</span>, <span class="fl">0.4</span>),
+  <span class="kw"><a href="http://www.rdocumentation.org/packages/keras/topics/reexports">flag_integer</a></span>(<span class="st">"dense_units2"</span>, <span class="dv">128</span>),
+  <span class="kw"><a href="http://www.rdocumentation.org/packages/keras/topics/reexports">flag_numeric</a></span>(<span class="st">"dropout2"</span>, <span class="fl">0.3</span>)
+)</code></pre></div>
+<p>These flags would then used within a script as follows:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">model &lt;-<span class="st"> </span><span class="kw"><a href="http://www.rdocumentation.org/packages/keras/topics/keras_model_sequential">keras_model_sequential</a></span>() <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw"><a href="http://www.rdocumentation.org/packages/keras/topics/layer_dense">layer_dense</a></span>(<span class="dt">units =</span> FLAGS<span class="op">$</span>dense_units1, <span class="dt">activation =</span> <span class="st">'relu'</span>, 
+              <span class="dt">input_shape =</span> <span class="kw">c</span>(<span class="dv">784</span>)) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw"><a href="http://www.rdocumentation.org/packages/keras/topics/layer_dropout">layer_dropout</a></span>(<span class="dt">rate =</span> FLAGS<span class="op">$</span>dropout1) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw"><a href="http://www.rdocumentation.org/packages/keras/topics/layer_dense">layer_dense</a></span>(<span class="dt">units =</span> FLAGS<span class="op">$</span>dense_units2, <span class="dt">activation =</span> <span class="st">'relu'</span>) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw"><a href="http://www.rdocumentation.org/packages/keras/topics/layer_dropout">layer_dropout</a></span>(<span class="dt">rate =</span> FLAGS<span class="op">$</span>dropout2) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw"><a href="http://www.rdocumentation.org/packages/keras/topics/layer_dense">layer_dense</a></span>(<span class="dt">units =</span> <span class="dv">10</span>, <span class="dt">activation =</span> <span class="st">'softmax'</span>)</code></pre></div>
+<p>Note that instead of literal values for the various parameters we want to vary we now reference members of the <code>FLAGS</code> list returned from the <code><a href="http://www.rdocumentation.org/packages/keras/topics/reexports">flags()</a></code> function.</p>
+</div>
+<div id="tuning-configuration" class="section level2">
+<h2 class="hasAnchor">
+<a href="#tuning-configuration" class="anchor"></a>Tuning configuration</h2>
+<p>Before you submit you training script you need to create a configuration file that determines both the name of the metric to optimize as well as the training flags and corresponding values to use for optimization. The exact semantics of specifying a metric differ depending on what interface you are using, here we’ll use a Keras example (see the section on <a href="#optimization-metrics">Optimization metrics</a> for details on other interfaces).</p>
+<p>With Keras, any named metric (as defined by the <code>metrics</code> argument passed to the <code><a href="http://www.rdocumentation.org/packages/keras/topics/compile">compile()</a></code> function) can be used as the target for optimization. For example, if this was the call to <code><a href="http://www.rdocumentation.org/packages/keras/topics/compile">compile()</a></code>:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">model <span class="op">%&gt;%</span><span class="st"> </span><span class="kw"><a href="http://www.rdocumentation.org/packages/keras/topics/compile">compile</a></span>(
+  <span class="dt">loss =</span> <span class="st">'categorical_crossentropy'</span>,
+  <span class="dt">optimizer =</span> <span class="kw"><a href="http://www.rdocumentation.org/packages/keras/topics/optimizer_rmsprop">optimizer_rmsprop</a></span>(),
+  <span class="dt">metrics =</span> <span class="kw">c</span>(<span class="st">'accuracy'</span>)
+)</code></pre></div>
+<p>Then you could use the following as your CloudML training configuration file for a scenario where you wanted to explore the impact of different dropout ratios:</p>
+<p><strong>tuning.yml</strong></p>
+<div class="sourceCode"><pre class="sourceCode yaml"><code class="sourceCode yaml"><span class="fu">trainingInput:</span>
+  <span class="fu">scaleTier:</span><span class="at"> CUSTOM</span>
+  <span class="fu">masterType:</span><span class="at"> standard_gpu</span>
+  <span class="fu">hyperparameters:</span>
+    <span class="fu">goal:</span><span class="at"> MAXIMIZE</span>
+    <span class="fu">hyperparameterMetricTag:</span><span class="at"> acc</span>
+    <span class="fu">maxTrials:</span><span class="at"> 10</span>
+    <span class="fu">params:</span>
+      <span class="kw">-</span> <span class="fu">parameterName:</span><span class="at"> dropout1</span>
+        <span class="fu">type:</span><span class="at"> DOUBLE</span>
+        <span class="fu">minValue:</span><span class="at"> 0.2</span>
+        <span class="fu">maxValue:</span><span class="at"> 0.6</span>
+        <span class="fu">scaleType:</span><span class="at"> UNIT_LINEAR_SCALE</span>
+      <span class="kw">-</span> <span class="fu">parameterName:</span><span class="at"> dropout2</span>
+        <span class="fu">type:</span><span class="at"> DOUBLE</span>
+        <span class="fu">minValue:</span><span class="at"> 0.1</span>
+        <span class="fu">maxValue:</span><span class="at"> 0.5</span>
+        <span class="fu">scaleType:</span><span class="at"> UNIT_LINEAR_SCALE</span></code></pre></div>
+<p>We specified <code>hyperparameterMetricTag: acc</code> as the metric to optimize for. Note that whenever attempting to optimize accuracy with Keras specify <code>acc</code> rather than <code>accuracy</code> as that is the standard abbreviation used by Keras for this metric.</p>
+<p>The <code>type</code> field can be one of:</p>
+<ul>
+<li><code>INTEGER</code></li>
+<li><code>DOUBLE</code></li>
+</ul>
+<p>The <code>scaleType</code> field can be one of:</p>
+<ul>
+<li><code>UNIT_LINEAR_SCALE</code></li>
+<li><code>UNIT_LOG_SCALE</code></li>
+<li><code>UNIT_REVERSE_LOG_SCALE</code></li>
+</ul>
+<p>Note also that configuration for the compute resources to use for the job can also be provided in the config file (e.g. the <code>masterType</code> field).</p>
+<p>Complete details on available options can be found in the <a href="https://cloud.google.com/ml-engine/reference/rest/v1/projects.jobs#HyperparameterSpec">HyperparameterSpec</a> documentation.</p>
+</div>
+<div id="submitting-a-tuning-job" class="section level2">
+<h2 class="hasAnchor">
+<a href="#submitting-a-tuning-job" class="anchor"></a>Submitting a tuning job</h2>
+<p>To submit a hyperparmaeter tuning job, pass the name of the CloudML configuration file containing your hyperparmeters to <code><a href="../reference/cloudml_train.html">cloudml_train()</a></code>:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/cloudml_train.html">cloudml_train</a></span>(<span class="st">"mnist_mlp.R"</span>, <span class="dt">config =</span> <span class="st">"tuning.yml"</span>)</code></pre></div>
+<p>The job will proceed as normal, and you can monitor it’s results within an RStudio terminal or via the <code><a href="../reference/job_status.html">job_status()</a></code> and <code><a href="../reference/job_stream_logs.html">job_stream_logs()</a></code> functions.</p>
+</div>
+<div id="collecting-trials" class="section level2">
+<h2 class="hasAnchor">
+<a href="#collecting-trials" class="anchor"></a>Collecting trials</h2>
+<p>Once the job is completed you can inspect all of the job trails using the <code><a href="../reference/job_trials.html">job_trials()</a></code> function. For example:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/job_trials.html">job_trials</a></span>(<span class="st">"cloudml_2018_01_08_142717956"</span>)</code></pre></div>
+<pre><code>finalMetric.objectiveValue finalMetric.trainingStep hyperparameters.dropout1 hyperparameters.dropout2 trialId
+1                    0.973854                       19       0.2011326172916916      0.32774705750441724      10
+2                    0.973458                       19      0.20090378506439671      0.10079321757280404       3
+3                    0.973354                       19       0.5476299090261757      0.49998941144858033       6
+4                    0.972875                       19        0.597820322273044       0.4074512354566201       7
+5                    0.972729                       19      0.25969787952729828      0.42851076497180118       1
+6                    0.972417                       19      0.20045494784980847      0.15927383711937335       4
+7                    0.972188                       19      0.33367593781223304      0.10077055587860367       5
+8                    0.972188                       19      0.59880072314674071      0.10476853415572558       9
+9                    0.972021                       19         0.40078175292512      0.49982245025905447       8
+10                   0.971792                       19      0.46984175786143262      0.25901078861553267       2</code></pre>
+<p>You can collect jobs executed as part of a hyperparameter tunning run using the ’job_collect()` function:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/job_collect.html">job_collect</a></span>(<span class="st">"cloudml_2018_01_08_142717956"</span>)</code></pre></div>
+<p>By default this will only collect the job trial with the best metric (<code>trials = "best"</code>). You can pass <code>trials = "all"</code> to download all trials. For example:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/job_collect.html">job_collect</a></span>(<span class="st">"cloudml_2018_01_08_142717956"</span>, <span class="dt">trials =</span> <span class="st">"all"</span>)</code></pre></div>
+<p>You can also pass vector of trial IDs to download specific trials. For example, this code would download the top 5 performing trials:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">trials &lt;-<span class="st"> </span><span class="kw"><a href="../reference/job_trials.html">job_trials</a></span>(<span class="st">"cloudml_2018_01_08_142717956"</span>)
+<span class="kw"><a href="../reference/job_collect.html">job_collect</a></span>(<span class="st">"cloudml_2018_01_08_142717956"</span>, <span class="dt">trials =</span> trials<span class="op">$</span>trialId[<span class="dv">1</span><span class="op">:</span><span class="dv">5</span>])</code></pre></div>
+</div>
+<div id="optimization-metrics" class="section level2">
+<h2 class="hasAnchor">
+<a href="#optimization-metrics" class="anchor"></a>Optimization metrics</h2>
+<p>TODO: describe the appropriate <code>hyperparameterMetricTag</code> for keras, tfestimators, and core API training jobs.</p>
 </div>
 </div>
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
+        <div id="tocnav">
+      <h2 class="hasAnchor">
+<a href="#tocnav" class="anchor"></a>Contents</h2>
+      <ul class="nav nav-pills nav-stacked">
+<li><a href="#overview">Overview</a></li>
+      <li><a href="#whats-a-hyperparameter">What’s a hyperparameter?</a></li>
+      <li><a href="#how-it-works">How it works</a></li>
+      <li><a href="#what-it-optimizes">What it optimizes</a></li>
+      <li><a href="#selecting-hyperparameters">Selecting hyperparameters</a></li>
+      <li><a href="#preparing-your-script">Preparing your script</a></li>
+      <li><a href="#tuning-configuration">Tuning configuration</a></li>
+      <li><a href="#submitting-a-tuning-job">Submitting a tuning job</a></li>
+      <li><a href="#collecting-trials">Collecting trials</a></li>
+      <li><a href="#optimization-metrics">Optimization metrics</a></li>
+      </ul>
+</div>
       </div>
 
 </div>

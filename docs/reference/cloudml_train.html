@@ -65,7 +65,7 @@
       <a href="../articles/training.html">Training with CloudML</a>
     </li>
     <li>
-      <a href="../articles/training.html">Deploying Models</a>
+      <a href="../articles/deployment.html">Deploying Models</a>
     </li>
     <li>
       <a href="../articles/tuning.html">Hyperparameter Tuning</a>
@@ -107,7 +107,7 @@ train a model.</p>
     
 
     <pre class="usage"><span class='fu'>cloudml_train</span>(<span class='kw'>file</span> <span class='kw'>=</span> <span class='st'>"train.R"</span>, <span class='kw'>master_type</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>flags</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>cloudml</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>gcloud</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>collect</span> <span class='kw'>=</span> <span class='st'>"ask"</span>)</pre>
+  <span class='kw'>region</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>config</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>collect</span> <span class='kw'>=</span> <span class='st'>"ask"</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
@@ -130,15 +130,14 @@ for details on available machine types.</p></td>
 to YAML file containing flag values.</p></td>
     </tr>
     <tr>
-      <th>cloudml</th>
+      <th>region</th>
+      <td><p>The region to be used for training.</p></td>
+    </tr>
+    <tr>
+      <th>config</th>
       <td><p>A list, <code>YAML</code> or <code>JSON</code> configuration file as
 described
 <a href='https://cloud.google.com/ml-engine/reference/rest/v1/projects.jobs'>https://cloud.google.com/ml-engine/reference/rest/v1/projects.jobs</a>.</p></td>
-    </tr>
-    <tr>
-      <th>gcloud</th>
-      <td><p>A list or <code>YAML</code> file with optional 'account' or 'project'
-fields used to configure the GCloud environemnt.</p></td>
     </tr>
     <tr>
       <th>collect</th>
