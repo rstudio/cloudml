@@ -106,7 +106,7 @@ grid::grid.raster(mnist_image / 255)
 ```
 
 ![](images/deploy-keras-mnist-image.png)
-
+<br>
 ```{r eval=FALSE}
 cloudml_predict(
   list(
