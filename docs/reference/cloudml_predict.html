@@ -65,7 +65,7 @@
       <a href="../articles/training.html">Training with CloudML</a>
     </li>
     <li>
-      <a href="../articles/training.html">Deploying Models</a>
+      <a href="../articles/deployment.html">Deploying Models</a>
     </li>
     <li>
       <a href="../articles/tuning.html">Hyperparameter Tuning</a>
@@ -106,8 +106,7 @@
 <code><a href='cloudml_deploy.html'>cloudml_deploy()</a></code></p>
     
 
-    <pre class="usage"><span class='fu'>cloudml_predict</span>(<span class='no'>instances</span>, <span class='no'>name</span>, <span class='kw'>version</span> <span class='kw'>=</span> <span class='fu'>paste0</span>(<span class='no'>name</span>, <span class='st'>"_1"</span>),
-  <span class='kw'>gcloud</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
+    <pre class="usage"><span class='fu'>cloudml_predict</span>(<span class='no'>instances</span>, <span class='no'>name</span>, <span class='kw'>version</span> <span class='kw'>=</span> <span class='fu'>paste0</span>(<span class='no'>name</span>, <span class='st'>"_1"</span>))</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
@@ -125,11 +124,6 @@ a single instance, list wrapping this single instance is still expected.</p></td
       <th>version</th>
       <td><p>The version for this model. Versions start with a letter and
 contain only letters, numbers and underscores. Defaults to name_1</p></td>
-    </tr>
-    <tr>
-      <th>gcloud</th>
-      <td><p>A list or <code>YAML</code> file with optional 'account' or 'project'
-fields used to configure the GCloud environemnt.</p></td>
     </tr>
     </table>
     
