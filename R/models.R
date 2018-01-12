@@ -123,7 +123,7 @@ cloudml_predict <- function(
   if (!is.null(json_parsed$error))
     stop(json_parsed$error)
 
-  class(json_parsed) <- "cloudml_predictions"
+  class(json_parsed) <- c(class(json_parsed), "cloudml_predictions")
 
   if (getOption("cloudml.prediction.diagnose", default = FALSE))
     list(
