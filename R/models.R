@@ -119,9 +119,11 @@ cloudml_predict <- function(
   output <- gcloud_exec(args = arguments())
 
   json_raw <- output$stdout
-  json_parsed <- jsonlite::fromJSON(json_raw)
+  json_parsed <- jsonlite::fromJSON(json_raw, simplifyDataFrame = FALSE)
   if (!is.null(json_parsed$error))
     stop(json_parsed$error)
+
+  class(json_parsed) <- c(class(json_parsed), "cloudml_predictions")
 
   if (getOption("cloudml.prediction.diagnose", default = FALSE))
     list(
@@ -130,4 +132,16 @@ cloudml_predict <- function(
     )
   else
     json_parsed
+}
+
+#' @export
+print.cloudml_predictions <- function(x, ...) {
+  predictions <- x$predictions
+  for (index in seq_along(predictions)) {
+    prediction <- predictions[[index]]
+    if (length(predictions) > 1)
+      message("Prediction ", index, ":")
+
+    print(prediction)
+  }
 }
