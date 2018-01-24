@@ -146,12 +146,22 @@ The `type` field can be one of:
 
 - `INTEGER`
 - `DOUBLE` 
+- `CATEGORICAL`
+- `DISCRETE`
 
-The `scaleType` field can be one of:
+The `scaleType` field for numerical types can be one of:
 
 - `UNIT_LINEAR_SCALE`
 - `UNIT_LOG_SCALE`
 - `UNIT_REVERSE_LOG_SCALE`
+
+If you are using `CATEGORICAL` or `DISCRETE` types you will need to pass the possible values to `categoricalValues` or `discreteValues` parameter. For example, you could have an hyperparameter defined like this:
+
+```
+- parameterName: activation
+  type: CATEGORICAL
+  categoricalValues: [relu, tanh, sigmoid]
+```
 
 Note also that configuration for the compute resources to use for the job can also be provided in the config file (e.g. the `masterType` field). 
 
