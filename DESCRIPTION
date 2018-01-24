@@ -11,7 +11,7 @@ Description: Interface to the Google Cloud Machine Learning Platform which provi
   cloud tools for training machine learning models.
 Depends:
   R (>= 3.3.0), 
-  tfruns (>= 1.1)
+  tfruns (>= 1.2.0.9000)
 Imports:
   jsonlite,
   packrat,
@@ -29,8 +29,6 @@ Suggests:
   knitr,
   testthat
 Remotes:
-  rstudio/keras,
-  rstudio/tensorflow,
   rstudio/tfruns
 License: Apache License 2.0
 Encoding: UTF-8
