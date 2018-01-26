@@ -126,15 +126,19 @@ You can list all of the runs as a data frame using the `ls_runs()` function:
 ls_runs()
 ```
 ```
-Data frame: 2 x 36 
-                              run_dir metric_loss metric_acc metric_val_loss metric_val_acc
-1 runs/cloudml_2018_01_09_212132525-2      0.0470     0.9866          0.1042         0.9776
-2 runs/cloudml_2018_01_09_212132525-1      0.0538     0.9844          0.1070         0.9782
-# ... with 31 more columns:
+Data frame: 6 x 37 
+                            run_dir eval_loss eval_acc metric_loss metric_acc metric_val_loss metric_val_acc
+6 runs/cloudml_2018_01_26_135812740    0.1049   0.9789      0.0852     0.9760          0.1093         0.9770
+2 runs/cloudml_2018_01_26_140015601    0.1402   0.9664      0.1708     0.9517          0.1379         0.9687
+5 runs/cloudml_2018_01_26_135848817    0.1159   0.9793      0.0378     0.9887          0.1130         0.9792
+3 runs/cloudml_2018_01_26_135936130    0.0963   0.9780      0.0701     0.9792          0.0969         0.9790
+1 runs/cloudml_2018_01_26_140045584    0.1486   0.9682      0.1860     0.9504          0.1453         0.9693
+4 runs/cloudml_2018_01_26_135912819    0.1141   0.9759      0.1272     0.9655          0.1087         0.9762
+# ... with 30 more columns:
 #   flag_dense_units1, flag_dropout1, flag_dense_units2, flag_dropout2, samples, validation_samples,
-#   batch_size, epochs, epochs_completed, metrics, model, loss_function, optimizer, learning_rate, script,
-#   start, end, completed, output, source_code, context, type, cloudml_console_url, cloudml_created,
-#   cloudml_end, cloudml_job, cloudml_log_url, cloudml_master_type, cloudml_ml_units, cloudml_start,
+#   batch_size, epochs, epochs_completed, metrics, model, loss_function, optimizer, learning_rate,
+#   script, start, end, completed, output, source_code, context, type, cloudml_console_url,
+#   cloudml_created, cloudml_end, cloudml_job, cloudml_log_url, cloudml_ml_units, cloudml_start,
 #   cloudml_state
 ```
 You can view run reports using the `view_run()` function:
