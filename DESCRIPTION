@@ -11,7 +11,7 @@ Description: Interface to the Google Cloud Machine Learning Platform which provi
   cloud tools for training machine learning models.
 Depends:
   R (>= 3.3.0), 
-  tfruns (>= 1.2.0.9000)
+  tfruns (>= 1.2.0.9001)
 Imports:
   jsonlite,
   packrat,
