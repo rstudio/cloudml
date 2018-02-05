@@ -24,17 +24,21 @@ gcloud_binary <- function() {
   if (!is.null(user_path))
     return(normalizePath(user_path))
 
-  candidates <- c(
-    function() Sys.which("gcloud"),
-    function() "~/google-cloud-sdk/bin/gcloud",
-    function() file.path(gcloud_binary_default(), "bin/gcloud")
-  )
-
   if (.Platform$OS.type == "windows") {
     appdata <- normalizePath(Sys.getenv("localappdata"), winslash = "/")
     win_path <- file.path(appdata, "Google/Cloud SDK/google-cloud-sdk/bin/gcloud.cmd")
-    if (file.exists(win_path))
-      return(file.path(appdata, "Google/\"Cloud SDK\"/google-cloud-sdk/bin/gcloud.cmd"))
+
+    candidates <- c(
+      function() file.path(appdata, "Google/Cloud SDK/google-cloud-sdk/bin/gcloud.cmd"),
+      function() file.path(Sys.getenv("ProgramFiles"), "/Google/Cloud SDK/google-cloud-sdk/bin/gcloud.cmd"),
+      function() file.path(Sys.getenv("ProgramFiles(x86)"), "/Google/Cloud SDK/google-cloud-sdk/bin/gcloud.cmd")
+    )
+  } else {
+    candidates <- c(
+      function() Sys.which("gcloud"),
+      function() "~/google-cloud-sdk/bin/gcloud",
+      function() file.path(gcloud_binary_default(), "bin/gcloud")
+    )
   }
 
   for (candidate in candidates)
