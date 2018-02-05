@@ -26,7 +26,6 @@ gcloud_binary <- function() {
 
   if (.Platform$OS.type == "windows") {
     appdata <- normalizePath(Sys.getenv("localappdata"), winslash = "/")
-    win_path <- file.path(appdata, "Google/Cloud SDK/google-cloud-sdk/bin/gcloud.cmd")
 
     candidates <- c(
       function() file.path(appdata, "Google/Cloud SDK/google-cloud-sdk/bin/gcloud.cmd"),
