@@ -30,7 +30,7 @@ gcloud_binary <- function() {
 
     candidates <- c(
       function() file.path(appdata, "Google/Cloud SDK/google-cloud-sdk/bin/gcloud.cmd"),
-      function() file.path(Sys.getenv("ProgramFiles"), "/Google/Cloud SDK/google-cloud-sdk/bin.cmd")
+      function() file.path(Sys.getenv("ProgramFiles"), "/Google/Cloud SDK/google-cloud-sdk/gcloud.cmd")
     )
   } else {
     candidates <- c(
