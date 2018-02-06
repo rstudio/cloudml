@@ -367,8 +367,15 @@ job_trials_from_status <- function(status) {
 
   df <- do.call("rbind", lapply(status$trainingOutput$trials, as.data.frame, stringsAsFactors = FALSE))
 
-  for(col in colnames(df))
-    df[[col]] <- as.numeric(df[[col]])
+  for(col in colnames(df)) {
+    is_numeric <- suppressWarnings(
+      !any(is.na(as.numeric(df$hyperparameters.parameter)))
+    )
+
+    if (is_numeric) {
+      df[[col]] <- as.numeric(df[[col]])
+    }
+  }
 
   df
 }
