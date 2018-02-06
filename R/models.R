@@ -85,6 +85,7 @@ cloudml_deploy <- function(
 #'
 #' @param instances A list of instances to be predicted. While predicting
 #'   a single instance, list wrapping this single instance is still expected.
+#' @param instances Should additional information be reported?
 #'
 #' @seealso [cloudml_deploy()]
 #'
@@ -92,7 +93,8 @@ cloudml_deploy <- function(
 cloudml_predict <- function(
   instances,
   name,
-  version = paste0(name, "_1")) {
+  version = paste0(name, "_1"),
+  verbose = FALSE) {
 
   default_name <- basename(normalizePath(getwd(), winslash = "/"))
   if (is.null(name)) name <- default_name
@@ -108,6 +110,13 @@ cloudml_predict <- function(
     as.character(jsonlite::toJSON(instance, auto_unbox = TRUE))
   })
   writeLines(paste(all_json, collapse = "\n"), pseudo_json_file)
+
+  if (identical(verbose, TRUE)) {
+    message("Prediction Request:")
+    message("")
+    sapply(all_json, message)
+    message("")
+  }
 
   arguments <- (MLArgumentsBuilder(gcloud)
                 ("predict")
