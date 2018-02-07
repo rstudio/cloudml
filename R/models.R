@@ -85,7 +85,7 @@ cloudml_deploy <- function(
 #'
 #' @param instances A list of instances to be predicted. While predicting
 #'   a single instance, list wrapping this single instance is still expected.
-#' @param instances Should additional information be reported?
+#' @param verbose Should additional information be reported?
 #'
 #' @seealso [cloudml_deploy()]
 #'

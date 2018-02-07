@@ -16,7 +16,7 @@ a single instance, list wrapping this single instance is still expected.}
 \item{version}{The version for this model. Versions start with a letter and
 contain only letters, numbers and underscores. Defaults to name_1}
 
-\item{instances}{Should additional information be reported?}
+\item{verbose}{Should additional information be reported?}
 }
 \description{
 Perform online prediction over a CloudML model, usually, created using
