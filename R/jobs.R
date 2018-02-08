@@ -369,7 +369,7 @@ job_trials_from_status <- function(status) {
 
   for(col in colnames(df)) {
     is_numeric <- suppressWarnings(
-      !any(is.na(as.numeric(df$hyperparameters.parameter)))
+      !any(is.na( as.numeric(df[[col]])))
     )
 
     if (is_numeric) {
