@@ -12,7 +12,7 @@ gsutil_binary <- function() {
 
   if (.Platform$OS.type == "windows") {
     appdata <- normalizePath(Sys.getenv("localappdata"), winslash = "/")
-    win_path <- file.path(appdata, "Google/Cloud SDK/google-cloud-sdk/bin/.cmd")
+    win_path <- file.path(appdata, "Google/Cloud SDK/google-cloud-sdk/bin/gsutil.cmd")
     if (file.exists(win_path))
       return(file.path(appdata, "Google/\"Cloud SDK\"/google-cloud-sdk/bin/gsutil.cmd"))
   }
