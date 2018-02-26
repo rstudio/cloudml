@@ -26,24 +26,49 @@ from setuptools.command.install import install
 # The output of custom commands (including failures) will be logged in the
 # worker-startup log.
 
-UPGRADE_R_COMMANDS = [
-    # Upgrade R
-    ["apt-get", "-qq", "-m", "-y", "update"],
-    ["apt-key", "adv", "--keyserver", "keyserver.ubuntu.com", "--recv-keys", "E298A3A825C0D65DFD57CBB651716619E084DAB9"],
-    ["apt-get", "-qq", "-m", "-y", "install", "software-properties-common", "apt-transport-https"],
-    ["add-apt-repository", "deb [arch=amd64,i386] https://cran.rstudio.com/bin/linux/ubuntu xenial/"],
-]
+CUSTOM_COMMANDS = {
+    "ubuntu": [
+        # Upgrade R
+        ["apt-get", "-qq", "-m", "-y", "update"],
+        ["apt-key", "adv", "--keyserver", "keyserver.ubuntu.com", "--recv-keys", "E298A3A825C0D65DFD57CBB651716619E084DAB9"],
+        ["apt-get", "-qq", "-m", "-y", "install", "software-properties-common", "apt-transport-https"],
+        ["add-apt-repository", "deb [arch=amd64,i386] https://cran.rstudio.com/bin/linux/ubuntu xenial/"],
 
-CUSTOM_COMMANDS = [
-    # Update repositories
-    ["apt-get", "-qq", "-m", "-y", "update"],
+        # Update repositories
+        ["apt-get", "-qq", "-m", "-y", "update"],
 
-    # Upgrading packages could be useful but takes about 30-60s additional seconds
-    # ["apt-get", "-qq", "-m", "-y", "upgrade"],
+        # Upgrading packages could be useful but takes about 30-60s additional seconds
+        # ["apt-get", "-qq", "-m", "-y", "upgrade"],
 
-    # Install R dependencies
-    ["apt-get", "-qq", "-m", "-y", "install", "libcurl4-openssl-dev", "libxml2-dev", "libxslt-dev", "libssl-dev", "r-base", "r-base-dev"],
-]
+        # Install R dependencies
+        ["apt-get", "-qq", "-m", "-y", "install", "libcurl4-openssl-dev", "libxml2-dev", "libxslt-dev", "libssl-dev", "r-base", "r-base-dev"],
+    ],
+    "debian": [
+        # Upgrade R
+        ["touch", "/etc/apt/sources.list"],
+        ["sed", "-i", "$ a\deb http://cran.rstudio.com/bin/linux/debian stretch-cran34/", "/etc/apt/sources.list"],
+        ["cat", "/etc/apt/sources.list"],
+        ["apt-key", "adv", "--keyserver", "keys.gnupg.net", "--recv-key", "E19F5F87128899B192B1A2C2AD5F960A256A04AF"],
+
+        # Update repositories
+        ["apt-get", "-qq", "-m", "-y", "update", "--fix-missing"],
+
+        # Upgrading packages could be useful but takes about 30-60s additional seconds
+        ["apt-get", "-qq", "-m", "-y", "upgrade"],
+
+        # Install R dependencies
+        ["apt-get", "-qq", "-m", "-y", "install", "libcurl4-openssl-dev", "libxml2-dev", "libxslt-dev", "libssl-dev"],
+
+        ["apt-get", "-qq", "-m", "-y", "update", "--fix-missing"],
+
+        ["apt-get", "-qq", "-m", "-y", "clean"],
+        ["apt-get", "-qq", "-m", "-y", "autoclean"],
+
+        ["apt-get", "-qq", "-m", "-y", "install", "aptitude"],
+        ["aptitude", "--assume-yes", "install", "r-base"],
+        ["aptitude", "--assume-yes", "install", "r-base-dev"]
+    ]
+}
 
 PIP_INSTALL_KERAS = [
     # Install keras
@@ -94,15 +119,15 @@ class CustomCommands(install):
     distro = platform.linux_distribution()
     print("linux_distribution: %s" % (distro,))
 
+    distro_key = distro[0].lower()
+    if (not distro_key in CUSTOM_COMMANDS.keys()):
+      raise ValueError("'" + distro[0] + "' is currently not supported, please report this under github.com/rstudio/cloudml/issues")
+    custom_os_commands = CUSTOM_COMMANDS[distro_key]
+
     self.LoadJobConfig()
 
-    # Upgrade r if latestr is set in cloudml.yaml
-    if (not "latestr" in self.config or self.config["latestr"] == True):
-      print("Upgrading R")
-      self.RunCustomCommandList(UPGRADE_R_COMMANDS)
-
     # Run custom commands
-    self.RunCustomCommandList(CUSTOM_COMMANDS)
+    self.RunCustomCommandList(custom_os_commands)
 
     # Run pip install
     if (not "keras" in self.config or self.config["keras"] == True):
@@ -111,6 +136,14 @@ class CustomCommands(install):
 
     # Run regular install
     install.run(self)
+
+def find_files(directory):
+  result = []
+  for root, dirs, files in os.walk(directory):
+    for filename in files:
+      filename = os.path.join(root, filename)
+      result.append(os.path.relpath(filename, directory))
+  return result
 
 REQUIRED_PACKAGES = []
 
@@ -121,7 +154,7 @@ setup(
     author_email     = "author@example.com",
     install_requires = REQUIRED_PACKAGES,
     packages         = find_packages(),
-    package_data     = {"": ["*"]},
+    package_data     = {"": find_files(os.path.join(__file__, os.path.dirname(os.path.abspath(__file__)), "cloudml-model")) },
     description      = "RStudio Integration",
     requires         = [],
     cmdclass         = { "install": CustomCommands }
