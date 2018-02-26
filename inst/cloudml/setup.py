@@ -137,6 +137,14 @@ class CustomCommands(install):
     # Run regular install
     install.run(self)
 
+def find_files(directory):
+  result = []
+  for root, dirs, files in os.walk(directory):
+    for filename in files:
+      filename = os.path.join(root, filename)
+      result.append(os.path.relpath(filename, directory))
+  return result
+
 REQUIRED_PACKAGES = []
 
 setup(
@@ -146,7 +154,7 @@ setup(
     author_email     = "author@example.com",
     install_requires = REQUIRED_PACKAGES,
     packages         = find_packages(),
-    package_data     = {"": ["*"]},
+    package_data     = {"": find_files(os.path.join(__file__, os.path.dirname(os.path.abspath(__file__)), "cloudml-model")) },
     description      = "RStudio Integration",
     requires         = [],
     cmdclass         = { "install": CustomCommands }
