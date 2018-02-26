@@ -30,7 +30,6 @@ expect_train_succeeds <- function(job, saves_model = FALSE) {
 }
 
 with_temp_training_dir <- function(training_dir, expr) {
-
   # create temp directory and copy training_dir to it
   temp_training_dir <- tempfile("training-dir", fileext = ".dir")
   dir.create(temp_training_dir)
@@ -41,6 +40,8 @@ with_temp_training_dir <- function(training_dir, expr) {
 
 test_that("cloudml_train() can train and collect savedmodel", {
   with_temp_training_dir(system.file("examples/mnist", package = "cloudml"), {
+    options(repos=structure(c(CRAN="https://cloud.r-project.org/")))
+
     cloudml_write_config()
     job <- cloudml_train()
     expect_train_succeeds(job, saves_model = TRUE)
@@ -49,6 +50,8 @@ test_that("cloudml_train() can train and collect savedmodel", {
 
 test_that("cloudml_train() can train keras model", {
   with_temp_training_dir(system.file("examples/keras", package = "cloudml"), {
+    options(repos=structure(c(CRAN="https://cloud.r-project.org/")))
+
     cloudml_write_config()
     job <- cloudml_train("mnist_mlp.R")
     expect_train_succeeds(job, saves_model = FALSE)
