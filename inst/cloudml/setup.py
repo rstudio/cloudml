@@ -44,7 +44,29 @@ CUSTOM_COMMANDS = {
         ["apt-get", "-qq", "-m", "-y", "install", "libcurl4-openssl-dev", "libxml2-dev", "libxslt-dev", "libssl-dev", "r-base", "r-base-dev"],
     ],
     "debian": [
+        # Upgrade R
+        ["touch", "/etc/apt/sources.list"],
+        ["sed", "-i", "$ a\deb http://cran.rstudio.com/bin/linux/debian stretch-cran34/", "/etc/apt/sources.list"],
+        ["cat", "/etc/apt/sources.list"],
+        ["apt-key", "adv", "--keyserver", "keys.gnupg.net", "--recv-key", "E19F5F87128899B192B1A2C2AD5F960A256A04AF"],
 
+        # Update repositories
+        ["apt-get", "-qq", "-m", "-y", "update", "--fix-missing"],
+
+        # Upgrading packages could be useful but takes about 30-60s additional seconds
+        ["apt-get", "-qq", "-m", "-y", "upgrade"],
+
+        # Install R dependencies
+        ["apt-get", "-qq", "-m", "-y", "install", "libcurl4-openssl-dev", "libxml2-dev", "libxslt-dev", "libssl-dev"],
+
+        ["apt-get", "-qq", "-m", "-y", "update", "--fix-missing"],
+
+        ["apt-get", "-qq", "-m", "-y", "clean"],
+        ["apt-get", "-qq", "-m", "-y", "autoclean"],
+
+        ["apt-get", "-qq", "-m", "-y", "install", "aptitude"],
+        ["aptitude", "--assume-yes", "install", "r-base"],
+        ["aptitude", "--assume-yes", "install", "r-base-dev"]
     ]
 }
 
@@ -98,8 +120,8 @@ class CustomCommands(install):
     print("linux_distribution: %s" % (distro,))
 
     distro_key = distro[0].lower()
-    if (distro_key in CUSTOM_COMMANDS.keys()):
-      raise ValueError(distro[0] + " is currently not supported, please report this under github.com/rstudio/cloudml/issues")
+    if (not distro_key in CUSTOM_COMMANDS.keys()):
+      raise ValueError("'" + distro[0] + "' is currently not supported, please report this under github.com/rstudio/cloudml/issues")
     custom_os_commands = CUSTOM_COMMANDS[distro_key]
 
     self.LoadJobConfig()
