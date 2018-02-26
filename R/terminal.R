@@ -78,7 +78,12 @@ gcloud_terminal <- function(command = NULL, clear = FALSE) {
 #' @export
 gcloud_init <- function() {
   if (have_rstudio_terminal()) {
-    gcloud_terminal("gcloud init")
+    gcloud_terminal(
+      paste(
+        shQuote(gcloud_binary()),
+        "init"
+      )
+    )
   } else {
     gcloud_init_message()
   }
