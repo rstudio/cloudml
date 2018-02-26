@@ -26,24 +26,27 @@ from setuptools.command.install import install
 # The output of custom commands (including failures) will be logged in the
 # worker-startup log.
 
-UPGRADE_R_COMMANDS = [
-    # Upgrade R
-    ["apt-get", "-qq", "-m", "-y", "update"],
-    ["apt-key", "adv", "--keyserver", "keyserver.ubuntu.com", "--recv-keys", "E298A3A825C0D65DFD57CBB651716619E084DAB9"],
-    ["apt-get", "-qq", "-m", "-y", "install", "software-properties-common", "apt-transport-https"],
-    ["add-apt-repository", "deb [arch=amd64,i386] https://cran.rstudio.com/bin/linux/ubuntu xenial/"],
-]
+CUSTOM_COMMANDS = {
+    "ubuntu": [
+        # Upgrade R
+        ["apt-get", "-qq", "-m", "-y", "update"],
+        ["apt-key", "adv", "--keyserver", "keyserver.ubuntu.com", "--recv-keys", "E298A3A825C0D65DFD57CBB651716619E084DAB9"],
+        ["apt-get", "-qq", "-m", "-y", "install", "software-properties-common", "apt-transport-https"],
+        ["add-apt-repository", "deb [arch=amd64,i386] https://cran.rstudio.com/bin/linux/ubuntu xenial/"],
 
-CUSTOM_COMMANDS = [
-    # Update repositories
-    ["apt-get", "-qq", "-m", "-y", "update"],
+        # Update repositories
+        ["apt-get", "-qq", "-m", "-y", "update"],
 
-    # Upgrading packages could be useful but takes about 30-60s additional seconds
-    # ["apt-get", "-qq", "-m", "-y", "upgrade"],
+        # Upgrading packages could be useful but takes about 30-60s additional seconds
+        # ["apt-get", "-qq", "-m", "-y", "upgrade"],
 
-    # Install R dependencies
-    ["apt-get", "-qq", "-m", "-y", "install", "libcurl4-openssl-dev", "libxml2-dev", "libxslt-dev", "libssl-dev", "r-base", "r-base-dev"],
-]
+        # Install R dependencies
+        ["apt-get", "-qq", "-m", "-y", "install", "libcurl4-openssl-dev", "libxml2-dev", "libxslt-dev", "libssl-dev", "r-base", "r-base-dev"],
+    ],
+    "debian": [
+
+    ]
+}
 
 PIP_INSTALL_KERAS = [
     # Install keras
@@ -94,15 +97,15 @@ class CustomCommands(install):
     distro = platform.linux_distribution()
     print("linux_distribution: %s" % (distro,))
 
+    distro_key = distro[0].lower()
+    if (distro_key in CUSTOM_COMMANDS.keys()):
+      raise ValueError(distro[0] + " is currently not supported, please report this under github.com/rstudio/cloudml/issues")
+    custom_os_commands = CUSTOM_COMMANDS[distro_key]
+
     self.LoadJobConfig()
 
-    # Upgrade r if latestr is set in cloudml.yaml
-    if (not "latestr" in self.config or self.config["latestr"] == True):
-      print("Upgrading R")
-      self.RunCustomCommandList(UPGRADE_R_COMMANDS)
-
     # Run custom commands
-    self.RunCustomCommandList(CUSTOM_COMMANDS)
+    self.RunCustomCommandList(custom_os_commands)
 
     # Run pip install
     if (not "keras" in self.config or self.config["keras"] == True):
