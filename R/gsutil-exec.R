@@ -5,17 +5,7 @@ gsutil_binary <- function() {
   if (!is.null(user_path))
     return(normalizePath(user_path))
 
-  candidates <- c(
-    function() Sys.which("gsutil"),
-    function() "~/google-cloud-sdk/bin/gsutil"
-  )
-
-  if (.Platform$OS.type == "windows") {
-    appdata <- normalizePath(Sys.getenv("localappdata"), winslash = "/")
-    win_path <- file.path(appdata, "Google/Cloud SDK/google-cloud-sdk/bin/gsutil.cmd")
-    if (file.exists(win_path))
-      return(file.path(appdata, "Google/\"Cloud SDK\"/google-cloud-sdk/bin/gsutil.cmd"))
-  }
+  candidates <- gcloud_path_candidates("gsutil")
 
   for (candidate in candidates)
     if (file.exists(candidate()))

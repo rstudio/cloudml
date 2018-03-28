@@ -1,3 +1,24 @@
+gcloud_path_candidates <- function(binary) {
+  if (.Platform$OS.type == "windows") {
+    appdata <- normalizePath(Sys.getenv("localappdata"), winslash = "/")
+    binary_name <- paste(binary, "cmd", sep = ".")
+
+    c(
+      function() file.path(appdata, "Google/Cloud SDK/google-cloud-sdk/bin", binary_name),
+      function() file.path(Sys.getenv("ProgramFiles"), "/Google/Cloud SDK/google-cloud-sdk/bin", binary_name),
+      function() file.path(Sys.getenv("ProgramFiles(x86)"), "/Google/Cloud SDK/google-cloud-sdk/bin", binary_name)
+    )
+  } else {
+    binary_name <- binary
+
+    c(
+      function() Sys.which(binary_name),
+      function() paste("~/google-cloud-sdk/bin", binary_name, sep = "/"),
+      function() file.path(gcloud_binary_default(), "bin", binary_name)
+    )
+  }
+}
+
 # Discover Path to Google Cloud SDK
 #
 # Discover the paths of the `gcloud` and `gsutil` executables.
@@ -24,21 +45,7 @@ gcloud_binary <- function() {
   if (!is.null(user_path))
     return(normalizePath(user_path))
 
-  if (.Platform$OS.type == "windows") {
-    appdata <- normalizePath(Sys.getenv("localappdata"), winslash = "/")
-
-    candidates <- c(
-      function() file.path(appdata, "Google/Cloud SDK/google-cloud-sdk/bin/gcloud.cmd"),
-      function() file.path(Sys.getenv("ProgramFiles"), "/Google/Cloud SDK/google-cloud-sdk/bin/gcloud.cmd"),
-      function() file.path(Sys.getenv("ProgramFiles(x86)"), "/Google/Cloud SDK/google-cloud-sdk/bin/gcloud.cmd")
-    )
-  } else {
-    candidates <- c(
-      function() Sys.which("gcloud"),
-      function() "~/google-cloud-sdk/bin/gcloud",
-      function() file.path(gcloud_binary_default(), "bin/gcloud")
-    )
-  }
+  candidates <- gcloud_path_candidates("gcloud")
 
   for (candidate in candidates)
     if (file.exists(candidate()))
