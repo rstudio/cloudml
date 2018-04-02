@@ -17,3 +17,9 @@ after_failure:
     cd tests
     travis_wait 30 Rscript ../.travis.R
     sleep 2
+notifications:
+  email:
+    recipients:
+      - javier@rstudio.com
+    on_success: never
+    on_failure: always
