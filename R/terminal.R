@@ -43,9 +43,14 @@ gcloud_terminal <- function(command = NULL, clear = FALSE) {
     }
   }
 
+  gcloud_path <- tryCatch({
+    gcloud_binary()
+  }, error = function(e) {
+    ""
+  })
 
   # launch terminal with cloud sdk on the PATH
-  withr::with_path(gcloud_binary(), {
+  withr::with_path(gcloud_path, {
 
     if (length(gcloud_terminals) > 0) {
 
