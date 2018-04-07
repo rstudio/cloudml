@@ -43,9 +43,11 @@ CloudML is a managed service where you pay only for the hardware resources that 
 
 ## Google Cloud Account
 
-Before you can begin training models with CloudML you need to have a *Google Cloud Account*. If you don't already have an account you can create one at <https://console.cloud.google.com>. 
+Before you can begin training models with CloudML you need to have a *Google Cloud Account*. If you don't already have an account you can create one at <https://console.cloud.google.com>.
 
 If you are a new customer of Google Cloud you will receive a [12-month, $300 credit](https://cloud.google.com/free/docs/frequently-asked-questions#free-trial) that can be applied to your use of CloudML. In addition, Google is providing a \$200 credit for users of the R interface to CloudML (this credit applies to both new and existing customers). Use this link to [apply for the \$200 credit](https://goo.gl/mhQKHB).
+
+The account creation process will lead you through creating a new project. To enable the Machine Learning API for this project navigate to the "ML Engine" menu on the left. Doing this for the first time will enable the ML API and allow you to submit ML jobs.
 
 ## Installation
 
