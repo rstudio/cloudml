@@ -99,7 +99,7 @@ gcloud_install_unix <- function() {
                               paste0("--install-dir=",
                                      path.expand(dirname(gcloud_binary))))),
                           collapse = " ")
-    terminal_command <- paste(install_args, "&&", "gcloud", "init")
+    terminal_command <- paste(install_args, "&&", "source", "~/.bash_profile", "&&", "gcloud", "init")
     gcloud_terminal(terminal_command, clear = TRUE)
 
   } else {
