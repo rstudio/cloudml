@@ -18,10 +18,26 @@ gcloud_terminal <- function(command = NULL, clear = FALSE) {
     if (clear)
       rstudioapi::terminalClear(id)
     if (!is.null(command)) {
-      if (.Platform$OS.type == "windows")
+      terminal_context <- rstudioapi::terminalContext(id)
+
+      windows_terminal <- .Platform$OS.type == "windows" &&
+        !identical(terminal_context$shell, "Git Bash")
+
+      if (windows_terminal) {
         os_return   <- "\r\n"
-      else
+        os_collapse <-  " & "
+      } else {
         os_return   <- "\n"
+        os_collapse <- " ; "
+      }
+
+      if (length(command) > 0) {
+        command <- paste(
+          command,
+          collapse = os_collapse
+        )
+      }
+
       rstudioapi::terminalSend(id, paste0(command, os_return))
     }
   }
