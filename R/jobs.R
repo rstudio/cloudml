@@ -537,16 +537,12 @@ job_collect_async <- function(
                    (id)
                    ("--polling-interval=%i", as.integer(polling_interval)))
 
-  if (.Platform$OS.type == "windows") {
-    os_collapse <-  " & "
-    os_return   <- "\r\n"
-  } else {
-    os_collapse <- " ; "
-    os_return   <- "\n"
-  }
+  gcloud_quoted <- gcloud_binary()
+  if (.Platform$OS.type == "windows")
+    gcloud_quoted <- shQuote(gcloud_quoted)
 
   terminal_steps <- c(
-    paste(gcloud_binary(), paste(log_arguments(), collapse = " "))
+    paste(gcloud_quoted, paste(log_arguments(), collapse = " "))
   )
 
   destination <- normalizePath(destination, mustWork = FALSE)
@@ -568,12 +564,7 @@ job_collect_async <- function(
     )
   }
 
-  terminal_command <- paste(
-    terminal_steps,
-    collapse = os_collapse
-  )
-
-  gcloud_terminal(terminal_command, clear = TRUE)
+  gcloud_terminal(terminal_steps, clear = TRUE)
 }
 
 job_download <- function(job,
@@ -749,7 +740,7 @@ job_status_is_tuning <- function(status) {
 
 collect_job_step <- function(destination, jobId) {
   r_job_step(paste0(
-    "cloudml::job_collect('", jobId, "', destination = '", destination, "', view = 'save')"
+    "cloudml::job_collect('", jobId, "', destination = '", normalizePath(destination, winslash = "/"), "', view = 'save')"
   ))
 }
 
@@ -758,7 +749,7 @@ collect_job_step <- function(destination, jobId) {
 view_job_step <- function(destination, jobId) {
   r_job_step(paste0(
     "utils::browseURL('",
-    file.path(destination, jobId, "tfruns.d", "view.html"),
+    file.path(normalizePath(destination, winslash = "/"), jobId, "tfruns.d", "view.html"),
     "')"
   ))
 }
