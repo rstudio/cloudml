@@ -29,7 +29,7 @@ yet finished running, \code{job_collect()} will block and wait until the job has
 finished.
 }
 \seealso{
-Other job management: \code{\link{job_cancel}},
+Other job management functions: \code{\link{job_cancel}},
   \code{\link{job_list}}, \code{\link{job_status}},
   \code{\link{job_stream_logs}}, \code{\link{job_trials}}
 }

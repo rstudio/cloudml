@@ -9,7 +9,7 @@ cloudml_deploy(export_dir_base, name, version = paste0(name, "_1"),
 }
 \arguments{
 \item{export_dir_base}{A string containing a directory containing an
-exported SavedModels. Consider using \code{tensorflow::export_savedmodel()}
+exported SavedModels. Consider using \code{\link[tensorflow:export_savedmodel]{tensorflow::export_savedmodel()}}
 to export this SavedModel.}
 
 \item{name}{The name for this model (required)}
@@ -19,13 +19,15 @@ contain only letters, numbers and underscores. Defaults to name_1}
 
 \item{region}{The region to be used to deploy this model.}
 
-\item{config}{A list, \code{YAML} or \code{JSON} configuration file as
-described
-\url{https://cloud.google.com/ml-engine/reference/rest/v1/projects.jobs}.}
+\item{config}{A list, \code{YAML} or \code{JSON} configuration file as described
+https://cloud.google.com/ml-engine/reference/rest/v1/projects.jobs.}
 }
 \description{
 Deploys a SavedModel to CloudML model for online predictions.
 }
 \seealso{
 \code{\link[=cloudml_predict]{cloudml_predict()}}
+
+Other CloudML functions: \code{\link{cloudml_predict}},
+  \code{\link{cloudml_train}}
 }

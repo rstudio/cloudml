@@ -8,6 +8,7 @@
 #'
 #' @return Terminal id (invisibly)
 #'
+#' @family Google Cloud SDK functions
 #' @export
 gcloud_terminal <- function(command = NULL, clear = FALSE) {
 
@@ -96,6 +97,7 @@ gcloud_terminal <- function(command = NULL, clear = FALSE) {
 
 #' Initialize the Google Cloud SDK
 #'
+#' @family Google Cloud SDK functions
 #' @export
 gcloud_init <- function() {
   if (have_rstudio_terminal()) {

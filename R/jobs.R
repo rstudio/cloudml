@@ -12,20 +12,20 @@
 #' @param master_type Training master node machine type. "standard" provides a
 #'   basic machine configuration suitable for training simple models with small
 #'   to moderate datasets. See the documentation at
-#'   <https://cloud.google.com/ml-engine/docs/training-overview#machine_type_table>
+#'   https://cloud.google.com/ml-engine/docs/training-overview#machine_type_table
 #'    for details on available machine types.
 #'
 #' @param region The region to be used for training.
 #'
-#' @param config A list, \code{YAML} or \code{JSON} configuration file as
-#'   described
-#'   \url{https://cloud.google.com/ml-engine/reference/rest/v1/projects.jobs}.
+#' @param config A list, `YAML` or `JSON` configuration file as described
+#'   https://cloud.google.com/ml-engine/reference/rest/v1/projects.jobs.
 #'
-#' @param collect Collect job when training is completed (blocks waiting for
-#'   the job to complete).
+#' @param collect Collect job when training is completed (blocks waiting for the
+#'   job to complete).
 #'
 #' @seealso [job_status()], [job_collect()], [job_cancel()]
 #'
+#' @family CloudML functions
 #' @export
 cloudml_train <- function(file = "train.R",
                           master_type = NULL,
@@ -176,7 +176,7 @@ cloudml_train <- function(file = "train.R",
 #'
 #' @inheritParams job_status
 #'
-#' @family job management
+#' @family job management functions
 #'
 #' @export
 job_cancel <- function(job = "latest") {
@@ -219,7 +219,7 @@ job_cancel <- function(job = "latest") {
 #'   Print a list of resource URIs instead of the default
 #'   output.
 #'
-#' @family job management
+#' @family job management functions
 #'
 #' @export
 job_list <- function(filter    = NULL,
@@ -270,7 +270,7 @@ job_list <- function(filter    = NULL,
 #' @param allow_multiline_logs
 #'   Output multiline log messages as single records.
 #'
-#' @family job management
+#' @family job management functions
 #'
 #' @export
 job_stream_logs <- function(job = "latest",
@@ -303,7 +303,7 @@ job_stream_logs <- function(job = "latest",
 #' @param job Job name or job object. Pass "latest" to indicate the
 #'   most recently submitted job.
 #'
-#' @family job management
+#' @family job management functions
 #'
 #' @export
 job_status <- function(job = "latest") {
@@ -354,7 +354,7 @@ print.cloudml_job_status <- function(x, ...) {
 #
 #' @param x Job name or job object.
 #'
-#' @family job management
+#' @family job management functions
 #'
 #' @export
 job_trials <- function(x) {
@@ -421,8 +421,8 @@ job_validate_trials <- function(trials) {
 #' @inheritParams job_status
 #'
 #' @param trials Under hyperparameter tuning, specifies which trials to
-#'   download. Use \code{"best"} to download best trial, \code{"all"} to
-#'   download all, or a vector of trials \code{c(1,2)} or \code{1}.
+#'   download. Use `"best"` to download best trial, `"all"` to
+#'   download all, or a vector of trials `c(1,2)` or `1`.
 #'
 #' @param destination The destination directory in which model outputs should
 #'   be downloaded. Defaults to `runs`.
@@ -433,7 +433,7 @@ job_validate_trials <- function(trials) {
 #'   "save" to save a copy of the run report at `tfruns.d/view.html`
 #'
 #'
-#' @family job management
+#' @family job management functions
 #'
 #' @export
 job_collect <- function(job = "latest",
