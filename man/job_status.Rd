@@ -14,7 +14,7 @@ most recently submitted job.}
 Get the status of a job, as an \R list.
 }
 \seealso{
-Other job management: \code{\link{job_cancel}},
+Other job management functions: \code{\link{job_cancel}},
   \code{\link{job_collect}}, \code{\link{job_list}},
   \code{\link{job_stream_logs}}, \code{\link{job_trials}}
 }

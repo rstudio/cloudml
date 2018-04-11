@@ -20,7 +20,7 @@ cloudml_model_exists <- function(gcloud, name) {
 #' @inheritParams cloudml_train
 #'
 #' @param export_dir_base A string containing a directory containing an
-#'   exported SavedModels. Consider using \code{tensorflow::export_savedmodel()}
+#'   exported SavedModels. Consider using [tensorflow::export_savedmodel()]
 #'   to export this SavedModel.
 #' @param name The name for this model (required)
 #' @param version The version for this model. Versions start with a letter and
@@ -29,6 +29,7 @@ cloudml_model_exists <- function(gcloud, name) {
 #'
 #' @seealso [cloudml_predict()]
 #'
+#' @family CloudML functions
 #' @export
 cloudml_deploy <- function(
   export_dir_base,
@@ -89,6 +90,7 @@ cloudml_deploy <- function(
 #'
 #' @seealso [cloudml_deploy()]
 #'
+#' @family CloudML functions
 #' @export
 cloudml_predict <- function(
   instances,

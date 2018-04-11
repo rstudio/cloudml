@@ -64,6 +64,7 @@ gcloud_binary_default <- function() {
 #'
 #' @param update Attempt to update an existing installation.
 #'
+#' @family Google Cloud SDK functions
 #' @export
 gcloud_install <- function(update = TRUE) {
 

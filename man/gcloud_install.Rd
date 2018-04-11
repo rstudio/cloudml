@@ -12,3 +12,7 @@ gcloud_install(update = TRUE)
 \description{
 Installs the Google Cloud SDK which enables CloudML operations.
 }
+\seealso{
+Other Google Cloud SDK functions: \code{\link{gcloud_init}},
+  \code{\link{gcloud_terminal}}
+}

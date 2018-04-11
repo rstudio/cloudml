@@ -13,7 +13,7 @@ cloudml_train(file = "train.R", master_type = NULL, flags = NULL,
 \item{master_type}{Training master node machine type. "standard" provides a
 basic machine configuration suitable for training simple models with small
 to moderate datasets. See the documentation at
-\url{https://cloud.google.com/ml-engine/docs/training-overview#machine_type_table}
+https://cloud.google.com/ml-engine/docs/training-overview#machine_type_table
 for details on available machine types.}
 
 \item{flags}{Named list with flag values (see \code{\link[=flags]{flags()}}) or path
@@ -21,12 +21,11 @@ to YAML file containing flag values.}
 
 \item{region}{The region to be used for training.}
 
-\item{config}{A list, \code{YAML} or \code{JSON} configuration file as
-described
-\url{https://cloud.google.com/ml-engine/reference/rest/v1/projects.jobs}.}
+\item{config}{A list, \code{YAML} or \code{JSON} configuration file as described
+https://cloud.google.com/ml-engine/reference/rest/v1/projects.jobs.}
 
-\item{collect}{Collect job when training is completed (blocks waiting for
-the job to complete).}
+\item{collect}{Collect job when training is completed (blocks waiting for the
+job to complete).}
 }
 \description{
 Upload a TensorFlow application to Google Cloud, and use that application to
@@ -34,4 +33,7 @@ train a model.
 }
 \seealso{
 \code{\link[=job_status]{job_status()}}, \code{\link[=job_collect]{job_collect()}}, \code{\link[=job_cancel]{job_cancel()}}
+
+Other CloudML functions: \code{\link{cloudml_deploy}},
+  \code{\link{cloudml_predict}}
 }

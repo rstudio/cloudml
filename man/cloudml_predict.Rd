@@ -24,4 +24,7 @@ Perform online prediction over a CloudML model, usually, created using
 }
 \seealso{
 \code{\link[=cloudml_deploy]{cloudml_deploy()}}
+
+Other CloudML functions: \code{\link{cloudml_deploy}},
+  \code{\link{cloudml_train}}
 }
