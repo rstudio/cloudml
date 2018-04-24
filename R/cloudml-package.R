@@ -35,7 +35,7 @@
 #' For documentation on using the R interface to CloudML see the package website
 #' at <https://tensorflow.rstudio.com/tools/cloudml/>
 #'
-#' @references https://tensorflow.rstudio.com/tools/cloudml/
+#' @references <https://tensorflow.rstudio.com/tools/cloudml/>
 #' @name cloudml-package
 #' @aliases cloudml
 #' @keywords internal

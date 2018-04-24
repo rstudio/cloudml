@@ -20,7 +20,7 @@ contain only letters, numbers and underscores. Defaults to name_1}
 \item{region}{The region to be used to deploy this model.}
 
 \item{config}{A list, \code{YAML} or \code{JSON} configuration file as described
-https://cloud.google.com/ml-engine/reference/rest/v1/projects.jobs.}
+\url{https://cloud.google.com/ml-engine/reference/rest/v1/projects.jobs}.}
 }
 \description{
 Deploys a SavedModel to CloudML model for online predictions.

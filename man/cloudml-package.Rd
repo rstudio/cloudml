@@ -31,7 +31,7 @@ For documentation on using the R interface to CloudML see the package website
 at \url{https://tensorflow.rstudio.com/tools/cloudml/}
 }
 \references{
-https://tensorflow.rstudio.com/tools/cloudml/
+\url{https://tensorflow.rstudio.com/tools/cloudml/}
 }
 \author{
 \strong{Maintainer}: Javier Luraschi \email{javier@rstudio.com}

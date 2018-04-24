@@ -12,13 +12,13 @@
 #' @param master_type Training master node machine type. "standard" provides a
 #'   basic machine configuration suitable for training simple models with small
 #'   to moderate datasets. See the documentation at
-#'   https://cloud.google.com/ml-engine/docs/training-overview#machine_type_table
+#'   <https://cloud.google.com/ml-engine/docs/training-overview#machine_type_table>
 #'    for details on available machine types.
 #'
 #' @param region The region to be used for training.
 #'
 #' @param config A list, `YAML` or `JSON` configuration file as described
-#'   https://cloud.google.com/ml-engine/reference/rest/v1/projects.jobs.
+#'   <https://cloud.google.com/ml-engine/reference/rest/v1/projects.jobs>.
 #'
 #' @param collect Collect job when training is completed (blocks waiting for the
 #'   job to complete).
