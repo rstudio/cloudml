@@ -93,7 +93,7 @@ cloudml_train <- function(file = "train.R",
                 ("--job-dir=%s", file.path(storage, "staging"))
                 ("--package-path=%s", basename(directory))
                 ("--module-name=%s.cloudml.deploy", basename(directory))
-                ("--runtimeVersion=%s", cloudml_version)
+                ("--runtime-version=%s", cloudml_version)
                 ("--region=%s", region)
                 ("--config=%s/%s", "cloudml-model", cloudml_file)
                 ("--")
