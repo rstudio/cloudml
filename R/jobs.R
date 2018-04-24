@@ -24,11 +24,6 @@
 #'   (blocks waiting for the job to complete). The default (`"ask"`) will
 #'   interactively prompt the user whether to collect the results or not.
 #'
-#' @param runtime_version The version number of the Cloud Machine Learning
-#'   platform to use (see
-#'   <https://cloud.google.com/ml-engine/docs/tensorflow/runtime-version-list>
-#'   for valid values).  Defaults to "1.6"
-#'
 #' @seealso [job_status()], [job_collect()], [job_cancel()]
 #'
 #' @family CloudML functions
@@ -38,8 +33,7 @@ cloudml_train <- function(file = "train.R",
                           flags = NULL,
                           region = NULL,
                           config = NULL,
-                          collect = "ask",
-                          runtime_version)
+                          collect = "ask")
 {
   message("Submitting training job to CloudML...")
 
@@ -87,11 +81,8 @@ cloudml_train <- function(file = "train.R",
   scope_setup_py(directory)
   setwd(dirname(directory))
 
-  cloudml_version <- if (!missing(runtime_version)  && !is.null(runtime_version)) {
-    runtime_version
-  } else {
-    cloudml$trainingInput$runtimeVersion %||% "1.6"
-  }
+  cloudml_version <- cloudml$trainingInput$runtimeVersion %||% "1.6"
+
   if (utils::compareVersion(cloudml_version, "1.4") < 0)
     stop("CloudML version ", cloudml_version, " is unsupported, use 1.4 or newer.")
 
