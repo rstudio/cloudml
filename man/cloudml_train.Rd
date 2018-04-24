@@ -13,7 +13,7 @@ cloudml_train(file = "train.R", master_type = NULL, flags = NULL,
 \item{master_type}{Training master node machine type. "standard" provides a
 basic machine configuration suitable for training simple models with small
 to moderate datasets. See the documentation at
-https://cloud.google.com/ml-engine/docs/training-overview#machine_type_table
+\url{https://cloud.google.com/ml-engine/docs/training-overview#machine_type_table}
 for details on available machine types.}
 
 \item{flags}{Named list with flag values (see \code{\link[=flags]{flags()}}) or path
@@ -22,10 +22,11 @@ to YAML file containing flag values.}
 \item{region}{The region to be used for training.}
 
 \item{config}{A list, \code{YAML} or \code{JSON} configuration file as described
-https://cloud.google.com/ml-engine/reference/rest/v1/projects.jobs.}
+\url{https://cloud.google.com/ml-engine/reference/rest/v1/projects.jobs}.}
 
-\item{collect}{Collect job when training is completed (blocks waiting for the
-job to complete).}
+\item{collect}{Logical. If TRUE, collect job when training is completed
+(blocks waiting for the job to complete). The default (\code{"ask"}) will
+interactively prompt the user whether to collect the results or not.}
 }
 \description{
 Upload a TensorFlow application to Google Cloud, and use that application to

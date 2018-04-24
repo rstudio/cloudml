@@ -12,16 +12,17 @@
 #' @param master_type Training master node machine type. "standard" provides a
 #'   basic machine configuration suitable for training simple models with small
 #'   to moderate datasets. See the documentation at
-#'   https://cloud.google.com/ml-engine/docs/training-overview#machine_type_table
+#'   <https://cloud.google.com/ml-engine/docs/training-overview#machine_type_table>
 #'    for details on available machine types.
 #'
 #' @param region The region to be used for training.
 #'
 #' @param config A list, `YAML` or `JSON` configuration file as described
-#'   https://cloud.google.com/ml-engine/reference/rest/v1/projects.jobs.
+#'   <https://cloud.google.com/ml-engine/reference/rest/v1/projects.jobs>.
 #'
-#' @param collect Collect job when training is completed (blocks waiting for the
-#'   job to complete).
+#' @param collect Logical. If TRUE, collect job when training is completed
+#'   (blocks waiting for the job to complete). The default (`"ask"`) will
+#'   interactively prompt the user whether to collect the results or not.
 #'
 #' @seealso [job_status()], [job_collect()], [job_cancel()]
 #'
@@ -80,7 +81,8 @@ cloudml_train <- function(file = "train.R",
   scope_setup_py(directory)
   setwd(dirname(directory))
 
-  cloudml_version <- cloudml$trainingInput$runtimeVersion %||% "1.4"
+  cloudml_version <- cloudml$trainingInput$runtimeVersion %||% "1.6"
+
   if (utils::compareVersion(cloudml_version, "1.4") < 0)
     stop("CloudML version ", cloudml_version, " is unsupported, use 1.4 or newer.")
 
