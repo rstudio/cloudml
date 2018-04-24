@@ -5,7 +5,7 @@
 \title{Train a model using Cloud ML}
 \usage{
 cloudml_train(file = "train.R", master_type = NULL, flags = NULL,
-  region = NULL, config = NULL, collect = "ask")
+  region = NULL, config = NULL, collect = "ask", runtime_version)
 }
 \arguments{
 \item{file}{File to be used as entrypoint for training.}
@@ -24,8 +24,14 @@ to YAML file containing flag values.}
 \item{config}{A list, \code{YAML} or \code{JSON} configuration file as described
 \url{https://cloud.google.com/ml-engine/reference/rest/v1/projects.jobs}.}
 
-\item{collect}{Collect job when training is completed (blocks waiting for the
-job to complete).}
+\item{collect}{Logical. If TRUE, collect job when training is completed
+(blocks waiting for the job to complete). The default (\code{"ask"}) will
+interactively prompt the user whether to collect the results or not.}
+
+\item{runtime_version}{The version number of the Cloud Machine Learning
+platform to use (see
+\url{https://cloud.google.com/ml-engine/docs/tensorflow/runtime-version-list}
+for valid values).  Defaults to "1.4"}
 }
 \description{
 Upload a TensorFlow application to Google Cloud, and use that application to
