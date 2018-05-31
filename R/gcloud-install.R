@@ -147,7 +147,11 @@ gcloud_install_windows <- function() {
                        installer,
                        mode = "wb")
 
-  shell.exec(installer)
+  if (interactive()) {
+    shell.exec(installer)
+  } else {
+    processx::run(installer, "/S")
+  }
 
   invisible(NULL)
 }
