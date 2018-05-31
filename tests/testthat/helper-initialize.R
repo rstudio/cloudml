@@ -42,9 +42,15 @@ cloudml_tests_configured <- function() {
 }
 
 if (cloudml_tests_configured()) {
-  if (identical(Sys.getenv("TRAVIS"), "true") ||
-      identical(tolower(Sys.getenv("APPVEYOR")), "true")) {
+  isTravis <- identical(Sys.getenv("TRAVIS"), "true")
+  isAppVeyor <- identical(tolower(Sys.getenv("APPVEYOR")), "true")
+
+  if (isTravis || isAppVeyor) {
     gcloud_install(update = FALSE)
+  }
+
+  if (isAppVeyor) {
+    options(cloudml.snapshot.fallback.ok = TRUE)
   }
 
   options(repos = c(CRAN = "http://cran.rstudio.com"))
