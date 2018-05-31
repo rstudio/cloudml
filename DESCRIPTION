@@ -29,6 +29,7 @@ Suggests:
   knitr,
   testthat
 License: Apache License 2.0
+SystemRequirements: Python (>= 2.7.0)
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
