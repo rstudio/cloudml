@@ -5,9 +5,16 @@ dist: trusty
 sudo: false
 cache: packages
 env:
+  - PYTHON="2"
+  - PYTHON="3"
   global:
     - NOT_CRAN=true
     - _R_CHECK_FORCE_SUGGESTS_=false
+before_install:
+  - if [ $PYTHON == "3" ]; then
+      sudo apt-get update
+      sudo apt-get install python3
+    fi
 script:
   - |
     R CMD build .
