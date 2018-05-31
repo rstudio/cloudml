@@ -11,10 +11,6 @@ gexec <- function(command,
     command <- "cmd"
   }
 
-  quoted_args <- args
-  if (.Platform$OS.type != "windows")
-    quoted_args <- shell_quote(args)
-
   result <- processx::run(
     command = command,
     args = as.character(args),
@@ -30,7 +26,7 @@ gexec <- function(command,
       "[command]",
       paste(
         command,
-        paste(quoted_args, collapse = " ")
+        paste(args, collapse = " ")
       ),
 
       "",
@@ -61,11 +57,15 @@ gexec <- function(command,
 #'
 #' @param ... Parameters to use specified based on position.
 #' @param args Parameters to use specified as a list.
-#' @param echo Echo command output to console
+#' @param echo Echo command output to console.
 #'
+#' @examples
+#' \dontrun{
+#' gcloud_exec("help", "info")
+#' }
 #' @keywords internal
 #' @export
-gcloud_exec <- function(..., args = NULL, echo = FALSE)
+gcloud_exec <- function(..., args = NULL, echo = TRUE)
 {
   if (is.null(args))
     args <- list(...)
