@@ -1,9 +1,9 @@
 
 #' Read File from System Environment Variable
 #'
-#' To create an encoded file use: \code{gsub("\\n", "",
-#' jsonlite::base64_enc(serialize(readLines("tests/testthat/cloudml.yml"),
-#' NULL)))}
+#' To create an encoded account_file file use: \code{
+#' gsub("\\n", "", jsonlite::base64_enc(serialize(readLines("keyfile.json"), NULL)))
+#' }
 #'
 sysenv_file <- function(name, destination) {
   if (file.exists(destination))
@@ -42,8 +42,15 @@ cloudml_tests_configured <- function() {
 }
 
 if (cloudml_tests_configured()) {
-  if (identical(Sys.getenv("TRAVIS"), "true")) {
-    cloudml::gcloud_install(update = FALSE)
+  isTravis <- identical(Sys.getenv("TRAVIS"), "true")
+  isAppVeyor <- identical(tolower(Sys.getenv("APPVEYOR")), "true")
+
+  if (isTravis || isAppVeyor) {
+    gcloud_install(update = FALSE)
+  }
+
+  if (isAppVeyor) {
+    options(cloudml.snapshot.fallback.ok = TRUE)
   }
 
   options(repos = c(CRAN = "http://cran.rstudio.com"))

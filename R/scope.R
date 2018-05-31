@@ -21,10 +21,11 @@ initialize_application <- function(application = getwd())
   packrat::opts$ignored.packages(IGNORED)
   packrat::.snapshotImpl(
     project = getwd(),
-    ignore.stale = TRUE,
+    ignore.stale = getOption("cloudml.snapshot.ignore.stale", FALSE),
     prompt = FALSE,
-    snapshot.sources = FALSE,
-    verbose = FALSE
+    snapshot.sources = getOption("cloudml.snapshot.sources", FALSE),
+    verbose = getOption("cloudml.snapshot.verbose", FALSE),
+    fallback.ok = getOption("cloudml.snapshot.fallback.ok", FALSE)
   )
 
   # ensure sub-directories contain an '__init__.py'
