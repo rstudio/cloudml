@@ -10,12 +10,12 @@ env:
     - NOT_CRAN=true
     - _R_CHECK_FORCE_SUGGESTS_=false
   matrix:
-  - PYTHON="2"
-  - PYTHON="3"
+  - PYTHON_VERSION="2"
+  - PYTHON_VERSION="3"
 
 before_install:
   - |
-    if [[ $PYTHON == "3" ]]; then
+    if [[ $PYTHON_VERSION == "3" ]]; then
       sudo apt-get update
       sudo apt-get install python3
     fi
