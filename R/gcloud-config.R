@@ -48,11 +48,11 @@ gcloud_config <- function(gcloud = NULL) {
 }
 
 gcloud_default_account <- function() {
-  trimws(gcloud_exec("config", "get-value", "account")$stdout)
+  trimws(gcloud_exec("config", "get-value", "account", echo = FALSE)$stdout)
 }
 
 gcloud_default_project <- function() {
-  trimws(gcloud_exec("config", "get-value", "project")$stdout)
+  trimws(gcloud_exec("config", "get-value", "project", echo = FALSE)$stdout)
 }
 
 gcloud_default_region <- function(default_region = "us-central1") {

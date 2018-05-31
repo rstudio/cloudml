@@ -11,7 +11,7 @@ gsutil_exec(..., args = NULL, echo = FALSE)
 
 \item{args}{Parameters to use specified as a list.}
 
-\item{echo}{Echo command output to console}
+\item{echo}{Echo command output to console.}
 }
 \description{
 Executes a Google Utils command with the given parameters.

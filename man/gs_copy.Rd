@@ -17,7 +17,7 @@ either a path on the local filesystem, or a Google Storage URI (e.g.
 \item{recursive}{Boolean; perform a recursive copy? This must be specified if you intend on
 copying directories.}
 
-\item{echo}{Echo command output to console}
+\item{echo}{Echo command output to console.}
 }
 \description{
 Use the \code{gsutil cp} command to copy data between your local file system and
