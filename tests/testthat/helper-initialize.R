@@ -42,7 +42,8 @@ cloudml_tests_configured <- function() {
 }
 
 if (cloudml_tests_configured()) {
-  if (identical(Sys.getenv("TRAVIS"), "true")) {
+  if (identical(Sys.getenv("TRAVIS"), "true") ||
+      identical(tolower(Sys.getenv("APPVEYOR")), "true")) {
     cloudml::gcloud_install(update = FALSE)
   }
 
