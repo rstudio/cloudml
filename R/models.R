@@ -5,7 +5,7 @@ cloudml_model_exists <- function(gcloud, name) {
                 ("list")
                 ("--format=json"))
 
-  output <- gcloud_exec(args = arguments())
+  output <- gcloud_exec(args = arguments(), echo = FALSE)
   pasted <- paste(output$stdout, collapse = "\n")
 
   output_parsed <- jsonlite::fromJSON(pasted)
@@ -51,7 +51,7 @@ cloudml_deploy <- function(
                   (name)
                   ("--regions=%s", region))
 
-    gcloud_exec(args = arguments())
+    gcloud_exec(args = arguments(), echo = FALSE)
   }
 
   model_dest <- sprintf(
@@ -70,7 +70,7 @@ cloudml_deploy <- function(
                 ("--origin=%s", model_dest)
                 ("--runtime-version=%s", cloudml$trainingInput$runtimeVersion %||% "1.4"))
 
-  gcloud_exec(args = arguments())
+  gcloud_exec(args = arguments(), echo = FALSE)
 
   message("Model created and available in https://console.cloud.google.com/mlengine/models/", name)
 
@@ -127,7 +127,7 @@ cloudml_predict <- function(
                 ("--json-instances=%s", pseudo_json_file)
                 ("--format=%s", "json"))
 
-  output <- gcloud_exec(args = arguments())
+  output <- gcloud_exec(args = arguments(), echo = FALSE)
 
   json_raw <- output$stdout
   json_parsed <- jsonlite::fromJSON(json_raw, simplifyDataFrame = FALSE)

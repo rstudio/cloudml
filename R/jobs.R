@@ -102,7 +102,7 @@ cloudml_train <- function(file = "train.R",
                 ("Rscript"))
 
   # submit job through command line interface
-  gcloud_exec(args = arguments())
+  gcloud_exec(args = arguments(), echo = FALSE)
 
   # call 'describe' to discover additional information related to
   # the job, and generate a 'job' object from that
@@ -114,7 +114,7 @@ cloudml_train <- function(file = "train.R",
                 ("describe")
                 (id))
 
-  output <- gcloud_exec(args = arguments())
+  output <- gcloud_exec(args = arguments(), echo = FALSE)
   stdout <- output$stdout
   stderr <- output$stderr
 
@@ -190,7 +190,7 @@ job_cancel <- function(job = "latest") {
                 ("cancel")
                 (job))
 
-  gcloud_exec(args = arguments())
+  gcloud_exec(args = arguments(), echo = FALSE)
 }
 
 #' List all jobs
@@ -242,7 +242,7 @@ job_list <- function(filter    = NULL,
     ("--sort-by=%s", sort_by)
     (if (uri) "--uri"))
 
-  output <- gcloud_exec(args = arguments())
+  output <- gcloud_exec(args = arguments(), echo = FALSE)
 
   if (!uri) {
     output_tmp <- tempfile()
@@ -318,7 +318,7 @@ job_status <- function(job = "latest") {
                 (job))
 
   # request job description from gcloud
-  output <- gcloud_exec(args = arguments())
+  output <- gcloud_exec(args = arguments(), echo = FALSE)
 
   # parse as YAML and return
   status <- yaml::yaml.load(paste(output$stdout, collapse = "\n"))

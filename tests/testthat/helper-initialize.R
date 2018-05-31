@@ -59,7 +59,8 @@ if (cloudml_tests_configured()) {
         "--key-file",
         account_file,
         sep = "="
-      )
+      ),
+      echo = FALSE
     )
   }
 
