@@ -13,7 +13,7 @@ cloudml_train(file = "train.R", master_type = NULL, flags = NULL,
 \item{master_type}{Training master node machine type. "standard" provides a
 basic machine configuration suitable for training simple models with small
 to moderate datasets. See the documentation at
-\url{https://cloud.google.com/ml-engine/docs/training-overview#machine_type_table}
+\url{https://cloud.google.com/ml-engine/docs/tensorflow/machine-types#machine_type_table}
 for details on available machine types.}
 
 \item{flags}{Named list with flag values (see \code{\link[=flags]{flags()}}) or path
