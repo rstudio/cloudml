@@ -106,6 +106,11 @@ gs_rsync <- function(source, destination,
 #'   location of data which points to a local directory during
 #'   development and a Google Cloud bucket during cloud training.
 #'
+#' @examples
+#'
+#' library(cloudml)
+#' gs_local_dir(getwd())
+#'
 #' @export
 gs_local_dir <- function(url, local_dir = "gs", echo = FALSE) {
 
