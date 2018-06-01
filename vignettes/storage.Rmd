@@ -86,7 +86,7 @@ Note that if the path passed to `gs_local_dir()` is from the local filesystem it
 
 ## Data Source Configuration 
 
-It's often useful to do training script development with a local subsample of data that you've extracted from the complete set of training data. In this configuration, you'll want your training script to dynamically use the local subsample during development then use the complete dataset stored in Google Cloud Storage when running on CloudML. You can accomplish this with a combination of [training flags]((https://tensorflow.rstudio.com/tools/training_flags.html)) and the `gs_local_dir()` function described above.
+It's often useful to do training script development with a local subsample of data that you've extracted from the complete set of training data. In this configuration, you'll want your training script to dynamically use the local subsample during development then use the complete dataset stored in Google Cloud Storage when running on CloudML. You can accomplish this with a combination of [training flags](https://tensorflow.rstudio.com/tools/training_flags.html) and the `gs_local_dir()` function described above.
 
 Here's a complete example. We start with a training script that declares a flag for the location of the training data:
 
