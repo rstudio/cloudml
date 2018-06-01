@@ -5,6 +5,7 @@ trainingInput:
     goal: MAXIMIZE
     hyperparameterMetricTag: val_acc
     maxTrials: 2
+    max_parallel_trials: 2
     params:
       - parameterName: dropout1
         type: DOUBLE
