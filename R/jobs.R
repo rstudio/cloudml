@@ -24,6 +24,14 @@
 #'   (blocks waiting for the job to complete). The default (`"ask"`) will
 #'   interactively prompt the user whether to collect the results or not.
 #'
+#' @examples
+#' \dontrun{
+#' library(cloudml)
+#'
+#' gcloud_install()
+#' job <- cloudml_train("train.R")
+#' }
+#'
 #' @seealso [job_status()], [job_collect()], [job_cancel()]
 #'
 #' @family CloudML functions

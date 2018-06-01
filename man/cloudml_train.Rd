@@ -32,6 +32,15 @@ interactively prompt the user whether to collect the results or not.}
 Upload a TensorFlow application to Google Cloud, and use that application to
 train a model.
 }
+\examples{
+\dontrun{
+library(cloudml)
+
+gcloud_install()
+job <- cloudml_train("train.R")
+}
+
+}
 \seealso{
 \code{\link[=job_status]{job_status()}}, \code{\link[=job_collect]{job_collect()}}, \code{\link[=job_cancel]{job_cancel()}}
 
