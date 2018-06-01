@@ -19,7 +19,7 @@
 #' * On-demand access to training on GPUs, including the new [Tesla P100
 #' GPUs](http://www.nvidia.com/object/tesla-p100.html) from NVIDIA&reg;.
 #'
-#' * Hyperparameter tuning to optmize key attributes of model architectures in
+#' * Hyperparameter tuning to optimize key attributes of model architectures in
 #' order to maximize predictive accuracy.
 #'
 #' * Deployment of trained models to the Google global prediction platform that

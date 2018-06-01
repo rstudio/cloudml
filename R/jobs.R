@@ -12,7 +12,7 @@
 #' @param master_type Training master node machine type. "standard" provides a
 #'   basic machine configuration suitable for training simple models with small
 #'   to moderate datasets. See the documentation at
-#'   <https://cloud.google.com/ml-engine/docs/training-overview#machine_type_table>
+#'   <https://cloud.google.com/ml-engine/docs/tensorflow/machine-types#machine_type_table>
 #'    for details on available machine types.
 #'
 #' @param region The region to be used for training.
