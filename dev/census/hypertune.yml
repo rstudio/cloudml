@@ -1,8 +1,10 @@
 # Define how we want to optimize hyperparameters.
 goal: MAXIMIZE
 hyperparameterMetricTag: accuracy
-maxTrials: 4
-maxParallelTrials: 2
+maxTrials:
+  - 4
+maxParallelTrials:
+  - 2
 
 # Define the hyperparameters we want to search over.
 params:
