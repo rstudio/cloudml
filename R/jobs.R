@@ -754,12 +754,10 @@ collect_job_step <- function(destination, jobId) {
   ))
 }
 
-
-
 view_job_step <- function(destination, jobId) {
   r_job_step(paste0(
     "utils::browseURL('",
-    file.path(normalizePath(destination, winslash = "/"), jobId, "tfruns.d", "view.html"),
+    file.path(normalizePath(destination, winslash = "/", mustWork = FALSE), jobId, "tfruns.d", "view.html"),
     "')"
   ))
 }
