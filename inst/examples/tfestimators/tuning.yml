@@ -2,8 +2,10 @@ trainingInput:
   hyperparameters:
     goal: MINIMIZE
     hyperparameterMetricTag: average_loss
-    maxTrials: 2
-    maxParallelTrials: 2
+    maxTrials:
+      - 2
+    maxParallelTrials:
+      - 2
     params:
       - parameterName: num-epochs
         type: INTEGER
