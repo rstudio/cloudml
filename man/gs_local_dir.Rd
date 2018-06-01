@@ -29,3 +29,9 @@ unmodified. This allows you to for example use a training flag for the
 location of data which points to a local directory during
 development and a Google Cloud bucket during cloud training.
 }
+\examples{
+
+library(cloudml)
+gs_local_dir(getwd())
+
+}
