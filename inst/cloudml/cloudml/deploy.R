@@ -1,6 +1,5 @@
 # required R packages
 CRAN <- c(
-  "devtools",
   "purrr",
   "modelr",
   "tensorflow",
@@ -192,13 +191,6 @@ retrieve_default_packages <- function() {
     if (pkg %in% installed)
       next
     install.packages(pkg)
-  }
-
-  # install required GitHub packages
-  for (entry in GITHUB) {
-    if (basename(entry$uri) %in% installed)
-      next
-    devtools::install_github(entry$uri, ref = entry$ref)
   }
 }
 
