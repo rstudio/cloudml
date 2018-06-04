@@ -7,8 +7,9 @@ Authors@R: c(
     person("Kevin", "Ushey", role = c("aut")),
     person(family = "RStudio", role = c("cph"))
     )
-Description: Interface to the Google Cloud Machine Learning Platform which provides
-  cloud tools for training machine learning models.
+Description: Interface to the Google Cloud Machine Learning Platform
+  <https://cloud.google.com/ml-engine>, which provides cloud tools for training machine
+  learning models.
 Depends:
   R (>= 3.3.0), 
   tfruns (>= 1.3)

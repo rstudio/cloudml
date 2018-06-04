@@ -77,7 +77,7 @@ train_generator <- flow_images_from_directory(
   gs_local_dir("gs://quarter-deck-529/images/train"),
   image_data_generator(rescale = 1/255),
   target_size = c(150, 150),
-  batch_size = 32
+  batch_size = 32,
   class_mode = "binary"
 )
 ```
