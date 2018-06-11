@@ -753,7 +753,8 @@ collect_job_step <- function(destination, jobId) {
     "cloudml::job_collect('",
     jobId,
     "', destination = '",
-    normalizePath(destination, winslash = "/",
+    normalizePath(destination,
+                  winslash = "/",
                   mustWork = FALSE),
     "', view = 'save')"
   ))

@@ -62,6 +62,9 @@ retrieve_packrat_packages <- function(cache_path) {
     message("Restoring package using packrat lockfile")
     message("Packrat lockfile:\n", paste(readLines("packrat/packrat.lock"), collapse = "\n"))
 
+    if (!"packrat" %in% rownames(installed.packages()))
+      install.packages("packrat")
+
     Sys.setenv(
       R_PACKRAT_CACHE_DIR = cache_path
     )
