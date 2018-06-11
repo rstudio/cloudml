@@ -750,7 +750,12 @@ job_status_is_tuning <- function(status) {
 
 collect_job_step <- function(destination, jobId) {
   r_job_step(paste0(
-    "cloudml::job_collect('", jobId, "', destination = '", normalizePath(destination, winslash = "/"), "', view = 'save')"
+    "cloudml::job_collect('",
+    jobId,
+    "', destination = '",
+    normalizePath(destination, winslash = "/",
+                  mustWork = FALSE),
+    "', view = 'save')"
   ))
 }
 
