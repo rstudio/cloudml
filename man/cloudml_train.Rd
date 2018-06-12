@@ -5,7 +5,7 @@
 \title{Train a model using Cloud ML}
 \usage{
 cloudml_train(file = "train.R", master_type = NULL, flags = NULL,
-  region = NULL, config = NULL, collect = "ask")
+  region = NULL, config = NULL, collect = "ask", dry_run = FALSE)
 }
 \arguments{
 \item{file}{File to be used as entrypoint for training.}
@@ -27,6 +27,9 @@ to YAML file containing flag values.}
 \item{collect}{Logical. If TRUE, collect job when training is completed
 (blocks waiting for the job to complete). The default (\code{"ask"}) will
 interactively prompt the user whether to collect the results or not.}
+
+\item{dry_run}{Triggers a local dry run over the deployment phase to
+validate packages and packing work as expected.}
 }
 \description{
 Upload a TensorFlow application to Google Cloud, and use that application to
