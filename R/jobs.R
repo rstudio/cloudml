@@ -24,6 +24,9 @@
 #'   (blocks waiting for the job to complete). The default (`"ask"`) will
 #'   interactively prompt the user whether to collect the results or not.
 #'
+#' @param dry_run Triggers a local dry run over the deployment phase to
+#'   validate packages and packing work as expected.
+#'
 #' @examples
 #' \dontrun{
 #' library(cloudml)
@@ -41,9 +44,13 @@ cloudml_train <- function(file = "train.R",
                           flags = NULL,
                           region = NULL,
                           config = NULL,
-                          collect = "ask")
+                          collect = "ask",
+                          dry_run = FALSE)
 {
-  message("Submitting training job to CloudML...")
+  if (dry_run)
+    message("Dry running training job for CloudML...")
+  else
+    message("Submitting training job to CloudML...")
 
   gcloud <- gcloud_config()
   cloudml <- cloudml_config(config)
@@ -66,7 +73,8 @@ cloudml_train <- function(file = "train.R",
     overlay = flags,
     entrypoint = entrypoint,
     cloudml = cloudml,
-    gcloud = gcloud
+    gcloud = gcloud,
+    dry_run = dry_run
   )
 
   # read configuration
@@ -110,7 +118,7 @@ cloudml_train <- function(file = "train.R",
                 ("Rscript"))
 
   # submit job through command line interface
-  gcloud_exec(args = arguments(), echo = FALSE)
+  gcloud_exec(args = arguments(), echo = FALSE, dry_run = dry_run)
 
   # call 'describe' to discover additional information related to
   # the job, and generate a 'job' object from that
@@ -122,7 +130,7 @@ cloudml_train <- function(file = "train.R",
                 ("describe")
                 (id))
 
-  output <- gcloud_exec(args = arguments(), echo = FALSE)
+  output <- gcloud_exec(args = arguments(), echo = FALSE, dry_run = dry_run)
   stdout <- output$stdout
   stderr <- output$stderr
 
@@ -144,6 +152,8 @@ cloudml_train <- function(file = "train.R",
   description <- yaml::yaml.load(stdout)
   job <- cloudml_job("train", id, description)
   register_job(job)
+
+  if (dry_run) collect <- FALSE
 
   # resolve collect
   if (identical(collect, "ask")) {

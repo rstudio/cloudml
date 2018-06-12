@@ -2,7 +2,8 @@
 gexec <- function(command,
                   args = character(),
                   echo = TRUE,
-                  throws = TRUE)
+                  throws = TRUE,
+                  dry_run = FALSE)
 {
   command <- normalizePath(command, mustWork = FALSE)
 
@@ -11,14 +12,18 @@ gexec <- function(command,
     command <- "cmd"
   }
 
-  result <- processx::run(
-    command = command,
-    args = as.character(args),
-    echo = echo,
-    error_on_status = FALSE
-  )
+  result <- list()
+  if (dry_run)
+    message("\n", command, " ", paste(args, collapse = " "))
+  else
+    result <- processx::run(
+      command = command,
+      args = as.character(args),
+      echo = echo,
+      error_on_status = FALSE
+    )
 
-  if (result$status != 0 && throws) {
+  if (result$status != 0 && throws && !dry_run) {
     output <- c(
       sprintf("ERROR: gcloud invocation failed [exit status %i]", result$status),
 
@@ -58,6 +63,7 @@ gexec <- function(command,
 #' @param ... Parameters to use specified based on position.
 #' @param args Parameters to use specified as a list.
 #' @param echo Echo command output to console.
+#' @param dry_run Echo but not execute the command?
 #'
 #' @examples
 #' \dontrun{
@@ -65,7 +71,7 @@ gexec <- function(command,
 #' }
 #' @keywords internal
 #' @export
-gcloud_exec <- function(..., args = NULL, echo = TRUE)
+gcloud_exec <- function(..., args = NULL, echo = TRUE, dry_run = FALSE)
 {
   if (is.null(args))
     args <- list(...)
@@ -73,6 +79,7 @@ gcloud_exec <- function(..., args = NULL, echo = TRUE)
   gexec(
     gcloud_binary(),
     args,
-    echo
+    echo,
+    dry_run = dry_run
   )
 }
