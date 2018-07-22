@@ -86,6 +86,57 @@ gs_rsync <- function(source, destination,
 
 
 
+#' Google storage bucket path that syncs to local storage when not
+#' running on CloudML.
+#'
+#' Refer to data within a Google Storage bucket. When running on CloudML
+#' the bucket will be read from directly. Otherwise, the bucket will be
+#' automatically synchronized to a local directory.
+#'
+#' @details  This function is suitable for use in TensorFlow APIs that accept
+#' gs:// URLs (e.g. TensorFlow datasets). However, many package functions
+#' accept only local filesystem paths as input (rather than
+#' gs:// URLs). For these cases you can the [gs_data_dir_local()] function,
+#' which will always synchronize gs:// buckets to the local filesystem and
+#' provide a local path interface to their contents.
+#'
+#' @inheritParams gcloud_exec
+#'
+#' @param url Google Storage bucket URL (e.g. `gs://<your-bucket>`).
+#' @param local_dir Local directory to synchonize Google Storage bucket(s) to.
+#' @param force_sync Force local synchonization even if the data
+#'   directory already exists.
+#'
+#' @return Path to contents of data directory.
+#'
+#' @seealso [gs_data_dir_local()]
+#'
+#' @export
+gs_data_dir <- function(url, local_dir = "gs", force_sync = FALSE, echo = TRUE) {
+
+  # if we are running on cloudml then just return the url unmodified
+  if (config::is_active("cloudml")) {
+
+    url
+
+  } else {
+
+    # extract [BUCKET_NAME]/[OBJECT_NAME] and build local path
+    object_path <- substring(url, nchar("gs://") + 1)
+    local_path <- file.path(local_dir, object_path)
+
+    # synchronize if it doesn't exist (or if force_sync is specified)
+    if (!dir.exists(local_path) || force_sync) {
+      message("Synchronizing ", url, " to local directory ", local_path)
+      gs_rsync(url, local_path, delete = TRUE, recursive = TRUE, echo = echo)
+    }
+
+    # return path
+    local_path
+  }
+}
+
+
 #' Get a local path to the contents of Google Storage bucket
 #'
 #' Provides a local filesystem interface to Google Storage buckets. Many
@@ -93,6 +144,9 @@ gs_rsync <- function(source, destination,
 #' gs:// URLs). For these cases the `gcloud_path()` function will synchronize
 #' gs:// buckets to the local filesystem and provide a local path interface
 #' to their contents.
+#'
+#' @note For APIs that accept gs:// URLs directly (e.g. TensorFlow datasets)
+#'   you should use the [gs_data_dir()] function.
 #'
 #' @inheritParams gcloud_exec
 #'
@@ -106,8 +160,10 @@ gs_rsync <- function(source, destination,
 #'   location of data which points to a local directory during
 #'   development and a Google Cloud bucket during cloud training.
 #'
+#' @seealso [gs_data_dir()]
+#'
 #' @export
-gs_local_dir <- function(url, local_dir = "gs", echo = FALSE) {
+gs_data_dir_local <- function(url, local_dir = "gs", echo = FALSE) {
 
   # return url unmodified for non google-storage URIs
   if (!is_gs_uri(url)) {
@@ -125,6 +181,17 @@ gs_local_dir <- function(url, local_dir = "gs", echo = FALSE) {
     local_path
   }
 }
+
+#' Alias to gs_data_dir_local() function
+#'
+#' This function is deprecated, please use [gs_data_dir_local()] instead.
+#' @inheritParams gs_data_dir_local
+#'
+#' @seealso [gs_data_dir_local()]
+#' @keywords internal
+#' @export
+gs_local_dir <- gs_data_dir_local
+
 
 is_gs_uri <- function(file) {
   is.character(file) && grepl("^gs://.+$", file)

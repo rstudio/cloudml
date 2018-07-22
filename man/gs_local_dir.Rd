@@ -2,7 +2,7 @@
 % Please edit documentation in R/gcloud-storage.R
 \name{gs_local_dir}
 \alias{gs_local_dir}
-\title{Get a local path to the contents of Google Storage bucket}
+\title{Alias to gs_data_dir_local() function}
 \usage{
 gs_local_dir(url, local_dir = "gs", echo = FALSE)
 }
@@ -13,19 +13,10 @@ gs_local_dir(url, local_dir = "gs", echo = FALSE)
 
 \item{echo}{Echo command output to console}
 }
-\value{
-Local path to contents of bucket.
-}
 \description{
-Provides a local filesystem interface to Google Storage buckets. Many
-package functions accept only local filesystem paths as input (rather than
-gs:// URLs). For these cases the \code{gcloud_path()} function will synchronize
-gs:// buckets to the local filesystem and provide a local path interface
-to their contents.
+This function is deprecated, please use \code{\link[=gs_data_dir_local]{gs_data_dir_local()}} instead.
 }
-\details{
-If you pass a local path as the \code{url} it will be returned
-unmodified. This allows you to for example use a training flag for the
-location of data which points to a local directory during
-development and a Google Cloud bucket during cloud training.
+\seealso{
+\code{\link[=gs_data_dir_local]{gs_data_dir_local()}}
 }
+\keyword{internal}

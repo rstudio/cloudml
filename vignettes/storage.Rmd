@@ -56,14 +56,30 @@ Note that to use these functions you need to import the cloudml package with `li
 
 ## Reading Data
 
-Some TensorFlow APIs can take `gs://` URLs directly however most often you will need a local filesystem path to a data source in order to read it. If you want to store data in Google Storage but still use it with APIs that require local paths you can use the `gs_local_dir()` function to provide the local path. 
+There are two distinct ways to read data from Google Storage. Which you use will depend on whether the TensorFlow API you are using supports direct references to `gs://` bucket URLs. 
+
+If you are using the [TensorFlow Datasets](https://tensorflow.rstudio.com/tools/tfdatasets/articles/introduction.html) API, then you can use `gs://` bucket URLs directly. In this case you'll want to use the `gs://` URL when running on CloudML, and a synchonized copy of the bucket when running locally. You can use the `gs_data_dir()` function to accomplish this. For example:
+
+```{r}
+library(tfdatasets)
+library(cloudml)
+
+data_dir <- gs_data_dir("gs://mtcars-data")
+mtcars_csv <- file.path(data_dir, "mtcars.csv")
+
+mtcars_dataset <- csv_dataset(mtcars_csv) %>% 
+  dataset_prepare(x = c(mpg, disp), y = cyl)
+```
+
+
+While some TensorFlow APIs can take `gs://` URLs directly, in many cases a local filesystem path will be required. If you want to store data in Google Storage but still use it with APIs that require local paths you can use the `gs_data_dir_local()` function to provide the local path. 
 
 For example, this code reads CSV files from Google Storage:
 
 ```{r}
 library(cloudml)
 library(readr)
-data_dir <- gs_local_dir("gs://quarter-deck-529/training-data")
+data_dir <- gs_data_dir_local("gs://quarter-deck-529/training-data")
 train_data <- read_csv(file.path(data_dir, "train.csv"))
 test_data <- read_csv(file.path(data_dir, "test.csv"))
 ```
@@ -74,7 +90,7 @@ Here's another example which creates a Keras image data generator from a bucket:
 
 ```{r}
 train_generator <- flow_images_from_directory(
-  gs_local_dir("gs://quarter-deck-529/images/train"),
+  gs_data_dir_local("gs://quarter-deck-529/images/train"),
   image_data_generator(rescale = 1/255),
   target_size = c(150, 150),
   batch_size = 32
@@ -82,7 +98,7 @@ train_generator <- flow_images_from_directory(
 )
 ```
 
-Note that if the path passed to `gs_local_dir()` is from the local filesystem it will be returned unmodified.
+Note that if the path passed to `gs_data_dir_local()` is from the local filesystem it will be returned unmodified.
 
 ## Data Source Configuration 
 
@@ -101,14 +117,14 @@ FLAGS <- flags(
 
 # determine the location of the directory (during local development this will
 # be the default "data" subdirectory specified in the FLAGS declaration above)
-data_dir <- gs_local_dir(FLAGS$data_dir)
+data_dir <- gs_data_dir_local(FLAGS$data_dir)
 
 # read the data
 train_data <- read_csv(file.path(FLAGS$data_dir, "train.csv"))
 
 ```
 
-Note that the `data_dir` R variable is computed by passing `FLAGS$data_dir` to the `gs_local_dir()` function. This enables it to take on a dynamic value depending upon the training environment.
+Note that the `data_dir` R variable is computed by passing `FLAGS$data_dir` to the `gs_data_dir_local()` function. This enables it to take on a dynamic value depending upon the training environment.
 
 The way to vary this value when running on CloudML is by adding a `flags.yml` configuration file to your project directory. For example:
 
