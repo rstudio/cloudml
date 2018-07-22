@@ -86,7 +86,25 @@ gcloud_terminal <- function(command = NULL, clear = FALSE) {
       gcloud_sdk_terminal <- sprintf("%s (%d)", gcloud_sdk_terminal, next_index)
     }
 
-    id <- rstudioapi::terminalCreate(gcloud_sdk_terminal)
+    if (packageVersion("rstudioapi") >= "0.7.0.9000" &&
+        .Platform$OS.type == "windows" &&
+        rstudioapi::getVersion() >= "1.2.696") {
+      id <- rstudioapi::terminalCreate(gcloud_sdk_terminal, shellType = "win-cmd")
+    }
+    else {
+      id <- rstudioapi::terminalCreate(gcloud_sdk_terminal)
+    }
+
+    terminal_shell <- rstudioapi::terminalContext(id)$shell
+    if (identical(tolower(.Platform$OS.type), "windows") &&
+        !startsWith(terminal_shell, "Command Prompt")) {
+      warning(
+        "'cloudml' requires RStudio's terminal to be configured to use the 'Command Prompt' ",
+        "but it's currently configured to use '", terminal_shell, "'. You can change ",
+        "this setting from Tools - Global Options - Terminal."
+      )
+    }
+
     init_terminal(id)
   })
 

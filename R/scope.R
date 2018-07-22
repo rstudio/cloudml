@@ -2,7 +2,7 @@
 
 # initialize an application such that it can be easily
 # deployed on gcloud
-initialize_application <- function(application = getwd())
+initialize_application <- function(application = getwd(), dry_run = FALSE)
 {
   application <- normalizePath(application, winslash = "/", mustWork = TRUE)
   scope_dir(application)
@@ -21,10 +21,11 @@ initialize_application <- function(application = getwd())
   packrat::opts$ignored.packages(IGNORED)
   packrat::.snapshotImpl(
     project = getwd(),
-    ignore.stale = TRUE,
+    ignore.stale = getOption("cloudml.snapshot.ignore.stale", FALSE),
     prompt = FALSE,
-    snapshot.sources = FALSE,
-    verbose = FALSE
+    snapshot.sources = getOption("cloudml.snapshot.sources", FALSE),
+    verbose = getOption("cloudml.snapshot.verbose", dry_run),
+    fallback.ok = getOption("cloudml.snapshot.fallback.ok", FALSE)
   )
 
   # ensure sub-directories contain an '__init__.py'
@@ -48,7 +49,8 @@ scope_deployment <- function(id,
                              overlay = NULL,
                              entrypoint = NULL,
                              cloudml = NULL,
-                             gcloud = NULL)
+                             gcloud = NULL,
+                             dry_run = FALSE)
 {
   if (!is.list(cloudml)) stop("'cloudml' expected to be a configuration list")
   if (!is.list(gcloud)) stop("'gcloud' expected to be a configuration list")
@@ -75,8 +77,13 @@ scope_deployment <- function(id,
   copy_directory(application,
                  directory,
                  exclude = exclude)
-  defer(unlink(root, recursive = TRUE), envir = parent.frame())
-  initialize_application(directory)
+
+  if (dry_run)
+    message("\nTemporary deployment path ", root, " will not be automatically removed in dry runs.")
+  else
+    defer(unlink(root, recursive = TRUE), envir = parent.frame())
+
+  initialize_application(directory, dry_run = dry_run)
 
   # copy or create cloudml.yml in bundle dir to maintain state
   cloudml_file <- "cloudml.yml"

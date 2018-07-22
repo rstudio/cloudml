@@ -11,7 +11,7 @@ gs_local_dir(url, local_dir = "gs", echo = FALSE)
 
 \item{local_dir}{Local directory to synchonize Google Storage bucket(s) to.}
 
-\item{echo}{Echo command output to console}
+\item{echo}{Echo command output to console.}
 }
 \description{
 This function is deprecated, please use \code{\link[=gs_data_dir_local]{gs_data_dir_local()}} instead.

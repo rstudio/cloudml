@@ -11,7 +11,7 @@ gs_data_dir_local(url, local_dir = "gs", echo = FALSE)
 
 \item{local_dir}{Local directory to synchonize Google Storage bucket(s) to.}
 
-\item{echo}{Echo command output to console}
+\item{echo}{Echo command output to console.}
 }
 \value{
 Local path to contents of bucket.

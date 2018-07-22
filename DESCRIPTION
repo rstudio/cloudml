@@ -1,17 +1,18 @@
 Package: cloudml
 Title: Interface to the Google Cloud Machine Learning Platform
-Version: 0.5
+Version: 0.5.1.9000
 Authors@R: c(
     person("Javier", "Luraschi", email = "javier@rstudio.com", role = c("aut", "cre")),
     person("JJ", "Allaire", role = c("aut")),
     person("Kevin", "Ushey", role = c("aut")),
     person(family = "RStudio", role = c("cph"))
     )
-Description: Interface to the Google Cloud Machine Learning Platform which provides
-  cloud tools for training machine learning models.
+Description: Interface to the Google Cloud Machine Learning Platform
+  <https://cloud.google.com/ml-engine>, which provides cloud tools for training machine
+  learning models.
 Depends:
   R (>= 3.3.0), 
-  tfruns (>= 1.2.0.9001)
+  tfruns (>= 1.3)
 Imports:
   jsonlite,
   packrat,
@@ -21,16 +22,14 @@ Imports:
   tools,
   utils,
   withr,
-  yaml,
-  config
+  yaml
 Suggests:
   tensorflow (>= 1.4.2),
   keras (>= 2.1.2),
   knitr,
   testthat
-Remotes:
-  rstudio/tfruns
 License: Apache License 2.0
+SystemRequirements: Python (>= 2.7.0)
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)

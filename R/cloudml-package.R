@@ -19,7 +19,7 @@
 #' * On-demand access to training on GPUs, including the new [Tesla P100
 #' GPUs](http://www.nvidia.com/object/tesla-p100.html) from NVIDIA&reg;.
 #'
-#' * Hyperparameter tuning to optmize key attributes of model architectures in
+#' * Hyperparameter tuning to optimize key attributes of model architectures in
 #' order to maximize predictive accuracy.
 #'
 #' * Deployment of trained models to the Google global prediction platform that
@@ -35,7 +35,7 @@
 #' For documentation on using the R interface to CloudML see the package website
 #' at <https://tensorflow.rstudio.com/tools/cloudml/>
 #'
-#' @references https://tensorflow.rstudio.com/tools/cloudml/
+#' @references <https://tensorflow.rstudio.com/tools/cloudml/>
 #' @name cloudml-package
 #' @aliases cloudml
 #' @keywords internal

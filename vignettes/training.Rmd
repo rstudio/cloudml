@@ -282,7 +282,7 @@ For example, the following config file specifies a custom scale tier with a mast
 trainingInput:
   scaleTier: CUSTOM
   masterType: large_model
-  runtimeVersion: 1.2
+  runtimeVersion: 1.4
 ```
 
 You can also pass a named configuration file (i.e. one for a hyperparameter tuning job) via the `config` parmater of `cloudml_train()`. For example:

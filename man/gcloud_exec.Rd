@@ -4,16 +4,23 @@
 \alias{gcloud_exec}
 \title{Executes a Google Cloud Command}
 \usage{
-gcloud_exec(..., args = NULL, echo = FALSE)
+gcloud_exec(..., args = NULL, echo = TRUE, dry_run = FALSE)
 }
 \arguments{
 \item{...}{Parameters to use specified based on position.}
 
 \item{args}{Parameters to use specified as a list.}
 
-\item{echo}{Echo command output to console}
+\item{echo}{Echo command output to console.}
+
+\item{dry_run}{Echo but not execute the command?}
 }
 \description{
 Executes a Google Cloud command with the given parameters.
+}
+\examples{
+\dontrun{
+gcloud_exec("help", "info")
+}
 }
 \keyword{internal}

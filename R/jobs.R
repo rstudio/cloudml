@@ -12,16 +12,28 @@
 #' @param master_type Training master node machine type. "standard" provides a
 #'   basic machine configuration suitable for training simple models with small
 #'   to moderate datasets. See the documentation at
-#'   https://cloud.google.com/ml-engine/docs/training-overview#machine_type_table
+#'   <https://cloud.google.com/ml-engine/docs/tensorflow/machine-types#machine_type_table>
 #'    for details on available machine types.
 #'
 #' @param region The region to be used for training.
 #'
 #' @param config A list, `YAML` or `JSON` configuration file as described
-#'   https://cloud.google.com/ml-engine/reference/rest/v1/projects.jobs.
+#'   <https://cloud.google.com/ml-engine/reference/rest/v1/projects.jobs>.
 #'
-#' @param collect Collect job when training is completed (blocks waiting for the
-#'   job to complete).
+#' @param collect Logical. If TRUE, collect job when training is completed
+#'   (blocks waiting for the job to complete). The default (`"ask"`) will
+#'   interactively prompt the user whether to collect the results or not.
+#'
+#' @param dry_run Triggers a local dry run over the deployment phase to
+#'   validate packages and packing work as expected.
+#'
+#' @examples
+#' \dontrun{
+#' library(cloudml)
+#'
+#' gcloud_install()
+#' job <- cloudml_train("train.R")
+#' }
 #'
 #' @seealso [job_status()], [job_collect()], [job_cancel()]
 #'
@@ -32,9 +44,13 @@ cloudml_train <- function(file = "train.R",
                           flags = NULL,
                           region = NULL,
                           config = NULL,
-                          collect = "ask")
+                          collect = "ask",
+                          dry_run = FALSE)
 {
-  message("Submitting training job to CloudML...")
+  if (dry_run)
+    message("Dry running training job for CloudML...")
+  else
+    message("Submitting training job to CloudML...")
 
   gcloud <- gcloud_config()
   cloudml <- cloudml_config(config)
@@ -57,7 +73,8 @@ cloudml_train <- function(file = "train.R",
     overlay = flags,
     entrypoint = entrypoint,
     cloudml = cloudml,
-    gcloud = gcloud
+    gcloud = gcloud,
+    dry_run = dry_run
   )
 
   # read configuration
@@ -80,7 +97,8 @@ cloudml_train <- function(file = "train.R",
   scope_setup_py(directory)
   setwd(dirname(directory))
 
-  cloudml_version <- cloudml$trainingInput$runtimeVersion %||% "1.4"
+  cloudml_version <- cloudml$trainingInput$runtimeVersion %||% "1.6"
+
   if (utils::compareVersion(cloudml_version, "1.4") < 0)
     stop("CloudML version ", cloudml_version, " is unsupported, use 1.4 or newer.")
 
@@ -100,7 +118,7 @@ cloudml_train <- function(file = "train.R",
                 ("Rscript"))
 
   # submit job through command line interface
-  gcloud_exec(args = arguments())
+  gcloud_exec(args = arguments(), echo = FALSE, dry_run = dry_run)
 
   # call 'describe' to discover additional information related to
   # the job, and generate a 'job' object from that
@@ -112,7 +130,7 @@ cloudml_train <- function(file = "train.R",
                 ("describe")
                 (id))
 
-  output <- gcloud_exec(args = arguments())
+  output <- gcloud_exec(args = arguments(), echo = FALSE, dry_run = dry_run)
   stdout <- output$stdout
   stderr <- output$stderr
 
@@ -134,6 +152,8 @@ cloudml_train <- function(file = "train.R",
   description <- yaml::yaml.load(stdout)
   job <- cloudml_job("train", id, description)
   register_job(job)
+
+  if (dry_run) collect <- FALSE
 
   # resolve collect
   if (identical(collect, "ask")) {
@@ -188,7 +208,7 @@ job_cancel <- function(job = "latest") {
                 ("cancel")
                 (job))
 
-  gcloud_exec(args = arguments())
+  gcloud_exec(args = arguments(), echo = FALSE)
 }
 
 #' List all jobs
@@ -240,7 +260,7 @@ job_list <- function(filter    = NULL,
     ("--sort-by=%s", sort_by)
     (if (uri) "--uri"))
 
-  output <- gcloud_exec(args = arguments())
+  output <- gcloud_exec(args = arguments(), echo = FALSE)
 
   if (!uri) {
     output_tmp <- tempfile()
@@ -316,7 +336,7 @@ job_status <- function(job = "latest") {
                 (job))
 
   # request job description from gcloud
-  output <- gcloud_exec(args = arguments())
+  output <- gcloud_exec(args = arguments(), echo = FALSE)
 
   # parse as YAML and return
   status <- yaml::yaml.load(paste(output$stdout, collapse = "\n"))
@@ -740,16 +760,20 @@ job_status_is_tuning <- function(status) {
 
 collect_job_step <- function(destination, jobId) {
   r_job_step(paste0(
-    "cloudml::job_collect('", jobId, "', destination = '", normalizePath(destination, winslash = "/"), "', view = 'save')"
+    "cloudml::job_collect('",
+    jobId,
+    "', destination = '",
+    normalizePath(destination,
+                  winslash = "/",
+                  mustWork = FALSE),
+    "', view = 'save')"
   ))
 }
-
-
 
 view_job_step <- function(destination, jobId) {
   r_job_step(paste0(
     "utils::browseURL('",
-    file.path(normalizePath(destination, winslash = "/"), jobId, "tfruns.d", "view.html"),
+    file.path(normalizePath(destination, winslash = "/", mustWork = FALSE), jobId, "tfruns.d", "view.html"),
     "')"
   ))
 }

@@ -16,4 +16,5 @@
 ^.*/runs/.*$
 ^.*/savedmodel/.*$
 ^pkgdown$
-
+^appveyor.yml$
+^savedmodel$

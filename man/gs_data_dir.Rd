@@ -15,7 +15,7 @@ gs_data_dir(url, local_dir = "gs", force_sync = FALSE, echo = TRUE)
 \item{force_sync}{Force local synchonization even if the data
 directory already exists.}
 
-\item{echo}{Echo command output to console}
+\item{echo}{Echo command output to console.}
 }
 \value{
 Path to contents of data directory.

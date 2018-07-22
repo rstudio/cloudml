@@ -23,7 +23,7 @@ resolve_job <- function(id, registry = job_registry()) {
                 ("describe")
                 (id))
 
-  output <- gcloud_exec(args = arguments())
+  output <- gcloud_exec(args = arguments(), echo = FALSE)
   description <- yaml::yaml.load(paste(output$stdout, collapse = "\n"))
 
   # if we have a 'trainingInput' field, this was a training

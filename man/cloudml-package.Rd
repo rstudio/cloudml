@@ -15,7 +15,7 @@ enables:
 \href{https://tensorflow.rstudio.com/tfestimators}{tfestimators}, and
 \href{https://tensorflow.rstudio.com/}{tensorflow} R packages.
 \item On-demand access to training on GPUs, including the new \href{http://www.nvidia.com/object/tesla-p100.html}{Tesla P100GPUs} from NVIDIA®.
-\item Hyperparameter tuning to optmize key attributes of model architectures in
+\item Hyperparameter tuning to optimize key attributes of model architectures in
 order to maximize predictive accuracy.
 \item Deployment of trained models to the Google global prediction platform that
 can support thousands of users and TBs of data.
@@ -31,7 +31,7 @@ For documentation on using the R interface to CloudML see the package website
 at \url{https://tensorflow.rstudio.com/tools/cloudml/}
 }
 \references{
-https://tensorflow.rstudio.com/tools/cloudml/
+\url{https://tensorflow.rstudio.com/tools/cloudml/}
 }
 \author{
 \strong{Maintainer}: Javier Luraschi \email{javier@rstudio.com}

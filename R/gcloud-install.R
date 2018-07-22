@@ -64,6 +64,12 @@ gcloud_binary_default <- function() {
 #'
 #' @param update Attempt to update an existing installation.
 #'
+#' @examples
+#' \dontrun{
+#' library(cloudml)
+#' gcloud_install()
+#' }
+#'
 #' @family Google Cloud SDK functions
 #' @export
 gcloud_install <- function(update = TRUE) {
@@ -147,7 +153,11 @@ gcloud_install_windows <- function() {
                        installer,
                        mode = "wb")
 
-  shell.exec(installer)
+  if (interactive()) {
+    shell.exec(installer)
+  } else {
+    processx::run(installer, "/S")
+  }
 
   invisible(NULL)
 }

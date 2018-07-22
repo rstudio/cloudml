@@ -67,7 +67,7 @@ gs_rsync <- function(source, destination,
                      options = NULL,
                      echo = TRUE) {
 
-  if (!utils::file_test("-d", destination))
+  if (!is_gs_uri(destination) && !utils::file_test("-d", destination))
     dir.create(destination, recursive = TRUE)
 
   arguments <- c(

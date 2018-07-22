@@ -1,17 +1,16 @@
 # required R packages
 CRAN <- c(
-  "devtools"
+  "purrr",
+  "modelr",
+  "tensorflow",
+  "cloudml",
+  "keras",
+  "tfruns",
+  "tfestimators",
+  "packrat"
 )
 
 GITHUB <- list(
-  list(uri = "tidyverse/purrr",      ref = NULL),
-  list(uri = "tidyverse/modelr",     ref = NULL),
-  list(uri = "rstudio/tensorflow",   ref = NULL),
-  list(uri = "rstudio/cloudml",      ref = NULL),
-  list(uri = "rstudio/keras",        ref = NULL),
-  list(uri = "rstudio/tfruns",       ref = NULL),
-  list(uri = "rstudio/tfestimators", ref = NULL),
-  list(uri = "rstudio/packrat",      ref = NULL)
 )
 
 # validate resources
@@ -63,13 +62,8 @@ retrieve_packrat_packages <- function(cache_path) {
     message("Restoring package using packrat lockfile")
     message("Packrat lockfile:\n", paste(readLines("packrat/packrat.lock"), collapse = "\n"))
 
-    if (!"devtools" %in% rownames(installed.packages()))
-      install.packages("devtools")
-
-    # ensure packrat is installed
-    # need packrat devel to avoid 'Error: contains a blank line' in tfruns
     if (!"packrat" %in% rownames(installed.packages()))
-      devtools::install_github("rstudio/packrat")
+      install.packages("packrat")
 
     Sys.setenv(
       R_PACKRAT_CACHE_DIR = cache_path
@@ -200,13 +194,6 @@ retrieve_default_packages <- function() {
     if (pkg %in% installed)
       next
     install.packages(pkg)
-  }
-
-  # install required GitHub packages
-  for (entry in GITHUB) {
-    if (basename(entry$uri) %in% installed)
-      next
-    devtools::install_github(entry$uri, ref = entry$ref)
   }
 }
 

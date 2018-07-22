@@ -35,7 +35,7 @@ copying/deleting.}
 gsutil rsync command (as specified at
 \url{https://cloud.google.com/storage/docs/gsutil/commands/rsync}).}
 
-\item{echo}{Echo command output to console}
+\item{echo}{Echo command output to console.}
 }
 \description{
 The \code{gs_rsync} function makes the contents under \code{destination} the same
