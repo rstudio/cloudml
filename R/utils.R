@@ -227,3 +227,7 @@ shell_paste <- function(command, arguments) {
 clear_line <- function(width = getOption("width")) {
   cat(paste0(c("\r", rep(" ", width)), collapse = ""))
 }
+
+is_cloudml <- function() {
+  identical(Sys.getenv("CLOUDML_R"), "true")
+}

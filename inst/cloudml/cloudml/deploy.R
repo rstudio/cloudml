@@ -1,3 +1,5 @@
+Sys.setenv(CLOUDML_R = "true")
+
 # required R packages
 CRAN <- c(
   "purrr",
