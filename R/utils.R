@@ -229,5 +229,5 @@ clear_line <- function(width = getOption("width")) {
 }
 
 is_cloudml <- function() {
-  identical(Sys.getenv("CLOUDML_R"), "true")
+  config::is_active("cloudml")
 }

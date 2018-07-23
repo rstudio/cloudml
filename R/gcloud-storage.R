@@ -111,6 +111,7 @@ gs_rsync <- function(source, destination,
 #'
 #' @seealso [gs_data_dir_local()]
 #'
+#' @importFrom config is_active
 #' @export
 gs_data_dir <- function(url, local_dir = "gs", force_sync = FALSE, echo = TRUE) {
 
