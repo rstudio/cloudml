@@ -86,7 +86,7 @@ gcloud_terminal <- function(command = NULL, clear = FALSE) {
       gcloud_sdk_terminal <- sprintf("%s (%d)", gcloud_sdk_terminal, next_index)
     }
 
-    if (packageVersion("rstudioapi") >= "0.7.0.9000" &&
+    if (utils::packageVersion("rstudioapi") >= "0.7.0.9000" &&
         .Platform$OS.type == "windows" &&
         rstudioapi::getVersion() >= "1.2.696") {
       id <- rstudioapi::terminalCreate(gcloud_sdk_terminal, shellType = "win-cmd")
