@@ -14,6 +14,7 @@ Depends:
   R (>= 3.3.0), 
   tfruns (>= 1.3)
 Imports:
+  config,
   jsonlite,
   packrat,
   processx,

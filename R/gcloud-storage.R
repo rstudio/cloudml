@@ -111,11 +111,12 @@ gs_rsync <- function(source, destination,
 #'
 #' @seealso [gs_data_dir_local()]
 #'
+#' @importFrom config is_active
 #' @export
 gs_data_dir <- function(url, local_dir = "gs", force_sync = FALSE, echo = TRUE) {
 
   # if we are running on cloudml then just return the url unmodified
-  if (config::is_active("cloudml")) {
+  if (is_cloudml()) {
 
     url
 
