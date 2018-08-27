@@ -4,8 +4,8 @@
 \alias{job_list}
 \title{List all jobs}
 \usage{
-job_list(filter = NULL, limit = NULL, page_size = NULL, sort_by = NULL,
-  uri = FALSE)
+job_list(filter = NULL, limit = NULL, page_size = NULL,
+  sort_by = NULL, uri = FALSE)
 }
 \arguments{
 \item{filter}{Filter the set of jobs to be returned.}
@@ -33,3 +33,4 @@ Other job management functions: \code{\link{job_cancel}},
   \code{\link{job_collect}}, \code{\link{job_status}},
   \code{\link{job_stream_logs}}, \code{\link{job_trials}}
 }
+\concept{job management functions}

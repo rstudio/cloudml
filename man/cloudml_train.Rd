@@ -50,3 +50,4 @@ job <- cloudml_train("train.R")
 Other CloudML functions: \code{\link{cloudml_deploy}},
   \code{\link{cloudml_predict}}
 }
+\concept{CloudML functions}

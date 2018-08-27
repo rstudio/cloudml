@@ -27,3 +27,4 @@ Other job management functions: \code{\link{job_cancel}},
   \code{\link{job_collect}}, \code{\link{job_list}},
   \code{\link{job_status}}, \code{\link{job_trials}}
 }
+\concept{job management functions}

@@ -31,3 +31,4 @@ Deploys a SavedModel to CloudML model for online predictions.
 Other CloudML functions: \code{\link{cloudml_predict}},
   \code{\link{cloudml_train}}
 }
+\concept{CloudML functions}

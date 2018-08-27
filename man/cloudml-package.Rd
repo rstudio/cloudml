@@ -7,14 +7,14 @@
 \alias{cloudml}
 \title{Interface to the Google Cloud Machine Learning Platform}
 \description{
-The \strong{cloudml} package provides an R interface to \href{https://cloud.google.com/ml-engine/}{Google Cloud MachineLearning Engine}, a managed service that
+The \strong{cloudml} package provides an R interface to \href{https://cloud.google.com/ml-engine/}{Google Cloud Machine Learning Engine}, a managed service that
 enables:
 \itemize{
 \item Scalable training of models built with the
 \href{https://keras.rstudio.com/}{keras},
 \href{https://tensorflow.rstudio.com/tfestimators}{tfestimators}, and
 \href{https://tensorflow.rstudio.com/}{tensorflow} R packages.
-\item On-demand access to training on GPUs, including the new \href{http://www.nvidia.com/object/tesla-p100.html}{Tesla P100GPUs} from NVIDIA®.
+\item On-demand access to training on GPUs, including the new \href{http://www.nvidia.com/object/tesla-p100.html}{Tesla P100 GPUs} from NVIDIA®.
 \item Hyperparameter tuning to optimize key attributes of model architectures in
 order to maximize predictive accuracy.
 \item Deployment of trained models to the Google global prediction platform that

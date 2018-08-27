@@ -23,3 +23,4 @@ gcloud_install()
 Other Google Cloud SDK functions: \code{\link{gcloud_init}},
   \code{\link{gcloud_terminal}}
 }
+\concept{Google Cloud SDK functions}

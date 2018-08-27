@@ -28,3 +28,4 @@ Perform online prediction over a CloudML model, usually, created using
 Other CloudML functions: \code{\link{cloudml_deploy}},
   \code{\link{cloudml_train}}
 }
+\concept{CloudML functions}
