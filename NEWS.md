@@ -3,6 +3,9 @@
 - Fixed `gcloud_install()` to properly execute `gcloud init` in RStudio
   terminal under Linux (#177).
 
+- Default to the TensorFlow 1.9 runtime. Previous runtimes can be used
+  through `runtimeVersion` in `config.yml`.
+
 - Fixed `gs_rsync()` to avoid creating a local destination directory when 
   destination uses remote storage (#172).
 
