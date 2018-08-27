@@ -1,4 +1,6 @@
-# cloudml 0.6.0 (unreleased)
+# cloudml 0.6.1 (unreleased)
+
+# cloudml 0.6.0
 
 - Fixed `gcloud_install()` to properly execute `gcloud init` in RStudio
   terminal under Linux (#177).
