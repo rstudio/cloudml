@@ -107,12 +107,9 @@ gcloud_install_unix <- function() {
                                      path.expand(dirname(gcloud_binary))))),
                           collapse = " ")
 
-    if (Sys.info()["sysname"] == "Darwin") {
-      terminal_command <- paste(install_args, "&&", "source", "~/.bash_profile", "&&", "gcloud", "init")
-    }
-    else {
-      terminal_command <- paste(install_args, "&&", "(source", "~/.bash_profile", "||", "true)", "&&", "gcloud", "init")
-    }
+    bash_file <- ifelse(Sys.info()["sysname"] == "Darwin", "~/.bash_profile", "~/.bashrc")
+
+    terminal_command <- paste(install_args, "&&", "source", bash_file, "&&", "gcloud", "init")
 
     gcloud_terminal(terminal_command, clear = TRUE)
 

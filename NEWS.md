@@ -1,7 +1,7 @@
 # cloudml 0.6.0 (unreleased)
 
 - Fixed `gcloud_install()` to properly execute `gcloud init` in RStudio
-  terminal under OS X (#177).
+  terminal under Linux (#177).
 
 - Fixed `gs_rsync()` to avoid creating a local destination directory when 
   destination uses remote storage (#172).
