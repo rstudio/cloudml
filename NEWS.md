@@ -1,5 +1,8 @@
 # cloudml 0.6.0 (unreleased)
 
+- Fixed `gcloud_install()` to properly execute `gcloud init` in RStudio
+  terminal under Linux (#177).
+
 - Default to the TensorFlow 1.9 runtime. Previous runtimes can be used
   through `runtimeVersion` in `config.yml`.
 
