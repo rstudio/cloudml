@@ -107,7 +107,7 @@ scope_deployment <- function(id,
                id = id,
                cloudml_file = cloudml_file)
   ensure_directory("cloudml")
-  saveRDS(info, file = "cloudml/deploy.rds")
+  saveRDS(info, file = "cloudml/deploy.rds", version = 2)
 
   info
 }
