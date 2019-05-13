@@ -15,8 +15,7 @@ initialize_application <- function(application = getwd(), dry_run = FALSE)
   )
 
   # We manage a set of packages during deploy that might require specific versions
-  IGNORED <- c(
-  )
+  IGNORED <- getOption("cloudml.ignored.packages", c())
 
   packrat::opts$ignored.packages(IGNORED)
   packrat::.snapshotImpl(
