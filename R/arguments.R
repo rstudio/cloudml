@@ -59,6 +59,12 @@ ShellArgumentsBuilder <- function(gcloud) {
 }
 
 MLArgumentsBuilder <- function(gcloud) {
+
+  if (gcloud_version()$`Google Cloud SDK` >= "246.0.0")
+    name <- "ai-platform"
+  else
+    name <- "ml-engine"
+
   (ShellArgumentsBuilder(gcloud)
-   ("ml-engine"))
+   (name))
 }
