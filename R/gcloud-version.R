@@ -1,3 +1,10 @@
+#' Gcloud version
+#'
+#' Get version of Google Cloud SDK components.
+#'
+#' @return a list with the version of each component.
+#'
+#' @export
 gcloud_version <- function() {
   out <- gcloud_exec("version", echo = FALSE)
   version <- strsplit(unlist(strsplit(out$stdout, "\n")), " (?=[^ ]+$)", perl = TRUE)
