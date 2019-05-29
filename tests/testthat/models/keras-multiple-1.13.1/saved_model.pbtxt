@@ -1,0 +1,396 @@
+saved_model_schema_version: 1
+meta_graphs {
+  meta_info_def {
+    stripped_op_list {
+      op {
+        name: "Add"
+        input_arg {
+          name: "x"
+          type_attr: "T"
+        }
+        input_arg {
+          name: "y"
+          type_attr: "T"
+        }
+        output_arg {
+          name: "z"
+          type_attr: "T"
+        }
+        attr {
+          name: "T"
+          type: "type"
+          allowed_values {
+            list {
+              type: DT_BFLOAT16
+              type: DT_HALF
+              type: DT_FLOAT
+              type: DT_DOUBLE
+              type: DT_UINT8
+              type: DT_INT8
+              type: DT_INT16
+              type: DT_INT32
+              type: DT_INT64
+              type: DT_COMPLEX64
+              type: DT_COMPLEX128
+              type: DT_STRING
+            }
+          }
+        }
+      }
+      op {
+        name: "Placeholder"
+        output_arg {
+          name: "output"
+          type_attr: "dtype"
+        }
+        attr {
+          name: "dtype"
+          type: "type"
+        }
+        attr {
+          name: "shape"
+          type: "shape"
+          default_value {
+            shape {
+              unknown_rank: true
+            }
+          }
+        }
+      }
+    }
+    tags: "serve"
+    tensorflow_version: "1.13.1"
+    tensorflow_git_version: "v1.13.0-rc2-5-g6612da8951"
+  }
+  graph_def {
+    node {
+      name: "input1"
+      op: "Placeholder"
+      attr {
+        key: "_output_shapes"
+        value {
+          list {
+            shape {
+              dim {
+                size: -1
+              }
+              dim {
+                size: 1
+              }
+            }
+          }
+        }
+      }
+      attr {
+        key: "dtype"
+        value {
+          type: DT_FLOAT
+        }
+      }
+      attr {
+        key: "shape"
+        value {
+          shape {
+            dim {
+              size: -1
+            }
+            dim {
+              size: 1
+            }
+          }
+        }
+      }
+    }
+    node {
+      name: "input2"
+      op: "Placeholder"
+      attr {
+        key: "_output_shapes"
+        value {
+          list {
+            shape {
+              dim {
+                size: -1
+              }
+              dim {
+                size: 1
+              }
+            }
+          }
+        }
+      }
+      attr {
+        key: "dtype"
+        value {
+          type: DT_FLOAT
+        }
+      }
+      attr {
+        key: "shape"
+        value {
+          shape {
+            dim {
+              size: -1
+            }
+            dim {
+              size: 1
+            }
+          }
+        }
+      }
+    }
+    node {
+      name: "output1/add"
+      op: "Add"
+      input: "input1"
+      input: "input2"
+      attr {
+        key: "T"
+        value {
+          type: DT_FLOAT
+        }
+      }
+      attr {
+        key: "_output_shapes"
+        value {
+          list {
+            shape {
+              dim {
+                size: -1
+              }
+              dim {
+                size: 1
+              }
+            }
+          }
+        }
+      }
+    }
+    node {
+      name: "output2/add"
+      op: "Add"
+      input: "input2"
+      input: "input1"
+      attr {
+        key: "T"
+        value {
+          type: DT_FLOAT
+        }
+      }
+      attr {
+        key: "_output_shapes"
+        value {
+          list {
+            shape {
+              dim {
+                size: -1
+              }
+              dim {
+                size: 1
+              }
+            }
+          }
+        }
+      }
+    }
+    node {
+      name: "input1_1"
+      op: "Placeholder"
+      attr {
+        key: "_output_shapes"
+        value {
+          list {
+            shape {
+              dim {
+                size: -1
+              }
+              dim {
+                size: 1
+              }
+            }
+          }
+        }
+      }
+      attr {
+        key: "dtype"
+        value {
+          type: DT_FLOAT
+        }
+      }
+      attr {
+        key: "shape"
+        value {
+          shape {
+            dim {
+              size: -1
+            }
+            dim {
+              size: 1
+            }
+          }
+        }
+      }
+    }
+    node {
+      name: "input2_1"
+      op: "Placeholder"
+      attr {
+        key: "_output_shapes"
+        value {
+          list {
+            shape {
+              dim {
+                size: -1
+              }
+              dim {
+                size: 1
+              }
+            }
+          }
+        }
+      }
+      attr {
+        key: "dtype"
+        value {
+          type: DT_FLOAT
+        }
+      }
+      attr {
+        key: "shape"
+        value {
+          shape {
+            dim {
+              size: -1
+            }
+            dim {
+              size: 1
+            }
+          }
+        }
+      }
+    }
+    node {
+      name: "output1_1/add"
+      op: "Add"
+      input: "input1_1"
+      input: "input2_1"
+      attr {
+        key: "T"
+        value {
+          type: DT_FLOAT
+        }
+      }
+      attr {
+        key: "_output_shapes"
+        value {
+          list {
+            shape {
+              dim {
+                size: -1
+              }
+              dim {
+                size: 1
+              }
+            }
+          }
+        }
+      }
+    }
+    node {
+      name: "output2_1/add"
+      op: "Add"
+      input: "input2_1"
+      input: "input1_1"
+      attr {
+        key: "T"
+        value {
+          type: DT_FLOAT
+        }
+      }
+      attr {
+        key: "_output_shapes"
+        value {
+          list {
+            shape {
+              dim {
+                size: -1
+              }
+              dim {
+                size: 1
+              }
+            }
+          }
+        }
+      }
+    }
+    versions {
+      producer: 27
+    }
+  }
+  signature_def {
+    key: "serving_default"
+    value {
+      inputs {
+        key: "input1"
+        value {
+          name: "input1_1:0"
+          dtype: DT_FLOAT
+          tensor_shape {
+            dim {
+              size: -1
+            }
+            dim {
+              size: 1
+            }
+          }
+        }
+      }
+      inputs {
+        key: "input2"
+        value {
+          name: "input2_1:0"
+          dtype: DT_FLOAT
+          tensor_shape {
+            dim {
+              size: -1
+            }
+            dim {
+              size: 1
+            }
+          }
+        }
+      }
+      outputs {
+        key: "output1"
+        value {
+          name: "output1_1/add:0"
+          dtype: DT_FLOAT
+          tensor_shape {
+            dim {
+              size: -1
+            }
+            dim {
+              size: 1
+            }
+          }
+        }
+      }
+      outputs {
+        key: "output2"
+        value {
+          name: "output2_1/add:0"
+          dtype: DT_FLOAT
+          tensor_shape {
+            dim {
+              size: -1
+            }
+            dim {
+              size: 1
+            }
+          }
+        }
+      }
+      method_name: "tensorflow/serving/predict"
+    }
+  }
+}

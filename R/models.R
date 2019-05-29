@@ -68,7 +68,7 @@ cloudml_deploy <- function(
                 (as.character(version))
                 ("--model=%s", name)
                 ("--origin=%s", model_dest)
-                ("--runtime-version=%s", cloudml$trainingInput$runtimeVersion %||% "1.4"))
+                ("--runtime-version=%s", cloudml$trainingInput$runtimeVersion %||% "1.13"))
 
   gcloud_exec(args = arguments(), echo = FALSE)
 

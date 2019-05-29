@@ -28,11 +28,13 @@ Suggests:
   tensorflow (>= 1.4.2),
   keras (>= 2.1.2),
   knitr,
-  testthat
+  testthat,
+  stringr,
+  reticulate
 License: Apache License 2.0
 SystemRequirements: Python (>= 2.7.0)
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 6.1.0.9000
+RoxygenNote: 6.1.1
 VignetteBuilder: knitr
