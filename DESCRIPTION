@@ -29,7 +29,8 @@ Suggests:
   keras (>= 2.1.2),
   knitr,
   testthat,
-  stringr
+  stringr,
+  reticulate
 License: Apache License 2.0
 SystemRequirements: Python (>= 2.7.0)
 Encoding: UTF-8
