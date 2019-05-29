@@ -69,6 +69,9 @@ if (cloudml_tests_configured()) {
       ),
       echo = FALSE
     )
+    message("Authenticated. Will run tests.")
+  } else {
+    message("Not authenticated. Won't run all tests.")
   }
 
   cloudml_write_config()
