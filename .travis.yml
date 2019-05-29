@@ -10,6 +10,7 @@ env:
     - _R_CHECK_FORCE_SUGGESTS_=false
 script:
   - |
+    R -e "tensorflow::install_tensorflow()"
     R CMD build .
     travis_wait 45 R CMD check --no-build-vignettes --no-manual cloudml*tar.gz
 
