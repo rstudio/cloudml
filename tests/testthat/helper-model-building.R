@@ -19,7 +19,8 @@ for (model in models) {
   envname <- paste0("tf-", tf_version)
 
   if (!envname %in% reticulate::virtualenv_list())
-    install_tensorflow(version = tf_version, envname = envname, restart_session = FALSE)
+    tensorflow::install_tensorflow(version = tf_version, envname = envname,
+                                   restart_session = FALSE)
 
   message("Running ", model)
 

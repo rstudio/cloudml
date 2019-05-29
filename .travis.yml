@@ -12,8 +12,6 @@ script:
   - |
     R CMD build .
     travis_wait 45 R CMD check --no-build-vignettes --no-manual cloudml*tar.gz
-    cd tests
-    Rscript ../.travis.R
 
 after_failure:
   - |
