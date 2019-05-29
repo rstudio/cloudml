@@ -6,9 +6,14 @@ for (model in models) {
 
   test_that(paste0("Can deploy and predict model: ", model), {
 
+    random_name <- paste0(
+      gsub("[[:punct:]]", "_", model), "_",
+      paste(sample(letters, 15, replace = TRUE), collapse = "")
+    )
+
     cloudml_deploy(
       paste0("models/", model),
-      name = gsub("[[:punct:]]", "_", model),
+      name = random_name,
       version = "v1"
     )
 
@@ -25,7 +30,7 @@ for (model in models) {
 
     pred <- cloudml_predict(
       instances = instances,
-      name = gsub("[[:punct:]]", "_", model),
+      name = random_name,
       version = "v1"
     )
 
@@ -39,7 +44,7 @@ for (model in models) {
         "delete",
         "v1",
         "--model",
-        gsub("[[:punct:]]", "_", model)
+        random_name
       )
     )
 
@@ -48,7 +53,7 @@ for (model in models) {
         "ai-platform",
         "models",
         "delete",
-        gsub("[[:punct:]]", "_", model)
+        random_name
       )
     )
 
