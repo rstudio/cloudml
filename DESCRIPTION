@@ -32,7 +32,7 @@ Suggests:
   stringr,
   reticulate
 Remotes:
-  rstudio/keras
+  rstudio/keras,
   rstudio/tensorflow
 License: Apache License 2.0
 SystemRequirements: Python (>= 2.7.0)
