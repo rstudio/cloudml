@@ -64,6 +64,9 @@ cloudml_train <- function(file = "train.R",
   application <- getwd()
   entrypoint <- file
 
+  # allow absolute paths under relative path
+  entrypoint <- gsub(paste0("^", getwd(), .Platform$file.sep), "", entrypoint)
+
   # prepare application for deployment
   id <- unique_job_name("cloudml")
   deployment <- scope_deployment(
