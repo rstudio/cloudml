@@ -60,6 +60,11 @@ cloudml_train <- function(file = "train.R",
       !identical(cloudml$trainingInput$scaleTier, "CUSTOM"))
     cloudml$trainingInput$scaleTier <- "CUSTOM"
 
+  # use the basic tier when no configuration is passed via file or via
+  # the `config` argument.
+  if (length(cloudml) == 0L)
+    cloudml$trainingInput <- list(scaleTier = "BASIC")
+
   # set application and entrypoint
   application <- getwd()
   entrypoint <- file
