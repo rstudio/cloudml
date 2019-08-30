@@ -1,5 +1,8 @@
 # cloudml 0.6.1 (unreleased)
 
+- Use ai-platform instead of ml-engine when user have a recent enought Google
+  Cloud SDK.
+
 # cloudml 0.6.0
 
 - Fixed `gcloud_install()` to properly execute `gcloud init` in RStudio
