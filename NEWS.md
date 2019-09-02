@@ -3,6 +3,10 @@
 - Use ai-platform instead of ml-engine when user have a recent enought Google
   Cloud SDK.
 
+- Added the `customCommands` flag in the `cloudml.yml` file to allow users to
+  pass custom OS commands before packages installation. This could be used to
+  install custom system dependencies.
+
 # cloudml 0.6.0
 
 - Fixed `gcloud_install()` to properly execute `gcloud init` in RStudio
