@@ -81,6 +81,7 @@ PIP_INSTALL_KERAS = [
 class CustomCommands(install):
   cache = ""
   config = {}
+  custom_os_commands = []
 
   """A setuptools Command class able to run arbitrary commands."""
   def RunCustomCommand(self, commands, throws):
@@ -109,6 +110,8 @@ class CustomCommands(install):
 
     stream = open(cloudmlpath, "r")
     self.config = yaml.load(stream)
+    if (self.config['custom_commands'] is not None):
+      self.custom_os_commands += self.config['custom_commands']
 
   """Runs a list of arbitrary commands"""
   def RunCustomCommandList(self, commands):
@@ -122,12 +125,12 @@ class CustomCommands(install):
     distro_key = distro[0].lower()
     if (not distro_key in CUSTOM_COMMANDS.keys()):
       raise ValueError("'" + distro[0] + "' is currently not supported, please report this under github.com/rstudio/cloudml/issues")
-    custom_os_commands = CUSTOM_COMMANDS[distro_key]
+    self.custom_os_commands = CUSTOM_COMMANDS[distro_key]
 
     self.LoadJobConfig()
 
     # Run custom commands
-    self.RunCustomCommandList(custom_os_commands)
+    self.RunCustomCommandList(self.custom_os_commands)
 
     # Run pip install
     if (not "keras" in self.config or self.config["keras"] == True):
