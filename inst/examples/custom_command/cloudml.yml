@@ -1,0 +1,5 @@
+customCommands:
+  - ["pip", "install", "Pillow"]
+trainingInput:
+  scaleTier: BASIC
+
