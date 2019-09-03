@@ -1,4 +1,6 @@
-# cloudml 0.6.1 (unreleased)
+# cloudml 0.6.1.9000 (unreleased)
+
+# cloudml 0.6.1 
 
 - Use ai-platform instead of ml-engine when user have a recent enought Google
   Cloud SDK.
