@@ -58,3 +58,14 @@ test_that("cloudml_train() can train keras model", {
   })
 
 })
+
+test_that("cloudml_train() can use a custom command command", {
+  with_temp_training_dir(system.file("examples/custom_command", package = "cloudml"), {
+    options(repos=structure(c(CRAN="https://cloud.r-project.org/")))
+
+    cloudml_write_config()
+    job <- cloudml_train("example.R", config = "cloudml.yml")
+    expect_train_succeeds(job, saves_model = FALSE)
+  })
+
+})
