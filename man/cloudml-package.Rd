@@ -34,10 +34,11 @@ at \url{https://tensorflow.rstudio.com/tools/cloudml/}
 \url{https://tensorflow.rstudio.com/tools/cloudml/}
 }
 \author{
-\strong{Maintainer}: Javier Luraschi \email{javier@rstudio.com}
+\strong{Maintainer}: Daniel Falbel \email{daniel@rstudio.com}
 
 Authors:
 \itemize{
+  \item Javier Luraschi
   \item JJ Allaire
   \item Kevin Ushey
 }

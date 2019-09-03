@@ -18,3 +18,4 @@
 ^pkgdown$
 ^appveyor.yml$
 ^savedmodel$
+^CRAN-RELEASE$
