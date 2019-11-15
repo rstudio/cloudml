@@ -60,7 +60,7 @@ cloudml_deploy <- function(
     timestamp_string()
   )
 
-  gs_copy(export_dir_base, model_dest, recursive = TRUE)
+  gs_copy(path.expand(export_dir_base), model_dest, recursive = TRUE)
 
   arguments <- (MLArgumentsBuilder(gcloud)
                 ("versions")
