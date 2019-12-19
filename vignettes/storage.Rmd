@@ -14,6 +14,8 @@ menu:
     identifier: "tools-cloudml-storage"
     parent: "cloudml-top"
     weight: 40
+aliases:
+  - /tools/cloudml/storage.html
 ---
 
 ```{r setup, include=FALSE}

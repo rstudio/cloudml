@@ -14,6 +14,8 @@ menu:
     identifier: "tools-cloudml-deployment"
     parent: "cloudml-top"
     weight: 50
+aliases:
+  - /tools/cloudml/deployment.html
 ---
 
 

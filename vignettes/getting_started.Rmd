@@ -16,6 +16,7 @@ menu:
     weight: 10
 aliases:
   - /tools/cloudml/
+  - /tools/cloudml/articles/getting_started.html
 ---
 
 ```{r setup, include=FALSE}
