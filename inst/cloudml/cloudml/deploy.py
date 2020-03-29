@@ -37,7 +37,7 @@ process = subprocess.Popen(
 
 # Stream output from subprocess to console.
 for line in iter(process.stdout.readline, ""):
-  sys.stdout.write(line.decode('utf-8'))
+  sys.stdout.write(line)
 
 # Finalize the process.
 stdout, stderr = process.communicate()
