@@ -110,7 +110,7 @@ cloudml_train <- function(file = "train.R",
   scope_setup_py(directory)
   setwd(dirname(directory))
 
-  cloudml_version <- cloudml$trainingInput$runtimeVersion %||% "1.9"
+  cloudml_version <- cloudml$trainingInput$runtimeVersion %||% "1.15"
 
   if (utils::compareVersion(cloudml_version, "1.4") < 0)
     stop("CloudML version ", cloudml_version, " is unsupported, use 1.4 or newer.")
@@ -125,6 +125,7 @@ cloudml_train <- function(file = "train.R",
                 ("--package-path=%s", basename(directory))
                 ("--module-name=%s.cloudml.deploy", basename(directory))
                 ("--runtime-version=%s", cloudml_version)
+                ("--python-version=3.7")
                 ("--region=%s", region)
                 ("--config=%s/%s", "cloudml-model", cloudml_file)
                 ("--")
