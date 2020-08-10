@@ -31,13 +31,8 @@ commands = [sys.argv[1], deploy] + flags
 process = subprocess.Popen(
   commands,
   stdin  = subprocess.PIPE,
-  stdout = subprocess.PIPE,
   stderr = subprocess.STDOUT
 )
-
-# Stream output from subprocess to console.
-for line in iter(process.stdout.readline, ""):
-  sys.stdout.write(line.decode('utf-8'))
 
 # Finalize the process.
 stdout, stderr = process.communicate()
