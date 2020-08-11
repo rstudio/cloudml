@@ -1,4 +1,8 @@
-# cloudml 0.6.1.9000 (unreleased)
+# cloudml 0.7.0
+
+- Support for Python 3 and TensorFlow 1.15 runtime.
+
+- Fixed jobs hanging after error (#213).
 
 # cloudml 0.6.1 
 
