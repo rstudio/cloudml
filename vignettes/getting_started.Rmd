@@ -161,8 +161,8 @@ To train on a machine with 4 Tesla P100 GPU's you would specify `"complex_model_
 cloudml_train("train.R", master_type = "complex_model_m_p100")
 ```
 
-See the CloudML website for documentation on [available machine types](https://cloud.google.com/vertex-aidocs/training-overview#machine_type_table). Also note that GPU instances can be considerably more expensive that CPU ones! See the documentation on [CloudML Pricing](https://cloud.google.com/vertex-aipricing) for details.
-
+See the CloudML website for documentation on [available machine types](https://cloud.google.com/vertex-ai/docs/training/overview). Also note that GPU instances can be considerably more expensive that CPU ones! See the documentation on [CloudML Pricing](https://cloud.google.com/vertex-ai/pricing) for details.
+a
 ## Learning More
 
 To learn more about using CloudML with R, see the following articles:

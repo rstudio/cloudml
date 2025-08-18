@@ -195,7 +195,7 @@ job_cancel("cloudml_2017_12_18_203510175")
 
 Tuning your application typically requires choosing and then optimizing a set of hyperparameters that influence your model's performance. This could include the number and type of layers, units within layers, drop rates, regularization, etc.
 
-You can experiment with hyperparameters on an ad-hoc basis, but in general it's better to explore them more systematnically. The key to doing this with CloudML is by defining [training flags](https://tensorflow.rstudio.com/tools/training_flags.html) within your script and the parameterizing runs using those flags. 
+You can experiment with hyperparameters on an ad-hoc basis, but in general it's better to explore them more systematnically. The key to doing this with CloudML is by defining [training flags](https://tensorflow.rstudio.com/guides/tfruns/tuning) within your script and the parameterizing runs using those flags. 
 
 For example, you might define the following training flags:
 

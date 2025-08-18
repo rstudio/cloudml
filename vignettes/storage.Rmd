@@ -104,7 +104,7 @@ Note that if the path passed to `gs_data_dir_local()` is from the local filesyst
 
 ## Data Source Configuration 
 
-It's often useful to do training script development with a local subsample of data that you've extracted from the complete set of training data. In this configuration, you'll want your training script to dynamically use the local subsample during development then use the complete dataset stored in Google Cloud Storage when running on CloudML. You can accomplish this with a combination of [training flags](https://tensorflow.rstudio.com/tools/training_flags.html) and the `gs_local_dir()` function described above.
+It's often useful to do training script development with a local subsample of data that you've extracted from the complete set of training data. In this configuration, you'll want your training script to dynamically use the local subsample during development then use the complete dataset stored in Google Cloud Storage when running on CloudML. You can accomplish this with a combination of [training flags](https://tensorflow.rstudio.com/guides/tfruns/tuning) and the `gs_local_dir()` function described above.
 
 Here's a complete example. We start with a training script that declares a flag for the location of the training data:
 
@@ -153,7 +153,7 @@ Here's what the storage browser looks like for a sample project:
 
 ### Google Cloud SDK
 
-The Google Cloud SDK includes the `gsutil` utility program for managing cloud storage buckets. Documentation for `gsutil` can be found here: <https://cloud.google.com/storagedocs/gsutil>.
+The Google Cloud SDK includes the `gsutil` utility program for managing cloud storage buckets. Documentation for `gsutil` can be found here: <https://cloud.google.com/storage/docs/gsutil>.
 
 You use `gsutil` from within a terminal. If you are running within RStudio v1.1 or higher you can activate a terminal with the `gcloud_terminal()` function:
 
