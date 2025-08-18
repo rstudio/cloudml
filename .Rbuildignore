@@ -19,3 +19,4 @@
 ^appveyor.yml$
 ^savedmodel$
 ^CRAN-RELEASE$
+^cran-comments\.md$
