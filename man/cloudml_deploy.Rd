@@ -4,8 +4,13 @@
 \alias{cloudml_deploy}
 \title{Deploy SavedModel to CloudML}
 \usage{
-cloudml_deploy(export_dir_base, name, version = paste0(name, "_1"),
-  region = NULL, config = NULL)
+cloudml_deploy(
+  export_dir_base,
+  name,
+  version = paste0(name, "_1"),
+  region = NULL,
+  config = NULL
+)
 }
 \arguments{
 \item{export_dir_base}{A string containing a directory containing an
@@ -28,7 +33,8 @@ Deploys a SavedModel to CloudML model for online predictions.
 \seealso{
 \code{\link[=cloudml_predict]{cloudml_predict()}}
 
-Other CloudML functions: \code{\link{cloudml_predict}},
-  \code{\link{cloudml_train}}
+Other CloudML functions: 
+\code{\link{cloudml_predict}()},
+\code{\link{cloudml_train}()}
 }
 \concept{CloudML functions}

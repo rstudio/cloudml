@@ -4,8 +4,15 @@
 \alias{cloudml_train}
 \title{Train a model using Cloud ML}
 \usage{
-cloudml_train(file = "train.R", master_type = NULL, flags = NULL,
-  region = NULL, config = NULL, collect = "ask", dry_run = FALSE)
+cloudml_train(
+  file = "train.R",
+  master_type = NULL,
+  flags = NULL,
+  region = NULL,
+  config = NULL,
+  collect = "ask",
+  dry_run = FALSE
+)
 }
 \arguments{
 \item{file}{File to be used as entrypoint for training.}
@@ -16,7 +23,7 @@ to moderate datasets. See the documentation at
 \url{https://cloud.google.com/ml-engine/docs/tensorflow/machine-types#machine_type_table}
 for details on available machine types.}
 
-\item{flags}{Named list with flag values (see \code{\link[=flags]{flags()}}) or path
+\item{flags}{Named list with flag values (see \code{\link[tfruns:flags]{flags()}}) or path
 to YAML file containing flag values.}
 
 \item{region}{The region to be used for training.}
@@ -47,7 +54,8 @@ job <- cloudml_train("train.R")
 \seealso{
 \code{\link[=job_status]{job_status()}}, \code{\link[=job_collect]{job_collect()}}, \code{\link[=job_cancel]{job_cancel()}}
 
-Other CloudML functions: \code{\link{cloudml_deploy}},
-  \code{\link{cloudml_predict}}
+Other CloudML functions: 
+\code{\link{cloudml_deploy}()},
+\code{\link{cloudml_predict}()}
 }
 \concept{CloudML functions}

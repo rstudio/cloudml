@@ -8,11 +8,11 @@ gs_copy(source, destination, recursive = FALSE, echo = TRUE)
 }
 \arguments{
 \item{source}{The file to be copied. This can be either a path on the local
-filesystem, or a Google Storage URI (e.g. \code{gs://[BUCKET_NAME]/[FILENAME.CSV]}).}
+filesystem, or a Google Storage URI (e.g. \verb{gs://[BUCKET_NAME]/[FILENAME.CSV]}).}
 
 \item{destination}{The location where the \code{source} file should be copied to. This can be
 either a path on the local filesystem, or a Google Storage URI (e.g.
-\code{gs://[BUCKET_NAME]/[FILENAME.CSV]}).}
+\verb{gs://[BUCKET_NAME]/[FILENAME.CSV]}).}
 
 \item{recursive}{Boolean; perform a recursive copy? This must be specified if you intend on
 copying directories.}
@@ -20,7 +20,7 @@ copying directories.}
 \item{echo}{Echo command output to console.}
 }
 \description{
-Use the \code{gsutil cp} command to copy data between your local file system and
+Use the \verb{gsutil cp} command to copy data between your local file system and
 the cloud, copy data within the cloud, and copy data between cloud storage
 providers.
 }

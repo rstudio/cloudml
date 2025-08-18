@@ -3,7 +3,6 @@
 \docType{package}
 \name{cloudml-package}
 \alias{cloudml-package}
-\alias{_PACKAGE}
 \alias{cloudml}
 \title{Interface to the Google Cloud Machine Learning Platform}
 \description{

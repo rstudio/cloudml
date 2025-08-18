@@ -4,8 +4,7 @@
 \alias{cloudml_predict}
 \title{Perform Prediction over a CloudML Model.}
 \usage{
-cloudml_predict(instances, name, version = paste0(name, "_1"),
-  verbose = FALSE)
+cloudml_predict(instances, name, version = paste0(name, "_1"), verbose = FALSE)
 }
 \arguments{
 \item{instances}{A list of instances to be predicted. While predicting
@@ -25,7 +24,8 @@ Perform online prediction over a CloudML model, usually, created using
 \seealso{
 \code{\link[=cloudml_deploy]{cloudml_deploy()}}
 
-Other CloudML functions: \code{\link{cloudml_deploy}},
-  \code{\link{cloudml_train}}
+Other CloudML functions: 
+\code{\link{cloudml_deploy}()},
+\code{\link{cloudml_train}()}
 }
 \concept{CloudML functions}

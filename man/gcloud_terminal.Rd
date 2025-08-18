@@ -18,7 +18,8 @@ Terminal id (invisibly)
 Create an RStudio terminal with access to the Google Cloud SDK
 }
 \seealso{
-Other Google Cloud SDK functions: \code{\link{gcloud_init}},
-  \code{\link{gcloud_install}}
+Other Google Cloud SDK functions: 
+\code{\link{gcloud_init}()},
+\code{\link{gcloud_install}()}
 }
 \concept{Google Cloud SDK functions}
