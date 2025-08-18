@@ -41,10 +41,11 @@ Useful links:
 
 }
 \author{
-\strong{Maintainer}: Daniel Falbel \email{daniel@rstudio.com}
+\strong{Maintainer}: Tomasz Kalinowski \email{tomasz@posit.co}
 
 Authors:
 \itemize{
+  \item Daniel Falbel \email{daniel@rstudio.com}
   \item Javier Luraschi
   \item JJ Allaire
   \item Kevin Ushey

@@ -30,6 +30,7 @@ Suggests:
   tensorflow (>= 1.4.2),
   keras (>= 2.1.2),
   knitr,
+  rmarkdown,
   testthat
 License: Apache License 2.0
 SystemRequirements: Python (>= 2.7.0)

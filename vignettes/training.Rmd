@@ -49,7 +49,7 @@ Working on a CloudML project always begins with developing a training script tha
 
 There are no special requirements for your training script, however there are a couple of things to keep in mind:
 
-1) When you train a model on CloudML all of the files in the current working directory are uploaded. Therefore, your training script should be within the current working directory and references to other scripts, data files, etc. should be relative to the current working directory. The most straightforward way to organize your work on a CloudML application is to use an [RStudio Project](https://support.posit.co/hc/en-us/articles/200526207-Using-RStudio-Projects).
+1) When you train a model on CloudML all of the files in the current working directory are uploaded. Therefore, your training script should be within the current working directory and references to other scripts, data files, etc. should be relative to the current working directory. The most straightforward way to organize your work on a CloudML application is to use an [RStudio Project] (`https://support.posit.co/hc/en-us/articles/200526207-Using-RStudio-Projects`).
 
 2) Your training data may be contained within the working directory, or it may be located within Google Cloud Storage. If your training data is large and/or located in cloud storage, the most straightforward workflow for development is to use a local subsample of your data. See the article on [Google Cloud Storage](storage.html) for a detailed example of using distinct data for local and CloudML execution contexts, as well as reading data from Google Cloud Storage buckets.
 
@@ -153,7 +153,7 @@ view_run()
 view_run("runs/cloudml_2017_12_15_182614794")
 ```
 
-There are many tools available to list, filter, and compare training runs. For additional information see the documentation for the [tfruns package](https://tensorflow.rstudio.com/tools/tfruns/articles/overview.html).
+There are many tools available to list, filter, and compare training runs. For additional information see the documentation for the [tfruns package](https://tensorflow.rstudio.com/guides/tfruns/).
 
 
 ## Managing Jobs 

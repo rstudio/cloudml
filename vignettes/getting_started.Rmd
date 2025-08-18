@@ -137,13 +137,13 @@ view_run()
 view_run("runs/cloudml_2017_12_15_182614794")
 ```
 
-There are many tools available to list, filter, and compare training runs. For additional information see the documentation for the [tfruns package](https://tensorflow.rstudio.com/tools/tfruns/articles/overview.html).
+There are many tools available to list, filter, and compare training runs. For additional information see the documentation for the [tfruns package](https://tensorflow.rstudio.com/guides/tfruns/).
 
 ## Training with a GPU
 
 By default, CloudML utilizes "standard" CPU-based instances suitable for training simple models with small to moderate datasets. You can request the use of other machine types, including ones with GPUs, using the `master_type` parameter of `cloudml_train()`.
 
-For example, the following would train the same model as above but with a [Tesla K80 GPU](http://www.nvidia.com/object/tesla-k80.html):
+For example, the following would train the same model as above but with a [Tesla K80 GPU](https://www.nvidia.com/en-us/products/):
 
 ```{r}
 cloudml_train("train.R", master_type = "standard_gpu")
