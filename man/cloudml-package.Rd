@@ -6,14 +6,14 @@
 \alias{cloudml}
 \title{Interface to the Google Cloud Machine Learning Platform}
 \description{
-The \strong{cloudml} package provides an R interface to \href{https://cloud.google.com/vertex-ai}{Google Cloud Machine Learning Engine}, a managed service that
+The \strong{cloudml} package provides an R interface to \href{https://cloud.google.com/ml-engine/}{Google Cloud Machine Learning Engine}, a managed service that
 enables:
 \itemize{
 \item Scalable training of models built with the
-\href{https://keras3.posit.co/}{keras},
+\href{https://keras.rstudio.com/}{keras},
 \href{https://tensorflow.rstudio.com/tfestimators}{tfestimators}, and
 \href{https://tensorflow.rstudio.com/}{tensorflow} R packages.
-\item On-demand access to training on GPUs, including the new \href{https://www.nvidia.com/en-us/data-center/}{Tesla P100 GPUs} from NVIDIA®.
+\item On-demand access to training on GPUs, including the new \href{http://www.nvidia.com/object/tesla-p100.html}{Tesla P100 GPUs} from NVIDIA®.
 \item Hyperparameter tuning to optimize key attributes of model architectures in
 order to maximize predictive accuracy.
 \item Deployment of trained models to the Google global prediction platform that
@@ -23,7 +23,7 @@ can support thousands of users and TBs of data.
 \details{
 CloudML is a managed service where you pay only for the hardware resources
 that you use. Prices vary depending on configuration (e.g. CPU vs. GPU vs.
-multiple GPUs). See \url{https://cloud.google.com/vertex-aipricing} for
+multiple GPUs). See \url{https://cloud.google.com/ml-engine/pricing} for
 additional details.
 
 For documentation on using the R interface to CloudML see the package website
@@ -31,6 +31,14 @@ at \url{https://tensorflow.rstudio.com/tools/cloudml/}
 }
 \references{
 \url{https://tensorflow.rstudio.com/tools/cloudml/}
+}
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://github.com/rstudio/cloudml}
+  \item Report bugs at \url{https://github.com/rstudio/cloudml/issues}
+}
+
 }
 \author{
 \strong{Maintainer}: Daniel Falbel \email{daniel@rstudio.com}
