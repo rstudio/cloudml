@@ -1,3 +1,7 @@
+# cloudml 0.7.1
+
+- Documentation updates for CRAN.
+
 # cloudml 0.7.0
 
 - Support for Python 3 and TensorFlow 1.15 runtime.
