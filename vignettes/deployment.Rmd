@@ -32,7 +32,7 @@ Cloud ML Engine can host your models so that you can get predictions from them i
 ### Exporting a SavedModel
 
 The Cloud ML prediction service makes use of models exported through the
-`export_savedmodel()` function which is available for models created using the [tensorflow](https://tensorflow.rstudio.com/tensorflow/), [keras](https://keras3.posit.co/) and
+`export_savedmodel()` function which is available for models created using the [tensorflow](https://tensorflow.rstudio.com/), [keras](https://keras3.posit.co/) and
 [tfestimators](https://github.com/rstudio/tfestimators) packages or any other tool that support the [tf.train.Saver](https://www.tensorflow.org/api_docs/python/tf/compat/v1/train/Saver) interface.
 
 For instance, we can use `examples/keras/train.R` included in this package to define

@@ -43,7 +43,7 @@ Working on a CloudML project always begins with developing a training script tha
 
 - [keras](https://keras3.posit.co/) --- A high-level interface for neural networks, with a focus on enabling fast experimentation.
 
-- [tfestimators](https://tensorflow.rstudio.com/tfestimators) --- High-level implementations of common model types such as regressors and classifiers.
+- [tfestimators](https://github.com/rstudio/tfestimators) --- High-level implementations of common model types such as regressors and classifiers.
 
 - [tensorflow](https://tensorflow.rstudio.com/) --- Lower-level interface that provides full access to the TensorFlow computational graph.
 

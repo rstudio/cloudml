@@ -12,13 +12,13 @@
 #' @param master_type Training master node machine type. "standard" provides a
 #'   basic machine configuration suitable for training simple models with small
 #'   to moderate datasets. See the documentation at
-#'   <https://cloud.google.com/ml-engine/docs/tensorflow/machine-types#machine_type_table>
+#'   <https://cloud.google.com/vertex-ai/docs/reference/rest/v1/MachineSpec>
 #'    for details on available machine types.
 #'
 #' @param region The region to be used for training.
 #'
 #' @param config A list, `YAML` or `JSON` configuration file as described
-#'   <https://cloud.google.com/ml-engine/reference/rest/v1/projects.jobs>.
+#'   <https://cloud.google.com/vertex-ai>.
 #'
 #' @param collect Logical. If TRUE, collect job when training is completed
 #'   (blocks waiting for the job to complete). The default (`"ask"`) will

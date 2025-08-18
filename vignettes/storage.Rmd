@@ -60,7 +60,7 @@ Note that to use these functions you need to import the cloudml package with `li
 
 There are two distinct ways to read data from Google Storage. Which you use will depend on whether the TensorFlow API you are using supports direct references to `gs://` bucket URLs. 
 
-If you are using the [TensorFlow Datasets](https://tensorflow.rstudio.com/tools/tfdatasets/articles/introduction.html) API, then you can use `gs://` bucket URLs directly. In this case you'll want to use the `gs://` URL when running on CloudML, and a synchonized copy of the bucket when running locally. You can use the `gs_data_dir()` function to accomplish this. For example:
+If you are using the [TensorFlow Datasets](https://tensorflow.rstudio.com/guides/tfdatasets/) API, then you can use `gs://` bucket URLs directly. In this case you'll want to use the `gs://` URL when running on CloudML, and a synchonized copy of the bucket when running locally. You can use the `gs_data_dir()` function to accomplish this. For example:
 
 ```{r}
 library(tfdatasets)

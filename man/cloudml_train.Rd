@@ -20,7 +20,7 @@ cloudml_train(
 \item{master_type}{Training master node machine type. "standard" provides a
 basic machine configuration suitable for training simple models with small
 to moderate datasets. See the documentation at
-\url{https://cloud.google.com/ml-engine/docs/tensorflow/machine-types#machine_type_table}
+\url{https://cloud.google.com/vertex-ai/docs/reference/rest/v1/MachineSpec}
 for details on available machine types.}
 
 \item{flags}{Named list with flag values (see \code{\link[tfruns:flags]{flags()}}) or path
@@ -29,7 +29,7 @@ to YAML file containing flag values.}
 \item{region}{The region to be used for training.}
 
 \item{config}{A list, \code{YAML} or \code{JSON} configuration file as described
-\url{https://cloud.google.com/ml-engine/reference/rest/v1/projects.jobs}.}
+\url{https://cloud.google.com/vertex-ai}.}
 
 \item{collect}{Logical. If TRUE, collect job when training is completed
 (blocks waiting for the job to complete). The default (\code{"ask"}) will

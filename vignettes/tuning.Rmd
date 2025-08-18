@@ -52,7 +52,7 @@ To learn more about how Bayesian optimization is used for hyperparameter tuning 
 
 Hyperparameter tuning optimizes a single target variable (also called the hyperparameter metric) that you specify. The accuracy of the model, as calculated from an evaluation pass, is a common metric. The metric must be a numeric value, and you can specify whether you want to tune your model to maximize or minimize your metric.
 
-When you start a job with hyperparameter tuning, you establish the name of your hyperparameter metric. The appropriate name will depend on whether you are using [keras](https://tensorflow.rstudio.com/keras/), [tfestimators](https://tensorflow.rstudio.com/keras/), or the [core](https://tensorflow.rstudio.com/tensorflow/) TensorFlow API. This will be covered below in the section on [Hyperparameter tuning configuration].
+When you start a job with hyperparameter tuning, you establish the name of your hyperparameter metric. The appropriate name will depend on whether you are using [keras](https://keras3.posit.co/), [tfestimators](https://tensorflow.rstudio.com/keras/), or the [core](https://tensorflow.rstudio.com) TensorFlow API. This will be covered below in the section on [Hyperparameter tuning configuration].
 
 ### How Cloud ML Engine gets your metric
 

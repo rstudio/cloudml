@@ -25,7 +25,7 @@ contain only letters, numbers and underscores. Defaults to name_1}
 \item{region}{The region to be used to deploy this model.}
 
 \item{config}{A list, \code{YAML} or \code{JSON} configuration file as described
-\url{https://cloud.google.com/ml-engine/reference/rest/v1/projects.jobs}.}
+\url{https://cloud.google.com/vertex-ai}.}
 }
 \description{
 Deploys a SavedModel to CloudML model for online predictions.
