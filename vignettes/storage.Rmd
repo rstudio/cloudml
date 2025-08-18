@@ -24,7 +24,7 @@ knitr::opts_chunk$set(echo = TRUE, eval=FALSE)
 
 ## Overview
 
-[Google Cloud Storage](https://cloud.google.com/storage/) is often used along with CloudML to manage and serve training data. This article provides details on:
+[Google Cloud Storage](https://cloud.google.com/storage) is often used along with CloudML to manage and serve training data. This article provides details on:
 
 - Copying and synchronizing files between your local workstation and Google Cloud. 
 
@@ -153,7 +153,7 @@ Here's what the storage browser looks like for a sample project:
 
 ### Google Cloud SDK
 
-The Google Cloud SDK includes the `gsutil` utility program for managing cloud storage buckets. Documentation for `gsutil` can be found here: <https://cloud.google.com/storage/docs/gsutil>.
+The Google Cloud SDK includes the `gsutil` utility program for managing cloud storage buckets. Documentation for `gsutil` can be found here: <https://cloud.google.com/storagedocs/gsutil>.
 
 You use `gsutil` from within a terminal. If you are running within RStudio v1.1 or higher you can activate a terminal with the `gcloud_terminal()` function:
 

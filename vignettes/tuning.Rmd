@@ -168,7 +168,7 @@ If you are using `CATEGORICAL` or `DISCRETE` types you will need to pass the pos
 
 Note also that configuration for the compute resources to use for the job can also be provided in the config file (e.g. the `masterType` field). 
 
-Complete details on available options can be found in the [HyperparameterSpec](https://cloud.google.com/ml-engine/reference/rest/v1/projects.jobs#HyperparameterSpec) documentation.
+Complete details on available options can be found in the [HyperparameterSpec](https://cloud.google.com/vertex-ai) documentation.
 
 ## Submitting a tuning job
 

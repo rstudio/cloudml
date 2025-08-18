@@ -132,4 +132,4 @@ $predictions
 1 0, 0, 0, 0, 0, 1, 0, 0, 0, 0
 ```
 
-For additional information visit [Google Cloud Platform - Prediction Basics](https://cloud.google.com/ml-engine/docs/prediction-overview)
+For additional information visit [Google Cloud Platform - Prediction Basics](https://cloud.google.com/vertex-ai)

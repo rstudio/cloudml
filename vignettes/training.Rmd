@@ -35,13 +35,13 @@ Training models with CloudML uses the following workflow:
 
 - Tune your model based on the results and repeat training as necessary
 
-CloudML is a managed service where you pay only for the hardware resources that you use. Prices vary depending on configuration (e.g. CPU vs. GPU vs. multiple GPUs). See <https://cloud.google.com/ml-engine/pricing> for additional details.
+CloudML is a managed service where you pay only for the hardware resources that you use. Prices vary depending on configuration (e.g. CPU vs. GPU vs. multiple GPUs). See <https://cloud.google.com/vertex-ai> for additional details.
 
 ## Local Development
 
 Working on a CloudML project always begins with developing a training script that runs on your local machine. This will typically involve using one of these packages:
 
-- [keras](https://keras.rstudio.com/) --- A high-level interface for neural networks, with a focus on enabling fast experimentation.
+- [keras](https://keras3.posit.co/) --- A high-level interface for neural networks, with a focus on enabling fast experimentation.
 
 - [tfestimators](https://tensorflow.rstudio.com/tfestimators) --- High-level implementations of common model types such as regressors and classifiers.
 
@@ -49,7 +49,7 @@ Working on a CloudML project always begins with developing a training script tha
 
 There are no special requirements for your training script, however there are a couple of things to keep in mind:
 
-1) When you train a model on CloudML all of the files in the current working directory are uploaded. Therefore, your training script should be within the current working directory and references to other scripts, data files, etc. should be relative to the current working directory. The most straightforward way to organize your work on a CloudML application is to use an [RStudio Project](https://support.rstudio.com/hc/en-us/articles/200526207-Using-Projects).
+1) When you train a model on CloudML all of the files in the current working directory are uploaded. Therefore, your training script should be within the current working directory and references to other scripts, data files, etc. should be relative to the current working directory. The most straightforward way to organize your work on a CloudML application is to use an [RStudio Project](https://support.posit.co/hc/en-us/articles/200526207-Using-RStudio-Projects).
 
 2) Your training data may be contained within the working directory, or it may be located within Google Cloud Storage. If your training data is large and/or located in cloud storage, the most straightforward workflow for development is to use a local subsample of your data. See the article on [Google Cloud Storage](storage.html) for a detailed example of using distinct data for local and CloudML execution contexts, as well as reading data from Google Cloud Storage buckets.
 
@@ -252,13 +252,13 @@ You can also more systematically try combinations of flags using CloudML [hyperp
 
 By default, CloudML utilizes "standard" CPU-based instances suitable for training simple models with small to moderate datasets. You can request the use of other machine types, including ones with GPUs, using the `master_type` parameter of `cloudml_train()`. 
 
-For example, the following would train the same model as above but with a [Tesla K80 GPU](http://www.nvidia.com/object/tesla-k80.html):
+For example, the following would train the same model as above but with a [Tesla K80 GPU](https://resources.nvidia.com/l/en-us-gpu):
 
 ```{r}
 cloudml_train("train.R", master_type = "standard_gpu")
 ```
 
-To train using a [Tesla P100 GPU](http://www.nvidia.com/object/tesla-p100.html) you would specify `"standard_p100"`:
+To train using a [Tesla P100 GPU](https://www.nvidia.com/en-us/data-center/) you would specify `"standard_p100"`:
 
 ```{r}
 cloudml_train("train.R", master_type = "standard_p100")
@@ -270,7 +270,7 @@ To train on a machine with 4 Tesla P100 GPU's you would specify `"complex_model_
 cloudml_train("train.R", master_type = "complex_model_m_p100")
 ```
 
-See the CloudML website for documentation on [available machine types](https://cloud.google.com/ml-engine/docs/training-overview#machine_type_table). Also note that GPU instances can be considerably more expensive that CPU ones! See the documentation on [CloudML Pricing](https://cloud.google.com/ml-engine/pricing) for details.
+See the CloudML website for documentation on [available machine types](https://cloud.google.com/vertex-ai). Also note that GPU instances can be considerably more expensive that CPU ones! See the documentation on [CloudML Pricing](https://cloud.google.com/vertex-ai) for details.
 
 ## Training Configuration
 
@@ -293,7 +293,7 @@ You can also pass a named configuration file (i.e. one for a hyperparameter tuni
 cloudml_train("mnist_mlp.R", config = "tuning.yml")
 ```
 
-Note that `trainingInput` is used as the top level key in the config file (this is required). Additional documentation on available fields in the configuration file is available here <https://cloud.google.com/ml-engine/reference/rest/v1/projects.jobs#TrainingInput>.
+Note that `trainingInput` is used as the top level key in the config file (this is required). Additional documentation on available fields in the configuration file is available here <https://cloud.google.com/vertex-ai>.
 
 
 ## Learning More

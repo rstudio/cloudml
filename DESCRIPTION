@@ -9,7 +9,7 @@ Authors@R: c(
     person(family = "RStudio", role = c("cph"))
     )
 Description: Interface to the Google Cloud Machine Learning Platform
-  <https://cloud.google.com/ml-engine>, which provides cloud tools for training machine
+  <https://cloud.google.com/vertex-ai>, which provides cloud tools for training machine
   learning models.
 Depends:
   R (>= 3.3.0), 

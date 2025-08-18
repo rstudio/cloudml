@@ -27,17 +27,17 @@ knitr::opts_chunk$set(echo = TRUE, eval=FALSE)
 
 ![](images/cloudml.png){align=right width=200px style="margin-left: 10px;"}
 
-The **cloudml** package provides an R interface to [Google Cloud Machine Learning Engine](https://cloud.google.com/ml-engine/), a managed service that enables:
+The **cloudml** package provides an R interface to [Google Cloud Machine Learning Engine](https://cloud.google.com/vertex-ai), a managed service that enables:
 
-* Scalable training of models built with the [keras](https://keras.rstudio.com/), [tfestimators](https://tensorflow.rstudio.com/tfestimators), and [tensorflow](https://tensorflow.rstudio.com/) R packages.
+* Scalable training of models built with the [keras](https://keras3.posit.co/), [tfestimators](https://tensorflow.rstudio.com/tfestimators), and [tensorflow](https://tensorflow.rstudio.com/) R packages.
 
-* On-demand access to training on GPUs, including the new [Tesla P100 GPUs](http://www.nvidia.com/object/tesla-p100.html) from NVIDIA&reg;. 
+* On-demand access to training on GPUs, including the new [Tesla P100 GPUs](https://www.nvidia.com/en-us/data-center/) from NVIDIA&reg;. 
 
 * Hyperparameter tuning to optmize key attributes of model architectures in order to maximize predictive accuracy.
 
 * Deployment of trained models to the Google global prediction platform that can support thousands of users and TBs of data.
 
-CloudML is a managed service where you pay only for the hardware resources that you use. Prices vary depending on configuration (e.g. CPU vs. GPU vs. multiple GPUs). See <https://cloud.google.com/ml-engine/pricing> for additional details. 
+CloudML is a managed service where you pay only for the hardware resources that you use. Prices vary depending on configuration (e.g. CPU vs. GPU vs. multiple GPUs). See <https://cloud.google.com/vertex-aipricing> for additional details. 
 
 <div style="height: 25px;"></div>
 
@@ -96,7 +96,7 @@ All of the files within the current working directory will be bundled up and sen
 Note that the very first time you submit a job to CloudML the various packages required to run your script will be compiled from source. This will make the execution time of the job considerably longer that you might expect. It's only the first job that incurs this overhead though (since the package installations are cached), and subsequent jobs will run more quickly. 
 </div>
 
-If you are using [RStudio v1.1](https://www.rstudio.com/products/rstudio/download/) or higher, then the CloudML training job is monitored (and it's results collected) using a background terminal:
+If you are using [RStudio v1.1](https://posit.co/download/rstudio-desktop/) or higher, then the CloudML training job is monitored (and it's results collected) using a background terminal:
 
 ![](images/rstudio-terminal.png){.screenshot width=725px}
 
@@ -149,7 +149,7 @@ For example, the following would train the same model as above but with a [Tesla
 cloudml_train("train.R", master_type = "standard_gpu")
 ```
 
-To train using a [Tesla P100 GPU](http://www.nvidia.com/object/tesla-p100.html) you would specify `"standard_p100"`:
+To train using a [Tesla P100 GPU](https://www.nvidia.com/en-us/data-center/) you would specify `"standard_p100"`:
 
 ```{r}
 cloudml_train("train.R", master_type = "standard_p100")
@@ -161,7 +161,7 @@ To train on a machine with 4 Tesla P100 GPU's you would specify `"complex_model_
 cloudml_train("train.R", master_type = "complex_model_m_p100")
 ```
 
-See the CloudML website for documentation on [available machine types](https://cloud.google.com/ml-engine/docs/training-overview#machine_type_table). Also note that GPU instances can be considerably more expensive that CPU ones! See the documentation on [CloudML Pricing](https://cloud.google.com/ml-engine/pricing) for details.
+See the CloudML website for documentation on [available machine types](https://cloud.google.com/vertex-aidocs/training-overview#machine_type_table). Also note that GPU instances can be considerably more expensive that CPU ones! See the documentation on [CloudML Pricing](https://cloud.google.com/vertex-aipricing) for details.
 
 ## Learning More
 
