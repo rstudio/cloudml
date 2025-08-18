@@ -2,7 +2,8 @@ Package: cloudml
 Title: Interface to the Google Cloud Machine Learning Platform
 Version: 0.7.0
 Authors@R: c(
-    person("Daniel", "Falbel", email = "daniel@rstudio.com", role = c("aut", "cre")),
+    person("Tomasz", "Kalinowski", email = "tomasz@posit.co", role = c("cre")),
+    person("Daniel", "Falbel", email = "daniel@rstudio.com", role = c("aut")),
     person("Javier", "Luraschi", role = c("aut")),
     person("JJ", "Allaire", role = c("aut")),
     person("Kevin", "Ushey", role = c("aut")),
