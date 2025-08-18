@@ -229,8 +229,6 @@ job_cancel <- function(job = "latest") {
 #'
 #' List existing Google Cloud ML jobs.
 #'
-#' @inheritParams job_status
-#'
 #' @param filter
 #'   Filter the set of jobs to be returned.
 #'
@@ -383,9 +381,6 @@ print.cloudml_job_status <- function(x, ...) {
 #'
 #' Get the hyperparameter trials for job, as an \R data frame
 #'
-#' @inheritParams gcloud_exec
-#' @inheritParams job_status
-#
 #' @param x Job name or job object.
 #'
 #' @family job management functions
