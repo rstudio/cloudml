@@ -12,13 +12,13 @@
 #' @param master_type Training master node machine type. "standard" provides a
 #'   basic machine configuration suitable for training simple models with small
 #'   to moderate datasets. See the documentation at
-#'   <https://cloud.google.com/ml-engine/docs/tensorflow/machine-types#machine_type_table>
+#'   <https://cloud.google.com/vertex-ai/docs/reference/rest/v1/MachineSpec>
 #'    for details on available machine types.
 #'
 #' @param region The region to be used for training.
 #'
 #' @param config A list, `YAML` or `JSON` configuration file as described
-#'   <https://cloud.google.com/ml-engine/reference/rest/v1/projects.jobs>.
+#'   <https://cloud.google.com/vertex-ai>.
 #'
 #' @param collect Logical. If TRUE, collect job when training is completed
 #'   (blocks waiting for the job to complete). The default (`"ask"`) will
@@ -229,8 +229,6 @@ job_cancel <- function(job = "latest") {
 #'
 #' List existing Google Cloud ML jobs.
 #'
-#' @inheritParams job_status
-#'
 #' @param filter
 #'   Filter the set of jobs to be returned.
 #'
@@ -383,9 +381,6 @@ print.cloudml_job_status <- function(x, ...) {
 #'
 #' Get the hyperparameter trials for job, as an \R data frame
 #'
-#' @inheritParams gcloud_exec
-#' @inheritParams job_status
-#
 #' @param x Job name or job object.
 #'
 #' @family job management functions

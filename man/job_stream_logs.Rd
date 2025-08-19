@@ -4,9 +4,12 @@
 \alias{job_stream_logs}
 \title{Show job log stream}
 \usage{
-job_stream_logs(job = "latest",
+job_stream_logs(
+  job = "latest",
   polling_interval = getOption("cloudml.stream_logs.polling", 5),
-  task_name = NULL, allow_multiline_logs = FALSE)
+  task_name = NULL,
+  allow_multiline_logs = FALSE
+)
 }
 \arguments{
 \item{job}{Job name or job object. Pass "latest" to indicate the
@@ -23,8 +26,11 @@ latest log messages.}
 Show logs from a running Cloud ML Engine job.
 }
 \seealso{
-Other job management functions: \code{\link{job_cancel}},
-  \code{\link{job_collect}}, \code{\link{job_list}},
-  \code{\link{job_status}}, \code{\link{job_trials}}
+Other job management functions: 
+\code{\link{job_cancel}()},
+\code{\link{job_collect}()},
+\code{\link{job_list}()},
+\code{\link{job_status}()},
+\code{\link{job_trials}()}
 }
 \concept{job management functions}

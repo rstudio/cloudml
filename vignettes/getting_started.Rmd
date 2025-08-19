@@ -1,6 +1,6 @@
 ---
 title: "R Interface to Google CloudML"
-output: 
+output:
   rmarkdown::html_vignette: default
 vignette: >
   %\VignetteIndexEntry{Getting Started}
@@ -27,17 +27,17 @@ knitr::opts_chunk$set(echo = TRUE, eval=FALSE)
 
 ![](images/cloudml.png){align=right width=200px style="margin-left: 10px;"}
 
-The **cloudml** package provides an R interface to [Google Cloud Machine Learning Engine](https://cloud.google.com/ml-engine/), a managed service that enables:
+The **cloudml** package provides an R interface to [Google Cloud Machine Learning Engine](https://cloud.google.com/vertex-ai), a managed service that enables:
 
-* Scalable training of models built with the [keras](https://keras.rstudio.com/), [tfestimators](https://tensorflow.rstudio.com/tfestimators), and [tensorflow](https://tensorflow.rstudio.com/) R packages.
+* Scalable training of models built with the [keras](https://keras3.posit.co/), [tfestimators](https://github.com/rstudio/tfestimators), and [tensorflow](https://tensorflow.rstudio.com/) R packages.
 
-* On-demand access to training on GPUs, including the new [Tesla P100 GPUs](http://www.nvidia.com/object/tesla-p100.html) from NVIDIA&reg;. 
+* On-demand access to training on GPUs, including the new [Tesla P100 GPUs](https://www.nvidia.com/en-us/data-center/) from NVIDIA&reg;.
 
 * Hyperparameter tuning to optmize key attributes of model architectures in order to maximize predictive accuracy.
 
 * Deployment of trained models to the Google global prediction platform that can support thousands of users and TBs of data.
 
-CloudML is a managed service where you pay only for the hardware resources that you use. Prices vary depending on configuration (e.g. CPU vs. GPU vs. multiple GPUs). See <https://cloud.google.com/ml-engine/pricing> for additional details. 
+CloudML is a managed service where you pay only for the hardware resources that you use. Prices vary depending on configuration (e.g. CPU vs. GPU vs. multiple GPUs). See <https://cloud.google.com/vertex-ai/pricing> for additional details.
 
 <div style="height: 25px;"></div>
 
@@ -58,7 +58,7 @@ Start by installing the cloudml R package from CRAN as follows:
 install.packages("cloudml")
 ```
 
-Then, install the *Google Cloud SDK*, a set of utilties that enable you to interact with your Google Cloud account from within R. You can install the SDK using the `gcloud_install()` function. 
+Then, install the *Google Cloud SDK*, a set of utilties that enable you to interact with your Google Cloud account from within R. You can install the SDK using the `gcloud_install()` function.
 
 ```{r}
 library(cloudml)
@@ -93,10 +93,10 @@ cloudml_train("train.R")
 All of the files within the current working directory will be bundled up and sent along with the script to CloudML.
 
 <div class="bs-callout bs-callout-warning">
-Note that the very first time you submit a job to CloudML the various packages required to run your script will be compiled from source. This will make the execution time of the job considerably longer that you might expect. It's only the first job that incurs this overhead though (since the package installations are cached), and subsequent jobs will run more quickly. 
+Note that the very first time you submit a job to CloudML the various packages required to run your script will be compiled from source. This will make the execution time of the job considerably longer that you might expect. It's only the first job that incurs this overhead though (since the package installations are cached), and subsequent jobs will run more quickly.
 </div>
 
-If you are using [RStudio v1.1](https://www.rstudio.com/products/rstudio/download/) or higher, then the CloudML training job is monitored (and it's results collected) using a background terminal:
+If you are using [RStudio v1.1](https://posit.co/download/rstudio-desktop/) or higher, then the CloudML training job is monitored (and it's results collected) using a background terminal:
 
 ![](images/rstudio-terminal.png){.screenshot width=725px}
 
@@ -112,7 +112,7 @@ You can list all previous runs as a data frame using the `ls_runs()` function:
 ls_runs()
 ```
 ```
-Data frame: 6 x 37 
+Data frame: 6 x 37
                             run_dir eval_loss eval_acc metric_loss metric_acc metric_val_loss metric_val_acc
 6 runs/cloudml_2018_01_26_135812740    0.1049   0.9789      0.0852     0.9760          0.1093         0.9770
 2 runs/cloudml_2018_01_26_140015601    0.1402   0.9664      0.1708     0.9517          0.1379         0.9687
@@ -137,19 +137,19 @@ view_run()
 view_run("runs/cloudml_2017_12_15_182614794")
 ```
 
-There are many tools available to list, filter, and compare training runs. For additional information see the documentation for the [tfruns package](https://tensorflow.rstudio.com/tools/tfruns/articles/overview.html).
+There are many tools available to list, filter, and compare training runs. For additional information see the documentation for the [tfruns package](https://tensorflow.rstudio.com/guides/tfruns/).
 
 ## Training with a GPU
 
-By default, CloudML utilizes "standard" CPU-based instances suitable for training simple models with small to moderate datasets. You can request the use of other machine types, including ones with GPUs, using the `master_type` parameter of `cloudml_train()`. 
+By default, CloudML utilizes "standard" CPU-based instances suitable for training simple models with small to moderate datasets. You can request the use of other machine types, including ones with GPUs, using the `master_type` parameter of `cloudml_train()`.
 
-For example, the following would train the same model as above but with a [Tesla K80 GPU](http://www.nvidia.com/object/tesla-k80.html):
+For example, the following would train the same model as above but with a [Tesla K80 GPU](https://www.nvidia.com/en-us/products/):
 
 ```{r}
 cloudml_train("train.R", master_type = "standard_gpu")
 ```
 
-To train using a [Tesla P100 GPU](http://www.nvidia.com/object/tesla-p100.html) you would specify `"standard_p100"`:
+To train using a [Tesla P100 GPU](https://www.nvidia.com/en-us/data-center/) you would specify `"standard_p100"`:
 
 ```{r}
 cloudml_train("train.R", master_type = "standard_p100")
@@ -161,8 +161,8 @@ To train on a machine with 4 Tesla P100 GPU's you would specify `"complex_model_
 cloudml_train("train.R", master_type = "complex_model_m_p100")
 ```
 
-See the CloudML website for documentation on [available machine types](https://cloud.google.com/ml-engine/docs/training-overview#machine_type_table). Also note that GPU instances can be considerably more expensive that CPU ones! See the documentation on [CloudML Pricing](https://cloud.google.com/ml-engine/pricing) for details.
-
+See the CloudML website for documentation on [available machine types](https://cloud.google.com/vertex-ai/docs/training/overview). Also note that GPU instances can be considerably more expensive that CPU ones! See the documentation on [CloudML Pricing](https://cloud.google.com/vertex-ai/pricing) for details.
+a
 ## Learning More
 
 To learn more about using CloudML with R, see the following articles:
@@ -174,9 +174,3 @@ To learn more about using CloudML with R, see the following articles:
 * [Google Cloud Storage](storage.html) provides information on copying data between your local machine and Google Storage and also describes how to use data within Google Storage during training.
 
 * [Deploying Models](deployment.html) describes how to deploy trained models and generate predictions from them.
-
-
-
-
-
-

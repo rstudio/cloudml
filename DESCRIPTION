@@ -1,15 +1,16 @@
 Package: cloudml
 Title: Interface to the Google Cloud Machine Learning Platform
-Version: 0.7.0
+Version: 0.7.1.9000
 Authors@R: c(
-    person("Daniel", "Falbel", email = "daniel@rstudio.com", role = c("aut", "cre")),
+    person("Tomasz", "Kalinowski", email = "tomasz@posit.co", role = c("cre")),
+    person("Daniel", "Falbel", email = "daniel@rstudio.com", role = c("aut")),
     person("Javier", "Luraschi", role = c("aut")),
     person("JJ", "Allaire", role = c("aut")),
     person("Kevin", "Ushey", role = c("aut")),
     person(family = "RStudio", role = c("cph"))
     )
 Description: Interface to the Google Cloud Machine Learning Platform
-  <https://cloud.google.com/ml-engine>, which provides cloud tools for training machine
+  <https://cloud.google.com/vertex-ai>, which provides cloud tools for training machine
   learning models.
 Depends:
   R (>= 3.3.0), 
@@ -29,11 +30,14 @@ Suggests:
   tensorflow (>= 1.4.2),
   keras (>= 2.1.2),
   knitr,
+  rmarkdown,
   testthat
 License: Apache License 2.0
 SystemRequirements: Python (>= 2.7.0)
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 6.1.1
+RoxygenNote: 7.3.2
 VignetteBuilder: knitr
+URL: https://github.com/rstudio/cloudml
+BugReports: https://github.com/rstudio/cloudml/issues

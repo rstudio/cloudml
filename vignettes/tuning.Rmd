@@ -1,6 +1,6 @@
 ---
 title: "Hyperparameter Tuning"
-output: 
+output:
   rmarkdown::html_vignette: default
 vignette: >
   %\VignetteIndexEntry{Hyperparameter Tuning}
@@ -46,13 +46,13 @@ Hyperparameter tuning works by running multiple *trials* in a single training jo
 
 Hyperparameter tuning requires more explicit communication between the Cloud ML Engine training service and your training application. You define all the information that your model needs in your training application. The best way to think about this interaction is that you define the hyperparameters (variables) that you want to adjust and you define a target value.
 
-To learn more about how Bayesian optimization is used for hyperparameter tuning in Cloud ML Engine, read the August 2017 Google Cloud Big Data and Machine Learning Blog post named [Hyperparameter Tuning in Cloud Machine Learning Engine using Bayesian Optimization](https://cloud.google.com/blog/big-data/2017/08/hyperparameter-tuning-in-cloud-machine-learning-engine-using-bayesian-optimization).
+To learn more about how Bayesian optimization is used for hyperparameter tuning in Cloud ML Engine, read the August 2017 Google Cloud Big Data and Machine Learning Blog post named [Hyperparameter Tuning in Cloud Machine Learning Engine using Bayesian Optimization](https://cloud.google.com/blog/products/ai-machine-learning/hyperparameter-tuning-cloud-machine-learning-engine-using-bayesian-optimization).
 
 ## What it optimizes
 
 Hyperparameter tuning optimizes a single target variable (also called the hyperparameter metric) that you specify. The accuracy of the model, as calculated from an evaluation pass, is a common metric. The metric must be a numeric value, and you can specify whether you want to tune your model to maximize or minimize your metric.
 
-When you start a job with hyperparameter tuning, you establish the name of your hyperparameter metric. The appropriate name will depend on whether you are using [keras](https://tensorflow.rstudio.com/keras/), [tfestimators](https://tensorflow.rstudio.com/keras/), or the [core](https://tensorflow.rstudio.com/tensorflow/) TensorFlow API. This will be covered below in the section on [Hyperparameter tuning configuration].
+When you start a job with hyperparameter tuning, you establish the name of your hyperparameter metric. The appropriate name will depend on whether you are using [keras](https://keras3.posit.co/), [tfestimators](https://tensorflow.rstudio.com/keras/), or the [core](https://tensorflow.rstudio.com) TensorFlow API. This will be covered below in the section on [Hyperparameter tuning configuration].
 
 ### How Cloud ML Engine gets your metric
 
@@ -62,7 +62,7 @@ You may notice that there are no instructions in this documentation for passing 
 
 Without hyperparameter tuning, you can set your hyperparameters by whatever means you like in your trainer. You might configure them according to command-line arguments to your main application module, or feed them to your application in a configuration file, for example. When you use hyperparameter tuning, you must set the values of the hyperparameters that you're using for tuning with a specific procedure:
 
-- Define a [training flag](https://tensorflow.rstudio.com/tools/training_flags.html) within your training script for each tuned hyperparameter.
+- Define a [training flag](https://tensorflow.rstudio.com/guides/tfruns/tuning) within your training script for each tuned hyperparameter.
 
 - Use the value passed for those arguments to set the corresponding hyperparameter in your training code.
 
@@ -76,7 +76,7 @@ However you choose them, it's important to understand the implications. Every hy
 
 ## Preparing your script
 
-To prepare your training script for tuning, you should define a [training flag](https://tensorflow.rstudio.com/tools/training_flags.html) within your script for each tuned hyperparameter. For example:
+To prepare your training script for tuning, you should define a [training flag](https://tensorflow.rstudio.com/guides/tfruns/tuning) within your script for each tuned hyperparameter. For example:
 
 ```{r}
 library(keras)
@@ -92,8 +92,8 @@ FLAGS <- flags(
 These flags would then used within a script as follows:
 
 ```{r}
-model <- keras_model_sequential() %>% 
-  layer_dense(units = FLAGS$dense_units1, activation = 'relu', 
+model <- keras_model_sequential() %>%
+  layer_dense(units = FLAGS$dense_units1, activation = 'relu',
               input_shape = c(784)) %>%
   layer_dropout(rate = FLAGS$dropout1) %>%
   layer_dense(units = FLAGS$dense_units2, activation = 'relu') %>%
@@ -148,7 +148,7 @@ We specified `hyperparameterMetricTag: acc` as the metric to optimize for. Note 
 The `type` field can be one of:
 
 - `INTEGER`
-- `DOUBLE` 
+- `DOUBLE`
 - `CATEGORICAL`
 - `DISCRETE`
 
@@ -166,9 +166,9 @@ If you are using `CATEGORICAL` or `DISCRETE` types you will need to pass the pos
   categoricalValues: [relu, tanh, sigmoid]
 ```
 
-Note also that configuration for the compute resources to use for the job can also be provided in the config file (e.g. the `masterType` field). 
+Note also that configuration for the compute resources to use for the job can also be provided in the config file (e.g. the `masterType` field).
 
-Complete details on available options can be found in the [HyperparameterSpec](https://cloud.google.com/ml-engine/reference/rest/v1/projects.jobs#HyperparameterSpec) documentation.
+Complete details on available options can be found in the [HyperparameterSpec](https://cloud.google.com/vertex-ai) documentation.
 
 ## Submitting a tuning job
 
@@ -178,7 +178,7 @@ To submit a hyperparmaeter tuning job, pass the name of the CloudML configuratio
 cloudml_train("mnist_mlp.R", config = "tuning.yml")
 ```
 
-The job will proceed as normal, and you can monitor it's results within an RStudio terminal or via the `job_status()` and `job_stream_logs()` functions. 
+The job will proceed as normal, and you can monitor it's results within an RStudio terminal or via the `job_status()` and `job_stream_logs()` functions.
 
 ## Collecting trials
 
@@ -253,6 +253,3 @@ You can see examples training scripts and corresponding `tuning.yml` files for t
 - [tfestimators](https://github.com/rstudio/cloudml/tree/master/inst/examples/tfestimators)
 
 - [tensorflow](https://github.com/rstudio/cloudml/tree/master/inst/examples/mnist)
-
-
-

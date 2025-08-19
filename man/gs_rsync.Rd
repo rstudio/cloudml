@@ -4,16 +4,24 @@
 \alias{gs_rsync}
 \title{Synchronize content of two buckets/directories}
 \usage{
-gs_rsync(source, destination, delete = FALSE, recursive = FALSE,
-  parallel = TRUE, dry_run = FALSE, options = NULL, echo = TRUE)
+gs_rsync(
+  source,
+  destination,
+  delete = FALSE,
+  recursive = FALSE,
+  parallel = TRUE,
+  dry_run = FALSE,
+  options = NULL,
+  echo = TRUE
+)
 }
 \arguments{
 \item{source}{The file to be copied. This can be either a path on the local
-filesystem, or a Google Storage URI (e.g. \code{gs://[BUCKET_NAME]/[FILENAME.CSV]}).}
+filesystem, or a Google Storage URI (e.g. \verb{gs://[BUCKET_NAME]/[FILENAME.CSV]}).}
 
 \item{destination}{The location where the \code{source} file should be copied to. This can be
 either a path on the local filesystem, or a Google Storage URI (e.g.
-\code{gs://[BUCKET_NAME]/[FILENAME.CSV]}).}
+\verb{gs://[BUCKET_NAME]/[FILENAME.CSV]}).}
 
 \item{delete}{Delete extra files under \code{destination} not found under
 \code{source} By default extra files are not deleted.}

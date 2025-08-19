@@ -8,7 +8,7 @@ running on CloudML.}
 gs_data_dir(url, local_dir = "gs", force_sync = FALSE, echo = TRUE)
 }
 \arguments{
-\item{url}{Google Storage bucket URL (e.g. \code{gs://<your-bucket>}).}
+\item{url}{Google Storage bucket URL (e.g. \verb{gs://<your-bucket>}).}
 
 \item{local_dir}{Local directory to synchonize Google Storage bucket(s) to.}
 

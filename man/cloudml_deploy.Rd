@@ -4,8 +4,13 @@
 \alias{cloudml_deploy}
 \title{Deploy SavedModel to CloudML}
 \usage{
-cloudml_deploy(export_dir_base, name, version = paste0(name, "_1"),
-  region = NULL, config = NULL)
+cloudml_deploy(
+  export_dir_base,
+  name,
+  version = paste0(name, "_1"),
+  region = NULL,
+  config = NULL
+)
 }
 \arguments{
 \item{export_dir_base}{A string containing a directory containing an
@@ -20,7 +25,7 @@ contain only letters, numbers and underscores. Defaults to name_1}
 \item{region}{The region to be used to deploy this model.}
 
 \item{config}{A list, \code{YAML} or \code{JSON} configuration file as described
-\url{https://cloud.google.com/ml-engine/reference/rest/v1/projects.jobs}.}
+\url{https://cloud.google.com/vertex-ai}.}
 }
 \description{
 Deploys a SavedModel to CloudML model for online predictions.
@@ -28,7 +33,8 @@ Deploys a SavedModel to CloudML model for online predictions.
 \seealso{
 \code{\link[=cloudml_predict]{cloudml_predict()}}
 
-Other CloudML functions: \code{\link{cloudml_predict}},
-  \code{\link{cloudml_train}}
+Other CloudML functions: 
+\code{\link{cloudml_predict}()},
+\code{\link{cloudml_train}()}
 }
 \concept{CloudML functions}

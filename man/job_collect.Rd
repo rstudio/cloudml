@@ -4,8 +4,13 @@
 \alias{job_collect}
 \title{Collect job output}
 \usage{
-job_collect(job = "latest", trials = "best", destination = "runs",
-  timeout = NULL, view = interactive())
+job_collect(
+  job = "latest",
+  trials = "best",
+  destination = "runs",
+  timeout = NULL,
+  view = interactive()
+)
 }
 \arguments{
 \item{job}{Job name or job object. Pass "latest" to indicate the
@@ -29,8 +34,11 @@ yet finished running, \code{job_collect()} will block and wait until the job has
 finished.
 }
 \seealso{
-Other job management functions: \code{\link{job_cancel}},
-  \code{\link{job_list}}, \code{\link{job_status}},
-  \code{\link{job_stream_logs}}, \code{\link{job_trials}}
+Other job management functions: 
+\code{\link{job_cancel}()},
+\code{\link{job_list}()},
+\code{\link{job_status}()},
+\code{\link{job_stream_logs}()},
+\code{\link{job_trials}()}
 }
 \concept{job management functions}

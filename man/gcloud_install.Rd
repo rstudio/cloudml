@@ -20,7 +20,8 @@ gcloud_install()
 
 }
 \seealso{
-Other Google Cloud SDK functions: \code{\link{gcloud_init}},
-  \code{\link{gcloud_terminal}}
+Other Google Cloud SDK functions: 
+\code{\link{gcloud_init}()},
+\code{\link{gcloud_terminal}()}
 }
 \concept{Google Cloud SDK functions}
