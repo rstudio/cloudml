@@ -8,15 +8,12 @@
 ^docs/
 ^README\.R?md
 ^index\..*$
-^\.travis\.yml$
 ^runs\.*$
 ^cloudml.yml$
-^.travis.R$
 ^docs$
 ^.*/runs/.*$
 ^.*/savedmodel/.*$
 ^pkgdown$
-^appveyor.yml$
 ^savedmodel$
 ^CRAN-RELEASE$
 ^cran-comments\.md$

@@ -2,8 +2,7 @@
 
 ## R interface to Google CloudML
 
-[![Build Status](https://app.travis-ci.com/rstudio/cloudml.svg?branch=master)](https://app.travis-ci.com/rstudio/cloudml) [![AppVeyor Build
-Status](https://ci.appveyor.com/api/projects/status/github/rstudio/cloudml?branch=master&svg=true)](https://ci.appveyor.com/project/JavierLuraschi/cloudml) [![CRAN_Status_Badge](https://www.r-pkg.org/badges/version/cloudml)](https://cran.r-project.org/package=cloudml)
+[![CRAN_Status_Badge](https://www.r-pkg.org/badges/version/cloudml)](https://cran.r-project.org/package=cloudml)
 
 The **cloudml** package provides an R interface to [Google Cloud Machine Learning Engine](https://cloud.google.com/vertex-ai), a managed service that enables:
 
